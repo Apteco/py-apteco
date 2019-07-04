@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "apteco"
+version = "0.1.0"
+description = "A Python package for interacting with Apteco Marketing Suite resources via the Apteco API."
+authors = ["Apteco Ltd <support@apteco.com>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
