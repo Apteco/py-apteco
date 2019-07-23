@@ -416,7 +416,7 @@ class InitialiseTablesAlgorithm:
         """Check table's children matches ```has_child_tables```."""
         if table.has_child_tables and not table.children:
             raise AptecoTablesError(
-                f"API stated {table.name} has child tables" f" but none were found."
+                f"API stated {table.name} has child tables but none were found."
             )
         if not table.has_child_tables and table.children:
             raise AptecoTablesError(
