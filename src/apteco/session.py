@@ -11,12 +11,14 @@ from apteco.exceptions import ApiResultsError, AptecoTablesError
 
 ICON = Path(__file__).absolute().parent / "data/apteco_logo.ico"
 NOT_ASSIGNED: Any = object()
+VARIABLES_PER_PAGE = 100
 
 
 class Session:
     def __init__(self, credentials: "Credentials", system: str):
         self._unpack_credentials(credentials)
         self.system = system
+        self.variables = InitialiseVariablesAlgorithm(self).run()
         self.tables, self.master_table = InitialiseTablesAlgorithm(self).run()
 
     def _unpack_credentials(self, credentials):
@@ -48,6 +50,7 @@ class Table:
         children: List["Table"],
         ancestors: List["Table"],
         descendants: List["Table"],
+        variables: Dict[str, "Variable"],
         *,
         session: Optional[Session] = None,
     ):
@@ -82,6 +85,9 @@ class Table:
                 of this table (an empty list for the master table)
             descendants (List[Table]): list of descendant tables
                 of this table (an empty list if table has no children)
+            variables (Dict[str, Variable]): variables on this table,
+                mapping from variable description
+                to its Variable object
             session (Session): API session the tables data belongs to
 
         """
@@ -99,7 +105,13 @@ class Table:
         self.children = children
         self.ancestors = ancestors
         self.descendants = descendants
+        self.variables = variables
         self.session = session
+
+
+# TODO: finish this
+class Variable(aa.Variable):
+    """Class representing a FastStats system variable."""
 
 
 # TODO: make dataclass when Python 3.7
@@ -326,6 +338,7 @@ class InitialiseTablesAlgorithm:
         self.system = session.system
         self.api_client = session.api_client
         self.session = session
+        self.variables = session.variables
 
     def run(self) -> Tuple[Dict[str, Table], Table]:
         """Run the algorithm.
@@ -341,6 +354,7 @@ class InitialiseTablesAlgorithm:
         """
         self._get_raw_tables()
         self._identify_children()
+        self._identify_variables()
         self._create_tables()
         self._assign_parent_and_children()
         self._find_master_table()
@@ -375,6 +389,13 @@ class InitialiseTablesAlgorithm:
         for table in self.raw_tables.values():
             self.children_lookup[table.parent_table].append(table.name)
 
+    def _identify_variables(self):
+        """Identify variables for each table."""
+        self.variables_lookup = defaultdict(dict)
+        for variable in self.variables.values():
+            self.variables_lookup[variable.table_name][variable.description] = variable
+        self.variables_lookup.default_factory = None  # 'freeze' as normal dict
+
     def _create_tables(self):
         """Create py-apteco tables from apteco_api ones."""
         self.tables = {
@@ -393,6 +414,7 @@ class InitialiseTablesAlgorithm:
                 NOT_ASSIGNED,
                 NOT_ASSIGNED,
                 NOT_ASSIGNED,
+                self.variables_lookup.get(t.name, {}),
                 session=self.session,
             )
             for t in self.raw_tables.values()
@@ -479,3 +501,91 @@ class InitialiseTablesAlgorithm:
                     f" {len(no_relation[rel])} table(s) had no {rel} assigned."
                     f" First example: table '{no_relation[rel][0]}'"
                 )
+
+
+class InitialiseVariablesAlgorithm:
+    """Class holding the algorithm to initialise system variables.
+
+    The purpose of this algorithm is to
+    retrieve the raw variables data for the given system,
+    ...
+    # TODO: finish this
+
+    Attributes:
+    # TODO: finish this
+
+    Methods:
+        run(): entry point to run the algorithm
+
+    """
+
+    def __init__(self, session):
+        """
+
+        Args:
+            session (Session): API session the variables data belongs to
+
+        """
+        self.data_view = session.data_view
+        self.system = session.system
+        self.api_client = session.api_client
+        self.session = session
+
+    def run(self):
+        """Run the algorithm.
+
+        Returns:
+            # TODO: finish this
+
+        """
+
+        self._get_raw_variables()
+        self._create_variables()
+        return self.variables
+
+    def _get_raw_variables(self, variables_per_page=VARIABLES_PER_PAGE):
+        """Get list of all variables from API."""
+        systems_controller = aa.FastStatsSystemsApi(self.api_client)
+
+        self.raw_variables = []
+        offset = 0
+        while True:
+            results = systems_controller.fast_stats_systems_get_fast_stats_variables(
+                self.data_view, self.system, count=variables_per_page, offset=offset
+            )  # type: aa.PagedResultsVariable
+            self.raw_variables.extend(results.list)
+            if results.offset + results.count >= results.total_count:
+                break
+            offset = results.offset + results.count
+        self._check_variable_results_consistency(results.total_count)
+
+    def _check_variable_results_consistency(self, total_variables: int):
+        """Check number of variables returned matches stated total count."""
+        list_count = len(self.raw_variables)
+        if not total_variables == list_count:
+            raise ApiResultsError(
+                f"API stated there are {total_variables} variables in the system"
+                f" but {list_count} were returned."
+            )
+
+    def _create_variables(self):
+        """Create py-apteco variables from apteco_api ones."""
+        # TODO: change to py-apteco variables (currently uses apteco_api ones)
+        self.variables = {
+            v.description: Variable(
+                v.name,
+                v.description,
+                v.type,
+                v.folder_name,
+                v.table_name,
+                v.is_selectable,
+                v.is_browsable,
+                v.is_exportable,
+                v.is_virtual,
+                v.selector_info,
+                v.numeric_info,
+                v.text_info,
+                v.reference_info,
+            )
+            for v in self.raw_variables
+        }
