@@ -8,6 +8,7 @@ import apteco_api as aa
 import PySimpleGUI
 
 from apteco.exceptions import ApiResultsError, AptecoTablesError
+from apteco.query import VariableMixin
 
 ICON = Path(__file__).absolute().parent / "data/apteco_logo.ico"
 NOT_ASSIGNED: Any = object()
@@ -108,10 +109,58 @@ class Table:
         self.variables = variables
         self.session = session
 
+    def __eq__(self, other):
+        """Test whether this is the same table as another."""
+        return self.name == other.name
+
+    def __gt__(self, other):
+        """Test whether this is an ancestor table of another."""
+        return self in other.ancestors
+
+    def __lt__(self, other):
+        """Test whether this is a descendant table of another."""
+        return self in other.descendants
+
+    def __getitem__(self, item):
+        return self.variables[item]
+
 
 # TODO: finish this
-class Variable(aa.Variable):
+class Variable(VariableMixin):
     """Class representing a FastStats system variable."""
+
+    def __init__(
+        self,
+        name,
+        description,
+        type,
+        folder_name,
+        table_name,
+        is_selectable,
+        is_browsable,
+        is_exportable,
+        is_virtual,
+        selector_info,
+        numeric_info,
+        text_info,
+        reference_info,
+        *,
+        session: Optional[Session] = None,
+    ):
+        self.name = name
+        self.description = description
+        self.type = type
+        self.folder_name = folder_name
+        self.table_name = table_name
+        self.is_selectable = is_selectable
+        self.is_browsable = is_browsable
+        self.is_exportable = is_exportable
+        self.is_virtual = is_virtual
+        self.selector_info = selector_info
+        self.numeric_info = numeric_info
+        self.text_info = text_info
+        self.reference_info = reference_info
+        self.session = session
 
 
 # TODO: make dataclass when Python 3.7
@@ -586,6 +635,7 @@ class InitialiseVariablesAlgorithm:
                 v.numeric_info,
                 v.text_info,
                 v.reference_info,
+                session=self.session,
             )
             for v in self.raw_variables
         }
