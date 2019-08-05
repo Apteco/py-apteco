@@ -129,7 +129,7 @@ class VariableMixin:
             raise ValueError("Can only set variable equal to to a string or Iterable of strings.")
 
     def isin(self, values):
-        return criteria_clause(self.name, values)
+        return criteria_clause(self, values)
 
     # TODO: implement contains method for variables
     def contains(self, needle):
