@@ -314,7 +314,9 @@ class SimpleLoginAlgorithm:
 
     def _create_client(self):
         """Create an API client."""
-        self._config = aa.Configuration(host=self.base_url)
+        config = aa.Configuration()
+        config.host = self.base_url
+        self._config = config
         self.api_client = aa.ApiClient(configuration=self._config)
 
     def _simple_login(self, user, password):
