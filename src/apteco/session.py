@@ -19,8 +19,8 @@ class Session:
     def __init__(self, credentials: "Credentials", system: str):
         self._unpack_credentials(credentials)
         self.system = system
-        self.variables = InitialiseVariablesAlgorithm(self).run()
-        self.tables, self.master_table = InitialiseTablesAlgorithm(self).run()
+        self.variables = InitializeVariablesAlgorithm(self).run()
+        self.tables, self.master_table = InitializeTablesAlgorithm(self).run()
 
     def _unpack_credentials(self, credentials):
         self.base_url = credentials.base_url
@@ -274,7 +274,7 @@ class SimpleLoginAlgorithm:
         base_url (str): API base URL, normally ending '/OrbitAPI'
         data_view (str): DataView being logged into
         api_client (aa.ApiClient): API client being created
-            and authorised during login
+            and authorized during login
         session_id (str): Apteco session ID for the created session
         access_token (str): access token for the created session
         user (User): API user
@@ -340,7 +340,7 @@ class SimpleLoginAlgorithm:
         self._config.api_key_prefix = {"Authorization": "Bearer"}
 
     def _create_credentials(self):
-        """Initialise session credentials object."""
+        """Initialize session credentials object."""
         self.credentials = Credentials(
             self.base_url,
             self.data_view,
@@ -351,8 +351,8 @@ class SimpleLoginAlgorithm:
         )
 
 
-class InitialiseTablesAlgorithm:
-    """Class holding the algorithm to initialise system tables.
+class InitializeTablesAlgorithm:
+    """Class holding the algorithm to initialize system tables.
 
     The purpose of this algorithm is to
     retrieve the raw tables data for the given system,
@@ -554,8 +554,8 @@ class InitialiseTablesAlgorithm:
                 )
 
 
-class InitialiseVariablesAlgorithm:
-    """Class holding the algorithm to initialise system variables.
+class InitializeVariablesAlgorithm:
+    """Class holding the algorithm to initialize system variables.
 
     The purpose of this algorithm is to
     retrieve the raw variables data for the given system,
