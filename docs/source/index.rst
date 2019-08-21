@@ -10,6 +10,8 @@ Welcome to py-apteco's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   getting_started.rst
+   changelog.rst
 
 
 Indices and tables
