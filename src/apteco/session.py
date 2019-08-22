@@ -18,18 +18,27 @@ VARIABLES_PER_PAGE = 100
 class Session:
     def __init__(self, credentials: "Credentials", system: str):
         self._unpack_credentials(credentials)
+        self._create_client()
         self.system = system
         self.variables = InitializeVariablesAlgorithm(self).run()
         self.tables, self.master_table = InitializeTablesAlgorithm(self).run()
 
     def _unpack_credentials(self, credentials):
+        """Copy credentials data into session."""
         self.base_url = credentials.base_url
         self.data_view = credentials.data_view
-        self.api_client = credentials.api_client
-        self._config = self.api_client.configuration
         self.session_id = credentials.session_id
         self.access_token = credentials.access_token
         self.user = credentials.user
+
+    def _create_client(self):
+        """Create an authorized API client."""
+        config = aa.Configuration()
+        config.host = self.base_url
+        config.api_key = {"Authorization": self.access_token}
+        config.api_key_prefix = {"Authorization": "Bearer"}
+        self._config = config
+        self.api_client = aa.ApiClient(configuration=self._config)
 
 
 class Table:
@@ -163,7 +172,6 @@ class Variable(VariableMixin):
         self.session = session
 
 
-# TODO: make dataclass when Python 3.7
 class User:
     """Class representing an API user."""
 
@@ -185,7 +193,6 @@ class User:
         self.email_address = email_address
 
 
-# TODO: make dataclass when Python 3.7
 class Credentials:
     """Class to hold credentials from the simple login process."""
 
@@ -193,7 +200,6 @@ class Credentials:
         self,
         base_url: str,
         data_view: str,
-        api_client: aa.ApiClient,
         session_id: str,
         access_token: str,
         user: User,
@@ -203,7 +209,6 @@ class Credentials:
         Args:
             base_url (str): API base URL, normally ending '/OrbitAPI'
             data_view (str): name of data view
-            api_client (aa.ApiClient): client for handling API calls
             session_id (str): Apteco session ID
             access_token (str): access token for current session
             user (User): API user
@@ -211,7 +216,6 @@ class Credentials:
         """
         self.base_url = base_url
         self.data_view = data_view
-        self.api_client = api_client
         self.session_id = session_id
         self.access_token = access_token
         self.user = user
@@ -273,8 +277,7 @@ class SimpleLoginAlgorithm:
     Attributes:
         base_url (str): API base URL, normally ending '/OrbitAPI'
         data_view (str): DataView being logged into
-        api_client (aa.ApiClient): API client being created
-            and authorized during login
+        api_client (aa.ApiClient): API client used to log in
         session_id (str): Apteco session ID for the created session
         access_token (str): access token for the created session
         user (User): API user
@@ -306,14 +309,13 @@ class SimpleLoginAlgorithm:
             Credentials: API session credentials
 
         """
-        self._create_client()
+        self._create_unauthorized_client()
         self._simple_login(user, password)
-        self._set_authorization(self.access_token)
         self._create_credentials()
         return self.credentials
 
-    def _create_client(self):
-        """Create an API client."""
+    def _create_unauthorized_client(self):
+        """Create an unauthorized API client."""
         config = aa.Configuration()
         config.host = self.base_url
         self._config = config
@@ -334,20 +336,10 @@ class SimpleLoginAlgorithm:
             login_response.user.email_address,
         )
 
-    def _set_authorization(self, access_token):
-        """Set authorization properties on API client configuration."""
-        self._config.api_key = {"Authorization": access_token}
-        self._config.api_key_prefix = {"Authorization": "Bearer"}
-
     def _create_credentials(self):
         """Initialize session credentials object."""
         self.credentials = Credentials(
-            self.base_url,
-            self.data_view,
-            self.api_client,
-            self.session_id,
-            self.access_token,
-            self.user,
+            self.base_url, self.data_view, self.session_id, self.access_token, self.user
         )
 
 
