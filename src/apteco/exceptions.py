@@ -11,3 +11,7 @@ class ApiResultsError(AptecoException):
 
 class TablesError(AptecoException):
     """Raised when error occurs initialising tables data or tree."""
+
+
+class DeserializeError(AptecoException):
+    """Raised when error occurs when deserializing objects."""

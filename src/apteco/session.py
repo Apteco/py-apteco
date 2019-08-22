@@ -1,13 +1,15 @@
 import getpass
+import json
 import warnings
 from collections import Counter, defaultdict
+from json import JSONDecodeError
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import apteco_api as aa
 import PySimpleGUI
 
-from apteco.exceptions import ApiResultsError, TablesError
+from apteco.exceptions import ApiResultsError, DeserializeError, TablesError
 from apteco.query import VariableMixin
 
 ICON = Path(__file__).absolute().parent / "data/apteco_logo.ico"
@@ -39,6 +41,46 @@ class Session:
         config.api_key_prefix = {"Authorization": "Bearer"}
         self._config = config
         self.api_client = aa.ApiClient(configuration=self._config)
+
+    def _to_dict(self):
+        return {
+            "base_url": self.base_url,
+            "data_view": self.data_view,
+            "session_id": self.session_id,
+            "access_token": self.access_token,
+            "user": self.user._to_dict(),
+            "system": self.system,
+        }
+
+    @staticmethod
+    def _from_dict(d):
+        try:
+            credentials = Credentials(
+                d["base_url"],
+                d["data_view"],
+                d["session_id"],
+                d["access_token"],
+                User._from_dict(d["user"]),
+            )
+            system = d["system"]
+        except DeserializeError:
+            raise
+        except KeyError as e:
+            raise DeserializeError(f"Data missing from 'Session' object: no {e} found.")
+        else:
+            return Session(credentials, system)
+
+    def serialize(self):
+        return json.dumps(self._to_dict())
+
+    @staticmethod
+    def deserialize(s: str):
+        try:
+            d = json.loads(s)
+        except JSONDecodeError:
+            raise DeserializeError("The given input could not be deserialized.")
+        else:
+            return Session._from_dict(d)
 
 
 class Table:
@@ -191,6 +233,23 @@ class User:
         self.first_name = first_name
         self.surname = surname
         self.email_address = email_address
+
+    def _to_dict(self):
+        return {
+            "username": self.username,
+            "first_name": self.first_name,
+            "surname": self.surname,
+            "email_address": self.email_address,
+        }
+
+    @staticmethod
+    def _from_dict(d):
+        try:
+            return User(
+                d["username"], d["first_name"], d["surname"], d["email_address"]
+            )
+        except KeyError as e:
+            raise DeserializeError(f"Data missing from 'User' object: no {e} found.")
 
 
 class Credentials:
