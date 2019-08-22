@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import apteco_api as aa
 import PySimpleGUI
 
-from apteco.exceptions import ApiResultsError, AptecoTablesError
+from apteco.exceptions import ApiResultsError, TablesError
 from apteco.query import VariableMixin
 
 ICON = Path(__file__).absolute().parent / "data/apteco_logo.ico"
@@ -488,11 +488,11 @@ class InitializeTablesAlgorithm:
     def _check_child_tables_consistency(table: Table):
         """Check table's children matches ```has_child_tables```."""
         if table.has_child_tables and not table.children:
-            raise AptecoTablesError(
+            raise TablesError(
                 f"API stated {table.name} has child tables but none were found."
             )
         if not table.has_child_tables and table.children:
-            raise AptecoTablesError(
+            raise TablesError(
                 f"API stated {table.name} has no child tables"
                 f" but {len(table.children)} were found."
             )
@@ -503,9 +503,9 @@ class InitializeTablesAlgorithm:
             (master_table_name,) = self.children_lookup[""]
             self.master_table = self.tables[master_table_name]
         except KeyError:
-            raise AptecoTablesError("No master table found.")
+            raise TablesError("No master table found.")
         except ValueError:  # unpacking failed => !=1 master tables
-            raise AptecoTablesError(
+            raise TablesError(
                 f"Found {len(self.children_lookup[''])} master tables,"
                 f" there should only be 1."
             )
@@ -531,7 +531,7 @@ class InitializeTablesAlgorithm:
         if not tree_tables_counter == raw_tables_counter:
             diff = Counter({k: v for k, v in tree_tables_counter.items()})
             diff.subtract(raw_tables_counter)
-            raise AptecoTablesError(
+            raise TablesError(
                 f"Error constructing table tree:"
                 f" {len(+diff)} table(s) occurred more than once in tree"
                 f" and {len(-diff)} table(s) did not occur at all."
@@ -547,7 +547,7 @@ class InitializeTablesAlgorithm:
                     no_relation[rel].append(table.name)
         for rel in relations:
             if no_relation[rel]:
-                raise AptecoTablesError(
+                raise TablesError(
                     f"Error constructing table tree:"
                     f" {len(no_relation[rel])} table(s) had no {rel} assigned."
                     f" First example: table '{no_relation[rel][0]}'"

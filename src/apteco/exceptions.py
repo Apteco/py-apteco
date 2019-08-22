@@ -5,9 +5,9 @@ class AptecoException(Exception):
     """Base exception class for all exceptions in the package."""
 
 
-class ApiResultsError(Exception):
+class ApiResultsError(AptecoException):
     """Raised when API returns inconsistent or unexpected results."""
 
 
-class AptecoTablesError(Exception):
+class TablesError(AptecoException):
     """Raised when error occurs initialising tables data or tree."""
