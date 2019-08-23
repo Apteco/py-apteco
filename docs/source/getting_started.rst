@@ -1,5 +1,5 @@
-Getting started with py-apteco
-==============================
+Getting Started
+===============
 
 Requirements
 ------------
@@ -55,7 +55,3 @@ as a fourth argument::
        "https://my-site.com/OrbitAPI", "my_data_view", "jdoe", "password"
    )
 
-.. warning::
-
-   If you use the ``login_with_password()`` method
-   your password will appear in plaintext wherever you are running your code.
