@@ -9,10 +9,10 @@ from typing import Any, Dict, List, Optional, Tuple
 import apteco_api as aa
 import PySimpleGUI
 
+from apteco.data.apteco_logo import APTECO_LOGO
 from apteco.exceptions import ApiResultsError, DeserializeError, TablesError
 from apteco.query import VariableMixin
 
-ICON = Path(__file__).absolute().parent / "data/apteco_logo.ico"
 NOT_ASSIGNED: Any = object()
 VARIABLES_PER_PAGE = 100
 
@@ -325,7 +325,7 @@ def _get_password(prompt: str = "Enter your password: ") -> str:
             password_char="*",
             title="Apteco API",
             button_color=("#ffffff", "#004964"),
-            icon=ICON,
+            icon=APTECO_LOGO,
         )
 
 
