@@ -1,57 +1,308 @@
+import json
+from json import JSONDecodeError
+
+import apteco_api
 import pytest
 
 import apteco.session
+from apteco.exceptions import DeserializeError
+from apteco.session import Session
 
 
 @pytest.fixture()
-def fake_initialize_tables_algo(mocker):
+def patch_unpack_credentials(mocker):
+    return mocker.patch.object(apteco.session.Session, "_unpack_credentials")
+
+
+@pytest.fixture()
+def patch_create_client(mocker):
+    return mocker.patch.object(apteco.session.Session, "_create_client")
+
+
+@pytest.fixture()
+def patch_initialize_tables_algo(mocker):
     fake = mocker.Mock()
     fake.run.return_value = ["fake tables", "fake master table"]
     return mocker.patch("apteco.session.InitializeTablesAlgorithm", return_value=fake)
 
 
 @pytest.fixture()
-def fake_initialize_variables_algo(mocker):
+def patch_initialize_variables_algo(mocker):
     fake = mocker.Mock()
     fake.run.return_value = "fake variables"
-    return mocker.patch("apteco.session.InitializeVariablesAlgorithm", return_value=fake)
+    return mocker.patch(
+        "apteco.session.InitializeVariablesAlgorithm", return_value=fake
+    )
 
 
 @pytest.fixture()
-def fake_client(mocker):
-    fake_client = mocker.Mock(configuration="con-fig leaves")
-    return fake_client
-
-
-@pytest.fixture()
-def fake_credentials(mocker):
-    fake_credentials = mocker.Mock(
+def fake_credentials_with_attrs(mocker):
+    return mocker.Mock(
         base_url="baseless assumptions",
         data_view="a room with a view",
         session_id="0246813579",
         access_token="token of my gratitude",
         user="use, er, something else",
     )
-    return fake_credentials
 
 
-def test_session(fake_initialize_variables_algo, fake_initialize_tables_algo, fake_credentials, fake_client, mocker):
-    # fake_unpack_credentials = mocker.patch.object(apteco.session.Session, "_unpack_credentials")
-    # fake_create_client = mocker.patch.object(apteco.session.Session, "_create_client")
-    session_example = apteco.session.Session(fake_credentials, "solar_system")
-    assert session_example.system == "solar_system"
+@pytest.fixture()
+def fake_user(mocker):
+    fake_user = mocker.Mock()
+    fake_user._to_dict.return_value = "user-per to the throne"
+    return fake_user
+
+
+@pytest.fixture()
+def fake_client(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def patch_client(mocker, fake_client):
+    return mocker.patch("apteco_api.ApiClient", return_value=fake_client)
+
+
+@pytest.fixture()
+def fake_config(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def patch_config(mocker, fake_config):
+    return mocker.patch.object(apteco_api, "Configuration", return_value=fake_config)
+
+
+@pytest.fixture()
+def fake_session_with_attrs(mocker, fake_user):
+    return mocker.Mock(
+        base_url="baseless assumptions",
+        data_view="a room with a view",
+        session_id="0246813579",
+        access_token="token of my gratitude",
+        user=fake_user,
+        system="solar system",
+    )
+
+
+@pytest.fixture()
+def serialized_session():
+    return {
+        "base_url": "baseless assumptions",
+        "data_view": "a room with a view",
+        "session_id": "0246813579",
+        "access_token": "token of my gratitude",
+        "user": "user-per to the throne",
+        "system": "solar system",
+    }
+
+
+@pytest.fixture()
+def fake_credentials_empty(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def patch_credentials(mocker, fake_credentials_empty):
+    return mocker.patch.object(
+        apteco.session, "Credentials", return_value=fake_credentials_empty
+    )
+
+
+@pytest.fixture()
+def patch_user_from_dict(mocker):
+    return mocker.patch.object(
+        apteco.session.User, "_from_dict", return_value="user your skill and judgement"
+    )
+
+
+@pytest.fixture()
+def patch_user_from_dict_raise_deserialize_error(mocker):
+    return mocker.patch.object(
+        apteco.session.User,
+        "_from_dict",
+        side_effect=DeserializeError(
+            "Data missing from 'User' object: no 'surname' found."
+        ),
+    )
+
+
+@pytest.fixture()
+def fake_session_empty(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def patch_session(mocker, fake_session_empty):
+    return mocker.patch.object(
+        apteco.session, "Session", return_value=fake_session_empty
+    )
+
+
+@pytest.fixture()
+def fake_session_with_to_dict(mocker):
+    fake_session = mocker.Mock()
+    fake_session._to_dict.return_value = "I'm a session dictionary"
+    return fake_session
+
+
+@pytest.fixture()
+def patch_json_dumps(mocker):
+    return mocker.patch.object(json, "dumps", return_value="Jason and the Argonauts")
+
+
+@pytest.fixture()
+def patch_json_loads(mocker):
+    return mocker.patch.object(json, "loads", return_value="Loads of Jason")
+
+
+@pytest.fixture()
+def patch_session_from_dict(mocker):
+    return mocker.patch.object(
+        apteco.session.Session, "_from_dict", return_value="Court of Session"
+    )
+
+
+@pytest.fixture()
+def patch_json_loads_raise_json_decode_error(mocker):
+    doc = mocker.Mock()
+    doc.count.return_value = 17
+    doc.rfind.return_value = 23
+    pos = 29
+    return mocker.patch.object(
+        json, "loads", side_effect=JSONDecodeError("This was not proper JSON", doc, pos)
+    )
+
+
+def test_create_session_with_credentials(
+    fake_credentials_with_attrs,
+    patch_initialize_variables_algo,
+    patch_initialize_tables_algo,
+):
+    session_example = Session(fake_credentials_with_attrs, "solar system")
+    assert session_example.system == "solar system"
     assert session_example.variables == "fake variables"
     assert session_example.tables == "fake tables"
     assert session_example.master_table == "fake master table"
-    fake_initialize_variables_algo.assert_called_once_with(session_example)
-    fake_initialize_tables_algo.assert_called_once_with(session_example)
-    # fake_unpack_credentials.assert_called_once_with(fake_credentials)
-    # fake_create_client.assert_called_once()
+    patch_initialize_variables_algo.assert_called_once_with(session_example)
+    patch_initialize_tables_algo.assert_called_once_with(session_example)
     assert session_example.base_url == "baseless assumptions"
     assert session_example.data_view == "a room with a view"
     assert session_example.session_id == "0246813579"
     assert session_example.access_token == "token of my gratitude"
     assert session_example.user == "use, er, something else"
+
+
+class TestSession:
+    def test_session_init(
+        self,
+        fake_credentials_with_attrs,
+        patch_unpack_credentials,
+        patch_create_client,
+        patch_initialize_variables_algo,
+        patch_initialize_tables_algo,
+    ):
+        session_example = Session(fake_credentials_with_attrs, "solar system")
+        patch_unpack_credentials.assert_called_once_with(fake_credentials_with_attrs)
+        patch_create_client.assert_called_once_with()
+        assert session_example.system == "solar system"
+        patch_initialize_variables_algo.assert_called_once_with(session_example)
+        assert session_example.variables == "fake variables"
+        patch_initialize_tables_algo.assert_called_once_with(session_example)
+        assert session_example.tables == "fake tables"
+        assert session_example.master_table == "fake master table"
+
+    def test_unpack_credentials(self, mocker, fake_credentials_with_attrs):
+        session_example = mocker.Mock()
+        Session._unpack_credentials(session_example, fake_credentials_with_attrs)
+        assert session_example.base_url == "baseless assumptions"
+        assert session_example.data_view == "a room with a view"
+        assert session_example.session_id == "0246813579"
+        assert session_example.access_token == "token of my gratitude"
+        assert session_example.user == "use, er, something else"
+
+    def test_create_client(
+        self, mocker, fake_config, patch_config, fake_client, patch_client
+    ):
+        session_example = mocker.Mock(
+            base_url="back to base", access_token="token gesture"
+        )
+        Session._create_client(session_example)
+        patch_config.assert_called_once_with()
+        assert fake_config.host == "back to base"
+        assert fake_config.api_key == {"Authorization": "token gesture"}
+        assert fake_config.api_key_prefix == {"Authorization": "Bearer"}
+        assert session_example._config == fake_config
+        patch_client.assert_called_once_with(configuration=fake_config)
+        assert session_example.api_client == fake_client
+
+    def test_to_dict(self, fake_session_with_attrs, serialized_session, fake_user):
+        dict_example = Session._to_dict(fake_session_with_attrs)
+        assert dict_example == serialized_session
+        fake_user._to_dict.assert_called_once_with()
+
+    def test_from_dict(
+        self,
+        serialized_session,
+        patch_credentials,
+        fake_credentials_empty,
+        patch_user_from_dict,
+        patch_session,
+        fake_session_empty,
+    ):
+        result = Session._from_dict(serialized_session)
+        patch_user_from_dict.assert_called_once_with("user-per to the throne")
+        patch_credentials.assert_called_once_with(
+            "baseless assumptions",
+            "a room with a view",
+            "0246813579",
+            "token of my gratitude",
+            "user your skill and judgement",
+        )
+        patch_session.assert_called_once_with(fake_credentials_empty, "solar system")
+        assert result == fake_session_empty
+
+    def test_from_dict_with_bad_creds_dict(self, serialized_session, patch_credentials):
+        serialized_session_no_session_id = {
+            k: v for k, v in serialized_session.items() if k != "session_id"
+        }
+        with pytest.raises(DeserializeError) as excinfo:
+            Session._from_dict(serialized_session_no_session_id)
+        exception_msg = excinfo.value.args[0]
+        assert exception_msg == (
+            "Data missing from 'Session' object: no 'session_id' found."
+        )
+
+    def test_from_dict_with_bad_user_dict(
+        self,
+        serialized_session,
+        patch_credentials,
+        patch_user_from_dict_raise_deserialize_error,
+    ):
+        with pytest.raises(DeserializeError) as excinfo:
+            Session._from_dict(serialized_session)
+        exception_msg = excinfo.value.args[0]
+        assert exception_msg == "Data missing from 'User' object: no 'surname' found."
+
+    def test_serialize(self, fake_session_with_to_dict, patch_json_dumps):
+        result = Session.serialize(fake_session_with_to_dict)
+        patch_json_dumps.assert_called_once_with("I'm a session dictionary")
+        assert result == "Jason and the Argonauts"
+
+    def test_deserialize(self, patch_json_loads, patch_session_from_dict):
+        result = Session.deserialize("cereal eyes-d session")
+        patch_json_loads.called_once_with("cereal eyes-d session")
+        patch_session_from_dict.assert_called_once_with("Loads of Jason")
+        assert result == "Court of Session"
+
+    def test_deserialize_with_bad_json(self, patch_json_loads_raise_json_decode_error):
+        with pytest.raises(DeserializeError) as excinfo:
+            Session.deserialize("badly serialized session")
+        exception_msg = excinfo.value.args[0]
+        patch_json_loads_raise_json_decode_error.assert_called_once_with(
+            "badly serialized session"
+        )
+        assert exception_msg == "The given input could not be deserialized."
 
 
 # TODO: write test

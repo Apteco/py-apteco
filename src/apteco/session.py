@@ -3,7 +3,6 @@ import json
 import warnings
 from collections import Counter, defaultdict
 from json import JSONDecodeError
-from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import apteco_api as aa
@@ -672,7 +671,6 @@ class InitializeVariablesAlgorithm:
 
     def _create_variables(self):
         """Create py-apteco variables from apteco_api ones."""
-        # TODO: change to py-apteco variables (currently uses apteco_api ones)
         self.variables = {
             v.description: Variable(
                 v.name,
