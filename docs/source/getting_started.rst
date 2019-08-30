@@ -50,7 +50,7 @@ If you don't want to enter your password every time,
 there is also a ``login_with_password()`` function which takes your password
 as a fourth argument::
 
-   # potentially not secure!
+   # password is in plain sight in the code!
    credentials = apt.login_with_password(
        "https://my-site.com/OrbitAPI", "my_data_view", "jdoe", "password"
    )

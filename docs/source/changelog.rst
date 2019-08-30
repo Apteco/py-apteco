@@ -42,6 +42,12 @@ Added
 
 * Added ``login()`` and ``login_with_password()`` functions to log in to the API.
 * Added ``Session`` class for creating an API session.
+* Added ``Table`` class representing FastStats system tables.
+* Added support for accessing variables on a table using the ``[]`` operator
+  with the variable description.
+* Added support for testing equality of tables using the ``==`` operator.
+* Added support for testing if a table is an ancestor or descendant of another
+  using the ``>`` and ``<`` operators (respectively).
 * Added ``SelectorClause``, ``CombinedCategoriesClause``, ``NumericClause``,
   ``TextClause``, ``ArrayClause``, ``FlagArrayClause`` classes
   for creating selection clauses.
