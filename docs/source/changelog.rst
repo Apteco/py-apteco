@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 0.3.0
+-------------
+
+Added
+^^^^^
+* Added ``select()`` method to ``Tables`` class to enable counting empty queries.
+
+
 Version 0.2.0
 -------------
 
