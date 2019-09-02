@@ -10,7 +10,7 @@ import PySimpleGUI
 
 from apteco.data.apteco_logo import APTECO_LOGO
 from apteco.exceptions import ApiResultsError, DeserializeError, TablesError
-from apteco.query import VariableMixin
+from apteco.query import TableMixin, VariableMixin
 
 NOT_ASSIGNED: Any = object()
 VARIABLES_PER_PAGE = 100
@@ -82,7 +82,7 @@ class Session:
             return Session._from_dict(d)
 
 
-class Table:
+class Table(TableMixin):
     """Class representing a FastStats system table."""
 
     def __init__(

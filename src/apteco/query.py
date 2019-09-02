@@ -117,6 +117,16 @@ class APIController:
         return getattr(self._controller, function_as_string)(**kwargs)
 
 
+class TableMixin:
+
+    def select(self):
+        query_final = aa.Query(
+            selection=aa.Selection(table_name=self.name, ancestor_counts=True)
+        )
+        session = self.session
+        return Selection(query_final, session)
+
+
 class VariableMixin:
 
     def __eq__(self, other):
