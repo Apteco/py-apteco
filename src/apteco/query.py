@@ -1,6 +1,5 @@
 from typing import List, Optional, Iterable
 
-from apteco_api import Query, Rule, Clause
 import apteco_api as aa
 from apteco.exceptions import AptecoException
 
@@ -25,7 +24,7 @@ class SelectionCount(object):
 class Selection:
 
     def __init__(self,
-                 query: Query,
+                 query: aa.Query,
                  session: "Session"
                  ):
 
@@ -42,7 +41,7 @@ class Selection:
         self.count = self.counts[0].count
         self.table_name = self.counts[0].table_name
 
-    def _run_query(self, data_view_name: str, system: str, query: Query):
+    def _run_query(self, data_view_name: str, system: str, query: aa.Query):
         """Request a query be counted
 
         Args:
@@ -61,7 +60,7 @@ class Selection:
             query=query
         )
 
-        return response # type:aa.QueryResult
+        return response  # type:aa.QueryResult
 
     def get_count(self, table: str = None) -> int:
         """Get the count for the given table.
@@ -145,9 +144,9 @@ class ClauseMixin:
     def select(self, table=None):
         if table is not None:
             return (self * table).select()
-        query_final = Query(
+        query_final = aa.Query(
             selection=aa.Selection(
-                table_name=self.table.name, ancestor_counts=True, rule=Rule(
+                table_name=self.table.name, ancestor_counts=True, rule=aa.Rule(
                     clause=self._to_model()
                 )
             )
@@ -301,7 +300,7 @@ class SelectorClauseMixin:
 
 def logic_clause(
     operation: str,
-    operands: List[Clause],
+    operands: List["Clause"],
     new_table: Optional["Table"] = None,
     *,
     name: Optional[str] = None,
