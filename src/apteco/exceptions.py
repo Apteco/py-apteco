@@ -13,5 +13,9 @@ class TablesError(AptecoException):
     """Raised when error occurs initialising tables data or tree."""
 
 
+class VariablesError(AptecoException):
+    """Raised when error occurs initialising variables."""
+
+
 class DeserializeError(AptecoException):
     """Raised when error occurs when deserializing objects."""

@@ -9,7 +9,7 @@ import apteco_api as aa
 import PySimpleGUI
 
 from apteco.data.apteco_logo import APTECO_LOGO
-from apteco.exceptions import ApiResultsError, DeserializeError, TablesError
+from apteco.exceptions import ApiResultsError, DeserializeError, TablesError, VariablesError
 from apteco.query import TableMixin, VariableMixin
 
 NOT_ASSIGNED: Any = object()
@@ -195,18 +195,101 @@ class Variable(VariableMixin):
     ):
         self.name = name
         self.description = description
-        self.type = type
+        self._model_type = type
         self.folder_name = folder_name
         self.table_name = table_name
         self.is_selectable = is_selectable
         self.is_browsable = is_browsable
         self.is_exportable = is_exportable
         self.is_virtual = is_virtual
-        self.selector_info = selector_info
-        self.numeric_info = numeric_info
-        self.text_info = text_info
-        self.reference_info = reference_info
         self.session = session
+
+
+class BaseSelectorVariable(Variable):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
+        self.code_length = selector_info.code_length
+        self.num_codes = selector_info.number_of_codes
+        self.var_code_min_count = selector_info.minimum_var_code_count
+        self.var_code_max_count = selector_info.maximum_var_code_count
+        self.var_code_order = selector_info.var_code_order
+
+
+class SelectorVariable(BaseSelectorVariable):
+    """Class representing a FastStats Selector variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "Selector"
+
+
+class NumericVariable(Variable):
+    """Class representing a FastStats Numeric variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "Numeric"
+        numeric_info = kwargs["numeric_info"]  # type: aa.NumericVariableInfo
+        self.min = numeric_info.minimum
+        self.max = numeric_info.maximum
+        self.is_currency = numeric_info.is_currency
+        self.currency_locale = numeric_info.currency_locale
+        self.currency_symbol = numeric_info.currency_symbol
+
+
+class TextVariable(Variable):
+    """Class representing a FastStats Text variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "Text"
+        text_info = kwargs["text_info"]  # type: aa.TextVariableInfo
+        self.max_length = text_info.maximum_text_length
+
+
+class ArrayVariable(BaseSelectorVariable):
+    """Class representing a FastStats Array variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "Array"
+
+
+class FlagArrayVariable(BaseSelectorVariable):
+    """Class representing a FastStats Flag Array variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "FlagArray"
+
+
+class DateVariable(BaseSelectorVariable):
+    """Class representing a FastStats Date variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "Date"
+        selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
+        self.min_date = selector_info.minimum_date
+        self.max_date = selector_info.maximum_date
+
+
+class DateTimeVariable(DateVariable):
+    """Class representing a FastStats Datetime variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "DateTime"
+
+
+class ReferenceVariable(Variable):
+    """Class representing a FastStats Reference variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "Reference"
 
 
 class User:
@@ -677,21 +760,72 @@ class InitializeVariablesAlgorithm:
     def _create_variables(self):
         """Create py-apteco variables from apteco_api ones."""
         self.variables = {
-            v.description: Variable(
-                v.name,
-                v.description,
-                v.type,
-                v.folder_name,
-                v.table_name,
-                v.is_selectable,
-                v.is_browsable,
-                v.is_exportable,
-                v.is_virtual,
-                v.selector_info,
-                v.numeric_info,
-                v.text_info,
-                v.reference_info,
+            v.description: self._choose_variable(v)(
+                name=v.name,
+                description=v.description,
+                type=v.type,
+                folder_name=v.folder_name,
+                table_name=v.table_name,
+                is_selectable=v.is_selectable,
+                is_browsable=v.is_browsable,
+                is_exportable=v.is_exportable,
+                is_virtual=v.is_virtual,
+                selector_info=v.selector_info,
+                numeric_info=v.numeric_info,
+                text_info=v.text_info,
+                reference_info=v.reference_info,
                 session=self.session,
             )
             for v in self.raw_variables
         }
+
+    @classmethod
+    def _choose_variable(cls, raw_variable: aa.Variable):
+        """Get class for given variable type."""
+        if raw_variable.type == "Selector":
+            return cls._choose_selector(raw_variable)
+        try:
+            return {
+                "Reference": ReferenceVariable,
+                "Text": TextVariable,
+                "Numeric": NumericVariable,
+            }[raw_variable.type]
+        except KeyError as exc:
+            raise VariablesError(
+                f"Could not create variable, unknown type: {raw_variable.type}"
+            ) from exc
+
+    @classmethod
+    def _choose_selector(cls, raw_selector: aa.Variable):
+        """Get class for given selector variable type."""
+        sub_type = raw_selector.selector_info.sub_type
+        if sub_type == "Categorical":
+            return cls._choose_categorical(raw_selector)
+        try:
+            return {
+                "Date": DateVariable,
+                "DateTime": DateTimeVariable,
+            }[sub_type]
+        except KeyError as exc:
+            raise VariablesError(
+                f"Could not create variable,"
+                f" unknown Selector variable sub-type: {sub_type}"
+            ) from exc
+
+    @staticmethod
+    def _choose_categorical(raw_categorical: aa.Variable):
+        """Get class for given categorical selector variable type."""
+        selector_type = raw_categorical.selector_info.selector_type
+        try:
+            return {
+                "SingleValue": SelectorVariable,
+                "OrArray": ArrayVariable,
+                # "AndArray": None,
+                "OrBitArray": FlagArrayVariable,
+                # "AndBitArray": None,
+            }[selector_type]
+        except KeyError as exc:
+            raise VariablesError(
+                f"Could not create variable, "
+                f"unknown Categorical Selector variable type: {selector_type}"
+            ) from exc
