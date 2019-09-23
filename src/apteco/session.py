@@ -415,6 +415,8 @@ class InitializeTablesAlgorithm:
         system (str): FastStats system the session is connected to
         api_client (aa.ApiClient): client to handle API calls
         session (Session): API session the tables data belongs to
+        variables (Dict[str, Variable]): mapping from variable name
+            to its Variable object
         raw_tables (Dict[str, aa.Table]): mapping from table name
             to its raw table data
         children_lookup (Dict[str, List[str]]): mapping from table name
