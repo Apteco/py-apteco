@@ -175,27 +175,23 @@ class Table(TableMixin):
         return self.variables[item]
 
 
-# TODO: finish this
 class Variable(VariableMixin):
     """Class representing a FastStats system variable."""
 
     def __init__(
         self,
-        name,
-        description,
-        type,
-        folder_name,
-        table_name,
-        is_selectable,
-        is_browsable,
-        is_exportable,
-        is_virtual,
-        selector_info,
-        numeric_info,
-        text_info,
-        reference_info,
+        name: str,
+        description: str,
+        type: str,
+        folder_name: str,
+        table_name: str,
+        is_selectable: bool,
+        is_browsable: bool,
+        is_exportable: bool,
+        is_virtual: bool,
         *,
         session: Optional[Session] = None,
+        **kwargs,
     ):
         self.name = name
         self.description = description
@@ -610,12 +606,18 @@ class InitializeVariablesAlgorithm:
     """Class holding the algorithm to initialize system variables.
 
     The purpose of this algorithm is to
-    retrieve the raw variables data for the given system,
-    ...
-    # TODO: finish this
+    retrieve the raw variables for the given system
+    and convert these into py-apteco Variable objects.
 
     Attributes:
-    # TODO: finish this
+        data_view (str): DataView the system belongs to
+        system (str): FastStats system the session is connected to
+        api_client (aa.ApiClient): client to handle API calls
+        session (Session): API session the variables data belongs to
+        raw_variables (Dict[str, aa.Variable]): mapping from variable name
+            to its raw variable data
+        variables (Dict[str, Variable]): mapping from variable name
+            to its Variable object
 
     Methods:
         run(): entry point to run the algorithm
@@ -634,11 +636,12 @@ class InitializeVariablesAlgorithm:
         self.api_client = session.api_client
         self.session = session
 
-    def run(self):
+    def run(self) -> Dict[str, Variable]:
         """Run the algorithm.
 
         Returns:
-            # TODO: finish this
+            dict: mapping from variable name
+                to its Variable object
 
         """
 
