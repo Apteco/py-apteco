@@ -239,6 +239,8 @@ def criteria_clause(variable: "Variable", values: Iterable):
         return NumericClause(variable.table_name, variable.name, values, session=variable.session)
     elif variable.type == "Text":
         return TextClause(variable.table_name, variable.name, values, session=variable.session)
+    elif variable.type == "Date":
+        return DateListClause(variable.table_name, variable.name, values, session=variable.session)
     else:
         raise AptecoException(f"The variable type '{variable.type}' is not supported for this operation.")
 
@@ -554,6 +556,40 @@ class ArrayClause(ClauseMixin):
 
 class FlagArrayClause(ArrayClause):
     pass
+
+
+class DateListClause(ClauseMixin):
+
+    def __init__(self, table_name, variable_name, values, *, label=None, include=True, session=None):
+        self.table_name = table_name
+        self.variable_name = variable_name
+        self.values = values
+
+        self.label = label
+        self.include = include
+        self.session = session
+
+    def _to_model(self):
+        return aa.Clause(
+            criteria=aa.Criteria(
+                variable_name=self.variable_name,
+                include=self.include,
+                logic='OR',
+                ignore_case=False,
+                text_match_type='Is',
+                value_rules=[
+                    aa.ValueRule(
+                        list_rule=aa.ListRule(
+                            list='\t'.join(self.values),
+                            variable_name=self.variable_name
+                        ),
+                        predefined_rule="AdhocDates"
+                    )
+                ],
+                table_name=self.table_name,
+                name=self.label
+            )
+        )
 
 
 class BooleanClause(ClauseMixin):
