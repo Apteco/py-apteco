@@ -235,6 +235,8 @@ class ClauseMixin:
 def criteria_clause(variable: "Variable", values: Iterable):
     if variable.type == "Selector":
         return SelectorClause(variable.table_name, variable.name, values, session=variable.session)
+    elif variable.type == "CombinedCategories":
+        return CombinedCategoriesClause(variable.table_name, variable.name, values, session=variable.session)
     elif variable.type == "Numeric":
         return NumericClause(variable.table_name, variable.name, values, session=variable.session)
     elif variable.type == "Text":

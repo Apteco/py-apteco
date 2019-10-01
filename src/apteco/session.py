@@ -225,6 +225,16 @@ class SelectorVariable(BaseSelectorVariable):
         self.type = "Selector"
 
 
+class CombinedCategoriesVariable(BaseSelectorVariable):
+    """Class representing a FastStats Combined Categories variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "CombinedCategories"
+        selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
+        self.combined_from = selector_info.combined_from_variable_name
+
+
 class NumericVariable(Variable):
     """Class representing a FastStats Numeric variable."""
 
@@ -816,9 +826,13 @@ class InitializeVariablesAlgorithm:
     def _choose_categorical(raw_categorical: aa.Variable):
         """Get class for given categorical selector variable type."""
         selector_type = raw_categorical.selector_info.selector_type
+        if selector_type == "SingleValue":
+            if raw_categorical.selector_info.combined_from_variable_name:
+                return CombinedCategoriesVariable
+            else:
+                return SelectorVariable
         try:
             return {
-                "SingleValue": SelectorVariable,
                 "OrArray": ArrayVariable,
                 # "AndArray": None,
                 "OrBitArray": FlagArrayVariable,
