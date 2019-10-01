@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+
+Version 0.3.2
+-------------
+
+*2019-10-01*
+
+Fixed
+^^^^^
+
+* Improved code syntax highlighting in the README.
+
+
 Version 0.3.1
 -------------
 
@@ -11,6 +23,7 @@ Fixed
 
 * Set Getting Started guide as the README.
 
+
 Version 0.3.0
 -------------
 
@@ -18,12 +31,15 @@ Version 0.3.0
 
 Added
 ^^^^^
+
 * Added ``DateListClause`` for creating selections with list of dates.
 * Added ``select()`` method to ``Tables`` class to enable counting empty queries.
 
 Changed
 ^^^^^^^
+
 * Each variable type now has a specific class with only the attributes pertinent to it.
+
 
 Version 0.2.0
 -------------
@@ -32,8 +48,10 @@ Version 0.2.0
 
 Added
 ^^^^^
+
 * Added ``serialize()`` and ``deserialize()`` methods to the ``Session`` class.
 * Added documentation (Getting Started guide and Change Log).
+
 
 Version 0.1.2
 -------------
@@ -46,6 +64,7 @@ Fixed
 * Fixed not being able to connect to a different API host after first connection
   during any single Python session.
 
+
 Version 0.1.1
 -------------
 
@@ -55,6 +74,7 @@ Fixed
 ^^^^^
 
 * Fixed ``isin()`` method on variables not working.
+
 
 Version 0.1.0
 -------------

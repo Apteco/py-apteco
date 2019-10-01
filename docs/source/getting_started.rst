@@ -7,16 +7,18 @@ Requirements
 * Python 3.6+
 * Access to an installation of the Apteco API
 
-The Apteco API, which also goes under the name **Orbit API**,
+The Apteco API (which also goes under the name **Orbit API**)
 is part of the Apteco Orbit™ installation.
 If you have access to Apteco Orbit™, you also have access to the Apteco API!
 If you're not sure about this, contact whoever administers your Apteco software,
-or get in touch with Apteco support.
+or get in touch with Apteco support (support@apteco.com).
 
 Installation
 ------------
 
-You can install the package the usual way from PyPI using ``pip``::
+You can install the package the usual way from PyPI using ``pip``:
+
+.. code-block:: python
 
    pip install apteco
 
@@ -24,7 +26,9 @@ Logging in
 ----------
 
 Your login credentials are the same username and password
-you would use to log in to Apteco Orbit™::
+you would use to log in to Apteco Orbit™:
+
+.. code-block:: python
 
    from apteco.session import login, Session
 
@@ -39,7 +43,9 @@ so check your taskbar for a new window if nothing seems to be happening.
 
 If you don't want to enter your password every time,
 there is also a ``login_with_password()`` function which takes your password
-as a fourth argument::
+as a fourth argument:
+
+.. code-block:: python
 
    from apteco.session import login_with_password
 
