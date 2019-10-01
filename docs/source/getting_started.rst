@@ -16,18 +16,9 @@ or get in touch with Apteco support.
 Installation
 ------------
 
-You can install the package the usual wat from PyPI using ``pip``::
+You can install the package the usual way from PyPI using ``pip``::
 
-   pip install py-apteco
-
-Then import the package::
-
-   import apteco
-
-.. note::
-
-   The package name, which is used for installation, is ``py-apteco``,
-   but the module name used for importing is just ``apteco``.
+   pip install apteco
 
 Logging in
 ----------
@@ -35,10 +26,10 @@ Logging in
 Your login credentials are the same username and password
 you would use to log in to Apteco Orbit™::
 
-   import apteco as apt
+   from apteco.session import login, Session
 
-   credentials = apt.login("https://my-site.com/OrbitAPI", "my_data_view", "jdoe")
-   holidays = apt.Session(credentials, "holidays")
+   credentials = login("https://my-site.com/OrbitAPI", "my_data_view", "jdoe")
+   holidays = Session(credentials, "holidays")
 
 You will be asked to enter your password in the terminal, which won't be echoed.
 If Python is unable to ask for your password in this way,
@@ -50,8 +41,11 @@ If you don't want to enter your password every time,
 there is also a ``login_with_password()`` function which takes your password
 as a fourth argument::
 
+   from apteco.session import login_with_password
+
    # password is in plain sight in the code!
-   credentials = apt.login_with_password(
+   credentials = login_with_password(
        "https://my-site.com/OrbitAPI", "my_data_view", "jdoe", "password"
    )
+   holidays = Session(credentials, "holidays")
 

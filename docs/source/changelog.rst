@@ -6,8 +6,12 @@ Version 0.3.0
 
 Added
 ^^^^^
+* Added ``DateListClause`` for creating selections with list of dates.
 * Added ``select()`` method to ``Tables`` class to enable counting empty queries.
 
+Changed
+^^^^^^^
+* Each variable type now has a specific class with only the attributes pertinent to it.
 
 Version 0.2.0
 -------------
