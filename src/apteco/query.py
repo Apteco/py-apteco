@@ -241,10 +241,16 @@ def criteria_clause(variable: "Variable", values: Iterable):
         return NumericClause(variable.table_name, variable.name, values, session=variable.session)
     elif variable.type == "Text":
         return TextClause(variable.table_name, variable.name, values, session=variable.session)
+    elif variable.type == "Array":
+        return ArrayClause(variable.table_name, variable.name, values, session=variable.session)
+    elif variable.type == "FlagArray":
+        return FlagArrayClause(variable.table_name, variable.name, values, session=variable.session)
     elif variable.type == "Date":
         return DateListClause(variable.table_name, variable.name, values, session=variable.session)
-    else:
+    elif variable.type in ["DateTime", "Reference"]:
         raise AptecoException(f"The variable type '{variable.type}' is not supported for this operation.")
+    else:
+        raise AptecoException(f"The operation could not be carried out, variable type: '{variable.type}' not recognised.")
 
 
 class SelectorClauseMixin:
