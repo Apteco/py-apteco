@@ -1,8 +1,20 @@
 Change Log
 ==========
 
+Version 0.3.1
+-------------
+
+*2019-10-01*
+
+Fixed
+^^^^^
+
+* Set Getting Started guide as the README.
+
 Version 0.3.0
 -------------
+
+*2019-10-01*
 
 Added
 ^^^^^
