@@ -47,7 +47,7 @@ def fake_credentials_with_attrs(mocker):
 
 
 @pytest.fixture()
-def fake_user(mocker):
+def fake_user_with_to_dict(mocker):
     fake_user = mocker.Mock()
     fake_user._to_dict.return_value = "user-per to the throne"
     return fake_user
@@ -74,13 +74,13 @@ def patch_config(mocker, fake_config):
 
 
 @pytest.fixture()
-def fake_session_with_attrs(mocker, fake_user):
+def fake_session_with_attrs(mocker, fake_user_with_to_dict):
     return mocker.Mock(
         base_url="baseless assumptions",
         data_view="a room with a view",
         session_id="0246813579",
         access_token="token of my gratitude",
-        user=fake_user,
+        user=fake_user_with_to_dict,
         system="solar system",
     )
 
@@ -236,10 +236,12 @@ class TestSession:
         patch_client.assert_called_once_with(configuration=fake_config)
         assert session_example.api_client == fake_client
 
-    def test_to_dict(self, fake_session_with_attrs, serialized_session, fake_user):
+    def test_to_dict(
+        self, fake_session_with_attrs, serialized_session, fake_user_with_to_dict
+    ):
         dict_example = Session._to_dict(fake_session_with_attrs)
         assert dict_example == serialized_session
-        fake_user._to_dict.assert_called_once_with()
+        fake_user_with_to_dict._to_dict.assert_called_once_with()
 
     def test_from_dict(
         self,
@@ -260,15 +262,14 @@ class TestSession:
             "user your skill and judgement",
         )
         patch_session.assert_called_once_with(fake_credentials_empty, "solar system")
-        assert result == fake_session_empty
+        assert result is fake_session_empty
 
     def test_from_dict_with_bad_creds_dict(self, serialized_session, patch_credentials):
-        serialized_session_no_session_id = {
-            k: v for k, v in serialized_session.items() if k != "session_id"
-        }
-        with pytest.raises(DeserializeError) as excinfo:
+        serialized_session_no_session_id = dict(serialized_session)
+        del serialized_session_no_session_id["session_id"]
+        with pytest.raises(DeserializeError) as exc_info:
             Session._from_dict(serialized_session_no_session_id)
-        exception_msg = excinfo.value.args[0]
+        exception_msg = exc_info.value.args[0]
         assert exception_msg == (
             "Data missing from 'Session' object: no 'session_id' found."
         )
