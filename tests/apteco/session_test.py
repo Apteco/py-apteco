@@ -462,12 +462,65 @@ class TestTable:
         assert exception_msg == "var2"
 
 
-def test_user():
-    user_example = apteco.session.User("JDoe", "Jane", "Doe", "jane.doe@example.com")
-    assert user_example.username == "JDoe"
-    assert user_example.first_name == "Jane"
-    assert user_example.surname == "Doe"
-    assert user_example.email_address == "jane.doe@example.com"
+@pytest.fixture()
+def fake_user_with_attrs(mocker):
+    return mocker.Mock(
+        username="ewes urn aim",
+        first_name="thirst for knowledge",
+        surname="Sir Name of Spamalot",
+        email_address="he male a trousers",
+    )
+
+
+@pytest.fixture()
+def serialized_user():
+    return {
+        "username": "ewes urn aim",
+        "first_name": "thirst for knowledge",
+        "surname": "Sir Name of Spamalot",
+        "email_address": "he male a trousers",
+    }
+
+
+@pytest.fixture()
+def fake_user_empty(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def patch_user(mocker, fake_user_empty):
+    return mocker.patch.object(apteco.session, "User", return_value=fake_user_empty)
+
+
+class TestUser:
+    def test_user_init(self):
+        user_example = User("JDoe", "Jane", "Doe", "jane.doe@example.com")
+        assert user_example.username == "JDoe"
+        assert user_example.first_name == "Jane"
+        assert user_example.surname == "Doe"
+        assert user_example.email_address == "jane.doe@example.com"
+
+    def test_user_to_dict(self, fake_user_with_attrs, serialized_user):
+        dict_example = User._to_dict(fake_user_with_attrs)
+        assert dict_example == serialized_user
+
+    def test_user_from_dict(self, serialized_user, patch_user, fake_user_empty):
+        result = User._from_dict(serialized_user)
+        patch_user.assert_called_once_with(
+            "ewes urn aim",
+            "thirst for knowledge",
+            "Sir Name of Spamalot",
+            "he male a trousers",
+        )
+        assert result is fake_user_empty
+
+    def test_user_from_dict_with_bad_dict(self, serialized_user):
+        serialized_user_no_surname = dict(serialized_user)
+        del serialized_user_no_surname["surname"]
+        with pytest.raises(DeserializeError) as exc_info:
+            User._from_dict(serialized_user_no_surname)
+        exception_msg = exc_info.value.args[0]
+        assert exception_msg == "Data missing from 'User' object: no 'surname' found."
 
 
 def test_credentials(mocker):
