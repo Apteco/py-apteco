@@ -6,7 +6,7 @@ import pytest
 
 import apteco.session
 from apteco.exceptions import DeserializeError
-from apteco.session import Session, Table
+from apteco.session import Session, Table, User
 
 
 @pytest.fixture()
