@@ -523,20 +523,21 @@ class TestUser:
         assert exception_msg == "Data missing from 'User' object: no 'surname' found."
 
 
-def test_credentials(mocker):
-    fake_user = mocker.Mock()
-    credentials_example = apteco.session.Credentials(
-        "https://marketing.example.com/AptecoAPI/",
-        "room_with_a_view",
-        "31415926",
-        "e.g.123abc987zyx",
-        fake_user,
-    )
-    assert credentials_example.base_url == "https://marketing.example.com/AptecoAPI/"
-    assert credentials_example.data_view == "room_with_a_view"
-    assert credentials_example.session_id == "31415926"
-    assert credentials_example.access_token == "e.g.123abc987zyx"
-    assert credentials_example.user == fake_user
+class TestCredentials:
+    def test_credentials_init(self, mocker):
+        fake_user = mocker.Mock()
+        credentials_example = apteco.session.Credentials(
+            "https://marketing.example.com/AptecoAPI/",
+            "room_with_a_view",
+            "31415926",
+            "e.g.123abc987zyx",
+            fake_user,
+        )
+        assert credentials_example.base_url == "https://marketing.example.com/OrbitAPI/"
+        assert credentials_example.data_view == "room_with_a_view"
+        assert credentials_example.session_id == "31415926"
+        assert credentials_example.access_token == "e.g.123abc987zyx"
+        assert credentials_example.user is fake_user
 
 
 @pytest.fixture()
