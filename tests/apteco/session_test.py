@@ -1,3 +1,4 @@
+import getpass
 import json
 from json import JSONDecodeError
 
@@ -6,7 +7,14 @@ import pytest
 
 import apteco.session
 from apteco.exceptions import DeserializeError
-from apteco.session import Session, Table, User
+from apteco.session import (
+    Session,
+    Table,
+    User,
+    _get_password,
+    login,
+    login_with_password,
+)
 
 
 @pytest.fixture()
@@ -541,49 +549,109 @@ class TestCredentials:
 
 
 @pytest.fixture()
-def fake_get_pw(mocker):
+def patch_get_password(mocker):
     return mocker.patch.object(
         apteco.session, "_get_password", return_value="something very secret"
     )
 
 
 @pytest.fixture()
-def fake_login_with_pw(mocker):
+def patch_login_with_password(mocker):
     return mocker.patch.object(
         apteco.session, "login_with_password", return_value="Here are your credentials!"
     )
 
 
-def test_login(fake_get_pw, fake_login_with_pw):
-    credentials = apteco.session.login(
-        "https://marketing.example.com/AptecoAPI/", "a_room_with_a_view", "JDoe"
+@pytest.fixture()
+def fake_simple_login_algo(mocker):
+    fake = mocker.Mock()
+    fake.run.return_value = "fake credentials"
+    return fake
+
+
+@pytest.fixture()
+def patch_simple_login_algo(mocker, fake_simple_login_algo):
+    return mocker.patch(
+        "apteco.session.SimpleLoginAlgorithm", return_value=fake_simple_login_algo
     )
-    assert credentials == "Here are your credentials!"
-    fake_get_pw.assert_called_once_with()
-    fake_login_with_pw.assert_called_once_with(
-        "https://marketing.example.com/AptecoAPI/",
-        "a_room_with_a_view",
-        "JDoe",
-        password="something very secret",
+
+
+@pytest.fixture()
+def patch_getpass_getpass(mocker):
+    return mocker.patch("getpass.getpass", return_value="password typed into console")
+
+
+@pytest.fixture()
+def patch_getpass_getpass_raise_warning(mocker):
+    return mocker.patch("getpass.getpass", side_effect=getpass.GetPassWarning)
+
+
+@pytest.fixture()
+def patch_apteco_logo(mocker):
+    return mocker.patch("apteco.session.APTECO_LOGO", new="here's the logo")
+
+
+@pytest.fixture()
+def patch_pysimplegui_popupgettext(mocker):
+    return mocker.patch(
+        "PySimpleGUI.PopupGetText", return_value="password typed into popup box"
     )
 
 
-# TODO: write test
-@pytest.mark.xfail(reason="Test not written")
-def test_login_with_password():
-    raise NotImplementedError
+class TestLogin:
+    """Tests for login functions and related functions."""
 
+    def test_login(self, patch_get_password, patch_login_with_password):
+        credentials = login(
+            "https://marketing.example.com/AptecoAPI/", "a_room_with_a_view", "JDoe"
+        )
+        assert credentials == "Here are your credentials!"
+        patch_get_password.assert_called_once_with()
+        patch_login_with_password.assert_called_once_with(
+            "https://marketing.example.com/AptecoAPI/",
+            "a_room_with_a_view",
+            "JDoe",
+            password="something very secret",
+        )
 
-# TODO: write test
-@pytest.mark.xfail(reason="Test not written")
-def test_get_password():
-    raise NotImplementedError
+    def test_login_with_password(self, patch_simple_login_algo, fake_simple_login_algo):
+        credentials = login_with_password(
+            "https://marketing.example.com/AptecoAPI/",
+            "a_room_with_a_view",
+            "JDoe",
+            "my s3cr3t pa55w0rd",
+        )
+        assert credentials == "fake credentials"
+        patch_simple_login_algo.assert_called_once_with(
+            "https://marketing.example.com/AptecoAPI/", "a_room_with_a_view"
+        )
+        fake_simple_login_algo.run.assert_called_once_with("JDoe", "my s3cr3t pa55w0rd")
 
+    def test_get_password(self, patch_getpass_getpass):
+        result = _get_password("This should appear on the console")
+        assert result == "password typed into console"
+        patch_getpass_getpass.assert_called_once_with(
+            "This should appear on the console"
+        )
 
-# TODO: write test
-@pytest.mark.xfail(reason="Test not written")
-def test_login_with_password():
-    raise NotImplementedError
+    def test_get_password_from_popup(
+        self,
+        patch_getpass_getpass_raise_warning,
+        patch_pysimplegui_popupgettext,
+        patch_apteco_logo,
+    ):
+        result = _get_password("A different prompt from default")
+        assert result == "password typed into popup box"
+        patch_getpass_getpass_raise_warning.assert_called_once_with(
+            "A different prompt from default"
+        )
+        patch_pysimplegui_popupgettext.assert_called_once_with(
+            "A different prompt from default",
+            password_char="*",
+            title="Apteco API",
+            button_color=("#ffffff", "#004964"),
+            icon="here's the logo",
+        )
 
 
 # TODO: write tests for class and methods
