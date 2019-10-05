@@ -527,7 +527,7 @@ class TestCredentials:
     def test_credentials_init(self, mocker):
         fake_user = mocker.Mock()
         credentials_example = apteco.session.Credentials(
-            "https://marketing.example.com/AptecoAPI/",
+            "https://marketing.example.com/OrbitAPI/",
             "room_with_a_view",
             "31415926",
             "e.g.123abc987zyx",
