@@ -14,6 +14,7 @@ from apteco.session import (
     _get_password,
     login,
     login_with_password,
+    SimpleLoginAlgorithm,
 )
 
 
@@ -643,10 +644,195 @@ class TestLogin:
         )
 
 
-# TODO: write tests for class and methods
-@pytest.mark.xfail(reason="Tests not written")
-def test_simple_login_algorithm():
-    raise NotImplementedError
+@pytest.fixture()
+def fake_create_unauthorized_client(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def fake_simple_login(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def fake_create_credentials(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def fake_simple_login_algo_with_credentials(
+    mocker, fake_create_unauthorized_client, fake_simple_login, fake_create_credentials
+):
+    return mocker.Mock(
+        _create_unauthorized_client=fake_create_unauthorized_client,
+        _simple_login=fake_simple_login,
+        _create_credentials=fake_create_credentials,
+        credentials="I made you some credentials!",
+    )
+
+
+@pytest.fixture()
+def fake_simple_login_algo_with_base_url(mocker):
+    return mocker.Mock(base_url="basic instinct")
+
+
+@pytest.fixture()
+def fake_config_from_aa_configuration(mocker):
+    return mocker.Mock()
+
+
+@pytest.fixture()
+def patch_aa_configuration(mocker, fake_config_from_aa_configuration):
+    return mocker.patch(
+        "apteco.session.aa.Configuration",
+        return_value=fake_config_from_aa_configuration,
+    )
+
+
+@pytest.fixture()
+def patch_aa_api_client(mocker):
+    return mocker.patch(
+        "apteco.session.aa.ApiClient", return_value="you've made the API client"
+    )
+
+
+@pytest.fixture()
+def fake_aa_user_with_attrs(mocker):
+    return mocker.Mock(
+        username="my_fake_username1",
+        firstname="probably John",
+        surname="probably Smith",
+        email_address="firstname.surname@company.biz",
+    )
+
+
+@pytest.fixture()
+def fake_login_response(mocker, fake_aa_user_with_attrs):
+    return mocker.Mock(
+        session_id="Bourne Identity",
+        access_token="access all areas",
+        user=fake_aa_user_with_attrs,
+    )
+
+
+@pytest.fixture()
+def fake_sessions_controller(mocker, fake_login_response):
+    fake = mocker.Mock()
+    fake.sessions_create_session_simple.return_value = fake_login_response
+    return fake
+
+
+@pytest.fixture()
+def fake_simple_login_algo_with_bu_dv_ac(mocker):
+    """Mock with base_url, data_view and api_client attributes."""
+    return mocker.Mock(
+        base_url="basic instinct",
+        data_view="a point of view",
+        api_client="in a meeting with a client",
+    )
+
+
+@pytest.fixture()
+def patch_aa_sessions_api(mocker, fake_sessions_controller):
+    return mocker.patch(
+        "apteco.session.aa.SessionsApi", return_value=fake_sessions_controller
+    )
+
+
+@pytest.fixture()
+def fake_simple_login_algo_with_attrs(mocker):
+    return mocker.Mock(
+        base_url="buttery biscuit base",
+        data_view="don't view my data without permission!",
+        session_id="say shun eyed ee",
+        access_token="excess toucan",
+        user="ewe's hair",
+    )
+
+
+class TestSimpleLoginAlgorithm:
+    def test_simple_login_algorithm_init(self):
+        simple_login_algo_example = SimpleLoginAlgorithm(
+            "https://api-here.example.com", "scenic viewpoint"
+        )
+        assert simple_login_algo_example.base_url == "https://api-here.example.com"
+        assert simple_login_algo_example.data_view == "scenic viewpoint"
+
+    def test_run(
+        self,
+        fake_simple_login_algo_with_credentials,
+        fake_create_unauthorized_client,
+        fake_simple_login,
+        fake_create_credentials,
+    ):
+        result = SimpleLoginAlgorithm.run(
+            fake_simple_login_algo_with_credentials, "you, sir!", "pa55w0rd 4 me"
+        )
+        assert result == "I made you some credentials!"
+        fake_create_unauthorized_client.assert_called_once_with()
+        fake_simple_login.assert_called_once_with("you, sir!", "pa55w0rd 4 me")
+        fake_create_credentials.assert_called_once_with()
+
+    def test_create_unauthorized_client(
+        self,
+        fake_simple_login_algo_with_base_url,
+        patch_aa_configuration,
+        fake_config_from_aa_configuration,
+        patch_aa_api_client,
+    ):
+        SimpleLoginAlgorithm._create_unauthorized_client(
+            fake_simple_login_algo_with_base_url
+        )
+        patch_aa_configuration.assert_called_once_with()
+        assert fake_config_from_aa_configuration.host == "basic instinct"
+        assert (
+            fake_simple_login_algo_with_base_url._config
+            is fake_config_from_aa_configuration
+        )
+        patch_aa_api_client.assert_called_once_with(
+            configuration=fake_config_from_aa_configuration
+        )
+        assert (
+            fake_simple_login_algo_with_base_url.api_client
+            == "you've made the API client"
+        )
+
+    def test_simple_login(
+        self,
+        fake_simple_login_algo_with_bu_dv_ac,
+        patch_aa_sessions_api,
+        fake_sessions_controller,
+        patch_user,
+    ):
+        SimpleLoginAlgorithm._simple_login(
+            fake_simple_login_algo_with_bu_dv_ac, "yews are trees", "qwerty123"
+        )
+        patch_aa_sessions_api.assert_called_once_with("in a meeting with a client")
+        fake_sessions_controller.sessions_create_session_simple.assert_called_once_with(
+            "a point of view", "yews are trees", "qwerty123"
+        )
+        assert fake_simple_login_algo_with_bu_dv_ac.session_id == "Bourne Identity"
+        assert fake_simple_login_algo_with_bu_dv_ac.access_token == "access all areas"
+        assert fake_simple_login_algo_with_bu_dv_ac.user == "you created the user"
+        patch_user.assert_called_once_with(
+            "my_fake_username1",
+            "probably John",
+            "probably Smith",
+            "firstname.surname@company.biz",
+        )
+
+    def test_create_credentials(
+        self, fake_simple_login_algo_with_attrs, patch_credentials
+    ):
+        SimpleLoginAlgorithm._create_credentials(fake_simple_login_algo_with_attrs)
+        patch_credentials.assert_called_once_with(
+            "buttery biscuit base",
+            "don't view my data without permission!",
+            "say shun eyed ee",
+            "excess toucan",
+            "ewe's hair",
+        )
+        assert fake_simple_login_algo_with_attrs.credentials == "here are your creds"
 
 
 # TODO: write tests for class and methods
