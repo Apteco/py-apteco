@@ -106,14 +106,9 @@ def serialized_session():
 
 
 @pytest.fixture()
-def fake_credentials_empty(mocker):
-    return mocker.Mock()
-
-
-@pytest.fixture()
-def patch_credentials(mocker, fake_credentials_empty):
+def patch_credentials(mocker):
     return mocker.patch.object(
-        apteco.session, "Credentials", return_value=fake_credentials_empty
+        apteco.session, "Credentials", return_value="here are your creds"
     )
 
 
@@ -255,7 +250,6 @@ class TestSession:
         self,
         serialized_session,
         patch_credentials,
-        fake_credentials_empty,
         patch_user_from_dict,
         patch_session,
         fake_session_empty,
@@ -269,7 +263,7 @@ class TestSession:
             "token of my gratitude",
             "user your skill and judgement",
         )
-        patch_session.assert_called_once_with(fake_credentials_empty, "solar system")
+        patch_session.assert_called_once_with("here are your creds", "solar system")
         assert result is fake_session_empty
 
     def test_from_dict_with_bad_creds_dict(self, serialized_session, patch_credentials):
@@ -491,13 +485,8 @@ def serialized_user():
 
 
 @pytest.fixture()
-def fake_user_empty(mocker):
-    return mocker.Mock()
-
-
-@pytest.fixture()
-def patch_user(mocker, fake_user_empty):
-    return mocker.patch.object(apteco.session, "User", return_value=fake_user_empty)
+def patch_user(mocker):
+    return mocker.patch("apteco.session.User", return_value="you created the user")
 
 
 class TestUser:
@@ -512,7 +501,7 @@ class TestUser:
         dict_example = User._to_dict(fake_user_with_attrs)
         assert dict_example == serialized_user
 
-    def test_user_from_dict(self, serialized_user, patch_user, fake_user_empty):
+    def test_user_from_dict(self, serialized_user, patch_user):
         result = User._from_dict(serialized_user)
         patch_user.assert_called_once_with(
             "ewes urn aim",
@@ -520,7 +509,7 @@ class TestUser:
             "Sir Name of Spamalot",
             "he male a trousers",
         )
-        assert result is fake_user_empty
+        assert result == "you created the user"
 
     def test_user_from_dict_with_bad_dict(self, serialized_user):
         serialized_user_no_surname = dict(serialized_user)
