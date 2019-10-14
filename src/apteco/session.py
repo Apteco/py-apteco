@@ -1,7 +1,7 @@
 import getpass
 import json
 import warnings
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, namedtuple
 from json import JSONDecodeError
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -21,6 +21,7 @@ class Session:
         self._unpack_credentials(credentials)
         self._create_client()
         self.system = system
+        self._fetch_system_info()
         self.variables = InitializeVariablesAlgorithm(self).run()
         self.tables, self.master_table = InitializeTablesAlgorithm(self).run()
 
@@ -40,6 +41,12 @@ class Session:
         config.api_key_prefix = {"Authorization": "Bearer"}
         self._config = config
         self.api_client = aa.ApiClient(configuration=self._config)
+
+    def _fetch_system_info(self):
+        """Fetch FastStats system info from API and add to session."""
+        systems_controller = aa.FastStatsSystemsApi(self.api_client)
+        result = systems_controller.fast_stats_systems_get_fast_stats_system(self.data_view, self.system)
+        self.system_info = FastStatsSystem(result.name, result.view_name, result.description, result.fast_stats_build_date)
 
     def _to_dict(self):
         return {
@@ -366,6 +373,9 @@ class Credentials:
         self.session_id = session_id
         self.access_token = access_token
         self.user = user
+
+
+FastStatsSystem = namedtuple("FastStatsSystem", "name description build_date view_name")
 
 
 def login(base_url: str, data_view: str, user: str) -> Credentials:

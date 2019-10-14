@@ -29,6 +29,11 @@ def patch_create_client(mocker):
 
 
 @pytest.fixture()
+def patch_fetch_system_info(mocker):
+    return mocker.patch.object(apteco.session.Session, "_fetch_system_info")
+
+
+@pytest.fixture()
 def patch_initialize_tables_algo(mocker):
     fake = mocker.Mock()
     fake.run.return_value = ["fake tables", "fake master table"]
@@ -180,6 +185,7 @@ def patch_json_loads_raise_json_decode_error(mocker):
 
 def test_create_session_with_credentials(
     fake_credentials_with_attrs,
+    patch_fetch_system_info,
     patch_initialize_variables_algo,
     patch_initialize_tables_algo,
 ):
@@ -188,6 +194,7 @@ def test_create_session_with_credentials(
     assert session_example.variables == "fake variables"
     assert session_example.tables == "fake tables"
     assert session_example.master_table == "fake master table"
+    patch_fetch_system_info.assert_called_once_with()
     patch_initialize_variables_algo.assert_called_once_with(session_example)
     patch_initialize_tables_algo.assert_called_once_with(session_example)
     assert session_example.base_url == "baseless assumptions"
@@ -203,6 +210,7 @@ class TestSession:
         fake_credentials_with_attrs,
         patch_unpack_credentials,
         patch_create_client,
+        patch_fetch_system_info,
         patch_initialize_variables_algo,
         patch_initialize_tables_algo,
     ):
@@ -210,6 +218,7 @@ class TestSession:
         patch_unpack_credentials.assert_called_once_with(fake_credentials_with_attrs)
         patch_create_client.assert_called_once_with()
         assert session_example.system == "solar system"
+        patch_fetch_system_info.assert_called_once_with()
         patch_initialize_variables_algo.assert_called_once_with(session_example)
         assert session_example.variables == "fake variables"
         patch_initialize_tables_algo.assert_called_once_with(session_example)
@@ -239,6 +248,27 @@ class TestSession:
         assert session_example._config == fake_config
         patch_client.assert_called_once_with(configuration=fake_config)
         assert session_example.api_client == fake_client
+
+    def test_fetch_system_info(self, mocker, fake_session_with_client):
+        fake_faststats_system_response = mocker.Mock(
+            view_name="rear view mirror",
+            description="wasn't in the job description",
+            fast_stats_build_date="best-before date",
+        )
+        fake_faststats_system_response.name = "ecosystem"
+        fake_systems_controller = mocker.Mock()
+        fake_systems_controller.fast_stats_systems_get_fast_stats_system.return_value = (
+            fake_faststats_system_response
+        )
+        patch_aa_faststats_systems_api = mocker.patch(
+            "apteco.session.aa.FastStatsSystemsApi", return_value=fake_systems_controller
+        )
+        patch_faststats_system = mocker.patch("apteco.session.FastStatsSystem", return_value="Here's your FS system info.")
+        Session._fetch_system_info(fake_session_with_client)
+        patch_aa_faststats_systems_api.assert_called_once_with("API client for the session")
+        fake_systems_controller.fast_stats_systems_get_fast_stats_system.assert_called_once_with("dataView for the session", "system for the session")
+        patch_faststats_system.assert_called_once_with("ecosystem", "rear view mirror", "wasn't in the job description", "best-before date")
+        assert fake_session_with_client.system_info == "Here's your FS system info."
 
     def test_to_dict(
         self, fake_session_with_attrs, serialized_session, fake_user_with_to_dict
