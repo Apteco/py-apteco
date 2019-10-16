@@ -569,7 +569,7 @@ class InitializeTablesAlgorithm:
         """Get list of all tables from API."""
         systems_controller = aa.FastStatsSystemsApi(self.api_client)
         results = systems_controller.fast_stats_systems_get_fast_stats_tables(
-            self.data_view, self.system
+            self.data_view, self.system, count=1000
         )
         self._check_table_results_consistency(results)
         self.raw_tables = {t.name: t for t in results.list}

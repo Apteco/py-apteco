@@ -1055,7 +1055,9 @@ class TestInitializeTablesAlgorithm:
         )
         InitializeTablesAlgorithm._get_raw_tables(fake_initialize_tables_algo)
         patch_aa_faststats_systems_api.assert_called_once_with("a potential client")
-        fake_get_tables.assert_called_once_with("data centre", "System Of A Down")
+        fake_get_tables.assert_called_once_with(
+            "data centre", "System Of A Down", count=1000
+        )
         ctrc = fake_initialize_tables_algo._check_table_results_consistency
         ctrc.assert_called_once_with(fake_tables_response)
         assert fake_initialize_tables_algo.raw_tables == {
