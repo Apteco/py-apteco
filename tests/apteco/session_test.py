@@ -258,18 +258,30 @@ class TestSession:
             fast_stats_build_date="best-before date",
         )
         fake_faststats_system_response.name = "ecosystem"
-        fake_systems_controller = mocker.Mock()
-        fake_systems_controller.fast_stats_systems_get_fast_stats_system.return_value = (
-            fake_faststats_system_response
+        fake_get_system = mocker.Mock(return_value=fake_faststats_system_response)
+        fake_systems_controller = mocker.Mock(
+            fast_stats_systems_get_fast_stats_system=fake_get_system
         )
         patch_aa_faststats_systems_api = mocker.patch(
-            "apteco.session.aa.FastStatsSystemsApi", return_value=fake_systems_controller
+            "apteco.session.aa.FastStatsSystemsApi",
+            return_value=fake_systems_controller
         )
-        patch_faststats_system = mocker.patch("apteco.session.FastStatsSystem", return_value="Here's your FS system info.")
+        patch_faststats_system = mocker.patch(
+            "apteco.session.FastStatsSystem", return_value="Here's your FS system info."
+        )
         Session._fetch_system_info(fake_session_with_client)
-        patch_aa_faststats_systems_api.assert_called_once_with("API client for the session")
-        fake_systems_controller.fast_stats_systems_get_fast_stats_system.assert_called_once_with("dataView for the session", "system for the session")
-        patch_faststats_system.assert_called_once_with("ecosystem", "rear view mirror", "wasn't in the job description", "best-before date")
+        patch_aa_faststats_systems_api.assert_called_once_with(
+            "API client for the session"
+        )
+        fake_get_system.assert_called_once_with(
+            "dataView for the session", "system for the session"
+        )
+        patch_faststats_system.assert_called_once_with(
+            "ecosystem",
+            "rear view mirror",
+            "wasn't in the job description",
+            "best-before date",
+        )
         assert fake_session_with_client.system_info == "Here's your FS system info."
 
     def test_to_dict(
@@ -1033,19 +1045,17 @@ class TestInitializeTablesAlgorithm:
         table3 = mocker.Mock()
         table3.name = "Table3"
         fake_tables_response = mocker.Mock(list=[table1, table2, table3])
-        fake_systems_controller = mocker.Mock()
-        fake_systems_controller.fast_stats_systems_get_fast_stats_tables.return_value = (
-            fake_tables_response
-        )
+        fake_get_tables = mocker.Mock(return_value=fake_tables_response)
+        fake_systems_controller = mocker.Mock(
+                fast_stats_systems_get_fast_stats_tables=fake_get_tables
+            )
         patch_aa_faststats_systems_api = mocker.patch(
             "apteco.session.aa.FastStatsSystemsApi",
             return_value=fake_systems_controller,
         )
         InitializeTablesAlgorithm._get_raw_tables(fake_initialize_tables_algo)
         patch_aa_faststats_systems_api.assert_called_once_with("a potential client")
-        fake_systems_controller.fast_stats_systems_get_fast_stats_tables.assert_called_once_with(
-            "data centre", "System Of A Down"
-        )
+        fake_get_tables.assert_called_once_with("data centre", "System Of A Down")
         ctrc = fake_initialize_tables_algo._check_table_results_consistency
         ctrc.assert_called_once_with(fake_tables_response)
         assert fake_initialize_tables_algo.raw_tables == {
