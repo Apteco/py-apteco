@@ -590,6 +590,7 @@ class InitializeTablesAlgorithm:
         self.children_lookup = defaultdict(list)
         for table in self.raw_tables.values():
             self.children_lookup[table.parent_table].append(table.name)
+        # don't freeze yet: will need to look up childless tables and return empty list
 
     def _identify_variables(self):
         """Identify variables for each table."""
@@ -652,13 +653,18 @@ class InitializeTablesAlgorithm:
         """Retrieve master table, ensuring there is exactly one."""
         try:
             (master_table_name,) = self.children_lookup[""]
-            self.master_table = self.tables[master_table_name]
         except KeyError:
             raise TablesError("No master table found.")
         except ValueError:  # unpacking failed => !=1 master tables
             raise TablesError(
                 f"Found {len(self.children_lookup[''])} master tables,"
-                f" there should only be 1."
+                f" there should be 1."
+            )
+        try:
+            self.master_table = self.tables[master_table_name]
+        except KeyError:
+            raise TablesError(
+                f"The master table '{master_table_name}' could not be found."
             )
 
     def _assign_ancestors_and_descendants(
@@ -680,7 +686,7 @@ class InitializeTablesAlgorithm:
         tree_tables_counter = Counter(t.name for t in _tree_tables)
         raw_tables_counter = Counter(name for name in self.raw_tables.keys())
         if not tree_tables_counter == raw_tables_counter:
-            diff = Counter({k: v for k, v in tree_tables_counter.items()})
+            diff = Counter(tree_tables_counter)
             diff.subtract(raw_tables_counter)
             raise TablesError(
                 f"Error constructing table tree:"
@@ -696,13 +702,15 @@ class InitializeTablesAlgorithm:
             for rel in relations:
                 if getattr(table, rel) is NOT_ASSIGNED:
                     no_relation[rel].append(table.name)
+        error_details = ""
         for rel in relations:
             if no_relation[rel]:
-                raise TablesError(
-                    f"Error constructing table tree:"
-                    f" {len(no_relation[rel])} table(s) had no {rel} assigned."
-                    f" First example: table '{no_relation[rel][0]}'"
+                error_details += (
+                    f"\n{len(no_relation[rel])} table(s) had no {rel} assigned."
+                    f" First example: '{no_relation[rel][0]}' table"
                 )
+        if error_details:
+            raise TablesError("Error constructing table tree:" + error_details)
 
 
 class InitializeVariablesAlgorithm:
