@@ -264,7 +264,7 @@ class TestSession:
         )
         patch_aa_faststats_systems_api = mocker.patch(
             "apteco.session.aa.FastStatsSystemsApi",
-            return_value=fake_systems_controller
+            return_value=fake_systems_controller,
         )
         patch_faststats_system = mocker.patch(
             "apteco.session.FastStatsSystem", return_value="Here's your FS system info."
@@ -1047,8 +1047,8 @@ class TestInitializeTablesAlgorithm:
         fake_tables_response = mocker.Mock(list=[table1, table2, table3])
         fake_get_tables = mocker.Mock(return_value=fake_tables_response)
         fake_systems_controller = mocker.Mock(
-                fast_stats_systems_get_fast_stats_tables=fake_get_tables
-            )
+            fast_stats_systems_get_fast_stats_tables=fake_get_tables
+        )
         patch_aa_faststats_systems_api = mocker.patch(
             "apteco.session.aa.FastStatsSystemsApi",
             return_value=fake_systems_controller,
@@ -1240,7 +1240,7 @@ class TestInitializeTablesAlgorithm:
             )
         exception_msg = exc_info.value.args[0]
         assert exception_msg == (
-            "API stated Monica has child tables but none were found."
+            "API stated 'Monica' table has child tables but none were found."
         )
         with pytest.raises(TablesError) as exc_info:
             InitializeTablesAlgorithm._check_child_tables_consistency(
@@ -1248,7 +1248,7 @@ class TestInitializeTablesAlgorithm:
             )
         exception_msg = exc_info.value.args[0]
         assert exception_msg == (
-            "API stated Phoebe has no child tables but 3 were found."
+            "API stated 'Phoebe' table has no child tables but 3 were found."
         )
 
     def test_find_master_table(self, mocker):

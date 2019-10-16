@@ -9,7 +9,12 @@ import apteco_api as aa
 import PySimpleGUI
 
 from apteco.data.apteco_logo import APTECO_LOGO
-from apteco.exceptions import ApiResultsError, DeserializeError, TablesError, VariablesError
+from apteco.exceptions import (
+    ApiResultsError,
+    DeserializeError,
+    TablesError,
+    VariablesError,
+)
 from apteco.query import TableMixin, VariableMixin
 
 NOT_ASSIGNED: Any = object()
@@ -45,8 +50,15 @@ class Session:
     def _fetch_system_info(self):
         """Fetch FastStats system info from API and add to session."""
         systems_controller = aa.FastStatsSystemsApi(self.api_client)
-        result = systems_controller.fast_stats_systems_get_fast_stats_system(self.data_view, self.system)
-        self.system_info = FastStatsSystem(result.name, result.view_name, result.description, result.fast_stats_build_date)
+        result = systems_controller.fast_stats_systems_get_fast_stats_system(
+            self.data_view, self.system
+        )
+        self.system_info = FastStatsSystem(
+            result.name,
+            result.view_name,
+            result.description,
+            result.fast_stats_build_date,
+        )
 
     def _to_dict(self):
         return {
@@ -213,7 +225,6 @@ class Variable(VariableMixin):
 
 
 class BaseSelectorVariable(Variable):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
@@ -641,11 +652,11 @@ class InitializeTablesAlgorithm:
         """Check table's children matches ```has_child_tables```."""
         if table.has_child_tables and not table.children:
             raise TablesError(
-                f"API stated {table.name} has child tables but none were found."
+                f"API stated '{table.name}' table has child tables but none were found."
             )
         if not table.has_child_tables and table.children:
             raise TablesError(
-                f"API stated {table.name} has no child tables"
+                f"API stated '{table.name}' table has no child tables"
                 f" but {len(table.children)} were found."
             )
 
@@ -830,10 +841,7 @@ class InitializeVariablesAlgorithm:
         if sub_type == "Categorical":
             return cls._choose_categorical(raw_selector)
         try:
-            return {
-                "Date": DateVariable,
-                "DateTime": DateTimeVariable,
-            }[sub_type]
+            return {"Date": DateVariable, "DateTime": DateTimeVariable}[sub_type]
         except KeyError as exc:
             raise VariablesError(
                 f"Could not create variable,"
