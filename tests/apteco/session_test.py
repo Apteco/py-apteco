@@ -1506,7 +1506,103 @@ class TestInitializeTablesAlgorithm:
         )
 
 
-# TODO: write tests for class and methods
-@pytest.mark.xfail(reason="Tests not written")
-def test_initialize_variables_algorithm():
-    raise NotImplementedError
+class TestInitializeVariablesAlgorithm:
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_initialize_variables_algo_init(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_initialize_variables_algo_run(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_get_raw_variables(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_check_variable_results_consistency(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_check_variable_results_consistency_with_bad_total(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_create_variables(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_variable_with_selector_var(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_variable_with_reference_var(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_variable_with_text_var(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_variable_with_numeric_var(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_variable_with_bad_type(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_selector_with_categorical_subtype(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_selector_with_date_subtype(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_selector_with_datetime_subtype(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_selector_with_bad_subtype(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_categorical_with_combined_categories_var(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_categorical_with_pure_selector_var(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_categorical_with_array_var(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_categorical_with_flag_array_var(self):
+        raise NotImplementedError
+
+    # TODO: write test
+    @pytest.mark.xfail(reason="Test not written")
+    def test_choose_categorical_with_bad_selector_type(self):
+        raise NotImplementedError
