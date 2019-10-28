@@ -6,17 +6,18 @@ import apteco_api
 import pytest
 
 import apteco.session
-from apteco.exceptions import DeserializeError, ApiResultsError, TablesError
+from apteco.exceptions import ApiResultsError, DeserializeError, TablesError
 from apteco.session import (
+    NOT_ASSIGNED,
+    InitializeTablesAlgorithm,
+    InitializeVariablesAlgorithm,
     Session,
+    SimpleLoginAlgorithm,
     Table,
     User,
     _get_password,
     login,
     login_with_password,
-    SimpleLoginAlgorithm,
-    InitializeTablesAlgorithm,
-    NOT_ASSIGNED,
 )
 
 
@@ -885,7 +886,6 @@ def fake_session_with_client(mocker):
         data_view="dataView for the session",
         system="system for the session",
         api_client="API client for the session",
-        variables="variables for the session",
     )
 
 
@@ -984,6 +984,7 @@ def correct_tables(fake_tables, correct_children_lookup):
 
 class TestInitializeTablesAlgorithm:
     def test_initialize_tables_algo_init(self, fake_session_with_client):
+        fake_session_with_client.variables = "variables for the session"
         initialize_tables_algo_example = InitializeTablesAlgorithm(
             fake_session_with_client
         )
@@ -1507,35 +1508,175 @@ class TestInitializeTablesAlgorithm:
 
 
 class TestInitializeVariablesAlgorithm:
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_initialize_variables_algo_init(self):
-        raise NotImplementedError
+    def test_initialize_variables_algo_init(self, fake_session_with_client):
+        initialize_vars_algo_example = InitializeVariablesAlgorithm(
+            fake_session_with_client
+        )
+        assert initialize_vars_algo_example.data_view == "dataView for the session"
+        assert initialize_vars_algo_example.system == "system for the session"
+        assert initialize_vars_algo_example.api_client == "API client for the session"
+        assert initialize_vars_algo_example.session is fake_session_with_client
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_initialize_variables_algo_run(self):
-        raise NotImplementedError
+    def test_initialize_variables_algo_run(self, mocker):
+        fake_get_raw_variables = mocker.Mock()
+        fake_create_variables = mocker.Mock()
+        fake_initialize_vars_algo = mocker.Mock(
+            variables="Wind: Variable, mainly east to northeast",
+            _get_raw_variables=fake_get_raw_variables,
+            _create_variables=fake_create_variables,
+        )
+        result = InitializeVariablesAlgorithm.run(fake_initialize_vars_algo)
+        fake_get_raw_variables.assert_called_once_with()
+        fake_create_variables.assert_called_once_with()
+        assert result == "Wind: Variable, mainly east to northeast"
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_get_raw_variables(self):
-        raise NotImplementedError
+    def test_get_raw_variables(self, mocker):
+        fake_results1 = mocker.Mock(list=["var0"], offset=0, count=7, total_count=17)
+        fake_results2 = mocker.Mock(list=["var7"], offset=7, count=7, total_count=17)
+        fake_results3 = mocker.Mock(list=["var14"], offset=14, count=3, total_count=17)
+        fake_get_variables = mocker.Mock(
+            side_effect=[fake_results1, fake_results2, fake_results3]
+        )
+        fake_systems_controller = mocker.Mock(
+            fast_stats_systems_get_fast_stats_variables=fake_get_variables
+        )
+        patch_aa_faststats_systems_api = mocker.patch(
+            "apteco.session.aa.FastStatsSystemsApi",
+            return_value=fake_systems_controller,
+        )
+        fake_check_variable_results_consistency = mocker.Mock()
+        fake_initialize_vars_algo = mocker.Mock(
+            api_client="Client Eastwood",
+            data_view="Doris Day-ta",
+            system="My System's Keeper",
+            _check_variable_results_consistency=fake_check_variable_results_consistency,
+        )
+        InitializeVariablesAlgorithm._get_raw_variables(fake_initialize_vars_algo, 7)
+        patch_aa_faststats_systems_api.assert_called_once_with("Client Eastwood")
+        get_variables_calls = [
+            mocker.call("Doris Day-ta", "My System's Keeper", count=7, offset=0),
+            mocker.call("Doris Day-ta", "My System's Keeper", count=7, offset=7),
+            mocker.call("Doris Day-ta", "My System's Keeper", count=7, offset=14),
+        ]
+        fake_get_variables.assert_has_calls(get_variables_calls)
+        assert fake_initialize_vars_algo.raw_variables == ["var0", "var7", "var14"]
+        fake_check_variable_results_consistency.assert_called_once_with(17)
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_check_variable_results_consistency(self):
-        raise NotImplementedError
+    def test_check_variable_results_consistency(self, mocker):
+        fake_initialize_vars_algo = mocker.MagicMock()
+        fake_initialize_vars_algo.raw_variables.__len__.return_value = 12345
+        InitializeVariablesAlgorithm._check_variable_results_consistency(
+            fake_initialize_vars_algo, 12345
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_check_variable_results_consistency_with_bad_total(self):
-        raise NotImplementedError
+    def test_check_variable_results_consistency_with_bad_total(self, mocker):
+        fake_initialize_vars_algo = mocker.MagicMock()
+        fake_initialize_vars_algo.raw_variables.__len__.return_value = 12345
+        with pytest.raises(ApiResultsError) as exc_info:
+            InitializeVariablesAlgorithm._check_variable_results_consistency(
+                fake_initialize_vars_algo, 98765
+            )
+        exception_msg = exc_info.value.args[0]
+        assert exception_msg == (
+            "API stated there are 98765 variables in the system"
+            " but 12345 were returned."
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_create_variables(self):
-        raise NotImplementedError
+    def test_create_variables(self, mocker):
+        args_list = [
+            "name",
+            "description",
+            "type",
+            "folder_name",
+            "table_name",
+            "is_selectable",
+            "is_browsable",
+            "is_exportable",
+            "is_virtual",
+            "selector_info",
+            "numeric_info",
+            "text_info",
+            "reference_info",
+        ]
+        attrs_list0 = [
+            "cuName",
+            "Full Name",
+            "Text",
+            "Customer PII",
+            "Customers",
+            True,
+            False,
+            False,
+            False,
+            "cuNameSelInfo",
+            "cuNameNumInfo",
+            "cuNameTextInfo",
+            "cuNameRefInfo",
+        ]
+        attrs_list1 = [
+            "trCost",
+            "Cost",
+            "Numeric",
+            "Transaction Main",
+            "Transactions",
+            True,
+            True,
+            True,
+            True,
+            "trCostSelInfo",
+            "trCostNumInfo",
+            "trCostTextInfo",
+            "trCostRefInfo",
+        ]
+        attrs_list2 = [
+            "itCode",
+            "Item Code",
+            "Selector",
+            "Item Data",
+            "Items",
+            True,
+            True,
+            True,
+            False,
+            "itCodeSelInfo",
+            "itCodeNumInfo",
+            "itCodeTextInfo",
+            "itCodeRefInfo",
+        ]
+        attrs0 = dict(zip(args_list, attrs_list0))
+        attrs1 = dict(zip(args_list, attrs_list1))
+        attrs2 = dict(zip(args_list, attrs_list2))
+        fake_raw_variables = [mocker.Mock() for __ in range(3)]
+        fake_raw_variables[0].configure_mock(**attrs0)
+        fake_raw_variables[1].configure_mock(**attrs1)
+        fake_raw_variables[2].configure_mock(**attrs2)
+        fake_chosen_variable_class = mocker.Mock(
+            side_effect=["Created 1st var", "Created 2nd var", "Created 3rd var"]
+        )
+        fake_choose_variable = mocker.Mock(return_value=fake_chosen_variable_class)
+        fake_initialize_vars_algo = mocker.Mock(
+            _choose_variable=fake_choose_variable,
+            session="session musician",
+            raw_variables=fake_raw_variables,
+        )
+        InitializeVariablesAlgorithm._create_variables(fake_initialize_vars_algo)
+        choose_variable_calls = [
+            mocker.call(fake_raw_variables[0]),
+            mocker.call(fake_raw_variables[1]),
+            mocker.call(fake_raw_variables[2]),
+        ]
+        variable_class_calls = [
+            mocker.call(**attrs0, session="session musician"),
+            mocker.call(**attrs1, session="session musician"),
+            mocker.call(**attrs2, session="session musician"),
+        ]
+        fake_choose_variable.assert_has_calls(choose_variable_calls)
+        fake_chosen_variable_class.assert_has_calls(variable_class_calls)
+        assert fake_initialize_vars_algo.variables == {
+            "Full Name": "Created 1st var",
+            "Cost": "Created 2nd var",
+            "Item Code": "Created 3rd var",
+        }
 
     # TODO: write test
     @pytest.mark.xfail(reason="Test not written")
