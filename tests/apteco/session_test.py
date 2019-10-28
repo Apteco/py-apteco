@@ -6,14 +6,28 @@ import apteco_api
 import pytest
 
 import apteco.session
-from apteco.exceptions import ApiResultsError, DeserializeError, TablesError
+from apteco.exceptions import (
+    ApiResultsError,
+    DeserializeError,
+    TablesError,
+    VariablesError,
+)
 from apteco.session import (
     NOT_ASSIGNED,
+    ArrayVariable,
+    CombinedCategoriesVariable,
+    DateTimeVariable,
+    DateVariable,
+    FlagArrayVariable,
     InitializeTablesAlgorithm,
     InitializeVariablesAlgorithm,
+    NumericVariable,
+    ReferenceVariable,
+    SelectorVariable,
     Session,
     SimpleLoginAlgorithm,
     Table,
+    TextVariable,
     User,
     _get_password,
     login,
@@ -1678,72 +1692,164 @@ class TestInitializeVariablesAlgorithm:
             "Item Code": "Created 3rd var",
         }
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_variable_with_selector_var(self):
-        raise NotImplementedError
+    def test_choose_variable_with_selector_var(self, mocker):
+        raw_selector_var = mocker.Mock(
+            type="Selector",
+            selector_info=mocker.Mock(
+                sub_type="Categorical",
+                selector_type="SingleValue",
+                combined_from_variable_name=None,
+            ),
+            to_dict=mocker.Mock(
+                return_value={
+                    "selector_info": {
+                        "sub_type": "Categorical",
+                        "selector_type": "SingleValue",
+                        "combined_from_variable_name": None,
+                    }
+                }
+            ),
+        )
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_selector_var)
+            == SelectorVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_variable_with_reference_var(self):
-        raise NotImplementedError
+    def test_choose_variable_with_combined_categories_var(self, mocker):
+        raw_combined_cat_var = mocker.Mock(
+            type="Selector",
+            selector_info=mocker.Mock(
+                sub_type="Categorical",
+                selector_type="SingleValue",
+                combined_from_variable_name="my_original_variable",
+            ),
+            to_dict=mocker.Mock(
+                return_value={
+                    "selector_info": {
+                        "sub_type": "Categorical",
+                        "selector_type": "SingleValue",
+                        "combined_from_variable_name": "my_original_variable",
+                    }
+                }
+            ),
+        )
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_combined_cat_var)
+            == CombinedCategoriesVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_variable_with_text_var(self):
-        raise NotImplementedError
+    def test_choose_variable_with_numeric_var(self, mocker):
+        raw_numeric_var = mocker.Mock(
+            type="Numeric", to_dict=mocker.Mock(return_value={})
+        )
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_numeric_var)
+            == NumericVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_variable_with_numeric_var(self):
-        raise NotImplementedError
+    def test_choose_variable_with_text_var(self, mocker):
+        raw_text_var = mocker.Mock(type="Text", to_dict=mocker.Mock(return_value={}))
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_text_var) == TextVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_variable_with_bad_type(self):
-        raise NotImplementedError
+    def test_choose_variable_with_array_var(self, mocker):
+        raw_array_var = mocker.Mock(
+            type="Selector",
+            selector_info=mocker.Mock(sub_type="Categorical", selector_type="OrArray"),
+            to_dict=mocker.Mock(
+                return_value={
+                    "selector_info": {
+                        "sub_type": "Categorical",
+                        "selector_type": "OrArray",
+                    }
+                }
+            ),
+        )
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_array_var)
+            == ArrayVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_selector_with_categorical_subtype(self):
-        raise NotImplementedError
+    def test_choose_variable_with_flag_array_var(self, mocker):
+        raw_flag_array_var = mocker.Mock(
+            type="Selector",
+            selector_info=mocker.Mock(
+                sub_type="Categorical", selector_type="OrBitArray"
+            ),
+            to_dict=mocker.Mock(
+                return_value={
+                    "selector_info": {
+                        "sub_type": "Categorical",
+                        "selector_type": "OrBitArray",
+                    }
+                }
+            ),
+        )
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_flag_array_var)
+            == FlagArrayVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_selector_with_date_subtype(self):
-        raise NotImplementedError
+    def test_choose_variable_with_date_var(self, mocker):
+        raw_date_var = mocker.Mock(
+            type="Selector",
+            selector_info=mocker.Mock(sub_type="Date", selector_type="SingleValue"),
+            to_dict=mocker.Mock(
+                return_value={
+                    "selector_info": {
+                        "sub_type": "Date",
+                        "selector_type": "SingleValue",
+                    }
+                }
+            ),
+        )
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_date_var) == DateVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_selector_with_datetime_subtype(self):
-        raise NotImplementedError
+    def test_choose_variable_with_datetime_var(self, mocker):
+        raw_datetime_var = mocker.Mock(
+            type="Selector",
+            selector_info=mocker.Mock(sub_type="DateTime", selector_type="SingleValue"),
+            to_dict=mocker.Mock(
+                return_value={
+                    "selector_info": {
+                        "sub_type": "DateTime",
+                        "selector_type": "SingleValue",
+                    }
+                }
+            ),
+        )
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_datetime_var)
+            == DateTimeVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_selector_with_bad_subtype(self):
-        raise NotImplementedError
+    def test_choose_variable_with_reference_var(self, mocker):
+        raw_reference_var = mocker.Mock(
+            type="Reference", to_dict=mocker.Mock(return_value={})
+        )
+        assert (
+            InitializeVariablesAlgorithm._choose_variable(raw_reference_var)
+            == ReferenceVariable
+        )
 
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_categorical_with_combined_categories_var(self):
-        raise NotImplementedError
-
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_categorical_with_pure_selector_var(self):
-        raise NotImplementedError
-
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_categorical_with_array_var(self):
-        raise NotImplementedError
-
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_categorical_with_flag_array_var(self):
-        raise NotImplementedError
-
-    # TODO: write test
-    @pytest.mark.xfail(reason="Test not written")
-    def test_choose_categorical_with_bad_selector_type(self):
-        raise NotImplementedError
+    def test_choose_variable_with_bad_type(self, mocker):
+        bad_raw_var = mocker.Mock(
+            type="Numeric",
+            selector_info=mocker.Mock(sub_type="Boolean", selector_type=None),
+            to_dict=mocker.Mock(
+                return_value={
+                    "selector_info": {"sub_type": "Boolean", "selector_type": None}
+                }
+            ),
+        )
+        with pytest.raises(VariablesError) as exc_info:
+            InitializeVariablesAlgorithm._choose_variable(bad_raw_var)
+        exception_msg = exc_info.value.args[0]
+        assert exception_msg == (
+            "Failed to initialize variable,"
+            " did not recognise the type from determinant: "
+            "('Numeric', 'Boolean', None, False)"
+        )

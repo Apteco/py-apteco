@@ -823,7 +823,12 @@ class InitializeVariablesAlgorithm:
         """Get class to create given variable according to its type."""
         variable_type_lookup = {
             ("Selector", "Categorical", "SingleValue", False): SelectorVariable,
-            ("Selector", "Categorical", "SingleValue", True): CombinedCategoriesVariable,
+            (
+                "Selector",
+                "Categorical",
+                "SingleValue",
+                True,
+            ): CombinedCategoriesVariable,
             ("Numeric", None, None, False): NumericVariable,
             ("Text", None, None, False): TextVariable,
             ("Selector", "Categorical", "OrArray", False): ArrayVariable,
@@ -837,12 +842,16 @@ class InitializeVariablesAlgorithm:
             raw_variable.type,
             (raw_variable.to_dict().get("selector_info") or {}).get("sub_type"),
             (raw_variable.to_dict().get("selector_info") or {}).get("selector_type"),
-            bool((raw_variable.to_dict().get("selector_info") or {}).get("combined_from_variable_name")),
+            bool(
+                (raw_variable.to_dict().get("selector_info") or {}).get(
+                    "combined_from_variable_name"
+                )
+            ),
         )
         try:
             return variable_type_lookup[determinant]
         except KeyError as exc:
             raise VariablesError(
                 f"Failed to initialize variable,"
-                f" did not recognise determinant: {determinant}"
+                f" did not recognise the type from determinant: {determinant}"
             ) from exc
