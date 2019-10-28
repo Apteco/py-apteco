@@ -818,54 +818,31 @@ class InitializeVariablesAlgorithm:
             for v in self.raw_variables
         }
 
-    @classmethod
-    def _choose_variable(cls, raw_variable: aa.Variable):
-        """Get class for given variable type."""
-        if raw_variable.type == "Selector":
-            return cls._choose_selector(raw_variable)
-        try:
-            return {
-                "Reference": ReferenceVariable,
-                "Text": TextVariable,
-                "Numeric": NumericVariable,
-            }[raw_variable.type]
-        except KeyError as exc:
-            raise VariablesError(
-                f"Could not create variable, unknown type: {raw_variable.type}"
-            ) from exc
-
-    @classmethod
-    def _choose_selector(cls, raw_selector: aa.Variable):
-        """Get class for given selector variable type."""
-        sub_type = raw_selector.selector_info.sub_type
-        if sub_type == "Categorical":
-            return cls._choose_categorical(raw_selector)
-        try:
-            return {"Date": DateVariable, "DateTime": DateTimeVariable}[sub_type]
-        except KeyError as exc:
-            raise VariablesError(
-                f"Could not create variable,"
-                f" unknown Selector variable sub-type: {sub_type}"
-            ) from exc
-
     @staticmethod
-    def _choose_categorical(raw_categorical: aa.Variable):
-        """Get class for given categorical selector variable type."""
-        selector_type = raw_categorical.selector_info.selector_type
-        if selector_type == "SingleValue":
-            if raw_categorical.selector_info.combined_from_variable_name:
-                return CombinedCategoriesVariable
-            else:
-                return SelectorVariable
+    def _choose_variable(raw_variable: aa.Variable):
+        """Get class to create given variable according to its type."""
+        variable_type_lookup = {
+            ("Selector", "Categorical", "SingleValue", False): SelectorVariable,
+            ("Selector", "Categorical", "SingleValue", True): CombinedCategoriesVariable,
+            ("Numeric", None, None, False): NumericVariable,
+            ("Text", None, None, False): TextVariable,
+            ("Selector", "Categorical", "OrArray", False): ArrayVariable,
+            ("Selector", "Categorical", "OrBitArray", False): FlagArrayVariable,
+            ("Selector", "Date", "SingleValue", False): DateVariable,
+            ("Selector", "DateTime", "SingleValue", False): DateTimeVariable,
+            ("Reference", None, None, False): ReferenceVariable,
+        }
+
+        determinant = (
+            raw_variable.type,
+            (raw_variable.to_dict().get("selector_info") or {}).get("sub_type"),
+            (raw_variable.to_dict().get("selector_info") or {}).get("selector_type"),
+            bool((raw_variable.to_dict().get("selector_info") or {}).get("combined_from_variable_name")),
+        )
         try:
-            return {
-                "OrArray": ArrayVariable,
-                # "AndArray": None,
-                "OrBitArray": FlagArrayVariable,
-                # "AndBitArray": None,
-            }[selector_type]
+            return variable_type_lookup[determinant]
         except KeyError as exc:
             raise VariablesError(
-                f"Could not create variable, "
-                f"unknown Categorical Selector variable type: {selector_type}"
+                f"Failed to initialize variable,"
+                f" did not recognise determinant: {determinant}"
             ) from exc
