@@ -18,7 +18,7 @@ Installation
 
 You can install the package the usual way from PyPI using ``pip``:
 
-.. code-block:: python
+.. code-block:: console
 
    pip install apteco
 
