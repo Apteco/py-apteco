@@ -600,6 +600,117 @@ class DateListClause(ClauseMixin):
         )
 
 
+class DateRangeClause(ClauseMixin):
+    def __init__(self, table_name, variable, start, end, *, label=None, include=True, session=None):
+        self.table_name = table_name
+        self.variable = variable
+        self.start = start
+        self.end = end
+
+        self.label = label
+        self.include = include
+        self.session = session
+
+    def _to_model(self):
+        return aa.Clause(
+            criteria=aa.Criteria(
+                variable_name=self.variable,
+                include=self.include,
+                logic="OR",
+                ignore_case=False,
+                text_match_type="Is",
+                value_rules=[
+                    aa.ValueRule(
+                        predefined_rule="CustomRule",
+                        date_rule=aa.DateRule(
+                            pattern_frequency="Daily",
+                            pattern_interval=1,
+                            pattern_days_of_week=["All"],
+                            start_range_limit="Actual",
+                            range_start_date=self.start,
+                            end_range_limit="Actual",
+                            range_end_date=self.end
+                        ),
+                    )
+                ],
+                table_name=self.table.name,
+                name=self.label
+            )
+        )
+
+
+class TimeRangeClause(ClauseMixin):
+    def __init__(self, table_name, variable, start, end, *, label=None, include=True, session=None):
+        self.table_name = table_name
+        self.variable = variable
+        self.start = start
+        self.end = end
+
+        self.label = label
+        self.include = include
+        self.session = session
+
+    def _to_model(self):
+        return aa.Clause(
+            criteria=aa.Criteria(
+                variable_name=self.variable,
+                include=self.include,
+                logic="OR",
+                ignore_case=False,
+                text_match_type="Is",
+                value_rules=[
+                    aa.ValueRule(
+                        predefined_rule="CustomTimeRule",
+                        time_rule=aa.TimeRule(
+                            range_low=self.start, range_high=self.end
+                        ),
+                    )
+                ],
+                table_name=self.table.name,
+                name=self.label
+            )
+        )
+
+
+class DateTimeRangeClause(ClauseMixin):
+    def __init__(self, table_name, variable, start, end, *, label=None, include=True, session=None):
+        self.table_name = table_name
+        self.variable = variable
+        self.start = start
+        self.end = end
+
+        self.label = label
+        self.include = include
+        self.session = session
+
+    def _to_model(self):
+        return aa.Clause(
+            criteria=aa.Criteria(
+                variable_name=self.variable,
+                include=self.include,
+                logic="OR",
+                ignore_case=False,
+                text_match_type="Is",
+                value_rules=[
+                    aa.ValueRule(
+                        predefined_rule="CustomRule",
+                        date_rule=aa.DateRule(
+                            pattern_frequency="Daily",
+                            pattern_interval=1,
+                            pattern_days_of_week=["All"],
+                            start_range_limit="Actual",
+                            range_start_date=self.start,
+                            end_range_limit="Actual",
+                            range_end_date=self.end
+                        ),
+                    )
+                ],
+                table_name=self.table.name,
+                name=self.label
+            )
+        )
+
+
 class BooleanClause(ClauseMixin):
 
     def __init__(self, table_name, operation, operands, *, label=None, session=None):
