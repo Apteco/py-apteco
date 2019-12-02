@@ -66,7 +66,7 @@ class Session:
             "data_view": self.data_view,
             "session_id": self.session_id,
             "access_token": self.access_token,
-            "user": self.user._to_dict(),
+            "user": self.user._asdict(),
             "system": self.system,
         }
 
@@ -78,13 +78,16 @@ class Session:
                 d["data_view"],
                 d["session_id"],
                 d["access_token"],
-                User._from_dict(d["user"]),
+                User(**d["user"]),
             )
             system = d["system"]
-        except DeserializeError:
-            raise
         except KeyError as e:
             raise DeserializeError(f"Data missing from 'Session' object: no {e} found.")
+        except TypeError as exc:  # arguments missing from User __new__() call
+            raise DeserializeError(
+                f"The following parameter(s) were missing from 'User' object: "
+                f"{exc.args[0].split(':')[1].strip()}"
+            )
         else:
             return Session(credentials, system)
 
@@ -320,42 +323,7 @@ class ReferenceVariable(Variable):
         self.type = "Reference"
 
 
-class User:
-    """Class representing an API user."""
-
-    def __init__(
-        self, username: str, first_name: str, surname: str, email_address: str
-    ):
-        """
-
-        Args:
-            username (str): username (used to log in)
-            first_name (str): user's first name
-            surname (str): user's surname
-            email_address (str): user's email address
-
-        """
-        self.username = username
-        self.first_name = first_name
-        self.surname = surname
-        self.email_address = email_address
-
-    def _to_dict(self):
-        return {
-            "username": self.username,
-            "first_name": self.first_name,
-            "surname": self.surname,
-            "email_address": self.email_address,
-        }
-
-    @staticmethod
-    def _from_dict(d):
-        try:
-            return User(
-                d["username"], d["first_name"], d["surname"], d["email_address"]
-            )
-        except KeyError as e:
-            raise DeserializeError(f"Data missing from 'User' object: no {e} found.")
+User = namedtuple("User", ["username", "first_name", "surname", "email_address"])
 
 
 class Credentials:

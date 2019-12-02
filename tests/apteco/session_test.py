@@ -78,9 +78,9 @@ def fake_credentials_with_attrs(mocker):
 
 
 @pytest.fixture()
-def fake_user_with_to_dict(mocker):
+def fake_user_with_asdict(mocker):
     fake_user = mocker.Mock()
-    fake_user._to_dict.return_value = "user-per to the throne"
+    fake_user._asdict.return_value = {"username": "user-per to the throne"}
     return fake_user
 
 
@@ -105,13 +105,13 @@ def patch_config(mocker, fake_config):
 
 
 @pytest.fixture()
-def fake_session_with_attrs(mocker, fake_user_with_to_dict):
+def fake_session_with_attrs(mocker, fake_user_with_asdict):
     return mocker.Mock(
         base_url="baseless assumptions",
         data_view="a room with a view",
         session_id="0246813579",
         access_token="token of my gratitude",
-        user=fake_user_with_to_dict,
+        user=fake_user_with_asdict,
         system="solar system",
     )
 
@@ -123,7 +123,7 @@ def serialized_session():
         "data_view": "a room with a view",
         "session_id": "0246813579",
         "access_token": "token of my gratitude",
-        "user": "user-per to the throne",
+        "user": {"username": "user-per to the throne"},
         "system": "solar system",
     }
 
@@ -143,12 +143,12 @@ def patch_user_from_dict(mocker):
 
 
 @pytest.fixture()
-def patch_user_from_dict_raise_deserialize_error(mocker):
+def patch_user_raise_type_error_missing_surname(mocker):
     return mocker.patch.object(
-        apteco.session.User,
-        "_from_dict",
-        side_effect=DeserializeError(
-            "Data missing from 'User' object: no 'surname' found."
+        apteco.session,
+        "User",
+        side_effect=TypeError(
+            "__new__() missing 1 required positional argument: 'surname'"
         ),
     )
 
@@ -300,28 +300,28 @@ class TestSession:
         assert fake_session_with_client.system_info == "Here's your FS system info."
 
     def test_to_dict(
-        self, fake_session_with_attrs, serialized_session, fake_user_with_to_dict
+        self, fake_session_with_attrs, serialized_session, fake_user_with_asdict
     ):
         dict_example = Session._to_dict(fake_session_with_attrs)
         assert dict_example == serialized_session
-        fake_user_with_to_dict._to_dict.assert_called_once_with()
+        fake_user_with_asdict._asdict.assert_called_once_with()
 
     def test_from_dict(
         self,
         serialized_session,
         patch_credentials,
-        patch_user_from_dict,
+        patch_user,
         patch_session,
         fake_session_empty,
     ):
         result = Session._from_dict(serialized_session)
-        patch_user_from_dict.assert_called_once_with("user-per to the throne")
+        patch_user.assert_called_once_with(username="user-per to the throne")
         patch_credentials.assert_called_once_with(
             "baseless assumptions",
             "a room with a view",
             "0246813579",
             "token of my gratitude",
-            "user your skill and judgement",
+            "you created the user",
         )
         patch_session.assert_called_once_with("here are your creds", "solar system")
         assert result is fake_session_empty
@@ -340,12 +340,14 @@ class TestSession:
         self,
         serialized_session,
         patch_credentials,
-        patch_user_from_dict_raise_deserialize_error,
+        patch_user_raise_type_error_missing_surname,
     ):
         with pytest.raises(DeserializeError) as excinfo:
             Session._from_dict(serialized_session)
         exception_msg = excinfo.value.args[0]
-        assert exception_msg == "Data missing from 'User' object: no 'surname' found."
+        assert exception_msg == (
+            "The following parameter(s) were missing from 'User' object: 'surname'"
+        )
 
     def test_serialize(self, fake_session_with_to_dict, patch_json_dumps):
         result = Session.serialize(fake_session_with_to_dict)
@@ -557,27 +559,15 @@ class TestUser:
         assert user_example.surname == "Doe"
         assert user_example.email_address == "jane.doe@example.com"
 
-    def test_user_to_dict(self, fake_user_with_attrs, serialized_user):
-        dict_example = User._to_dict(fake_user_with_attrs)
-        assert dict_example == serialized_user
-
-    def test_user_from_dict(self, serialized_user, patch_user):
-        result = User._from_dict(serialized_user)
-        patch_user.assert_called_once_with(
+    def test_user_asdict(self, fake_user_with_attrs, serialized_user):
+        user_example = User(
             "ewes urn aim",
             "thirst for knowledge",
             "Sir Name of Spamalot",
             "he male a trousers",
         )
-        assert result == "you created the user"
-
-    def test_user_from_dict_with_bad_dict(self, serialized_user):
-        serialized_user_no_surname = dict(serialized_user)
-        del serialized_user_no_surname["surname"]
-        with pytest.raises(DeserializeError) as exc_info:
-            User._from_dict(serialized_user_no_surname)
-        exception_msg = exc_info.value.args[0]
-        assert exception_msg == "Data missing from 'User' object: no 'surname' found."
+        dict_example = User._asdict(user_example)
+        assert dict(dict_example) == serialized_user
 
 
 class TestCredentials:
