@@ -5,6 +5,16 @@ description = "A Python package for interacting with Apteco Marketing Suite reso
 authors = ["Apteco Ltd <support@apteco.com>"]
 license = "Apache-2.0"
 readme = "docs/source/getting_started.rst"
+repository = "https://github.com/Apteco/py-apteco"
+keywords = ["Apteco", "FastStats", "Orbit", "API", "Marketing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+	"License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"
