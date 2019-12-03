@@ -495,8 +495,7 @@ class InitializeTablesAlgorithm:
         session (Session): API session the tables data belongs to
         variables (Dict[str, Variable]): mapping from variable name
             to its Variable object
-        raw_tables (Dict[str, aa.Table]): mapping from table name
-            to its raw table data
+        raw_tables (List[aa.Table]): list of raw tables
         children_lookup (Dict[str, List[str]]): mapping from table name
             to list of its child table names
         master_table (Table): master table of the FastStats system
@@ -551,7 +550,7 @@ class InitializeTablesAlgorithm:
             self.data_view, self.system, count=1000
         )
         self._check_table_results_consistency(results)
-        self.raw_tables = {t.name: t for t in results.list}
+        self.raw_tables = results.list
 
     @staticmethod
     def _check_table_results_consistency(results: aa.PagedResultsTable):
@@ -567,7 +566,7 @@ class InitializeTablesAlgorithm:
     def _identify_children(self):
         """Identify child tables for each table."""
         self.children_lookup = defaultdict(list)
-        for table in self.raw_tables.values():
+        for table in self.raw_tables:
             self.children_lookup[table.parent_table].append(table.name)
         # don't freeze yet: will need to look up childless tables and return empty list
 
@@ -599,7 +598,7 @@ class InitializeTablesAlgorithm:
                 self.variables_lookup.get(t.name, {}),
                 session=self.session,
             )
-            for t in self.raw_tables.values()
+            for t in self.raw_tables
         }
 
     def _assign_parent_and_children(self):
@@ -663,7 +662,7 @@ class InitializeTablesAlgorithm:
     def _check_all_tables_in_tree(self, _tree_tables):
         """Check all tables appear in table tree exactly once."""
         tree_tables_counter = Counter(t.name for t in _tree_tables)
-        raw_tables_counter = Counter(name for name in self.raw_tables.keys())
+        raw_tables_counter = Counter(t.name for t in self.raw_tables)
         if not tree_tables_counter == raw_tables_counter:
             diff = Counter(tree_tables_counter)
             diff.subtract(raw_tables_counter)
@@ -704,8 +703,7 @@ class InitializeVariablesAlgorithm:
         system (str): FastStats system the session is connected to
         api_client (aa.ApiClient): client to handle API calls
         session (Session): API session the variables data belongs to
-        raw_variables (Dict[str, aa.Variable]): mapping from variable name
-            to its raw variable data
+        raw_variables (List[aa.Variable]): list of raw variables
         variables (Dict[str, Variable]): mapping from variable name
             to its Variable object
 

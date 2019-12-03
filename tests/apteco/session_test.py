@@ -895,26 +895,26 @@ def fake_session_with_client(mocker):
 
 @pytest.fixture()
 def fake_raw_tables(mocker):
-    fake = {
-        1: mocker.Mock(parent_table=""),
-        2: mocker.Mock(parent_table="Customers"),
-        3: mocker.Mock(parent_table="Purchases"),
-        4: mocker.Mock(parent_table="Purchases"),
-        5: mocker.Mock(parent_table="Customers"),
-        6: mocker.Mock(parent_table="Web visits"),
-        7: mocker.Mock(parent_table="Pages viewed"),
-        8: mocker.Mock(parent_table="Customers"),
-        9: mocker.Mock(parent_table="Customers"),
-    }
-    fake[1].name = "Customers"
-    fake[2].name = "Purchases"
-    fake[3].name = "Items"
-    fake[4].name = "Vouchers"
-    fake[5].name = "Web visits"
-    fake[6].name = "Pages viewed"
-    fake[7].name = "Links clicked"
-    fake[8].name = "Rentals"
-    fake[9].name = "Communications"
+    fake = [
+        mocker.Mock(parent_table=""),
+        mocker.Mock(parent_table="Customers"),
+        mocker.Mock(parent_table="Purchases"),
+        mocker.Mock(parent_table="Purchases"),
+        mocker.Mock(parent_table="Customers"),
+        mocker.Mock(parent_table="Web visits"),
+        mocker.Mock(parent_table="Pages viewed"),
+        mocker.Mock(parent_table="Customers"),
+        mocker.Mock(parent_table="Customers"),
+    ]
+    fake[0].name = "Customers"
+    fake[1].name = "Purchases"
+    fake[2].name = "Items"
+    fake[3].name = "Vouchers"
+    fake[4].name = "Web visits"
+    fake[5].name = "Pages viewed"
+    fake[6].name = "Links clicked"
+    fake[7].name = "Rentals"
+    fake[8].name = "Communications"
     return fake
 
 
@@ -1044,11 +1044,8 @@ class TestInitializeTablesAlgorithm:
             system="System Of A Down",
         )
         table1 = mocker.Mock()
-        table1.name = "Table1"
         table2 = mocker.Mock()
-        table2.name = "Table2"
         table3 = mocker.Mock()
-        table3.name = "Table3"
         fake_tables_response = mocker.Mock(list=[table1, table2, table3])
         fake_get_tables = mocker.Mock(return_value=fake_tables_response)
         fake_systems_controller = mocker.Mock(
@@ -1065,11 +1062,7 @@ class TestInitializeTablesAlgorithm:
         )
         ctrc = fake_initialize_tables_algo._check_table_results_consistency
         ctrc.assert_called_once_with(fake_tables_response)
-        assert fake_initialize_tables_algo.raw_tables == {
-            "Table1": table1,
-            "Table2": table2,
-            "Table3": table3,
-        }
+        assert fake_initialize_tables_algo.raw_tables == [table1, table2, table3]
 
     def test_check_table_results_consistency(self, mocker):
         fake_results = mocker.Mock(count=3, list=[1, 2, 3])
@@ -1156,14 +1149,14 @@ class TestInitializeTablesAlgorithm:
         attrs1 = dict(zip(args_list, attrs_list1))
         attrs2 = dict(zip(args_list, attrs_list2))
         attrs3 = dict(zip(args_list, attrs_list3))
-        fake_raw_tables_with_all_attrs = {
-            1: fake_raw_tables[1],
-            2: fake_raw_tables[2],
-            3: fake_raw_tables[3],
-        }
-        fake_raw_tables_with_all_attrs[1].configure_mock(**attrs1)
-        fake_raw_tables_with_all_attrs[2].configure_mock(**attrs2)
-        fake_raw_tables_with_all_attrs[3].configure_mock(**attrs3)
+        fake_raw_tables_with_all_attrs = [
+            fake_raw_tables[0],
+            fake_raw_tables[1],
+            fake_raw_tables[2],
+        ]
+        fake_raw_tables_with_all_attrs[0].configure_mock(**attrs1)
+        fake_raw_tables_with_all_attrs[1].configure_mock(**attrs2)
+        fake_raw_tables_with_all_attrs[2].configure_mock(**attrs3)
         fake_variables_lookup = mocker.Mock()
         fake_variables_lookup.get.side_effect = [f"You got {i}" for i in (1, 2, 3)]
         patch_table = mocker.patch(
