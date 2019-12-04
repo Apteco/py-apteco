@@ -133,7 +133,7 @@ class VariableMixin:
         if isinstance(other, str):
             return criteria_clause(self, [other])
         elif isinstance(other, Iterable):
-            return criteria_clause(self, other)
+            return criteria_clause(self, list(other))
         else:
             raise ValueError("Can only set variable equal to to a string or Iterable of strings.")
 
