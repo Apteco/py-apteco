@@ -1,7 +1,12 @@
+import decimal
+from decimal import Decimal
+from numbers import Real, Integral, Number, Rational
 from typing import List, Optional, Iterable
 
 import apteco_api as aa
 from apteco.exceptions import AptecoException
+
+DECIMAL_PLACES = 4
 
 
 class OperationError(AptecoException):
@@ -143,6 +148,177 @@ class VariableMixin:
     # TODO: implement contains method for variables
     def contains(self, needle):
         raise NotImplementedError
+
+
+class SelectorVariableMixin:
+    general_error_msg = (
+        "Chosen value(s) for a selector variable"
+        " must be given as a string or an iterable of strings."
+    )
+    @staticmethod
+    def normalize_value(value, error_msg):
+        if isinstance(value, str):
+            return value
+        else:
+            raise ValueError(error_msg)
+
+    @classmethod
+    def normalize_input(cls, input_value):
+        if isinstance(input_value, str):
+            return [cls.normalize_value(input_value, cls.general_error_msg)]
+        elif isinstance(input_value, Iterable):
+            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
+        else:
+            raise ValueError(cls.general_error_msg)
+
+    def __eq__(self: "SelectorVariable", other):
+        return SelectorClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+
+    def __ne__(self: "SelectorVariable", other):
+        return SelectorClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+
+
+class NumericVariableMixin:
+    general_error_msg = (
+        "Chosen value for a numeric variable"
+        " must be a number or an iterable of numbers."
+    )
+    single_value_error_msg = (
+        "Must specify a single number when using inequality operators."
+    )
+    @staticmethod
+    def normalize_value(value, error_msg):
+        if isinstance(value, (Real, Decimal)) and not isinstance(value, bool):
+            if isinstance(value, Integral):
+                return str(int(value))
+            if isinstance(value, Decimal):
+                return str(value.quantize(Decimal(10) ** -DECIMAL_PLACES))
+            if isinstance(value, (Real, Rational)):
+                return str(round(float(value), DECIMAL_PLACES))
+        else:
+            raise ValueError(error_msg)
+
+    @classmethod
+    def normalize_input(cls, input_value):
+        if isinstance(input_value, Number):
+            return [cls.normalize_value(input_value, cls.general_error_msg)]
+        elif isinstance(input_value, Iterable) and not isinstance(input_value, str):
+            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
+        else:
+            raise ValueError(cls.general_error_msg)
+
+    def __eq__(self: "NumericVariable", other):
+        return NumericClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+
+    def __ne__(self: "NumericVariable", other):
+        return NumericClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+
+    def __lt__(self: "NumericVariable", other):
+        return NumericClause(self.table_name, self.name, [f"<{self.normalize_value(other, self.single_value_error_msg)}"], session=self.session)
+
+    def __le__(self: "NumericVariable", other):
+        return NumericClause(self.table_name, self.name, [f"<={self.normalize_value(other, self.single_value_error_msg)}"], session=self.session)
+
+    def __gt__(self: "NumericVariable", other):
+        return NumericClause(self.table_name, self.name, [f">{self.normalize_value(other, self.single_value_error_msg)}"], session=self.session)
+
+    def __ge__(self: "NumericVariable", other):
+        return NumericClause(self.table_name, self.name, [f">={self.normalize_value(other, self.single_value_error_msg)}"], session=self.session)
+
+
+class TextVariableMixin:
+    general_error_msg = (
+        "Chosen value(s) for a text variable"
+        " must be given as a string or an iterable of strings."
+    )
+    single_value_error_msg = (
+        "Must specify a single string when using inequality operators."
+    )
+    @staticmethod
+    def normalize_value(value, error_msg):
+        if isinstance(value, str):
+            return value
+        else:
+            raise ValueError(error_msg)
+
+    @classmethod
+    def normalize_input(cls, input_value):
+        if isinstance(input_value, str):
+            return [cls.normalize_value(input_value, cls.general_error_msg)]
+        elif isinstance(input_value, Iterable):
+            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
+        else:
+            raise ValueError(cls.general_error_msg)
+
+    def __eq__(self: "TextVariable", other):
+        return TextClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+
+    def __ne__(self: "TextVariable", other):
+        return TextClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+
+    def __le__(self: "TextVariable", other):
+        return TextClause(self.table_name, self.name, [f"<=\"{self.normalize_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
+
+    def __ge__(self: "TextVariable", other):
+        return TextClause(self.table_name, self.name, [f">=\"{self.normalize_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
+
+
+class ArrayVariableMixin:
+    general_error_msg = (
+        "Chosen value(s) for an array variable"
+        " must be given as a string or an iterable of strings."
+    )
+
+    @staticmethod
+    def normalize_value(value, error_msg):
+        if isinstance(value, str):
+            return value
+        else:
+            raise ValueError(error_msg)
+
+    @classmethod
+    def normalize_input(cls, input_value):
+        if isinstance(input_value, str):
+            return [cls.normalize_value(input_value, cls.general_error_msg)]
+        elif isinstance(input_value, Iterable):
+            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
+        else:
+            raise ValueError(cls.general_error_msg)
+
+    def __eq__(self: "ArrayVariable", other):
+        return ArrayClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+
+    def __ne__(self: "ArrayVariable", other):
+        return ArrayClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+
+
+class FlagArrayVariableMixin:
+    general_error_msg = (
+        "Chosen value(s) for a flag array variable"
+        " must be given as a string or an iterable of strings."
+    )
+
+    @staticmethod
+    def normalize_value(value, error_msg):
+        if isinstance(value, str):
+            return value
+        else:
+            raise ValueError(error_msg)
+
+    @classmethod
+    def normalize_input(cls, input_value):
+        if isinstance(input_value, str):
+            return [cls.normalize_value(input_value, cls.general_error_msg)]
+        elif isinstance(input_value, Iterable):
+            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
+        else:
+            raise ValueError(cls.general_error_msg)
+
+    def __eq__(self: "FlagArrayVariable", other):
+        return FlagArrayClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+
+    def __ne__(self: "FlagArrayVariable", other):
+        return FlagArrayClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
 
 
 class ClauseMixin:

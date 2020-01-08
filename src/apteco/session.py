@@ -15,7 +15,15 @@ from apteco.exceptions import (
     TablesError,
     VariablesError,
 )
-from apteco.query import TableMixin, VariableMixin
+from apteco.query import (
+    ArrayVariableMixin,
+    FlagArrayVariableMixin,
+    NumericVariableMixin,
+    SelectorVariableMixin,
+    TableMixin,
+    TextVariableMixin,
+    VariableMixin,
+)
 
 NOT_ASSIGNED: Any = object()
 VARIABLES_PER_PAGE = 100
@@ -238,7 +246,7 @@ class BaseSelectorVariable(Variable):
         self.var_code_order = selector_info.var_code_order
 
 
-class SelectorVariable(BaseSelectorVariable):
+class SelectorVariable(SelectorVariableMixin, BaseSelectorVariable):
     """Class representing a FastStats Selector variable."""
 
     def __init__(self, **kwargs):
@@ -256,7 +264,7 @@ class CombinedCategoriesVariable(BaseSelectorVariable):
         self.combined_from = selector_info.combined_from_variable_name
 
 
-class NumericVariable(Variable):
+class NumericVariable(NumericVariableMixin, Variable):
     """Class representing a FastStats Numeric variable."""
 
     def __init__(self, **kwargs):
@@ -270,7 +278,7 @@ class NumericVariable(Variable):
         self.currency_symbol = numeric_info.currency_symbol
 
 
-class TextVariable(Variable):
+class TextVariable(TextVariableMixin ,Variable):
     """Class representing a FastStats Text variable."""
 
     def __init__(self, **kwargs):
@@ -280,7 +288,7 @@ class TextVariable(Variable):
         self.max_length = text_info.maximum_text_length
 
 
-class ArrayVariable(BaseSelectorVariable):
+class ArrayVariable(ArrayVariableMixin, BaseSelectorVariable):
     """Class representing a FastStats Array variable."""
 
     def __init__(self, **kwargs):
@@ -288,7 +296,7 @@ class ArrayVariable(BaseSelectorVariable):
         self.type = "Array"
 
 
-class FlagArrayVariable(BaseSelectorVariable):
+class FlagArrayVariable(FlagArrayVariableMixin, BaseSelectorVariable):
     """Class representing a FastStats Flag Array variable."""
 
     def __init__(self, **kwargs):
