@@ -1,8 +1,16 @@
+from decimal import Decimal
+from fractions import Fraction
 from unittest.mock import Mock
 
 import apteco_api as aa
+import pytest
 
 from apteco.query import (
+    SelectorVariableMixin,
+    NumericVariableMixin,
+    TextVariableMixin,
+    ArrayVariableMixin,
+    FlagArrayVariableMixin,
     ArrayClause,
     BooleanClause,
     CombinedCategoriesClause,
@@ -13,6 +21,502 @@ from apteco.query import (
     TableClause,
     TextClause,
 )
+
+
+class TestSelectorVariableMixin:
+
+    @pytest.fixture()
+    def fake_selector_variable_mixin(self):
+        svm_example = SelectorVariableMixin.__new__(SelectorVariableMixin)
+        svm_example.type = "Selector"
+        svm_example.table_name = "Supporters"
+        svm_example.name = "Membership"
+        svm_example.session = "CharityDataViewSession"
+        return svm_example
+
+    def test_normalize_value(self, fake_selector_variable_mixin):
+        assert fake_selector_variable_mixin.normalize_value("MyVarCode", "Error shouldn't be raised") == "MyVarCode"
+        assert fake_selector_variable_mixin.normalize_value("", "Error shouldn't be raised") == ""
+        with pytest.raises(ValueError) as exc_info:
+            fake_selector_variable_mixin.normalize_value(True, "Can't have Booleans here.")
+        assert exc_info.value.args[0] == "Can't have Booleans here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_selector_variable_mixin.normalize_value(3.45, "Can't use floats here.")
+        assert exc_info.value.args[0] == "Can't use floats here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_selector_variable_mixin.normalize_value(["a", "B", "c"], "Can't have lists here.")
+        assert exc_info.value.args[0] == "Can't have lists here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_selector_variable_mixin.normalize_value(None, "Can't be None.")
+        assert exc_info.value.args[0] == "Can't be None."
+
+    def test_normalize_input(self):
+        assert SelectorVariableMixin.normalize_input("0") == ["0"]
+        assert SelectorVariableMixin.normalize_input("MyVarCode") == ["MyVarCode"]
+        assert SelectorVariableMixin.normalize_input(["VarCodeListOfOne"]) == ["VarCodeListOfOne"]
+        assert SelectorVariableMixin.normalize_input(["VarCode1", "VarCode2"]) == ["VarCode1", "VarCode2"]
+        assert sorted(SelectorVariableMixin.normalize_input({"VarCodeFromSet1", "VarCodeFromSet2"})) == ["VarCodeFromSet1", "VarCodeFromSet2"]
+        assert SelectorVariableMixin.normalize_input(f"VarCodeFromGenerator{i}" for i in range(3)) == ["VarCodeFromGenerator0", "VarCodeFromGenerator1", "VarCodeFromGenerator2"]
+        with pytest.raises(ValueError) as exc_info:
+            SelectorVariableMixin.normalize_input(1)
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a selector variable"
+            " must be given as a string or an iterable of strings."
+        )
+        with pytest.raises(ValueError) as exc_info:
+            SelectorVariableMixin.normalize_input([1, 2, 3])
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a selector variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    def test_eq(self, fake_selector_variable_mixin):
+        high_value_supporters = fake_selector_variable_mixin == ("Gold", "Platinum")
+        assert type(high_value_supporters) == SelectorClause
+        assert high_value_supporters.table_name == "Supporters"
+        assert high_value_supporters.variable_name == "Membership"
+        assert high_value_supporters.values == ["Gold", "Platinum"]
+        assert high_value_supporters.include is True
+        assert high_value_supporters.session == "CharityDataViewSession"
+
+        bronze_supporters = fake_selector_variable_mixin == "Bronze"
+        assert type(bronze_supporters) == SelectorClause
+        assert bronze_supporters.table_name == "Supporters"
+        assert bronze_supporters.variable_name == "Membership"
+        assert bronze_supporters.values == ["Bronze"]
+        assert bronze_supporters.include is True
+        assert bronze_supporters.session == "CharityDataViewSession"
+
+    def test_ne(self, fake_selector_variable_mixin):
+        higher_value_supporters = fake_selector_variable_mixin != ("Bronze", "Silver")
+        assert type(higher_value_supporters) == SelectorClause
+        assert higher_value_supporters.table_name == "Supporters"
+        assert higher_value_supporters.variable_name == "Membership"
+        assert higher_value_supporters.values == ["Bronze", "Silver"]
+        assert higher_value_supporters.include is False
+        assert higher_value_supporters.session == "CharityDataViewSession"
+
+        not_platinum = fake_selector_variable_mixin != "Platinum"
+        assert type(not_platinum) == SelectorClause
+        assert not_platinum.table_name == "Supporters"
+        assert not_platinum.variable_name == "Membership"
+        assert not_platinum.values == ["Platinum"]
+        assert not_platinum.include is False
+        assert not_platinum.session == "CharityDataViewSession"
+
+
+class TestNumericVariableMixin:
+
+    @pytest.fixture()
+    def fake_numeric_variable_mixin(self):
+        nvm_example = NumericVariableMixin.__new__(NumericVariableMixin)
+        nvm_example.type = "Numeric"
+        nvm_example.table_name = "Donations"
+        nvm_example.name = "Amount"
+        nvm_example.session = "CharityDataViewSession"
+        return nvm_example
+
+    def test_normalize_value(self, fake_numeric_variable_mixin):
+        assert fake_numeric_variable_mixin.normalize_value(0, "Shouldn't see this...") == "0"
+        assert fake_numeric_variable_mixin.normalize_value(999, "Shouldn't see this...") == "999"
+        assert fake_numeric_variable_mixin.normalize_value(10.62, "Shouldn't see this...") == "10.62"
+        assert fake_numeric_variable_mixin.normalize_value(1234.567890123, "Shouldn't see this...") == "1234.5679"
+        assert fake_numeric_variable_mixin.normalize_value(Decimal("67.123456"), "Shouldn't see this...") == "67.1235"
+        assert fake_numeric_variable_mixin.normalize_value(Decimal("67.12396"), "Shouldn't see this...") == "67.1240"
+        assert fake_numeric_variable_mixin.normalize_value(Fraction(6543, 89), "Shouldn't see this...") == "73.5169"
+        with pytest.raises(ValueError) as exc_info:
+            fake_numeric_variable_mixin.normalize_value(True, "Can't have Booleans here.")
+        assert exc_info.value.args[0] == "Can't have Booleans here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_numeric_variable_mixin.normalize_value("3.45", "Can't use strings here.")
+        assert exc_info.value.args[0] == "Can't use strings here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_numeric_variable_mixin.normalize_value([16, 18, 21], "Can't have lists here.")
+        assert exc_info.value.args[0] == "Can't have lists here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_numeric_variable_mixin.normalize_value(None, "Generic error message.")
+        assert exc_info.value.args[0] == "Generic error message."
+
+    def test_normalize_input(self, fake_numeric_variable_mixin):
+        assert fake_numeric_variable_mixin.normalize_input(123) == ["123"]
+        assert fake_numeric_variable_mixin.normalize_input(10.62) == ["10.62"]
+        assert fake_numeric_variable_mixin.normalize_input(1234.567890123) == ["1234.5679"]
+        assert fake_numeric_variable_mixin.normalize_input(Decimal("67.123456")) == ["67.1235"]
+        assert fake_numeric_variable_mixin.normalize_input(Fraction(6543, 89)) == ["73.5169"]
+        assert fake_numeric_variable_mixin.normalize_input([16, 18, 21]) == ["16", "18", "21"]
+        assert fake_numeric_variable_mixin.normalize_input((22, 6546.3216487, Fraction(65421, 984), Decimal("729421.65487"))) == ["22", "6546.3216", "66.4848", "729421.6549"]
+        with pytest.raises(ValueError) as exc_info:
+            fake_numeric_variable_mixin.normalize_input(True)
+        assert exc_info.value.args[0] == "Chosen value for a numeric variable must be a number or an iterable of numbers."
+        with pytest.raises(ValueError) as exc_info:
+            fake_numeric_variable_mixin.normalize_input("3.45")
+        assert exc_info.value.args[0] == "Chosen value for a numeric variable must be a number or an iterable of numbers."
+
+    def test_eq(self, fake_numeric_variable_mixin):
+        donations_100 = fake_numeric_variable_mixin == 100
+        assert type(donations_100) == NumericClause
+        assert donations_100.table_name == "Donations"
+        assert donations_100.variable_name == "Amount"
+        assert donations_100.values == ["100"]
+        assert donations_100.include is True
+        assert donations_100.session == "CharityDataViewSession"
+
+        hundreds_donations = fake_numeric_variable_mixin == (i * 100 for i in range(1, 10))
+        assert type(hundreds_donations) == NumericClause
+        assert hundreds_donations.table_name == "Donations"
+        assert hundreds_donations.variable_name == "Amount"
+        assert hundreds_donations.values == ["100", "200", "300", "400", "500", "600", "700", "800", "900"]
+        assert hundreds_donations.include is True
+        assert hundreds_donations.session == "CharityDataViewSession"
+
+    def test_ne(self, fake_numeric_variable_mixin):
+        not_this = fake_numeric_variable_mixin != 72.1896
+        assert type(not_this) == NumericClause
+        assert not_this.table_name == "Donations"
+        assert not_this.variable_name == "Amount"
+        assert not_this.values == ["72.1896"]
+        assert not_this.include is False
+        assert not_this.session == "CharityDataViewSession"
+
+        not_one_of_these = fake_numeric_variable_mixin != (17.5, 8192)
+        assert type(not_one_of_these) == NumericClause
+        assert not_one_of_these.table_name == "Donations"
+        assert not_one_of_these.variable_name == "Amount"
+        assert not_one_of_these.values == ["17.5", "8192"]
+        assert not_one_of_these.include is False
+        assert not_one_of_these.session == "CharityDataViewSession"
+
+    def test_lt(self, fake_numeric_variable_mixin):
+        small_donations = fake_numeric_variable_mixin < Decimal("10.00")
+        assert type(small_donations) == NumericClause
+        assert small_donations.table_name == "Donations"
+        assert small_donations.variable_name == "Amount"
+        assert small_donations.values == ["<10.0000"]
+        assert small_donations.include is True
+        assert small_donations.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            less_than_a_list = fake_numeric_variable_mixin < [512.64, 646.464646]
+        assert exc_info.value.args[0] == "Must specify a single number when using inequality operators."
+
+    def test_le(self, fake_numeric_variable_mixin):
+        up_to_including_10k = fake_numeric_variable_mixin <= 10_000
+        assert type(up_to_including_10k) == NumericClause
+        assert up_to_including_10k.table_name == "Donations"
+        assert up_to_including_10k.variable_name == "Amount"
+        assert up_to_including_10k.values == ["<=10000"]
+        assert up_to_including_10k.include is True
+        assert up_to_including_10k.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            less_than_equal_tuple = fake_numeric_variable_mixin <= (52, 27, 9.75)
+        assert exc_info.value.args[0] == "Must specify a single number when using inequality operators."
+
+    def test_gt(self, fake_numeric_variable_mixin):
+        big_donations = fake_numeric_variable_mixin > 0.01 * 26_000
+        assert type(big_donations) == NumericClause
+        assert big_donations.table_name == "Donations"
+        assert big_donations.variable_name == "Amount"
+        assert big_donations.values == [">260.0"]
+        assert big_donations.include is True
+        assert big_donations.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            more_than_a_set = fake_numeric_variable_mixin > {15, 30, 40, 40}
+        assert exc_info.value.args[0] == "Must specify a single number when using inequality operators."
+
+    def test_ge(self, fake_numeric_variable_mixin):
+        at_least_this_ratio = fake_numeric_variable_mixin >= Fraction(65432, 987)
+        assert type(at_least_this_ratio) == NumericClause
+        assert at_least_this_ratio.table_name == "Donations"
+        assert at_least_this_ratio.variable_name == "Amount"
+        assert at_least_this_ratio.values == [">=66.2938"]
+        assert at_least_this_ratio.include is True
+        assert at_least_this_ratio.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            at_least_a_generator = fake_numeric_variable_mixin >= (n for n in "12.3 4.56 789")
+        assert exc_info.value.args[0] == "Must specify a single number when using inequality operators."
+
+
+class TestTextVariableMixin:
+
+    @pytest.fixture()
+    def fake_email_text_variable_mixin(self):
+        tvm_example = TextVariableMixin.__new__(TextVariableMixin)
+        tvm_example.type = "Text"
+        tvm_example.table_name = "Supporters"
+        tvm_example.name = "EmailAddress"
+        tvm_example.session = "CharityDataViewSession"
+        return tvm_example
+
+    @pytest.fixture()
+    def fake_surname_text_variable_mixin(self):
+        tvm_example = TextVariableMixin.__new__(TextVariableMixin)
+        tvm_example.type = "Text"
+        tvm_example.table_name = "Supporters"
+        tvm_example.name = "Surname"
+        tvm_example.session = "CharityDataViewSession"
+        return tvm_example
+
+    def test_normalize_value(self, fake_surname_text_variable_mixin):
+        assert fake_surname_text_variable_mixin.normalize_value("Jones", "Error shouldn't be raised") == "Jones"
+        assert fake_surname_text_variable_mixin.normalize_value("", "Error shouldn't be raised") == ""
+        with pytest.raises(ValueError) as exc_info:
+            fake_surname_text_variable_mixin.normalize_value(True, "Can't have Booleans here.")
+        assert exc_info.value.args[0] == "Can't have Booleans here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_surname_text_variable_mixin.normalize_value(3.45, "Can't use floats here.")
+        assert exc_info.value.args[0] == "Can't use floats here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_surname_text_variable_mixin.normalize_value(["a", "B", "c"], "Can't have lists here.")
+        assert exc_info.value.args[0] == "Can't have lists here."
+        with pytest.raises(ValueError) as exc_info:
+            fake_surname_text_variable_mixin.normalize_value(None, "Generic error message.")
+        assert exc_info.value.args[0] == "Generic error message."
+
+    def test_normalize_input(self, fake_surname_text_variable_mixin):
+        assert fake_surname_text_variable_mixin.normalize_input(["Edwards", "Williams", "Stevens"]) == ["Edwards", "Williams", "Stevens"]
+        assert fake_surname_text_variable_mixin.normalize_input((str(i) for i in range(5, 10))) == ["5", "6", "7", "8", "9"]
+        assert sorted(fake_surname_text_variable_mixin.normalize_input(set(list("TESTED")))) == ["D", "E", "S", "T"]
+        with pytest.raises(ValueError) as exc_info:
+            fake_surname_text_variable_mixin.normalize_input(True)
+        assert exc_info.value.args[0] == "Chosen value(s) for a text variable must be given as a string or an iterable of strings."
+        with pytest.raises(ValueError) as exc_info:
+            fake_surname_text_variable_mixin.normalize_input(3.45)
+        assert exc_info.value.args[0] == "Chosen value(s) for a text variable must be given as a string or an iterable of strings."
+        with pytest.raises(ValueError) as exc_info:
+            fake_surname_text_variable_mixin.normalize_input(None)
+        assert exc_info.value.args[0] == "Chosen value(s) for a text variable must be given as a string or an iterable of strings."
+        with pytest.raises(ValueError) as exc_info:
+            fake_surname_text_variable_mixin.normalize_input([3.45])
+        assert exc_info.value.args[0] == "Chosen value(s) for a text variable must be given as a string or an iterable of strings."
+
+    def test_eq(self, fake_email_text_variable_mixin):
+        specific_donor = fake_email_text_variable_mixin == "donor@domain.com"
+        assert type(specific_donor) == TextClause
+        assert specific_donor.table_name == "Supporters"
+        assert specific_donor.variable_name == "EmailAddress"
+        assert specific_donor.values == ["donor@domain.com"]
+        assert specific_donor.match_type == "Is"
+        assert specific_donor.match_case is True
+        assert specific_donor.include is True
+        assert specific_donor.session == "CharityDataViewSession"
+
+        donors_by_email = fake_email_text_variable_mixin == [
+            f"donor_{i}@domain.com" for i in range(4)
+        ]
+        assert type(donors_by_email) == TextClause
+        assert donors_by_email.table_name == "Supporters"
+        assert donors_by_email.variable_name == "EmailAddress"
+        assert donors_by_email.values == [
+            "donor_0@domain.com",
+            "donor_1@domain.com",
+            "donor_2@domain.com",
+            "donor_3@domain.com",
+        ]
+        assert donors_by_email.match_type == "Is"
+        assert donors_by_email.match_case is True
+        assert donors_by_email.include is True
+        assert donors_by_email.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            donors_by_number = fake_email_text_variable_mixin == {34, 765, 2930}
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    def test_ne(self, fake_email_text_variable_mixin):
+        dont_want_this_person = fake_email_text_variable_mixin != "bad_donor@domain.com"
+        assert type(dont_want_this_person) == TextClause
+        assert dont_want_this_person.table_name == "Supporters"
+        assert dont_want_this_person.variable_name == "EmailAddress"
+        assert dont_want_this_person.values == ["bad_donor@domain.com"]
+        assert dont_want_this_person.match_type == "Is"
+        assert dont_want_this_person.match_case is True
+        assert dont_want_this_person.include is False
+        assert dont_want_this_person.session == "CharityDataViewSession"
+
+        not_these_people = fake_email_text_variable_mixin != {
+            "dont_email_me@domain.com", "unsubscribed@domain.org"
+        }
+        assert type(not_these_people) == TextClause
+        assert not_these_people.table_name == "Supporters"
+        assert not_these_people.variable_name == "EmailAddress"
+        assert sorted(not_these_people.values) == [
+            "dont_email_me@domain.com", "unsubscribed@domain.org"
+        ]
+        assert not_these_people.match_type == "Is"
+        assert not_these_people.match_case is True
+        assert not_these_people.include is False
+        assert not_these_people.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            donor_not_an_obj = fake_email_text_variable_mixin != object()
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    def test_le(self, fake_surname_text_variable_mixin):
+        first_half_alphabet = fake_surname_text_variable_mixin <= "n"
+        assert type(first_half_alphabet) == TextClause
+        assert first_half_alphabet.table_name == "Supporters"
+        assert first_half_alphabet.variable_name == "Surname"
+        assert first_half_alphabet.values == ['<="n"']
+        assert first_half_alphabet.match_type == "Ranges"
+        assert first_half_alphabet.match_case is True
+        assert first_half_alphabet.include is True
+        assert first_half_alphabet.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            earlier_than_letters = fake_surname_text_variable_mixin <= list("abcedfgh")
+        assert exc_info.value.args[0] == (
+            "Must specify a single string when using inequality operators."
+        )
+
+    def test_ge(self, fake_surname_text_variable_mixin):
+        smith_or_later = fake_surname_text_variable_mixin >= "Smith"
+        assert type(smith_or_later) == TextClause
+        assert smith_or_later.table_name == "Supporters"
+        assert smith_or_later.variable_name == "Surname"
+        assert smith_or_later.values == ['>="Smith"']
+        assert smith_or_later.match_type == "Ranges"
+        assert smith_or_later.match_case is True
+        assert smith_or_later.include is True
+        assert smith_or_later.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            later_than_tuple = fake_surname_text_variable_mixin >= ("A", "e", "i", "O")
+        assert exc_info.value.args[0] == (
+            "Must specify a single string when using inequality operators.")
+
+
+class TestArrayVariableMixin:
+
+    @pytest.fixture()
+    def fake_array_variable_mixin(self):
+        avm_example = ArrayVariableMixin.__new__(ArrayVariableMixin)
+        avm_example.type = "Array"
+        avm_example.table_name = "Campaigns"
+        avm_example.name = "Tags"
+        avm_example.session = "CharityDataViewSession"
+        return avm_example
+
+    def test_eq(self, fake_array_variable_mixin):
+        national_campaigns = fake_array_variable_mixin == "National"
+        assert type(national_campaigns) == ArrayClause
+        assert national_campaigns.table_name == "Campaigns"
+        assert national_campaigns.variable_name == "Tags"
+        assert national_campaigns.values == ["National"]
+        assert national_campaigns.logic == "OR"
+        assert national_campaigns.include is True
+        assert national_campaigns.session == "CharityDataViewSession"
+
+        autumn_campaigns = fake_array_variable_mixin == {
+            "Autumn", "Fall", "Sep", "Oct", "Nov", "Halloween", "Back-to-School"
+        }
+        assert type(autumn_campaigns) == ArrayClause
+        assert autumn_campaigns.table_name == "Campaigns"
+        assert autumn_campaigns.variable_name == "Tags"
+        assert sorted(autumn_campaigns.values) == [
+            "Autumn", "Back-to-School", "Fall", "Halloween", "Nov", "Oct", "Sep"
+        ]
+        assert autumn_campaigns.logic == "OR"
+        assert autumn_campaigns.include is True
+        assert autumn_campaigns.session == "CharityDataViewSession"
+
+    def test_ne(self, fake_array_variable_mixin):
+        not_christmas = fake_array_variable_mixin != "Christmas"
+        assert type(not_christmas) == ArrayClause
+        assert not_christmas.table_name == "Campaigns"
+        assert not_christmas.variable_name == "Tags"
+        assert not_christmas.values == ["Christmas"]
+        assert not_christmas.logic == "OR"
+        assert not_christmas.include is False
+        assert not_christmas.session == "CharityDataViewSession"
+
+        one_off_campaigns = fake_array_variable_mixin != [
+            "Recurrent", "Annual", "Regular", "Monthly", "Weekly", "Daily", "Seasonal"
+        ]
+        assert type(one_off_campaigns) == ArrayClause
+        assert one_off_campaigns.table_name == "Campaigns"
+        assert one_off_campaigns.variable_name == "Tags"
+        assert one_off_campaigns.values == [
+            "Recurrent", "Annual", "Regular", "Monthly", "Weekly", "Daily", "Seasonal"
+        ]
+        assert one_off_campaigns.logic == "OR"
+        assert one_off_campaigns.include is False
+        assert one_off_campaigns.session == "CharityDataViewSession"
+
+
+class TestFlagArrayVariableMixin:
+
+    @pytest.fixture()
+    def fake_flag_array_variable_mixin(self):
+        favm_example = FlagArrayVariableMixin.__new__(FlagArrayVariableMixin)
+        favm_example.type = "FlagArray"
+        favm_example.table_name = "Supporters"
+        favm_example.name = "ContactPreferences"
+        favm_example.session = "CharityDataViewSession"
+        return favm_example
+
+    def test_eq(self, fake_flag_array_variable_mixin):
+        can_post = fake_flag_array_variable_mixin == "DirectMail"
+        assert type(can_post) == FlagArrayClause
+        assert can_post.table_name == "Supporters"
+        assert can_post.variable_name == "ContactPreferences"
+        assert can_post.values == ["DirectMail"]
+        assert can_post.logic == "OR"
+        assert can_post.include is True
+        assert can_post.session == "CharityDataViewSession"
+
+        phone_or_text = fake_flag_array_variable_mixin == ("SMS", "Telephone")
+        assert type(phone_or_text) == FlagArrayClause
+        assert phone_or_text.table_name == "Supporters"
+        assert phone_or_text.variable_name == "ContactPreferences"
+        assert phone_or_text.values == ["SMS", "Telephone"]
+        assert phone_or_text.logic == "OR"
+        assert phone_or_text.include is True
+        assert phone_or_text.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            contactable = fake_flag_array_variable_mixin == True
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a flag array variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    def test_ne(self, fake_flag_array_variable_mixin):
+        cant_email = fake_flag_array_variable_mixin != "Email"
+        assert type(cant_email) == FlagArrayClause
+        assert cant_email.table_name == "Supporters"
+        assert cant_email.variable_name == "ContactPreferences"
+        assert cant_email.values == ["Email"]
+        assert cant_email.logic == "OR"
+        assert cant_email.include is False
+        assert cant_email.session == "CharityDataViewSession"
+
+        not_business = fake_flag_array_variable_mixin != {
+            "BusinessPhone", "BusinessDirectMail", "BusinessEmail"
+        }
+        assert type(not_business) == FlagArrayClause
+        assert not_business.table_name == "Supporters"
+        assert not_business.variable_name == "ContactPreferences"
+        assert sorted(not_business.values) == [
+            "BusinessDirectMail", "BusinessEmail", "BusinessPhone"
+        ]
+        assert not_business.logic == "OR"
+        assert not_business.include is False
+        assert not_business.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            contactable = fake_flag_array_variable_mixin != 0
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a flag array variable"
+            " must be given as a string or an iterable of strings."
+        )
 
 
 class TestSelectorClause:
