@@ -1,4 +1,3 @@
-import decimal
 from decimal import Decimal
 from numbers import Real, Integral, Number, Rational
 from typing import List, Optional, Iterable
@@ -166,6 +165,27 @@ def normalize_string_input(input_value, error_msg):
         raise ValueError(error_msg)
 
 
+def normalize_number_value(value, error_msg):
+    if isinstance(value, (Real, Decimal)) and not isinstance(value, bool):
+        if isinstance(value, Integral):
+            return str(int(value))
+        if isinstance(value, Decimal):
+            return str(value.quantize(Decimal(10) ** -DECIMAL_PLACES))
+        if isinstance(value, (Real, Rational)):
+            return str(round(float(value), DECIMAL_PLACES))
+    else:
+        raise ValueError(error_msg)
+
+
+def normalize_number_input(input_value, error_msg):
+    if isinstance(input_value, Number):
+        return [normalize_number_value(input_value, error_msg)]
+    elif isinstance(input_value, Iterable) and not isinstance(input_value, str):
+        return [normalize_number_value(v, error_msg) for v in input_value]
+    else:
+        raise ValueError(error_msg)
+
+
 class SelectorVariableMixin:
     general_error_msg = (
         "Chosen value(s) for a selector variable"
@@ -187,44 +207,24 @@ class NumericVariableMixin:
     single_value_error_msg = (
         "Must specify a single number when using inequality operators."
     )
-    @staticmethod
-    def normalize_value(value, error_msg):
-        if isinstance(value, (Real, Decimal)) and not isinstance(value, bool):
-            if isinstance(value, Integral):
-                return str(int(value))
-            if isinstance(value, Decimal):
-                return str(value.quantize(Decimal(10) ** -DECIMAL_PLACES))
-            if isinstance(value, (Real, Rational)):
-                return str(round(float(value), DECIMAL_PLACES))
-        else:
-            raise ValueError(error_msg)
-
-    @classmethod
-    def normalize_input(cls, input_value):
-        if isinstance(input_value, Number):
-            return [cls.normalize_value(input_value, cls.general_error_msg)]
-        elif isinstance(input_value, Iterable) and not isinstance(input_value, str):
-            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
-        else:
-            raise ValueError(cls.general_error_msg)
 
     def __eq__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+        return NumericClause(self.table_name, self.name, normalize_number_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+        return NumericClause(self.table_name, self.name, normalize_number_input(other, self.general_error_msg), include=False, session=self.session)
 
     def __lt__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, [f"<{self.normalize_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(self.table_name, self.name, [f"<{normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
 
     def __le__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, [f"<={self.normalize_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(self.table_name, self.name, [f"<={normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
 
     def __gt__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, [f">{self.normalize_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(self.table_name, self.name, [f">{normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
 
     def __ge__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, [f">={self.normalize_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(self.table_name, self.name, [f">={normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
 
 
 class TextVariableMixin:

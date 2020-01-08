@@ -22,6 +22,8 @@ from apteco.query import (
     TextClause,
     normalize_string_input,
     normalize_string_value,
+    normalize_number_input,
+    normalize_number_value,
 )
 
 
@@ -64,6 +66,44 @@ def test_normalize_string_input():
     with pytest.raises(ValueError) as exc_info:
         normalize_string_input([1, 2, 3], "Lists must contain only strings if given as input here")
     assert exc_info.value.args[0] == "Lists must contain only strings if given as input here"
+
+
+def test_normalize_number_input():
+    assert normalize_number_input(123, "Shouldn't see this error") == ["123"]
+    assert normalize_number_input(10.62, "Shouldn't see this error") == ["10.62"]
+    assert normalize_number_input(1234.567890123, "Shouldn't see this error") == ["1234.5679"]
+    assert normalize_number_input(Decimal("67.123456"), "Shouldn't see this error") == ["67.1235"]
+    assert normalize_number_input(Fraction(6543, 89), "Shouldn't see this error") == ["73.5169"]
+    assert normalize_number_input([16, 18, 21], "Shouldn't see this error") == ["16", "18", "21"]
+    assert normalize_number_input((22, 6546.3216487, Fraction(65421, 984), Decimal("729421.65487")), "Shouldn't see this error") == ["22", "6546.3216", "66.4848", "729421.6549"]
+    with pytest.raises(ValueError) as exc_info:
+        normalize_number_input(True, "A bool doesn't count as a number.")
+    assert exc_info.value.args[0] == "A bool doesn't count as a number."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_number_input("3.45", "A numeric string doesn't count as a number.")
+    assert exc_info.value.args[0] == "A numeric string doesn't count as a number."
+
+
+def test_normalize_number_value():
+    assert normalize_number_value(0, "Shouldn't see this...") == "0"
+    assert normalize_number_value(999, "Shouldn't see this...") == "999"
+    assert normalize_number_value(10.62, "Shouldn't see this...") == "10.62"
+    assert normalize_number_value(1234.567890123, "Shouldn't see this...") == "1234.5679"
+    assert normalize_number_value(Decimal("67.123456"), "Shouldn't see this...") == "67.1235"
+    assert normalize_number_value(Decimal("67.12396"), "Shouldn't see this...") == "67.1240"
+    assert normalize_number_value(Fraction(6543, 89), "Shouldn't see this...") == "73.5169"
+    with pytest.raises(ValueError) as exc_info:
+        normalize_number_value(True, "Can't have Booleans here.")
+    assert exc_info.value.args[0] == "Can't have Booleans here."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_number_value("3.45", "Can't use strings here.")
+    assert exc_info.value.args[0] == "Can't use strings here."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_number_value([16, 18, 21], "Can't have lists here.")
+    assert exc_info.value.args[0] == "Can't have lists here."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_number_value(None, "Can't have None here.")
+    assert exc_info.value.args[0] == "Can't have None here."
 
 
 class TestSelectorVariableMixin:
@@ -122,42 +162,6 @@ class TestNumericVariableMixin:
         nvm_example.name = "Amount"
         nvm_example.session = "CharityDataViewSession"
         return nvm_example
-
-    def test_normalize_value(self, fake_numeric_variable_mixin):
-        assert fake_numeric_variable_mixin.normalize_value(0, "Shouldn't see this...") == "0"
-        assert fake_numeric_variable_mixin.normalize_value(999, "Shouldn't see this...") == "999"
-        assert fake_numeric_variable_mixin.normalize_value(10.62, "Shouldn't see this...") == "10.62"
-        assert fake_numeric_variable_mixin.normalize_value(1234.567890123, "Shouldn't see this...") == "1234.5679"
-        assert fake_numeric_variable_mixin.normalize_value(Decimal("67.123456"), "Shouldn't see this...") == "67.1235"
-        assert fake_numeric_variable_mixin.normalize_value(Decimal("67.12396"), "Shouldn't see this...") == "67.1240"
-        assert fake_numeric_variable_mixin.normalize_value(Fraction(6543, 89), "Shouldn't see this...") == "73.5169"
-        with pytest.raises(ValueError) as exc_info:
-            fake_numeric_variable_mixin.normalize_value(True, "Can't have Booleans here.")
-        assert exc_info.value.args[0] == "Can't have Booleans here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_numeric_variable_mixin.normalize_value("3.45", "Can't use strings here.")
-        assert exc_info.value.args[0] == "Can't use strings here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_numeric_variable_mixin.normalize_value([16, 18, 21], "Can't have lists here.")
-        assert exc_info.value.args[0] == "Can't have lists here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_numeric_variable_mixin.normalize_value(None, "Generic error message.")
-        assert exc_info.value.args[0] == "Generic error message."
-
-    def test_normalize_input(self, fake_numeric_variable_mixin):
-        assert fake_numeric_variable_mixin.normalize_input(123) == ["123"]
-        assert fake_numeric_variable_mixin.normalize_input(10.62) == ["10.62"]
-        assert fake_numeric_variable_mixin.normalize_input(1234.567890123) == ["1234.5679"]
-        assert fake_numeric_variable_mixin.normalize_input(Decimal("67.123456")) == ["67.1235"]
-        assert fake_numeric_variable_mixin.normalize_input(Fraction(6543, 89)) == ["73.5169"]
-        assert fake_numeric_variable_mixin.normalize_input([16, 18, 21]) == ["16", "18", "21"]
-        assert fake_numeric_variable_mixin.normalize_input((22, 6546.3216487, Fraction(65421, 984), Decimal("729421.65487"))) == ["22", "6546.3216", "66.4848", "729421.6549"]
-        with pytest.raises(ValueError) as exc_info:
-            fake_numeric_variable_mixin.normalize_input(True)
-        assert exc_info.value.args[0] == "Chosen value for a numeric variable must be a number or an iterable of numbers."
-        with pytest.raises(ValueError) as exc_info:
-            fake_numeric_variable_mixin.normalize_input("3.45")
-        assert exc_info.value.args[0] == "Chosen value for a numeric variable must be a number or an iterable of numbers."
 
     def test_eq(self, fake_numeric_variable_mixin):
         donations_100 = fake_numeric_variable_mixin == 100
