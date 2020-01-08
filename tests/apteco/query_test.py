@@ -20,7 +20,50 @@ from apteco.query import (
     SubSelectionClause,
     TableClause,
     TextClause,
+    normalize_string_input,
+    normalize_string_value,
 )
+
+
+def test_normalize_string_value():
+    assert normalize_string_value("MyVarCode", "Error shouldn't be raised") == "MyVarCode"
+    assert normalize_string_value("", "Error shouldn't be raised") == ""
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_value(True, "Can't have Booleans here.")
+    assert exc_info.value.args[0] == "Can't have Booleans here."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_value(3.45, "Can't use floats here.")
+    assert exc_info.value.args[0] == "Can't use floats here."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_value(["a", "B", "c"], "Can't have lists here.")
+    assert exc_info.value.args[0] == "Can't have lists here."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_value(None, "Can't be None.")
+    assert exc_info.value.args[0] == "Can't be None."
+
+
+def test_normalize_string_input():
+    assert normalize_string_input("0", "Error shouldn't be raised") == ["0"]
+    assert normalize_string_input("MyVarCode", "Error shouldn't be raised") == ["MyVarCode"]
+    assert normalize_string_input(["VarCodeListOfOne"], "Error shouldn't be raised") == ["VarCodeListOfOne"]
+    assert normalize_string_input(["VarCode1", "VarCode2"], "Error shouldn't be raised") == ["VarCode1", "VarCode2"]
+    assert sorted(normalize_string_input(set(list("TESTED")), "Error shouldn't be raised")) == ["D", "E", "S", "T"]
+    assert normalize_string_input((f"VarCodeFromGenerator{i}" for i in range(3)), "Error shouldn't be raised") == ["VarCodeFromGenerator0", "VarCodeFromGenerator1", "VarCodeFromGenerator2"]
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_input(True, "Input can't be a bool.")
+    assert exc_info.value.args[0] == "Input can't be a bool."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_input(1, "Can't input an int here.")
+    assert exc_info.value.args[0] == "Can't input an int here."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_input(1098.765, "Input can't be a float.")
+    assert exc_info.value.args[0] == "Input can't be a float."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_input(None, "Input can't be None.")
+    assert exc_info.value.args[0] == "Input can't be None."
+    with pytest.raises(ValueError) as exc_info:
+        normalize_string_input([1, 2, 3], "Lists must contain only strings if given as input here")
+    assert exc_info.value.args[0] == "Lists must contain only strings if given as input here"
 
 
 class TestSelectorVariableMixin:
@@ -33,42 +76,6 @@ class TestSelectorVariableMixin:
         svm_example.name = "Membership"
         svm_example.session = "CharityDataViewSession"
         return svm_example
-
-    def test_normalize_value(self, fake_selector_variable_mixin):
-        assert fake_selector_variable_mixin.normalize_value("MyVarCode", "Error shouldn't be raised") == "MyVarCode"
-        assert fake_selector_variable_mixin.normalize_value("", "Error shouldn't be raised") == ""
-        with pytest.raises(ValueError) as exc_info:
-            fake_selector_variable_mixin.normalize_value(True, "Can't have Booleans here.")
-        assert exc_info.value.args[0] == "Can't have Booleans here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_selector_variable_mixin.normalize_value(3.45, "Can't use floats here.")
-        assert exc_info.value.args[0] == "Can't use floats here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_selector_variable_mixin.normalize_value(["a", "B", "c"], "Can't have lists here.")
-        assert exc_info.value.args[0] == "Can't have lists here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_selector_variable_mixin.normalize_value(None, "Can't be None.")
-        assert exc_info.value.args[0] == "Can't be None."
-
-    def test_normalize_input(self):
-        assert SelectorVariableMixin.normalize_input("0") == ["0"]
-        assert SelectorVariableMixin.normalize_input("MyVarCode") == ["MyVarCode"]
-        assert SelectorVariableMixin.normalize_input(["VarCodeListOfOne"]) == ["VarCodeListOfOne"]
-        assert SelectorVariableMixin.normalize_input(["VarCode1", "VarCode2"]) == ["VarCode1", "VarCode2"]
-        assert sorted(SelectorVariableMixin.normalize_input({"VarCodeFromSet1", "VarCodeFromSet2"})) == ["VarCodeFromSet1", "VarCodeFromSet2"]
-        assert SelectorVariableMixin.normalize_input(f"VarCodeFromGenerator{i}" for i in range(3)) == ["VarCodeFromGenerator0", "VarCodeFromGenerator1", "VarCodeFromGenerator2"]
-        with pytest.raises(ValueError) as exc_info:
-            SelectorVariableMixin.normalize_input(1)
-        assert exc_info.value.args[0] == (
-            "Chosen value(s) for a selector variable"
-            " must be given as a string or an iterable of strings."
-        )
-        with pytest.raises(ValueError) as exc_info:
-            SelectorVariableMixin.normalize_input([1, 2, 3])
-        assert exc_info.value.args[0] == (
-            "Chosen value(s) for a selector variable"
-            " must be given as a string or an iterable of strings."
-        )
 
     def test_eq(self, fake_selector_variable_mixin):
         high_value_supporters = fake_selector_variable_mixin == ("Gold", "Platinum")
@@ -258,39 +265,6 @@ class TestTextVariableMixin:
         tvm_example.name = "Surname"
         tvm_example.session = "CharityDataViewSession"
         return tvm_example
-
-    def test_normalize_value(self, fake_surname_text_variable_mixin):
-        assert fake_surname_text_variable_mixin.normalize_value("Jones", "Error shouldn't be raised") == "Jones"
-        assert fake_surname_text_variable_mixin.normalize_value("", "Error shouldn't be raised") == ""
-        with pytest.raises(ValueError) as exc_info:
-            fake_surname_text_variable_mixin.normalize_value(True, "Can't have Booleans here.")
-        assert exc_info.value.args[0] == "Can't have Booleans here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_surname_text_variable_mixin.normalize_value(3.45, "Can't use floats here.")
-        assert exc_info.value.args[0] == "Can't use floats here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_surname_text_variable_mixin.normalize_value(["a", "B", "c"], "Can't have lists here.")
-        assert exc_info.value.args[0] == "Can't have lists here."
-        with pytest.raises(ValueError) as exc_info:
-            fake_surname_text_variable_mixin.normalize_value(None, "Generic error message.")
-        assert exc_info.value.args[0] == "Generic error message."
-
-    def test_normalize_input(self, fake_surname_text_variable_mixin):
-        assert fake_surname_text_variable_mixin.normalize_input(["Edwards", "Williams", "Stevens"]) == ["Edwards", "Williams", "Stevens"]
-        assert fake_surname_text_variable_mixin.normalize_input((str(i) for i in range(5, 10))) == ["5", "6", "7", "8", "9"]
-        assert sorted(fake_surname_text_variable_mixin.normalize_input(set(list("TESTED")))) == ["D", "E", "S", "T"]
-        with pytest.raises(ValueError) as exc_info:
-            fake_surname_text_variable_mixin.normalize_input(True)
-        assert exc_info.value.args[0] == "Chosen value(s) for a text variable must be given as a string or an iterable of strings."
-        with pytest.raises(ValueError) as exc_info:
-            fake_surname_text_variable_mixin.normalize_input(3.45)
-        assert exc_info.value.args[0] == "Chosen value(s) for a text variable must be given as a string or an iterable of strings."
-        with pytest.raises(ValueError) as exc_info:
-            fake_surname_text_variable_mixin.normalize_input(None)
-        assert exc_info.value.args[0] == "Chosen value(s) for a text variable must be given as a string or an iterable of strings."
-        with pytest.raises(ValueError) as exc_info:
-            fake_surname_text_variable_mixin.normalize_input([3.45])
-        assert exc_info.value.args[0] == "Chosen value(s) for a text variable must be given as a string or an iterable of strings."
 
     def test_eq(self, fake_email_text_variable_mixin):
         specific_donor = fake_email_text_variable_mixin == "donor@domain.com"

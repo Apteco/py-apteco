@@ -150,32 +150,33 @@ class VariableMixin:
         raise NotImplementedError
 
 
+def normalize_string_value(value, error_msg):
+    if isinstance(value, str):
+        return value
+    else:
+        raise ValueError(error_msg)
+
+
+def normalize_string_input(input_value, error_msg):
+    if isinstance(input_value, str):
+        return [normalize_string_value(input_value, error_msg)]
+    elif isinstance(input_value, Iterable):
+        return [normalize_string_value(v, error_msg) for v in input_value]
+    else:
+        raise ValueError(error_msg)
+
+
 class SelectorVariableMixin:
     general_error_msg = (
         "Chosen value(s) for a selector variable"
         " must be given as a string or an iterable of strings."
     )
-    @staticmethod
-    def normalize_value(value, error_msg):
-        if isinstance(value, str):
-            return value
-        else:
-            raise ValueError(error_msg)
-
-    @classmethod
-    def normalize_input(cls, input_value):
-        if isinstance(input_value, str):
-            return [cls.normalize_value(input_value, cls.general_error_msg)]
-        elif isinstance(input_value, Iterable):
-            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
-        else:
-            raise ValueError(cls.general_error_msg)
 
     def __eq__(self: "SelectorVariable", other):
-        return SelectorClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+        return SelectorClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "SelectorVariable", other):
-        return SelectorClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+        return SelectorClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
 
 class NumericVariableMixin:
@@ -234,33 +235,18 @@ class TextVariableMixin:
     single_value_error_msg = (
         "Must specify a single string when using inequality operators."
     )
-    @staticmethod
-    def normalize_value(value, error_msg):
-        if isinstance(value, str):
-            return value
-        else:
-            raise ValueError(error_msg)
-
-    @classmethod
-    def normalize_input(cls, input_value):
-        if isinstance(input_value, str):
-            return [cls.normalize_value(input_value, cls.general_error_msg)]
-        elif isinstance(input_value, Iterable):
-            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
-        else:
-            raise ValueError(cls.general_error_msg)
 
     def __eq__(self: "TextVariable", other):
-        return TextClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+        return TextClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "TextVariable", other):
-        return TextClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+        return TextClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
     def __le__(self: "TextVariable", other):
-        return TextClause(self.table_name, self.name, [f"<=\"{self.normalize_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
+        return TextClause(self.table_name, self.name, [f"<=\"{normalize_string_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
 
     def __ge__(self: "TextVariable", other):
-        return TextClause(self.table_name, self.name, [f">=\"{self.normalize_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
+        return TextClause(self.table_name, self.name, [f">=\"{normalize_string_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
 
 
 class ArrayVariableMixin:
@@ -269,27 +255,11 @@ class ArrayVariableMixin:
         " must be given as a string or an iterable of strings."
     )
 
-    @staticmethod
-    def normalize_value(value, error_msg):
-        if isinstance(value, str):
-            return value
-        else:
-            raise ValueError(error_msg)
-
-    @classmethod
-    def normalize_input(cls, input_value):
-        if isinstance(input_value, str):
-            return [cls.normalize_value(input_value, cls.general_error_msg)]
-        elif isinstance(input_value, Iterable):
-            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
-        else:
-            raise ValueError(cls.general_error_msg)
-
     def __eq__(self: "ArrayVariable", other):
-        return ArrayClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+        return ArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "ArrayVariable", other):
-        return ArrayClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+        return ArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
 
 class FlagArrayVariableMixin:
@@ -298,27 +268,11 @@ class FlagArrayVariableMixin:
         " must be given as a string or an iterable of strings."
     )
 
-    @staticmethod
-    def normalize_value(value, error_msg):
-        if isinstance(value, str):
-            return value
-        else:
-            raise ValueError(error_msg)
-
-    @classmethod
-    def normalize_input(cls, input_value):
-        if isinstance(input_value, str):
-            return [cls.normalize_value(input_value, cls.general_error_msg)]
-        elif isinstance(input_value, Iterable):
-            return [cls.normalize_value(v, cls.general_error_msg) for v in input_value]
-        else:
-            raise ValueError(cls.general_error_msg)
-
     def __eq__(self: "FlagArrayVariable", other):
-        return FlagArrayClause(self.table_name, self.name, self.normalize_input(other), session=self.session)
+        return FlagArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "FlagArrayVariable", other):
-        return FlagArrayClause(self.table_name, self.name, self.normalize_input(other), include=False, session=self.session)
+        return FlagArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
 
 class ClauseMixin:
