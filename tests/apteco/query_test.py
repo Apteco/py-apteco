@@ -30,15 +30,19 @@ from apteco.query import (
 def test_normalize_string_value():
     assert normalize_string_value("MyVarCode", "Error shouldn't be raised") == "MyVarCode"
     assert normalize_string_value("", "Error shouldn't be raised") == ""
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_value(True, "Can't have Booleans here.")
     assert exc_info.value.args[0] == "Can't have Booleans here."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_value(3.45, "Can't use floats here.")
     assert exc_info.value.args[0] == "Can't use floats here."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_value(["a", "B", "c"], "Can't have lists here.")
     assert exc_info.value.args[0] == "Can't have lists here."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_value(None, "Can't be None.")
     assert exc_info.value.args[0] == "Can't be None."
@@ -51,37 +55,26 @@ def test_normalize_string_input():
     assert normalize_string_input(["VarCode1", "VarCode2"], "Error shouldn't be raised") == ["VarCode1", "VarCode2"]
     assert sorted(normalize_string_input(set(list("TESTED")), "Error shouldn't be raised")) == ["D", "E", "S", "T"]
     assert normalize_string_input((f"VarCodeFromGenerator{i}" for i in range(3)), "Error shouldn't be raised") == ["VarCodeFromGenerator0", "VarCodeFromGenerator1", "VarCodeFromGenerator2"]
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_input(True, "Input can't be a bool.")
     assert exc_info.value.args[0] == "Input can't be a bool."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_input(1, "Can't input an int here.")
     assert exc_info.value.args[0] == "Can't input an int here."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_input(1098.765, "Input can't be a float.")
     assert exc_info.value.args[0] == "Input can't be a float."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_input(None, "Input can't be None.")
     assert exc_info.value.args[0] == "Input can't be None."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_string_input([1, 2, 3], "Lists must contain only strings if given as input here")
     assert exc_info.value.args[0] == "Lists must contain only strings if given as input here"
-
-
-def test_normalize_number_input():
-    assert normalize_number_input(123, "Shouldn't see this error") == ["123"]
-    assert normalize_number_input(10.62, "Shouldn't see this error") == ["10.62"]
-    assert normalize_number_input(1234.567890123, "Shouldn't see this error") == ["1234.5679"]
-    assert normalize_number_input(Decimal("67.123456"), "Shouldn't see this error") == ["67.1235"]
-    assert normalize_number_input(Fraction(6543, 89), "Shouldn't see this error") == ["73.5169"]
-    assert normalize_number_input([16, 18, 21], "Shouldn't see this error") == ["16", "18", "21"]
-    assert normalize_number_input((22, 6546.3216487, Fraction(65421, 984), Decimal("729421.65487")), "Shouldn't see this error") == ["22", "6546.3216", "66.4848", "729421.6549"]
-    with pytest.raises(ValueError) as exc_info:
-        normalize_number_input(True, "A bool doesn't count as a number.")
-    assert exc_info.value.args[0] == "A bool doesn't count as a number."
-    with pytest.raises(ValueError) as exc_info:
-        normalize_number_input("3.45", "A numeric string doesn't count as a number.")
-    assert exc_info.value.args[0] == "A numeric string doesn't count as a number."
 
 
 def test_normalize_number_value():
@@ -92,18 +85,40 @@ def test_normalize_number_value():
     assert normalize_number_value(Decimal("67.123456"), "Shouldn't see this...") == "67.1235"
     assert normalize_number_value(Decimal("67.12396"), "Shouldn't see this...") == "67.1240"
     assert normalize_number_value(Fraction(6543, 89), "Shouldn't see this...") == "73.5169"
+
     with pytest.raises(ValueError) as exc_info:
         normalize_number_value(True, "Can't have Booleans here.")
     assert exc_info.value.args[0] == "Can't have Booleans here."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_number_value("3.45", "Can't use strings here.")
     assert exc_info.value.args[0] == "Can't use strings here."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_number_value([16, 18, 21], "Can't have lists here.")
     assert exc_info.value.args[0] == "Can't have lists here."
+
     with pytest.raises(ValueError) as exc_info:
         normalize_number_value(None, "Can't have None here.")
     assert exc_info.value.args[0] == "Can't have None here."
+
+
+def test_normalize_number_input():
+    assert normalize_number_input(123, "Shouldn't see this error") == ["123"]
+    assert normalize_number_input(10.62, "Shouldn't see this error") == ["10.62"]
+    assert normalize_number_input(1234.567890123, "Shouldn't see this error") == ["1234.5679"]
+    assert normalize_number_input(Decimal("67.123456"), "Shouldn't see this error") == ["67.1235"]
+    assert normalize_number_input(Fraction(6543, 89), "Shouldn't see this error") == ["73.5169"]
+    assert normalize_number_input([16, 18, 21], "Shouldn't see this error") == ["16", "18", "21"]
+    assert normalize_number_input((22, 6546.3216487, Fraction(65421, 984), Decimal("729421.65487")), "Shouldn't see this error") == ["22", "6546.3216", "66.4848", "729421.6549"]
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_number_input(True, "A bool doesn't count as a number.")
+    assert exc_info.value.args[0] == "A bool doesn't count as a number."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_number_input("3.45", "A numeric string doesn't count as a number.")
+    assert exc_info.value.args[0] == "A numeric string doesn't count as a number."
 
 
 class TestSelectorVariableMixin:
