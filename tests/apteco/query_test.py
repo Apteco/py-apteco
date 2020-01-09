@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
 from unittest.mock import Mock
@@ -24,6 +25,8 @@ from apteco.query import (
     normalize_string_value,
     normalize_number_input,
     normalize_number_value,
+    normalize_date_input,
+    normalize_date_value,
 )
 
 
@@ -119,6 +122,76 @@ def test_normalize_number_input():
     with pytest.raises(ValueError) as exc_info:
         normalize_number_input("3.45", "A numeric string doesn't count as a number.")
     assert exc_info.value.args[0] == "A numeric string doesn't count as a number."
+
+
+def test_normalize_date_value():
+    assert normalize_date_value(date(2012, 3, 4), "Shouldn't see this...") == "2012-03-04"
+    assert normalize_date_value(date(2012, 3, 4), "Shouldn't see this...", basic=True) == "20120304"
+    assert normalize_date_value(datetime(2021, 9, 8, 7, 6, 54), "Shouldn't see this...") == "2021-09-08"
+    assert normalize_date_value(datetime(2021, 9, 8, 7, 6, 54), "Shouldn't see this...", basic=True) == "20210908"
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_value(True, "Can't have Booleans here.")
+    assert exc_info.value.args[0] == "Can't have Booleans here."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_value(49072, "Can't use numbers here.")
+    assert exc_info.value.args[0] == "Can't use numbers here."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_value("3.45", "Can't use strings here.")
+    assert exc_info.value.args[0] == "Can't use strings here."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_value([date(2012, 12, 20), date(2012, 12, 21), date(2012, 12, 22)], "Can't have lists here.")
+    assert exc_info.value.args[0] == "Can't have lists here."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_value(None, "Can't have None here.")
+    assert exc_info.value.args[0] == "Can't have None here."
+
+
+def test_normalize_date_input():
+    assert normalize_date_input(date(1952, 2, 6), "Shouldn't see this error") == ["1952-02-06"]
+    assert normalize_date_input(date(1952, 2, 6), "Shouldn't see this error", basic=True) == ["19520206"]
+    assert normalize_date_input(datetime(1952, 2, 6, 7, 30), "Shouldn't see this error") == ["1952-02-06"]
+    assert normalize_date_input(datetime(1952, 2, 6, 7, 30), "Shouldn't see this error", basic=True) == ["19520206"]
+    assert normalize_date_input([
+        date(2000, 4, 24), date(2000, 5, 1), date(2000, 5, 29), date(2000, 8, 28)
+    ], "Shouldn't see this error") == [
+        "2000-04-24", "2000-05-01", "2000-05-29", "2000-08-28"
+    ]
+    assert normalize_date_input([
+        date(2000, 4, 24), date(2000, 5, 1), date(2000, 5, 29), date(2000, 8, 28)
+    ], "Shouldn't see this error", basic=True) == [
+        "20000424", "20000501", "20000529", "20000828"
+    ]
+    assert normalize_date_input([
+        datetime(1926, 4, 21, 4, 20),
+        datetime(1948, 11, 14, 9, 14),
+        datetime(1982, 6, 21, 9, 3),
+    ], "Shouldn't see this error") == ["1926-04-21", "1948-11-14", "1982-06-21"]
+    assert normalize_date_input([
+        datetime(1926, 4, 21, 4, 20),
+        datetime(1948, 11, 14, 9, 14),
+        datetime(1982, 6, 21, 9, 3),
+    ], "Shouldn't see this error", basic=True) == ["19260421", "19481114", "19820621"]
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_input(True, "A bool isn't a date.")
+    assert exc_info.value.args[0] == "A bool isn't a date."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_input(49072, "A number isn't a date.")
+    assert exc_info.value.args[0] == "A number isn't a date."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_input("2008-12-03", "A date-y string doesn't count as a number.")
+    assert exc_info.value.args[0] == "A date-y string doesn't count as a number."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_date_input([20081203, 20001016], "Can't sneak numbers through inside a list")
+    assert exc_info.value.args[0] == "Can't sneak numbers through inside a list"
 
 
 class TestSelectorVariableMixin:

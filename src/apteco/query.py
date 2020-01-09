@@ -186,6 +186,25 @@ def normalize_number_input(input_value, error_msg):
         raise ValueError(error_msg)
 
 
+def normalize_date_value(value, error_msg, *, basic=False):
+    if isinstance(value, date):
+        if basic:  # format for DateListClause
+            return value.strftime("%Y%m%d")
+        else:
+            return value.strftime("%Y-%m-%d")
+    else:
+        raise ValueError(error_msg)
+
+
+def normalize_date_input(input_value, error_msg, *, basic=False):
+    if isinstance(input_value, date):
+        return [normalize_date_value(input_value, error_msg, basic=basic)]
+    elif isinstance(input_value, Iterable) and not isinstance(input_value, str):
+        return [normalize_date_value(v, error_msg, basic=basic) for v in input_value]
+    else:
+        raise ValueError(error_msg)
+
+
 class SelectorVariableMixin:
     general_error_msg = (
         "Chosen value(s) for a selector variable"
