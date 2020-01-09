@@ -27,6 +27,8 @@ from apteco.query import (
     normalize_number_value,
     normalize_date_input,
     normalize_date_value,
+    normalize_datetime_input,
+    normalize_datetime_value,
 )
 
 
@@ -191,6 +193,84 @@ def test_normalize_date_input():
 
     with pytest.raises(ValueError) as exc_info:
         normalize_date_input([20081203, 20001016], "Can't sneak numbers through inside a list")
+    assert exc_info.value.args[0] == "Can't sneak numbers through inside a list"
+
+
+def test_normalize_datetime_value():
+    assert normalize_datetime_value(datetime(2021, 9, 8, 12, 34, 56), "Shouldn't see this...") == "2021-09-08T12:34:56"
+    assert normalize_datetime_value(datetime(1912, 6, 23, 7, 6, 54), "Shouldn't see this...") == "1912-06-23T07:06:54"
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_value(True, "Can't have Booleans here.")
+    assert exc_info.value.args[0] == "Can't have Booleans here."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_value(49072, "Can't use numbers here.")
+    assert exc_info.value.args[0] == "Can't use numbers here."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_value("08/09/2021 7:06:54", "Can't use strings here.")
+    assert exc_info.value.args[0] == "Can't use strings here."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_value(date(2012, 3, 4), "Can't have date-only objects.")
+    assert exc_info.value.args[0] == "Can't have date-only objects."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_value([
+            datetime(2012, 12, 20, 1, 2, 3),
+            datetime(2012, 12, 21, 4, 5, 6),
+            datetime(2012, 12, 22, 7, 8, 9),
+        ], "Can't have lists here.")
+    assert exc_info.value.args[0] == "Can't have lists here."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_value(None, "Can't have None here.")
+    assert exc_info.value.args[0] == "Can't have None here."
+
+
+def test_normalize_datetime_input():
+    assert normalize_datetime_input(
+        datetime(1952, 2, 6, 7, 30), "Shouldn't see this error"
+    ) == ["1952-02-06T07:30:00"]
+    assert normalize_datetime_input(
+        datetime(2026, 4, 21, 4, 20, 59), "Shouldn't see this error"
+    ) == ["2026-04-21T04:20:59"]
+    assert normalize_datetime_input([
+        datetime(2000, 4, 24, 1, 23, 45),
+        datetime(2000, 5, 1, 6, 7),
+        datetime(2000, 5, 29, 8),
+        datetime(2000, 8, 28),
+    ], "Shouldn't see this error") == [
+        "2000-04-24T01:23:45",
+        "2000-05-01T06:07:00",
+        "2000-05-29T08:00:00",
+        "2000-08-28T00:00:00",
+    ]
+    assert normalize_datetime_input((
+        datetime(2020 + i, i, i + 23, i ** 2 % (i + 5), i ** 2, i * 8)
+        for i in range(4, 8)
+    ), "Shouldn't see this error") == [
+        "2024-04-27T07:16:32",
+        "2025-05-28T05:25:40",
+        "2026-06-29T03:36:48",
+        "2027-07-30T01:49:56"
+    ]
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_input(True, "A bool isn't a datetime.")
+    assert exc_info.value.args[0] == "A bool isn't a datetime."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_input(946684800, "A number isn't a datetime.")
+    assert exc_info.value.args[0] == "A number isn't a datetime."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_input("2008-12-03T03:33:30", "A datetime-y string doesn't count as a number.")
+    assert exc_info.value.args[0] == "A datetime-y string doesn't count as a number."
+
+    with pytest.raises(ValueError) as exc_info:
+        normalize_datetime_input([20001016220220, 20081203033330], "Can't sneak numbers through inside a list")
     assert exc_info.value.args[0] == "Can't sneak numbers through inside a list"
 
 

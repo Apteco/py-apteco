@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from decimal import Decimal
 from numbers import Real, Integral, Number, Rational
 from typing import List, Optional, Iterable
@@ -201,6 +202,22 @@ def normalize_date_input(input_value, error_msg, *, basic=False):
         return [normalize_date_value(input_value, error_msg, basic=basic)]
     elif isinstance(input_value, Iterable) and not isinstance(input_value, str):
         return [normalize_date_value(v, error_msg, basic=basic) for v in input_value]
+    else:
+        raise ValueError(error_msg)
+
+
+def normalize_datetime_value(value, error_msg):
+    if isinstance(value, datetime):
+        return value.isoformat(timespec="seconds")  # "%Y-%m-%dT%H:%M:%S"
+    else:
+        raise ValueError(error_msg)
+
+
+def normalize_datetime_input(input_value, error_msg):
+    if isinstance(input_value, datetime):
+        return [normalize_datetime_value(input_value, error_msg)]
+    elif isinstance(input_value, Iterable) and not isinstance(input_value, str):
+        return [normalize_datetime_value(v, error_msg) for v in input_value]
     else:
         raise ValueError(error_msg)
 
