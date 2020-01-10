@@ -782,9 +782,9 @@ def create_date_range_parameters(start, end):
 
 
 class DateRangeClause(ClauseMixin):
-    def __init__(self, table_name, variable, start, end, *, label=None, include=True, session=None):
+    def __init__(self, table_name, variable_name, start, end, *, label=None, include=True, session=None):
         self.table_name = table_name
-        self.variable = variable
+        self.variable_name = variable_name
         self.start = start
         self.end = end
 
@@ -795,7 +795,7 @@ class DateRangeClause(ClauseMixin):
     def _to_model(self):
         return aa.Clause(
             criteria=aa.Criteria(
-                variable_name=self.variable,
+                variable_name=self.variable_name,
                 include=self.include,
                 logic="OR",
                 ignore_case=False,
@@ -811,16 +811,16 @@ class DateRangeClause(ClauseMixin):
                         ),
                     )
                 ],
-                table_name=self.table.name,
+                table_name=self.table_name,
                 name=self.label
             )
         )
 
 
 class TimeRangeClause(ClauseMixin):
-    def __init__(self, table_name, variable, start, end, *, label=None, include=True, session=None):
+    def __init__(self, table_name, variable_name, start, end, *, label=None, include=True, session=None):
         self.table_name = table_name
-        self.variable = variable
+        self.variable_name = variable_name
         self.start = start
         self.end = end
 
@@ -831,7 +831,7 @@ class TimeRangeClause(ClauseMixin):
     def _to_model(self):
         return aa.Clause(
             criteria=aa.Criteria(
-                variable_name=self.variable,
+                variable_name=self.variable_name,
                 include=self.include,
                 logic="OR",
                 ignore_case=False,
@@ -844,16 +844,16 @@ class TimeRangeClause(ClauseMixin):
                         ),
                     )
                 ],
-                table_name=self.table.name,
+                table_name=self.table_name,
                 name=self.label
             )
         )
 
 
 class DateTimeRangeClause(ClauseMixin):
-    def __init__(self, table_name, variable, start, end, *, label=None, include=True, session=None):
+    def __init__(self, table_name, variable_name, start, end, *, label=None, include=True, session=None):
         self.table_name = table_name
-        self.variable = variable
+        self.variable_name = variable_name
         self.start = start
         self.end = end
 
@@ -864,7 +864,7 @@ class DateTimeRangeClause(ClauseMixin):
     def _to_model(self):
         return aa.Clause(
             criteria=aa.Criteria(
-                variable_name=self.variable,
+                variable_name=self.variable_name,
                 include=self.include,
                 logic="OR",
                 ignore_case=False,
@@ -880,7 +880,7 @@ class DateTimeRangeClause(ClauseMixin):
                         ),
                     )
                 ],
-                table_name=self.table.name,
+                table_name=self.table_name,
                 name=self.label
             )
         )
