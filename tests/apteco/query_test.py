@@ -15,13 +15,14 @@ from apteco.query import (
     ArrayClause,
     BooleanClause,
     CombinedCategoriesClause,
+    DateRangeClause,
+    DateTimeRangeClause,
     FlagArrayClause,
     NumericClause,
     SelectorClause,
     SubSelectionClause,
     TableClause,
     TextClause,
-    create_date_range_parameters,
     normalize_string_input,
     normalize_string_value,
     normalize_number_input,
@@ -989,45 +990,106 @@ class TestFlagArrayClause:
         )
 
 
-def test_create_date_range_parameters():
-    assert create_date_range_parameters("earliest", "latest") == {
-        "start_range_limit": "Earliest",
-        "end_range_limit": "Latest",
-    }
-    assert create_date_range_parameters("2007-06-27", "LATEST") == {
-        "start_range_limit": "Actual",
-        "start_range_date": "2007-06-27",
-        "end_range_limit": "Latest",
-    }
-    assert create_date_range_parameters("EaRlIeSt", "2010-05-11") == {
-        "start_range_limit": "Earliest",
-        "end_range_limit": "Actual",
-        "end_range_date": "2010-05-11",
-    }
-    assert create_date_range_parameters(
-        "2016-07-13T17:59:32", "2019-07-24T16:05:55"
-    ) == {
-        "start_range_limit": "Actual",
-        "start_range_date": "2016-07-13T17:59:32",
-        "end_range_limit": "Actual",
-        "end_range_date": "2019-07-24T16:05:55",
-    }
-    assert create_date_range_parameters(
-        "doesn't check that these", "actually look like dates"
-    ) == {
-        "start_range_limit": "Actual",
-        "start_range_date": "doesn't check that these",
-        "end_range_limit": "Actual",
-        "end_range_date": "actually look like dates",
-    }
-
-
 class TestDateListClause:
     pass
 
 
 class TestDateRangeClause:
-    pass
+    def test_create_date_range_parameters(self):
+        assert DateRangeClause._create_date_range_parameters(Mock(start="earliest", end="latest")) == {
+            "start_range_limit": "Earliest", "end_range_limit": "Latest"
+        }
+        assert DateRangeClause._create_date_range_parameters(
+            Mock(start="2007-06-27", end="LATEST")
+        ) == {
+            "start_range_limit": "Actual",
+            "range_start_date": "2007-06-27",
+            "end_range_limit": "Latest",
+        }
+        assert DateRangeClause._create_date_range_parameters(
+            Mock(start="EaRlIeSt", end="2010-05-11")
+        ) == {
+            "start_range_limit": "Earliest",
+            "end_range_limit": "Actual",
+            "range_end_date": "2010-05-11",
+        }
+        assert DateRangeClause._create_date_range_parameters(
+            Mock(start="2016-07-13T17:59:32", end="2019-07-24T16:05:55")
+        ) == {
+            "start_range_limit": "Actual",
+            "range_start_date": "2016-07-13T17:59:32",
+            "end_range_limit": "Actual",
+            "range_end_date": "2019-07-24T16:05:55",
+        }
+        assert DateRangeClause._create_date_range_parameters(
+            Mock(start="doesn't check that these", end="actually look like dates")
+        ) == {
+            "start_range_limit": "Actual",
+            "range_start_date": "doesn't check that these",
+            "end_range_limit": "Actual",
+            "range_end_date": "actually look like dates",
+        }
+
+    def test_date_range_clause_init(self):
+        example_date_range_clause = DateRangeClause(
+            "Bookings",
+            "boDate",
+            "2016-03-27",
+            "2016-10-30",
+            label="Holidays booked during BST 2016",
+        )
+        assert example_date_range_clause.table_name == "Bookings"
+        assert example_date_range_clause.variable_name == "boDate"
+        assert example_date_range_clause.start == "2016-03-27"
+        assert example_date_range_clause.end == "2016-10-30"
+        assert example_date_range_clause.label == "Holidays booked during BST 2016"
+        assert example_date_range_clause.include is True
+
+    def test_date_range_clause_to_model(self):
+        fake_date_range_clause = Mock(
+            table_name="Bookings",
+            variable_name="boDate",
+            start="2016-03-27",
+            end="Latest",
+            label="Holidays booked after change to BST 2016",
+            include=True,
+            session=None,
+            _create_date_range_parameters=Mock(
+                return_value={
+                    "start_range_limit": "Actual",
+                    "range_start_date": "2016-03-27",
+                    "end_range_limit": "Latest",
+                }
+            ),
+        )
+        expected_date_range_clause_model = aa.Clause(
+            criteria=aa.Criteria(
+                variable_name="boDate",
+                include=True,
+                logic="OR",
+                ignore_case=False,
+                text_match_type="Is",
+                value_rules=[
+                    aa.ValueRule(
+                        predefined_rule="CustomRule",
+                        date_rule=aa.DateRule(
+                            pattern_frequency="Daily",
+                            pattern_interval=1,
+                            pattern_days_of_week=["All"],
+                            start_range_limit="Actual",
+                            range_start_date="2016-03-27",
+                            end_range_limit="Latest",
+                        ),
+                    )
+                ],
+                table_name="Bookings",
+                name="Holidays booked after change to BST 2016",
+            )
+        )
+        assert (
+            DateRangeClause._to_model(fake_date_range_clause)
+            == expected_date_range_clause_model
+        )
 
 
 class TestTimeRangeClause:
@@ -1035,7 +1097,69 @@ class TestTimeRangeClause:
 
 
 class TestDateTimeRangeClause:
-    pass
+    def test_datetime_range_clause_init(self):
+        example_date_range_clause = DateRangeClause(
+            "Bookings",
+            "boTrav",
+            "2001-09-09T02:46:40",
+            "2033-05-18T04:33:20",
+            label="Holidays taken between 1B and 2B second Unix timestamps",
+        )
+        assert example_date_range_clause.table_name == "Bookings"
+        assert example_date_range_clause.variable_name == "boTrav"
+        assert example_date_range_clause.start == "2001-09-09T02:46:40"
+        assert example_date_range_clause.end == "2033-05-18T04:33:20"
+        assert (
+            example_date_range_clause.label
+            == "Holidays taken between 1B and 2B second Unix timestamps"
+        )
+        assert example_date_range_clause.include is True
+
+    def test_datetime_range_clause_to_model(self):
+        fake_datetime_range_clause = Mock(
+            table_name="Bookings",
+            variable_name="boTrav",
+            start="Earliest",
+            end="2033-05-18T04:33:20",
+            label="Holidays taken between before 2B second Unix timestamp",
+            include=True,
+            session=None,
+            _create_date_range_parameters=Mock(
+                return_value={
+                    "start_range_limit": "Earliest",
+                    "end_range_limit": "Actual",
+                    "range_end_date": "2033-05-18T04:33:20",
+                }
+            ),
+        )
+        expected_datetime_range_clause_model = aa.Clause(
+            criteria=aa.Criteria(
+                variable_name="boTrav",
+                include=True,
+                logic="OR",
+                ignore_case=False,
+                text_match_type="Is",
+                value_rules=[
+                    aa.ValueRule(
+                        predefined_rule="CustomRule",
+                        date_rule=aa.DateRule(
+                            pattern_frequency="Daily",
+                            pattern_interval=1,
+                            pattern_days_of_week=["All"],
+                            start_range_limit="Earliest",
+                            end_range_limit="Actual",
+                            range_end_date="2033-05-18T04:33:20",
+                        ),
+                    )
+                ],
+                table_name="Bookings",
+                name="Holidays taken between before 2B second Unix timestamp",
+            )
+        )
+        assert (
+            DateTimeRangeClause._to_model(fake_datetime_range_clause)
+            == expected_datetime_range_clause_model
+        )
 
 
 class TestBooleanClause:

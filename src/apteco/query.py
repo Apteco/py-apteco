@@ -766,21 +766,6 @@ class DateListClause(ClauseMixin):
         )
 
 
-def create_date_range_parameters(start, end):
-    params = {}
-    if start.lower() == "earliest":
-        params["start_range_limit"] = "Earliest"
-    else:
-        params["start_range_limit"] = "Actual"
-        params["start_range_date"] = start
-    if end.lower() == "latest":
-        params["end_range_limit"] = "Latest"
-    else:
-        params["end_range_limit"] = "Actual"
-        params["end_range_date"] = end
-    return params
-
-
 class DateRangeClause(ClauseMixin):
     def __init__(self, table_name, variable_name, start, end, *, label=None, include=True, session=None):
         self.table_name = table_name
@@ -791,6 +776,20 @@ class DateRangeClause(ClauseMixin):
         self.label = label
         self.include = include
         self.session = session
+
+    def _create_date_range_parameters(self):
+        params = {}
+        if self.start.lower() == "earliest":
+            params["start_range_limit"] = "Earliest"
+        else:
+            params["start_range_limit"] = "Actual"
+            params["range_start_date"] = self.start
+        if self.end.lower() == "latest":
+            params["end_range_limit"] = "Latest"
+        else:
+            params["end_range_limit"] = "Actual"
+            params["range_end_date"] = self.end
+        return params
 
     def _to_model(self):
         return aa.Clause(
@@ -807,7 +806,7 @@ class DateRangeClause(ClauseMixin):
                             pattern_frequency="Daily",
                             pattern_interval=1,
                             pattern_days_of_week=["All"],
-                            **create_date_range_parameters(self.start, self.end),
+                            **self._create_date_range_parameters(),
                         ),
                     )
                 ],
@@ -850,40 +849,8 @@ class TimeRangeClause(ClauseMixin):
         )
 
 
-class DateTimeRangeClause(ClauseMixin):
-    def __init__(self, table_name, variable_name, start, end, *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
-        self.start = start
-        self.end = end
-
-        self.label = label
-        self.include = include
-        self.session = session
-
-    def _to_model(self):
-        return aa.Clause(
-            criteria=aa.Criteria(
-                variable_name=self.variable_name,
-                include=self.include,
-                logic="OR",
-                ignore_case=False,
-                text_match_type="Is",
-                value_rules=[
-                    aa.ValueRule(
-                        predefined_rule="CustomRule",
-                        date_rule=aa.DateRule(
-                            pattern_frequency="Daily",
-                            pattern_interval=1,
-                            pattern_days_of_week=["All"],
-                            **create_date_range_parameters(self.start, self.end),
-                        ),
-                    )
-                ],
-                table_name=self.table_name,
-                name=self.label
-            )
-        )
+class DateTimeRangeClause(DateRangeClause):
+    pass
 
 
 class BooleanClause(ClauseMixin):
