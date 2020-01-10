@@ -995,39 +995,40 @@ class TestDateListClause:
 
 
 class TestDateRangeClause:
-    def test_create_date_range_parameters(self):
-        assert DateRangeClause._create_date_range_parameters(Mock(start="earliest", end="latest")) == {
+    def test_create_range_parameters(self):
+        assert DateRangeClause._create_range_parameters(
+            Mock(start="earliest", end="latest")) == {
             "start_range_limit": "Earliest", "end_range_limit": "Latest"
         }
-        assert DateRangeClause._create_date_range_parameters(
+        assert DateRangeClause._create_range_parameters(
             Mock(start="2007-06-27", end="LATEST")
         ) == {
             "start_range_limit": "Actual",
-            "range_start_date": "2007-06-27",
+            "range_start_date": "2007-06-27T00:00:00",
             "end_range_limit": "Latest",
         }
-        assert DateRangeClause._create_date_range_parameters(
+        assert DateRangeClause._create_range_parameters(
             Mock(start="EaRlIeSt", end="2010-05-11")
         ) == {
             "start_range_limit": "Earliest",
             "end_range_limit": "Actual",
-            "range_end_date": "2010-05-11",
+            "range_end_date": "2010-05-11T00:00:00",
         }
-        assert DateRangeClause._create_date_range_parameters(
-            Mock(start="2016-07-13T17:59:32", end="2019-07-24T16:05:55")
+        assert DateRangeClause._create_range_parameters(
+            Mock(start="2016-07-13", end="2019-07-24")
         ) == {
             "start_range_limit": "Actual",
-            "range_start_date": "2016-07-13T17:59:32",
+            "range_start_date": "2016-07-13T00:00:00",
             "end_range_limit": "Actual",
-            "range_end_date": "2019-07-24T16:05:55",
+            "range_end_date": "2019-07-24T00:00:00",
         }
-        assert DateRangeClause._create_date_range_parameters(
+        assert DateRangeClause._create_range_parameters(
             Mock(start="doesn't check that these", end="actually look like dates")
         ) == {
             "start_range_limit": "Actual",
-            "range_start_date": "doesn't check that these",
+            "range_start_date": "doesn't check that theseT00:00:00",
             "end_range_limit": "Actual",
-            "range_end_date": "actually look like dates",
+            "range_end_date": "actually look like datesT00:00:00",
         }
 
     def test_date_range_clause_init(self):
@@ -1054,10 +1055,10 @@ class TestDateRangeClause:
             label="Holidays booked after change to BST 2016",
             include=True,
             session=None,
-            _create_date_range_parameters=Mock(
+            _create_range_parameters=Mock(
                 return_value={
                     "start_range_limit": "Actual",
-                    "range_start_date": "2016-03-27",
+                    "range_start_date": "2016-03-27T00:00:00",
                     "end_range_limit": "Latest",
                 }
             ),
@@ -1077,7 +1078,7 @@ class TestDateRangeClause:
                             pattern_interval=1,
                             pattern_days_of_week=["All"],
                             start_range_limit="Actual",
-                            range_start_date="2016-03-27",
+                            range_start_date="2016-03-27T00:00:00",
                             end_range_limit="Latest",
                         ),
                     )
@@ -1097,6 +1098,42 @@ class TestTimeRangeClause:
 
 
 class TestDateTimeRangeClause:
+    def test_create_range_parameters(self):
+        assert DateTimeRangeClause._create_range_parameters(
+            Mock(start="earliest", end="latest")) == {
+            "start_range_limit": "Earliest", "end_range_limit": "Latest"
+        }
+        assert DateTimeRangeClause._create_range_parameters(
+            Mock(start="2007-06-27T12:34:56", end="laTesT")
+        ) == {
+            "start_range_limit": "Actual",
+            "range_start_date": "2007-06-27T12:34:56",
+            "end_range_limit": "Latest",
+        }
+        assert DateTimeRangeClause._create_range_parameters(
+            Mock(start="EARLIEST", end="2010-05-11T09:08:07")
+        ) == {
+            "start_range_limit": "Earliest",
+            "end_range_limit": "Actual",
+            "range_end_date": "2010-05-11T09:08:07",
+        }
+        assert DateTimeRangeClause._create_range_parameters(
+            Mock(start="2016-07-13T17:59:32", end="2019-07-24T16:05:55")
+        ) == {
+            "start_range_limit": "Actual",
+            "range_start_date": "2016-07-13T17:59:32",
+            "end_range_limit": "Actual",
+            "range_end_date": "2019-07-24T16:05:55",
+        }
+        assert DateTimeRangeClause._create_range_parameters(
+            Mock(start="doesn't check that these", end="actually look like dates")
+        ) == {
+            "start_range_limit": "Actual",
+            "range_start_date": "doesn't check that these",
+            "end_range_limit": "Actual",
+            "range_end_date": "actually look like dates",
+        }
+
     def test_datetime_range_clause_init(self):
         example_date_range_clause = DateRangeClause(
             "Bookings",
@@ -1124,7 +1161,7 @@ class TestDateTimeRangeClause:
             label="Holidays taken between before 2B second Unix timestamp",
             include=True,
             session=None,
-            _create_date_range_parameters=Mock(
+            _create_range_parameters=Mock(
                 return_value={
                     "start_range_limit": "Earliest",
                     "end_range_limit": "Actual",

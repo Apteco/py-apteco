@@ -777,18 +777,18 @@ class DateRangeClause(ClauseMixin):
         self.include = include
         self.session = session
 
-    def _create_date_range_parameters(self):
+    def _create_range_parameters(self):
         params = {}
         if self.start.lower() == "earliest":
             params["start_range_limit"] = "Earliest"
         else:
             params["start_range_limit"] = "Actual"
-            params["range_start_date"] = self.start
+            params["range_start_date"] = self.start + "T00:00:00"
         if self.end.lower() == "latest":
             params["end_range_limit"] = "Latest"
         else:
             params["end_range_limit"] = "Actual"
-            params["range_end_date"] = self.end
+            params["range_end_date"] = self.end + "T00:00:00"
         return params
 
     def _to_model(self):
@@ -806,7 +806,7 @@ class DateRangeClause(ClauseMixin):
                             pattern_frequency="Daily",
                             pattern_interval=1,
                             pattern_days_of_week=["All"],
-                            **self._create_date_range_parameters(),
+                            **self._create_range_parameters(),
                         ),
                     )
                 ],
@@ -850,7 +850,19 @@ class TimeRangeClause(ClauseMixin):
 
 
 class DateTimeRangeClause(DateRangeClause):
-    pass
+    def _create_range_parameters(self):
+        params = {}
+        if self.start.lower() == "earliest":
+            params["start_range_limit"] = "Earliest"
+        else:
+            params["start_range_limit"] = "Actual"
+            params["range_start_date"] = self.start
+        if self.end.lower() == "latest":
+            params["end_range_limit"] = "Latest"
+        else:
+            params["end_range_limit"] = "Actual"
+            params["range_end_date"] = self.end
+        return params
 
 
 class BooleanClause(ClauseMixin):
