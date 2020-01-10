@@ -21,6 +21,7 @@ from apteco.query import (
     SubSelectionClause,
     TableClause,
     TextClause,
+    create_date_range_parameters,
     normalize_string_input,
     normalize_string_value,
     normalize_number_input,
@@ -986,6 +987,39 @@ class TestFlagArrayClause:
             FlagArrayClause._to_model(fake_flag_array_clause)
             == expected_flag_array_clause_model
         )
+
+
+def test_create_date_range_parameters():
+    assert create_date_range_parameters("earliest", "latest") == {
+        "start_range_limit": "Earliest",
+        "end_range_limit": "Latest",
+    }
+    assert create_date_range_parameters("2007-06-27", "LATEST") == {
+        "start_range_limit": "Actual",
+        "start_range_date": "2007-06-27",
+        "end_range_limit": "Latest",
+    }
+    assert create_date_range_parameters("EaRlIeSt", "2010-05-11") == {
+        "start_range_limit": "Earliest",
+        "end_range_limit": "Actual",
+        "end_range_date": "2010-05-11",
+    }
+    assert create_date_range_parameters(
+        "2016-07-13T17:59:32", "2019-07-24T16:05:55"
+    ) == {
+        "start_range_limit": "Actual",
+        "start_range_date": "2016-07-13T17:59:32",
+        "end_range_limit": "Actual",
+        "end_range_date": "2019-07-24T16:05:55",
+    }
+    assert create_date_range_parameters(
+        "doesn't check that these", "actually look like dates"
+    ) == {
+        "start_range_limit": "Actual",
+        "start_range_date": "doesn't check that these",
+        "end_range_limit": "Actual",
+        "end_range_date": "actually look like dates",
+    }
 
 
 class TestDateListClause:

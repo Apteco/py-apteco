@@ -766,6 +766,21 @@ class DateListClause(ClauseMixin):
         )
 
 
+def create_date_range_parameters(start, end):
+    params = {}
+    if start.lower() == "earliest":
+        params["start_range_limit"] = "Earliest"
+    else:
+        params["start_range_limit"] = "Actual"
+        params["start_range_date"] = start
+    if end.lower() == "latest":
+        params["end_range_limit"] = "Latest"
+    else:
+        params["end_range_limit"] = "Actual"
+        params["end_range_date"] = end
+    return params
+
+
 class DateRangeClause(ClauseMixin):
     def __init__(self, table_name, variable, start, end, *, label=None, include=True, session=None):
         self.table_name = table_name
@@ -792,10 +807,7 @@ class DateRangeClause(ClauseMixin):
                             pattern_frequency="Daily",
                             pattern_interval=1,
                             pattern_days_of_week=["All"],
-                            start_range_limit="Actual",
-                            range_start_date=self.start,
-                            end_range_limit="Actual",
-                            range_end_date=self.end
+                            **create_date_range_parameters(self.start, self.end),
                         ),
                     )
                 ],
@@ -864,10 +876,7 @@ class DateTimeRangeClause(ClauseMixin):
                             pattern_frequency="Daily",
                             pattern_interval=1,
                             pattern_days_of_week=["All"],
-                            start_range_limit="Actual",
-                            range_start_date=self.start,
-                            end_range_limit="Actual",
-                            range_end_date=self.end
+                            **create_date_range_parameters(self.start, self.end),
                         ),
                     )
                 ],
