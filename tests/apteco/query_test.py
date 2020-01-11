@@ -306,6 +306,13 @@ class TestSelectorVariableMixin:
         assert bronze_supporters.include is True
         assert bronze_supporters.session == "CharityDataViewSession"
 
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_a_number = fake_selector_variable_mixin == 3
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a selector variable"
+            " must be given as a string or an iterable of strings."
+        )
+
     def test_ne(self, fake_selector_variable_mixin):
         higher_value_supporters = fake_selector_variable_mixin != ("Bronze", "Silver")
         assert type(higher_value_supporters) == SelectorClause
@@ -322,6 +329,13 @@ class TestSelectorVariableMixin:
         assert not_platinum.values == ["Platinum"]
         assert not_platinum.include is False
         assert not_platinum.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_a_float = fake_selector_variable_mixin != 2.5
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a selector variable"
+            " must be given as a string or an iterable of strings."
+        )
 
 
 class TestNumericVariableMixin:
@@ -344,13 +358,24 @@ class TestNumericVariableMixin:
         assert donations_100.include is True
         assert donations_100.session == "CharityDataViewSession"
 
-        hundreds_donations = fake_numeric_variable_mixin == (i * 100 for i in range(1, 10))
+        hundreds_donations = fake_numeric_variable_mixin == (
+            i * 100 for i in range(1, 10)
+        )
         assert type(hundreds_donations) == NumericClause
         assert hundreds_donations.table_name == "Donations"
         assert hundreds_donations.variable_name == "Amount"
-        assert hundreds_donations.values == ["100", "200", "300", "400", "500", "600", "700", "800", "900"]
+        assert hundreds_donations.values == [
+            "100", "200", "300", "400", "500", "600", "700", "800", "900"
+        ]
         assert hundreds_donations.include is True
         assert hundreds_donations.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_a_string = fake_numeric_variable_mixin == "256"
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a numeric variable"
+            " must be given as a number or an iterable of numbers."
+        )
 
     def test_ne(self, fake_numeric_variable_mixin):
         not_this = fake_numeric_variable_mixin != 72.1896
@@ -369,6 +394,13 @@ class TestNumericVariableMixin:
         assert not_one_of_these.include is False
         assert not_one_of_these.session == "CharityDataViewSession"
 
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_a_boolean = fake_numeric_variable_mixin != False
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a numeric variable"
+            " must be given as a number or an iterable of numbers."
+        )
+
     def test_lt(self, fake_numeric_variable_mixin):
         small_donations = fake_numeric_variable_mixin < Decimal("10.00")
         assert type(small_donations) == NumericClause
@@ -380,7 +412,9 @@ class TestNumericVariableMixin:
 
         with pytest.raises(ValueError) as exc_info:
             less_than_a_list = fake_numeric_variable_mixin < [512.64, 646.464646]
-        assert exc_info.value.args[0] == "Must specify a single number when using inequality operators."
+        assert exc_info.value.args[0] == (
+            "Must specify a single number when using inequality operators."
+        )
 
     def test_le(self, fake_numeric_variable_mixin):
         up_to_including_10k = fake_numeric_variable_mixin <= 10_000
@@ -393,7 +427,9 @@ class TestNumericVariableMixin:
 
         with pytest.raises(ValueError) as exc_info:
             less_than_equal_tuple = fake_numeric_variable_mixin <= (52, 27, 9.75)
-        assert exc_info.value.args[0] == "Must specify a single number when using inequality operators."
+        assert exc_info.value.args[0] == (
+            "Must specify a single number when using inequality operators."
+        )
 
     def test_gt(self, fake_numeric_variable_mixin):
         big_donations = fake_numeric_variable_mixin > 0.01 * 26_000
@@ -406,7 +442,9 @@ class TestNumericVariableMixin:
 
         with pytest.raises(ValueError) as exc_info:
             more_than_a_set = fake_numeric_variable_mixin > {15, 30, 40, 40}
-        assert exc_info.value.args[0] == "Must specify a single number when using inequality operators."
+        assert exc_info.value.args[0] == (
+            "Must specify a single number when using inequality operators."
+        )
 
     def test_ge(self, fake_numeric_variable_mixin):
         at_least_this_ratio = fake_numeric_variable_mixin >= Fraction(65432, 987)
@@ -418,8 +456,11 @@ class TestNumericVariableMixin:
         assert at_least_this_ratio.session == "CharityDataViewSession"
 
         with pytest.raises(ValueError) as exc_info:
-            at_least_a_generator = fake_numeric_variable_mixin >= (n for n in "12.3 4.56 789")
-        assert exc_info.value.args[0] == "Must specify a single number when using inequality operators."
+            number_gen = (n for n in "12.3 4.56 789".split())
+            at_least_a_generator = fake_numeric_variable_mixin >= number_gen
+        assert exc_info.value.args[0] == (
+            "Must specify a single number when using inequality operators."
+        )
 
 
 class TestTextVariableMixin:
@@ -577,6 +618,13 @@ class TestArrayVariableMixin:
         assert autumn_campaigns.include is True
         assert autumn_campaigns.session == "CharityDataViewSession"
 
+        with pytest.raises(ValueError) as exc_info:
+            forgot_string_quotes = fake_array_variable_mixin == ["4", 6]
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for an array variable"
+            " must be given as a string or an iterable of strings."
+        )
+
     def test_ne(self, fake_array_variable_mixin):
         not_christmas = fake_array_variable_mixin != "Christmas"
         assert type(not_christmas) == ArrayClause
@@ -599,6 +647,14 @@ class TestArrayVariableMixin:
         assert one_off_campaigns.logic == "OR"
         assert one_off_campaigns.include is False
         assert one_off_campaigns.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            undesired_values = ("value_we_dont_like", None)
+            not_none = fake_array_variable_mixin != undesired_values
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for an array variable"
+            " must be given as a string or an iterable of strings."
+        )
 
 
 class TestFlagArrayVariableMixin:
@@ -632,7 +688,8 @@ class TestFlagArrayVariableMixin:
         assert phone_or_text.session == "CharityDataViewSession"
 
         with pytest.raises(ValueError) as exc_info:
-            contactable = fake_flag_array_variable_mixin == True
+            true = True  # so editor doesn't complain about comparison not using `is`
+            contactable = fake_flag_array_variable_mixin == true
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a flag array variable"
             " must be given as a string or an iterable of strings."
@@ -693,7 +750,9 @@ class TestDateVariableMixin:
         with pytest.raises(ValueError) as exc_info:
             two_dates = (date(2019, 2, 14), date(2019, 6, 21))
             less_than_equal_a_pair = fake_date_variable_mixin <= two_dates
-        assert exc_info.value.args[0] == "Must specify a single date when using inequality operators."
+        assert exc_info.value.args[0] == (
+            "Must specify a single date when using inequality operators."
+        )
 
     def test_ge(self, fake_date_variable_mixin):
         after_christmas_2015 = fake_date_variable_mixin >= date(2015, 12, 25)
@@ -707,7 +766,9 @@ class TestDateVariableMixin:
 
         with pytest.raises(ValueError) as exc_info:
             trying_with_a_string = fake_date_variable_mixin >= "2011-11-20"
-        assert exc_info.value.args[0] == "Must specify a single date when using inequality operators."
+        assert exc_info.value.args[0] == (
+            "Must specify a single date when using inequality operators."
+        )
 
 
 class TestDateTimeVariableMixin:
@@ -734,7 +795,9 @@ class TestDateTimeVariableMixin:
 
         with pytest.raises(ValueError) as exc_info:
             trying_with_date_only = fake_datetime_variable_mixin <= date(2019, 11, 25)
-        assert exc_info.value.args[0] == "Must specify a single datetime when using inequality operators."
+        assert exc_info.value.args[0] == (
+            "Must specify a single datetime when using inequality operators."
+        )
 
     def test_ge(self, fake_datetime_variable_mixin):
         sale_start = datetime(2019, 12, 26, 4, 32, 10)
@@ -749,7 +812,9 @@ class TestDateTimeVariableMixin:
 
         with pytest.raises(ValueError) as exc_info:
             trying_with_number = fake_datetime_variable_mixin >= 2019122643210
-        assert exc_info.value.args[0] == "Must specify a single datetime when using inequality operators."
+        assert exc_info.value.args[0] == (
+            "Must specify a single datetime when using inequality operators."
+        )
 
 
 class TestSelectorClause:

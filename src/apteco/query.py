@@ -237,8 +237,8 @@ class SelectorVariableMixin:
 
 class NumericVariableMixin:
     general_error_msg = (
-        "Chosen value for a numeric variable"
-        " must be a number or an iterable of numbers."
+        "Chosen value(s) for a numeric variable"
+        " must be given as a number or an iterable of numbers."
     )
     single_value_error_msg = (
         "Must specify a single number when using inequality operators."
