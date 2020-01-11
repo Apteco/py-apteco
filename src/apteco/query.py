@@ -311,6 +311,30 @@ class FlagArrayVariableMixin:
         return FlagArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
 
+class DateVariableMixin:
+    single_value_error_msg = (
+        "Must specify a single date when using inequality operators."
+    )
+
+    def __le__(self: "DateVariable", other):
+        return DateRangeClause(self.table_name, self.name, "Earliest", normalize_date_value(other, self.single_value_error_msg), session=self.session)
+
+    def __ge__(self: "DateVariable", other):
+        return DateRangeClause(self.table_name, self.name, normalize_date_value(other, self.single_value_error_msg), "Latest", session=self.session)
+
+
+class DateTimeVariableMixin:
+    single_value_error_msg = (
+        "Must specify a single datetime when using inequality operators."
+    )
+
+    def __le__(self: "DateTimeVariable", other):
+        return DateTimeRangeClause(self.table_name, self.name, "Earliest", normalize_datetime_value(other, self.single_value_error_msg), session=self.session)
+
+    def __ge__(self: "DateTimeVariable", other):
+        return DateTimeRangeClause(self.table_name, self.name, normalize_datetime_value(other, self.single_value_error_msg), "Latest", session=self.session)
+
+
 class ClauseMixin:
 
     @property

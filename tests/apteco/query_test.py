@@ -12,6 +12,8 @@ from apteco.query import (
     TextVariableMixin,
     ArrayVariableMixin,
     FlagArrayVariableMixin,
+    DateVariableMixin,
+    DateTimeVariableMixin,
     ArrayClause,
     BooleanClause,
     CombinedCategoriesClause,
@@ -665,6 +667,89 @@ class TestFlagArrayVariableMixin:
             "Chosen value(s) for a flag array variable"
             " must be given as a string or an iterable of strings."
         )
+
+
+class TestDateVariableMixin:
+
+    @pytest.fixture()
+    def fake_date_variable_mixin(self):
+        dvm_example = DateVariableMixin.__new__(DateVariableMixin)
+        dvm_example.type = "Date"
+        dvm_example.table_name = "Donations"
+        dvm_example.name = "DonationDate"
+        dvm_example.session = "CharityDataViewSession"
+        return dvm_example
+
+    def test_le(self, fake_date_variable_mixin):
+        before_tax_year_end_2018_19 = fake_date_variable_mixin <= date(2019, 4, 5)
+        assert type(before_tax_year_end_2018_19) == DateRangeClause
+        assert before_tax_year_end_2018_19.table_name == "Donations"
+        assert before_tax_year_end_2018_19.variable_name == "DonationDate"
+        assert before_tax_year_end_2018_19.start == "Earliest"
+        assert before_tax_year_end_2018_19.end == "2019-04-05"
+        assert before_tax_year_end_2018_19.include is True
+        assert before_tax_year_end_2018_19.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            two_dates = (date(2019, 2, 14), date(2019, 6, 21))
+            less_than_equal_a_pair = fake_date_variable_mixin <= two_dates
+        assert exc_info.value.args[0] == "Must specify a single date when using inequality operators."
+
+    def test_ge(self, fake_date_variable_mixin):
+        after_christmas_2015 = fake_date_variable_mixin >= date(2015, 12, 25)
+        assert type(after_christmas_2015) == DateRangeClause
+        assert after_christmas_2015.table_name == "Donations"
+        assert after_christmas_2015.variable_name == "DonationDate"
+        assert after_christmas_2015.start == "2015-12-25"
+        assert after_christmas_2015.end == "Latest"
+        assert after_christmas_2015.include is True
+        assert after_christmas_2015.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_a_string = fake_date_variable_mixin >= "2011-11-20"
+        assert exc_info.value.args[0] == "Must specify a single date when using inequality operators."
+
+
+class TestDateTimeVariableMixin:
+
+    @pytest.fixture()
+    def fake_datetime_variable_mixin(self):
+        dtvm_example = DateTimeVariableMixin.__new__(DateTimeVariableMixin)
+        dtvm_example.type = "DateTime"
+        dtvm_example.table_name = "WebVisits"
+        dtvm_example.name = "BrowsingSessionStart"
+        dtvm_example.session = "CharityDataViewSession"
+        return dtvm_example
+
+    def test_le(self, fake_datetime_variable_mixin):
+        xmas_campaign_launch = datetime(2019, 11, 25, 11, 22, 33)
+        before_christmas_campaign = fake_datetime_variable_mixin <= xmas_campaign_launch
+        assert type(before_christmas_campaign) == DateTimeRangeClause
+        assert before_christmas_campaign.table_name == "WebVisits"
+        assert before_christmas_campaign.variable_name == "BrowsingSessionStart"
+        assert before_christmas_campaign.start == "Earliest"
+        assert before_christmas_campaign.end == "2019-11-25T11:22:33"
+        assert before_christmas_campaign.include is True
+        assert before_christmas_campaign.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_date_only = fake_datetime_variable_mixin <= date(2019, 11, 25)
+        assert exc_info.value.args[0] == "Must specify a single datetime when using inequality operators."
+
+    def test_ge(self, fake_datetime_variable_mixin):
+        sale_start = datetime(2019, 12, 26, 4, 32, 10)
+        after_boxing_day_sale_start = fake_datetime_variable_mixin >= sale_start
+        assert type(after_boxing_day_sale_start) == DateTimeRangeClause
+        assert after_boxing_day_sale_start.table_name == "WebVisits"
+        assert after_boxing_day_sale_start.variable_name == "BrowsingSessionStart"
+        assert after_boxing_day_sale_start.start == "2019-12-26T04:32:10"
+        assert after_boxing_day_sale_start.end == "Latest"
+        assert after_boxing_day_sale_start.include is True
+        assert after_boxing_day_sale_start.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_number = fake_datetime_variable_mixin >= 2019122643210
+        assert exc_info.value.args[0] == "Must specify a single datetime when using inequality operators."
 
 
 class TestSelectorClause:
