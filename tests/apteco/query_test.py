@@ -17,6 +17,7 @@ from apteco.query import (
     ArrayClause,
     BooleanClause,
     CombinedCategoriesClause,
+    DateListClause,
     DateRangeClause,
     DateTimeRangeClause,
     FlagArrayClause,
@@ -737,6 +738,80 @@ class TestDateVariableMixin:
         dvm_example.session = "CharityDataViewSession"
         return dvm_example
 
+    def test_eq(self, fake_date_variable_mixin):
+        august_bank_holiday_2018 = fake_date_variable_mixin == date(2018, 8, 27)
+        assert type(august_bank_holiday_2018) == DateListClause
+        assert august_bank_holiday_2018.table_name == "Donations"
+        assert august_bank_holiday_2018.variable_name == "DonationDate"
+        assert august_bank_holiday_2018.values == ["20180827"]
+        assert august_bank_holiday_2018.include is True
+        assert august_bank_holiday_2018.session == "CharityDataViewSession"
+
+        festive_days_from_random_years = fake_date_variable_mixin == [
+            date(1912, 12, 25),
+            date(1934, 2, 14),
+            date(1956, 4, 1),
+            date(1978, 10, 31),
+            date(1990, 11, 5),
+            date(2011, 4, 29),
+            date(2023, 9, 23),
+        ]
+        assert type(festive_days_from_random_years) == DateListClause
+        assert festive_days_from_random_years.table_name == "Donations"
+        assert festive_days_from_random_years.variable_name == "DonationDate"
+        assert festive_days_from_random_years.values == [
+            "19121225",
+            "19340214",
+            "19560401",
+            "19781031",
+            "19901105",
+            "20110429",
+            "20230923",
+        ]
+        assert festive_days_from_random_years.include is True
+        assert festive_days_from_random_years.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_date_string = fake_date_variable_mixin == "20180528"
+        assert exc_info.value.args[0] == (
+            "Chosen value for a date variable"
+            " must be a date object or an iterable of date objects."
+        )
+
+    def test_ne(self, fake_date_variable_mixin):
+        not_easter_2050 = fake_date_variable_mixin != date(2050, 4, 10)
+        assert type(not_easter_2050) == DateListClause
+        assert not_easter_2050.table_name == "Donations"
+        assert not_easter_2050.variable_name == "DonationDate"
+        assert not_easter_2050.values == ["20500410"]
+        assert not_easter_2050.include is False
+        assert not_easter_2050.session == "CharityDataViewSession"
+
+
+        exclude_solstices_and_equinoxes_2030 = fake_date_variable_mixin != [
+            date(2030, 3, 20),
+            datetime(2030, 6, 21, 7, 31),
+            date(2030, 9, 22),
+            datetime(2030, 12, 21, 20, 9),
+        ]
+        assert type(exclude_solstices_and_equinoxes_2030) == DateListClause
+        assert exclude_solstices_and_equinoxes_2030.table_name == "Donations"
+        assert exclude_solstices_and_equinoxes_2030.variable_name == "DonationDate"
+        assert exclude_solstices_and_equinoxes_2030.values == [
+            "20300320", "20300621", "20300922", "20301221"
+        ]
+        assert exclude_solstices_and_equinoxes_2030.include is False
+        assert exclude_solstices_and_equinoxes_2030.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            trying_with_list_some_invalid = fake_date_variable_mixin == [
+                date(2012, 7, 27), "20221121", datetime(2018, 2, 9, 11, 0, 0)
+            ]
+        assert exc_info.value.args[0] == (
+            "Chosen value for a date variable"
+            " must be a date object or an iterable of date objects."
+        )
+
     def test_le(self, fake_date_variable_mixin):
         before_tax_year_end_2018_19 = fake_date_variable_mixin <= date(2019, 4, 5)
         assert type(before_tax_year_end_2018_19) == DateRangeClause
@@ -1141,7 +1216,59 @@ class TestFlagArrayClause:
 
 
 class TestDateListClause:
-    pass
+    def test_date_list_clause_init(self):
+        exclude_bank_hols_cmas16_new_year17 = DateListClause(
+            "Bookings",
+            "boTrav",
+            ["20161225", "20161226", "20170101"],
+            label="Not bank holidays within Xmas hols 2016-17",
+            include=False,
+        )
+        assert exclude_bank_hols_cmas16_new_year17.table_name == "Bookings"
+        assert exclude_bank_hols_cmas16_new_year17.variable_name == "boTrav"
+        assert exclude_bank_hols_cmas16_new_year17.values == [
+            "20161225",
+            "20161226",
+            "20170101",
+        ]
+        assert exclude_bank_hols_cmas16_new_year17.label == (
+            "Not bank holidays within Xmas hols 2016-17"
+        )
+        assert exclude_bank_hols_cmas16_new_year17.include is False
+
+    def test_date_list_clause_to_model(self):
+        fake_date_list_clause = Mock(
+            table_name="Bookings",
+            variable_name="boTrav",
+            values=["20161225", "20161226", "20170101"],
+            label="Exclude bank holidays over Christmas/New Year 2016/17",
+            include=False,
+            session=None,
+        )
+        expected_date_list_clause_model = aa.Clause(
+            criteria=aa.Criteria(
+                variable_name="boTrav",
+                include=False,
+                logic="OR",
+                ignore_case=False,
+                text_match_type="Is",
+                value_rules=[
+                    aa.ValueRule(
+                        list_rule=aa.ListRule(
+                            list="20161225\t20161226\t20170101",
+                            variable_name="boTrav"
+                        ),
+                        predefined_rule="AdhocDates",
+                    )
+                ],
+                table_name="Bookings",
+                name="Exclude bank holidays over Christmas/New Year 2016/17",
+            )
+        )
+        assert (
+            DateListClause._to_model(fake_date_list_clause)
+            == expected_date_list_clause_model
+        )
 
 
 class TestDateRangeClause:

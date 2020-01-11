@@ -312,9 +312,19 @@ class FlagArrayVariableMixin:
 
 
 class DateVariableMixin:
+    general_error_msg = (
+        "Chosen value for a date variable"
+        " must be a date object or an iterable of date objects."
+    )
     single_value_error_msg = (
         "Must specify a single date when using inequality operators."
     )
+
+    def __eq__(self: "DateVariable", other):
+        return DateListClause(self.table_name, self.name, normalize_date_input(other, self.general_error_msg, basic=True), session=self.session)
+
+    def __ne__(self: "DateVariable", other):
+        return DateListClause(self.table_name, self.name, normalize_date_input(other, self.general_error_msg, basic=True), include=False, session=self.session)
 
     def __le__(self: "DateVariable", other):
         return DateRangeClause(self.table_name, self.name, "Earliest", normalize_date_value(other, self.single_value_error_msg), session=self.session)
