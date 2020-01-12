@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import apteco_api as aa
 import pytest
@@ -25,6 +25,7 @@ from apteco.query import (
     SelectorClause,
     SubSelectionClause,
     TableClause,
+    TableMixin,
     TextClause,
     normalize_string_input,
     normalize_string_value,
@@ -35,6 +36,21 @@ from apteco.query import (
     normalize_datetime_input,
     normalize_datetime_value,
 )
+
+
+class TestTableMixin:
+
+    @patch("apteco.query.Selection")
+    def test_select(self, patched_selection):
+        fake_table = Mock()
+        fake_table.configure_mock(name="Bookings", session="MySession")
+        patched_selection.return_value = "You selected this whole table."
+        expected_query_final = aa.Query(
+            selection=aa.Selection(table_name="Bookings", ancestor_counts=True)
+        )
+        example_selection = TableMixin.select(fake_table)
+        assert example_selection == "You selected this whole table."
+        patched_selection.assert_called_once_with(expected_query_final, "MySession")
 
 
 def test_normalize_string_value():
