@@ -17,6 +17,8 @@ from apteco.exceptions import (
 )
 from apteco.query import (
     ArrayVariableMixin,
+    DateVariableMixin,
+    DateTimeVariableMixin,
     FlagArrayVariableMixin,
     NumericVariableMixin,
     SelectorVariableMixin,
@@ -246,7 +248,7 @@ class BaseSelectorVariable(Variable):
         self.var_code_order = selector_info.var_code_order
 
 
-class SelectorVariable(SelectorVariableMixin, BaseSelectorVariable):
+class SelectorVariable(BaseSelectorVariable, SelectorVariableMixin):
     """Class representing a FastStats Selector variable."""
 
     def __init__(self, **kwargs):
@@ -264,7 +266,7 @@ class CombinedCategoriesVariable(BaseSelectorVariable):
         self.combined_from = selector_info.combined_from_variable_name
 
 
-class NumericVariable(NumericVariableMixin, Variable):
+class NumericVariable(Variable, NumericVariableMixin):
     """Class representing a FastStats Numeric variable."""
 
     def __init__(self, **kwargs):
@@ -278,7 +280,7 @@ class NumericVariable(NumericVariableMixin, Variable):
         self.currency_symbol = numeric_info.currency_symbol
 
 
-class TextVariable(TextVariableMixin ,Variable):
+class TextVariable(Variable, TextVariableMixin):
     """Class representing a FastStats Text variable."""
 
     def __init__(self, **kwargs):
@@ -288,7 +290,7 @@ class TextVariable(TextVariableMixin ,Variable):
         self.max_length = text_info.maximum_text_length
 
 
-class ArrayVariable(ArrayVariableMixin, BaseSelectorVariable):
+class ArrayVariable(BaseSelectorVariable, ArrayVariableMixin):
     """Class representing a FastStats Array variable."""
 
     def __init__(self, **kwargs):
@@ -296,7 +298,7 @@ class ArrayVariable(ArrayVariableMixin, BaseSelectorVariable):
         self.type = "Array"
 
 
-class FlagArrayVariable(FlagArrayVariableMixin, BaseSelectorVariable):
+class FlagArrayVariable(BaseSelectorVariable, FlagArrayVariableMixin):
     """Class representing a FastStats Flag Array variable."""
 
     def __init__(self, **kwargs):
@@ -304,19 +306,24 @@ class FlagArrayVariable(FlagArrayVariableMixin, BaseSelectorVariable):
         self.type = "FlagArray"
 
 
-class DateVariable(BaseSelectorVariable):
-    """Class representing a FastStats Date variable."""
-
+class BaseDateVariable(BaseSelectorVariable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "Date"
         selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
         self.min_date = selector_info.minimum_date
         self.max_date = selector_info.maximum_date
 
 
-class DateTimeVariable(DateVariable):
-    """Class representing a FastStats Datetime variable."""
+class DateVariable(BaseDateVariable, DateVariableMixin):
+    """Class representing a FastStats Date variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "Date"
+
+
+class DateTimeVariable(BaseDateVariable, DateTimeVariableMixin):
+    """Class representing a FastStats DateTime variable."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

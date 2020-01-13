@@ -134,16 +134,9 @@ class TableMixin:
 
 class VariableMixin:
 
-    def __eq__(self, other):
-        if isinstance(other, str):
-            return criteria_clause(self, [other])
-        elif isinstance(other, Iterable):
-            return criteria_clause(self, list(other))
-        else:
-            raise ValueError("Can only set variable equal to to a string or Iterable of strings.")
-
     def isin(self, values):
-        return criteria_clause(self, values)
+        raise NotImplementedError
+        # return criteria_clause(self, values)
 
     # TODO: implement contains method for variables
     def contains(self, needle):
@@ -338,6 +331,12 @@ class DateTimeVariableMixin:
         "Must specify a single datetime when using inequality operators."
     )
 
+    def __eq__(self, other):
+        raise NotImplementedError
+
+    def __ne__(self, other):
+        raise NotImplementedError
+
     def __le__(self: "DateTimeVariable", other):
         return DateTimeRangeClause(self.table_name, self.name, "Earliest", normalize_datetime_value(other, self.single_value_error_msg), session=self.session)
 
@@ -356,13 +355,16 @@ class ClauseMixin:
             return (self * table).select()
         query_final = aa.Query(
             selection=aa.Selection(
-                table_name=self.table.name, ancestor_counts=True, rule=aa.Rule(
+                table_name=self.table_name, ancestor_counts=True, rule=aa.Rule(
                     clause=self._to_model()
                 )
             )
         )
-        session = self.table.session
+        session = self.session
         return Selection(query_final, session)
+
+    def count(self):
+        return self.select().count
 
     def _change_table(self, new_table, simplify=False):
 
@@ -430,27 +432,6 @@ class ClauseMixin:
 
     def __rmul__(self, other):
         return self.__mul__(other)
-
-
-def criteria_clause(variable: "Variable", values: Iterable):
-    if variable.type == "Selector":
-        return SelectorClause(variable.table_name, variable.name, values, session=variable.session)
-    elif variable.type == "CombinedCategories":
-        return CombinedCategoriesClause(variable.table_name, variable.name, values, session=variable.session)
-    elif variable.type == "Numeric":
-        return NumericClause(variable.table_name, variable.name, values, session=variable.session)
-    elif variable.type == "Text":
-        return TextClause(variable.table_name, variable.name, values, session=variable.session)
-    elif variable.type == "Array":
-        return ArrayClause(variable.table_name, variable.name, values, session=variable.session)
-    elif variable.type == "FlagArray":
-        return FlagArrayClause(variable.table_name, variable.name, values, session=variable.session)
-    elif variable.type == "Date":
-        return DateListClause(variable.table_name, variable.name, values, session=variable.session)
-    elif variable.type in ["DateTime", "Reference"]:
-        raise AptecoException(f"The variable type '{variable.type}' is not supported for this operation.")
-    else:
-        raise AptecoException(f"The operation could not be carried out, variable type: '{variable.type}' not recognised.")
 
 
 class SelectorClauseMixin:
