@@ -29,6 +29,6 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    poetry run python -m pip install pytest pytest-azurepipelines
-    poetry run pytest tests/ --test-run-title="Windows test (python $(python.version))"
+    poetry run python -m pip install pytest pytest-azurepipelines pytest-cov
+    poetry run pytest tests/ --test-run-title="Windows test (python $(python.version))" --cov apteco --cov-report html
   displayName: 'pytest'
