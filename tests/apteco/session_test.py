@@ -597,7 +597,7 @@ def patch_get_password(mocker):
 @pytest.fixture()
 def patch_login_with_password(mocker):
     return mocker.patch.object(
-        apteco.session, "login_with_password", return_value="Here are your credentials!"
+        apteco.session, "login_with_password", return_value="Here is your session!"
     )
 
 
@@ -641,30 +641,42 @@ class TestLogin:
     """Tests for login functions and related functions."""
 
     def test_login(self, patch_get_password, patch_login_with_password):
-        credentials = login(
-            "https://marketing.example.com/AptecoAPI/", "a_room_with_a_view", "JDoe"
+        session = login(
+            "https://marketing.example.com/AptecoAPI/",
+            "a_room_with_a_view",
+            "systemic_change",
+            "JDoe",
         )
-        assert credentials == "Here are your credentials!"
+        assert session == "Here is your session!"
         patch_get_password.assert_called_once_with()
         patch_login_with_password.assert_called_once_with(
             "https://marketing.example.com/AptecoAPI/",
             "a_room_with_a_view",
+            "systemic_change",
             "JDoe",
             password="something very secret",
         )
 
-    def test_login_with_password(self, patch_simple_login_algo, fake_simple_login_algo):
-        credentials = login_with_password(
+    def test_login_with_password(
+            self,
+            patch_simple_login_algo,
+            patch_session,
+            fake_simple_login_algo,
+            fake_session_empty,
+    ):
+        session = login_with_password(
             "https://marketing.example.com/AptecoAPI/",
             "a_room_with_a_view",
+            "systemic_change",
             "JDoe",
             "my s3cr3t pa55w0rd",
         )
-        assert credentials == "fake credentials"
+        assert session is fake_session_empty
         patch_simple_login_algo.assert_called_once_with(
             "https://marketing.example.com/AptecoAPI/", "a_room_with_a_view"
         )
         fake_simple_login_algo.run.assert_called_once_with("JDoe", "my s3cr3t pa55w0rd")
+        patch_session.assert_called_once_with("fake credentials", "systemic_change")
 
     def test_get_password(self, patch_getpass_getpass):
         result = _get_password("This should appear on the console")

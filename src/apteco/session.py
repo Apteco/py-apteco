@@ -372,37 +372,46 @@ class Credentials:
 FastStatsSystem = namedtuple("FastStatsSystem", "name description build_date view_name")
 
 
-def login(base_url: str, data_view: str, user: str) -> Credentials:
+def login(base_url: str, data_view: str, system: str, user: str) -> Session:
     """Log in to the API without supplying password directly.
 
     Args:
         base_url (str): API base URL, normally ending '/OrbitAPI'
         data_view (str): DataView being logged into
+        system (str): FastStats system to connect to
         user (str): username of API user
 
     Returns:
-        Credentials: API session credentials
+        Session: API session object
 
     """
-    return login_with_password(base_url, data_view, user, password=_get_password())
+    return login_with_password(
+        base_url, data_view, system, user, password=_get_password()
+    )
 
 
 def login_with_password(
-    base_url: str, data_view: str, user: str, password: str
-) -> Credentials:
+        base_url: str,
+        data_view: str,
+        system: str,
+        user: str,
+        password: str,
+) -> Session:
     """Log in to the API, supplying password directly.
 
     Args:
         base_url (str): API base URL, normally ending '/OrbitAPI'
         data_view (str): DataView being logged into
+        system (str): FastStats system to connect to
         user (str): username of API user
         password (str): password for this user
 
     Returns:
-        Credentials: API session credentials
+        Session: API session object
 
     """
-    return SimpleLoginAlgorithm(base_url, data_view).run(user, password)
+    credentials = SimpleLoginAlgorithm(base_url, data_view).run(user, password)
+    return Session(credentials, system)
 
 
 def _get_password(prompt: str = "Enter your password: ") -> str:
