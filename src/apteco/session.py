@@ -37,8 +37,11 @@ class Session:
         self._create_client()
         self.system = system
         self._fetch_system_info()
-        self.variables = InitializeVariablesAlgorithm(self).run()
-        self.tables, self.master_table = InitializeTablesAlgorithm(self).run()
+        tables_without_vars, master_table_name = InitializeTablesAlgorithm(self).run()
+        self.variables, self.tables = InitializeVariablesAlgorithm(
+            self, tables_without_vars
+        ).run()
+        self.master_table = self.tables[master_table_name]
 
     def _unpack_credentials(self, credentials):
         """Copy credentials data into session."""
@@ -216,7 +219,7 @@ class Variable(VariableMixin):
         description: str,
         type: str,
         folder_name: str,
-        table_name: str,
+        table: Table,
         is_selectable: bool,
         is_browsable: bool,
         is_exportable: bool,
@@ -229,7 +232,7 @@ class Variable(VariableMixin):
         self.description = description
         self._model_type = type
         self.folder_name = folder_name
-        self.table_name = table_name
+        self.table = table
         self.is_selectable = is_selectable
         self.is_browsable = is_browsable
         self.is_exportable = is_exportable
@@ -391,11 +394,7 @@ def login(base_url: str, data_view: str, system: str, user: str) -> Session:
 
 
 def login_with_password(
-        base_url: str,
-        data_view: str,
-        system: str,
-        user: str,
-        password: str,
+    base_url: str, data_view: str, system: str, user: str, password: str
 ) -> Session:
     """Log in to the API, supplying password directly.
 
@@ -517,8 +516,6 @@ class InitializeTablesAlgorithm:
         system (str): FastStats system the session is connected to
         api_client (aa.ApiClient): client to handle API calls
         session (Session): API session the tables data belongs to
-        variables (Dict[str, Variable]): mapping from variable name
-            to its Variable object
         raw_tables (List[aa.Table]): list of raw tables
         children_lookup (Dict[str, List[str]]): mapping from table name
             to list of its child table names
@@ -542,9 +539,8 @@ class InitializeTablesAlgorithm:
         self.system = session.system
         self.api_client = session.api_client
         self.session = session
-        self.variables = session.variables
 
-    def run(self) -> Tuple[Dict[str, Table], Table]:
+    def run(self) -> Tuple[Dict[str, Table], str]:
         """Run the algorithm.
 
         Returns:
@@ -552,20 +548,19 @@ class InitializeTablesAlgorithm:
 
                 tables (Dict[str, Table]): mapping from table name
                     to its Table object
-                master_table (Table):
-                    master table of the FastStats system
+                master_table_name (str):
+                    name of the master table of the FastStats system
 
         """
         self._get_raw_tables()
         self._identify_children()
-        self._identify_variables()
         self._create_tables()
         self._assign_parent_and_children()
         self._find_master_table()
         _tree_tables = self._assign_ancestors_and_descendants(self.master_table, [])
         self._check_all_tables_in_tree(_tree_tables)
         self._check_all_relations_assigned()
-        return self.tables, self.master_table
+        return self.tables, self.master_table.name
 
     def _get_raw_tables(self):
         """Get list of all tables from API."""
@@ -594,13 +589,6 @@ class InitializeTablesAlgorithm:
             self.children_lookup[table.parent_table].append(table.name)
         # don't freeze yet: will need to look up childless tables and return empty list
 
-    def _identify_variables(self):
-        """Identify variables for each table."""
-        self.variables_lookup = defaultdict(dict)
-        for variable in self.variables.values():
-            self.variables_lookup[variable.table_name][variable.description] = variable
-        self.variables_lookup.default_factory = None  # 'freeze' as normal dict
-
     def _create_tables(self):
         """Create py-apteco tables from apteco_api ones."""
         self.tables = {
@@ -619,7 +607,7 @@ class InitializeTablesAlgorithm:
                 NOT_ASSIGNED,
                 NOT_ASSIGNED,
                 NOT_ASSIGNED,
-                self.variables_lookup.get(t.name, {}),
+                NOT_ASSIGNED,
                 session=self.session,
             )
             for t in self.raw_tables
@@ -719,47 +707,64 @@ class InitializeVariablesAlgorithm:
     """Class holding the algorithm to initialize system variables.
 
     The purpose of this algorithm is to
-    retrieve the raw variables for the given system
-    and convert these into py-apteco Variable objects.
+    retrieve the raw variables for the given system,
+    convert them into py-apteco Variable objects,
+    and assign these to their tables.
 
     Attributes:
         data_view (str): DataView the system belongs to
         system (str): FastStats system the session is connected to
         api_client (aa.ApiClient): client to handle API calls
         session (Session): API session the variables data belongs to
+        tables (Dict[str, Table]): mapping from table name
+            to its Table object
         raw_variables (List[aa.Variable]): list of raw variables
         variables (Dict[str, Variable]): mapping from variable name
             to its Variable object
+        variables_lookup (Dict[str, List[str]]): mapping from table name
+            to list of its variables
 
     Methods:
         run(): entry point to run the algorithm
 
     """
 
-    def __init__(self, session):
+    def __init__(self, session, tables_without_variables):
         """
 
         Args:
             session (Session): API session the variables data belongs to
+            tables_without_variables (Dict[str, Table]): mapping from
+                table name to its Table object
+                with variables attribute as ``NOT_ASSIGNED``
 
         """
         self.data_view = session.data_view
         self.system = session.system
         self.api_client = session.api_client
         self.session = session
+        self.tables = tables_without_variables
 
-    def run(self) -> Dict[str, Variable]:
+    def run(self) -> Tuple[Dict[str, Variable], Dict[str, Table]]:
         """Run the algorithm.
 
         Returns:
-            dict: mapping from variable name
-                to its Variable object
+            (tuple): tuple containing:
+
+                variables (Dict[str], Variable): mapping from
+                    variable name to its Variable object
+                tables (Dict[str, Table]): mapping from table name
+                    to its Table object, initially with
+                    ``variables`` attribute as ``NOT_ASSIGNED``
 
         """
 
         self._get_raw_variables()
         self._create_variables()
-        return self.variables
+        self._identify_variables()
+        self._assign_variables()
+        self._check_all_variables_assigned()
+        return self.variables, self.tables
 
     def _get_raw_variables(self, variables_per_page=VARIABLES_PER_PAGE):
         """Get list of all variables from API."""
@@ -794,7 +799,7 @@ class InitializeVariablesAlgorithm:
                 description=v.description,
                 type=v.type,
                 folder_name=v.folder_name,
-                table_name=v.table_name,
+                table=self.tables[v.table_name],
                 is_selectable=v.is_selectable,
                 is_browsable=v.is_browsable,
                 is_exportable=v.is_exportable,
@@ -845,3 +850,29 @@ class InitializeVariablesAlgorithm:
                 f"Failed to initialize variable,"
                 f" did not recognise the type from determinant: {determinant}"
             ) from exc
+
+    def _identify_variables(self):
+        """Identify variables for each table."""
+        self.variables_lookup = defaultdict(dict)
+        for variable in self.variables.values():
+            self.variables_lookup[variable.table.name][variable.description] = variable
+        self.variables_lookup.default_factory = None  # 'freeze' as normal dict
+
+    def _assign_variables(self):
+        """Assign variables to each table."""
+        for table in self.tables.values():
+            try:
+                table.variables = self.variables_lookup[table.name]
+            except KeyError:
+                raise VariablesError(f"No variables found for '{table.name}' table.")
+
+    def _check_all_variables_assigned(self):
+        """Check all tables have variables attribute assigned."""
+        no_variables = []
+        for table in self.tables.values():
+            if table.variables is NOT_ASSIGNED:
+                no_variables.append(table.name)
+        if no_variables:
+            raise VariablesError(
+                f"{len(no_variables)} table(s) had no variables assigned."
+            )

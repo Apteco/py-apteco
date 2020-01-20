@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -44,19 +44,24 @@ class TestSession:
         example_serialized_session = fake_session_for_serialize_test.serialize()
         assert example_serialized_session == fake_serialized_session
 
-    @patch("apteco.session.InitializeTablesAlgorithm")
     @patch("apteco.session.InitializeVariablesAlgorithm")
+    @patch("apteco.session.InitializeTablesAlgorithm")
     @patch("apteco.session.Session._fetch_system_info")
     def test_deserialize_session(
         self,
         patched_fetch_system_info,
-        patched_initialize_variables_algo,
         patched_initialize_tables_algo,
+        patched_initialize_variables_algo,
         fake_serialized_session,
     ):
-        patched_initialize_tables_algo.return_value = Mock(
-            run=Mock(return_value=("fake_tables", "fake_master_table"))
-        )
+        patched_initialize_tables_algo.return_value = Mock(run=Mock(return_value=(
+                "fake_tables_without_variables", "fake_master_table_name"
+        )))
+        fake_tables_with_master_table = MagicMock()
+        fake_tables_with_master_table.__getitem__.return_value = "fake_master_table"
+        patched_initialize_variables_algo.return_value = Mock(run=Mock(return_value=(
+            "fake_variables", fake_tables_with_master_table
+        )))
         expected_user = User("my_fake_user", "Jane", "Doe", "jane.doe@mysite.com")
         deserialized_session = Session.deserialize(fake_serialized_session)
         assert deserialized_session.base_url == "https://fake.base/URL/OrbitAPI"
@@ -65,11 +70,14 @@ class TestSession:
         assert deserialized_session.access_token == "fake_access_token_o87q4bwvf9pac"
         assert deserialized_session.user == expected_user
         assert deserialized_session.system == "fake_system_name"
-        assert deserialized_session.tables == "fake_tables"
+        assert deserialized_session.variables == "fake_variables"
+        assert deserialized_session.tables is fake_tables_with_master_table
         assert deserialized_session.master_table == "fake_master_table"
         patched_fetch_system_info.assert_called_once_with()
-        patched_initialize_variables_algo.assert_called_once_with(deserialized_session)
         patched_initialize_tables_algo.assert_called_once_with(deserialized_session)
+        patched_initialize_variables_algo.assert_called_once_with(
+            deserialized_session, "fake_tables_without_variables"
+        )
 
     def test_deserialize_session_with_bad_credentials_dict(
         self, fake_serialized_session

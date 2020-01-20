@@ -51,16 +51,23 @@ def patch_fetch_system_info(mocker):
 
 
 @pytest.fixture()
+def fake_tables_with_master_table(mocker):
+    fake = mocker.MagicMock()
+    fake.__getitem__.return_value = "fake master table"
+    return fake
+
+
+@pytest.fixture()
 def patch_initialize_tables_algo(mocker):
     fake = mocker.Mock()
-    fake.run.return_value = ["fake tables", "fake master table"]
+    fake.run.return_value = ["fake tables no vars", "fake master table name"]
     return mocker.patch("apteco.session.InitializeTablesAlgorithm", return_value=fake)
 
 
 @pytest.fixture()
-def patch_initialize_variables_algo(mocker):
+def patch_initialize_variables_algo(mocker, fake_tables_with_master_table):
     fake = mocker.Mock()
-    fake.run.return_value = "fake variables"
+    fake.run.return_value = ["fake variables", fake_tables_with_master_table]
     return mocker.patch(
         "apteco.session.InitializeVariablesAlgorithm", return_value=fake
     )
@@ -202,6 +209,7 @@ def patch_json_loads_raise_json_decode_error(mocker):
 
 def test_create_session_with_credentials(
     fake_credentials_with_attrs,
+    fake_tables_with_master_table,
     patch_fetch_system_info,
     patch_initialize_variables_algo,
     patch_initialize_tables_algo,
@@ -209,11 +217,13 @@ def test_create_session_with_credentials(
     session_example = Session(fake_credentials_with_attrs, "solar system")
     assert session_example.system == "solar system"
     assert session_example.variables == "fake variables"
-    assert session_example.tables == "fake tables"
+    assert session_example.tables is fake_tables_with_master_table
     assert session_example.master_table == "fake master table"
     patch_fetch_system_info.assert_called_once_with()
-    patch_initialize_variables_algo.assert_called_once_with(session_example)
     patch_initialize_tables_algo.assert_called_once_with(session_example)
+    patch_initialize_variables_algo.assert_called_once_with(
+        session_example, "fake tables no vars"
+    )
     assert session_example.base_url == "baseless assumptions"
     assert session_example.data_view == "a room with a view"
     assert session_example.session_id == "0246813579"
@@ -228,18 +238,21 @@ class TestSession:
         patch_unpack_credentials,
         patch_create_client,
         patch_fetch_system_info,
-        patch_initialize_variables_algo,
+        fake_tables_with_master_table,
         patch_initialize_tables_algo,
+        patch_initialize_variables_algo,
     ):
         session_example = Session(fake_credentials_with_attrs, "solar system")
         patch_unpack_credentials.assert_called_once_with(fake_credentials_with_attrs)
         patch_create_client.assert_called_once_with()
         assert session_example.system == "solar system"
         patch_fetch_system_info.assert_called_once_with()
-        patch_initialize_variables_algo.assert_called_once_with(session_example)
-        assert session_example.variables == "fake variables"
         patch_initialize_tables_algo.assert_called_once_with(session_example)
-        assert session_example.tables == "fake tables"
+        patch_initialize_variables_algo.assert_called_once_with(
+            session_example, "fake tables no vars"
+        )
+        assert session_example.variables == "fake variables"
+        assert session_example.tables is fake_tables_with_master_table
         assert session_example.master_table == "fake master table"
 
     def test_unpack_credentials(self, mocker, fake_credentials_with_attrs):
@@ -658,11 +671,11 @@ class TestLogin:
         )
 
     def test_login_with_password(
-            self,
-            patch_simple_login_algo,
-            patch_session,
-            fake_simple_login_algo,
-            fake_session_empty,
+        self,
+        patch_simple_login_algo,
+        patch_session,
+        fake_simple_login_algo,
+        fake_session_empty,
     ):
         session = login_with_password(
             "https://marketing.example.com/AptecoAPI/",
@@ -1000,7 +1013,6 @@ def correct_tables(fake_tables, correct_children_lookup):
 
 class TestInitializeTablesAlgorithm:
     def test_initialize_tables_algo_init(self, fake_session_with_client):
-        fake_session_with_client.variables = "variables for the session"
         initialize_tables_algo_example = InitializeTablesAlgorithm(
             fake_session_with_client
         )
@@ -1008,12 +1020,10 @@ class TestInitializeTablesAlgorithm:
         assert initialize_tables_algo_example.system == "system for the session"
         assert initialize_tables_algo_example.api_client == "API client for the session"
         assert initialize_tables_algo_example.session is fake_session_with_client
-        assert initialize_tables_algo_example.variables == "variables for the session"
 
     def test_initialize_tables_algo_run(self, mocker):
         fake_get_raw_tables = mocker.Mock()
         fake_identify_children = mocker.Mock()
-        fake_identify_variables = mocker.Mock()
         fake_create_tables = mocker.Mock()
         fake_assign_parent_and_children = mocker.Mock()
         fake_find_master_table = mocker.Mock()
@@ -1022,12 +1032,13 @@ class TestInitializeTablesAlgorithm:
         )
         fake_check_all_tables_in_tree = mocker.Mock()
         fake_check_all_relations_assigned = mocker.Mock()
+        fake_master_table = mocker.Mock()
+        fake_master_table.configure_mock(name="jack of all tables master of none")
         fake_initialize_tables_algo = mocker.Mock(
-            master_table="jack of all tables master of none",
+            master_table=fake_master_table,
             tables="the tables have turned",
             _get_raw_tables=fake_get_raw_tables,
             _identify_children=fake_identify_children,
-            _identify_variables=fake_identify_variables,
             _create_tables=fake_create_tables,
             _assign_parent_and_children=fake_assign_parent_and_children,
             _find_master_table=fake_find_master_table,
@@ -1038,12 +1049,11 @@ class TestInitializeTablesAlgorithm:
         result = InitializeTablesAlgorithm.run(fake_initialize_tables_algo)
         fake_get_raw_tables.assert_called_once_with()
         fake_identify_children.assert_called_once_with()
-        fake_identify_variables.assert_called_once_with()
         fake_create_tables.assert_called_once_with()
         fake_assign_parent_and_children.assert_called_once_with()
         fake_find_master_table.assert_called_once_with()
         fake_assign_ancestors_and_descendants.assert_called_once_with(
-            "jack of all tables master of none", []
+            fake_master_table, []
         )
         fake_check_all_tables_in_tree.assert_called_once_with("forest of tables")
         fake_check_all_relations_assigned.assert_called_once_with()
@@ -1093,39 +1103,6 @@ class TestInitializeTablesAlgorithm:
         assert fake_initialize_tables_algo.children_lookup == correct_children_lookup
         assert fake_initialize_tables_algo.children_lookup.default_factory is list
 
-    def test_identify_variables(self, mocker):
-        var1 = mocker.Mock(table_name="Customers", description="Full name")
-        var2 = mocker.Mock(table_name="Customers", description="Gender")
-        var3 = mocker.Mock(table_name="Customers", description="Customer ID")
-        var4 = mocker.Mock(table_name="Purchases", description="Time")
-        var5 = mocker.Mock(table_name="Purchases", description="Total cost")
-        var6 = mocker.Mock(table_name="Items", description="Product code")
-        var7 = mocker.Mock(table_name="Web visits", description="Origin")
-        var8 = mocker.Mock(table_name="Pages viewed", description="URL")
-        var9 = mocker.Mock(table_name="Pages viewed", description="Time requested")
-        fake_variables = {
-            1: var1,
-            2: var2,
-            3: var3,
-            4: var4,
-            5: var5,
-            6: var6,
-            7: var7,
-            8: var8,
-            9: var9,
-        }
-        correct_results = {
-            "Customers": {"Full name": var1, "Gender": var2, "Customer ID": var3},
-            "Purchases": {"Time": var4, "Total cost": var5},
-            "Items": {"Product code": var6},
-            "Web visits": {"Origin": var7},
-            "Pages viewed": {"URL": var8, "Time requested": var9},
-        }
-        fake_initialize_tables_algo = mocker.Mock(variables=fake_variables)
-        InitializeTablesAlgorithm._identify_variables(fake_initialize_tables_algo)
-        assert fake_initialize_tables_algo.variables_lookup == correct_results
-        assert fake_initialize_tables_algo.variables_lookup.default_factory is None
-
     def test_create_tables(self, mocker, fake_raw_tables):
         args_list = [
             "singular_display_name",
@@ -1169,15 +1146,11 @@ class TestInitializeTablesAlgorithm:
         fake_raw_tables_with_all_attrs[0].configure_mock(**attrs1)
         fake_raw_tables_with_all_attrs[1].configure_mock(**attrs2)
         fake_raw_tables_with_all_attrs[2].configure_mock(**attrs3)
-        fake_variables_lookup = mocker.Mock()
-        fake_variables_lookup.get.side_effect = [f"You got {i}" for i in (1, 2, 3)]
         patch_table = mocker.patch(
             "apteco.session.Table", side_effect=[f"Table{i}" for i in (1, 2, 3)]
         )
         fake_initialize_tables_algo = mocker.Mock(
-            raw_tables=fake_raw_tables_with_all_attrs,
-            variables_lookup=fake_variables_lookup,
-            session="jam session",
+            raw_tables=fake_raw_tables_with_all_attrs, session="jam session"
         )
         InitializeTablesAlgorithm._create_tables(fake_initialize_tables_algo)
         correct_tables = {
@@ -1185,17 +1158,9 @@ class TestInitializeTablesAlgorithm:
             "Purchases": "Table2",
             "Items": "Table3",
         }
-        args1 = ["Customers"] + attrs_list1 + [""] + [NOT_ASSIGNED] * 4 + ["You got 1"]
-        args2 = (
-            ["Purchases"]
-            + attrs_list2
-            + ["Customers"]
-            + [NOT_ASSIGNED] * 4
-            + ["You got 2"]
-        )
-        args3 = (
-            ["Items"] + attrs_list3 + ["Purchases"] + [NOT_ASSIGNED] * 4 + ["You got 3"]
-        )
+        args1 = ["Customers"] + attrs_list1 + [""] + [NOT_ASSIGNED] * 5
+        args2 = ["Purchases"] + attrs_list2 + ["Customers"] + [NOT_ASSIGNED] * 5
+        args3 = ["Items"] + attrs_list3 + ["Purchases"] + [NOT_ASSIGNED] * 5
         table_calls = [
             mocker.call(*args1, session="jam session"),
             mocker.call(*args2, session="jam session"),
@@ -1517,27 +1482,42 @@ class TestInitializeTablesAlgorithm:
 
 
 class TestInitializeVariablesAlgorithm:
-    def test_initialize_variables_algo_init(self, fake_session_with_client):
+    def test_initialize_variables_algo_init(self, mocker, fake_session_with_client):
+        fake_tables_without_variables = mocker.Mock()  # Mock to avoid type complaints
         initialize_vars_algo_example = InitializeVariablesAlgorithm(
-            fake_session_with_client
+            fake_session_with_client, fake_tables_without_variables
         )
         assert initialize_vars_algo_example.data_view == "dataView for the session"
         assert initialize_vars_algo_example.system == "system for the session"
         assert initialize_vars_algo_example.api_client == "API client for the session"
         assert initialize_vars_algo_example.session is fake_session_with_client
+        assert initialize_vars_algo_example.tables is fake_tables_without_variables
 
     def test_initialize_variables_algo_run(self, mocker):
         fake_get_raw_variables = mocker.Mock()
         fake_create_variables = mocker.Mock()
+        fake_identify_variables = mocker.Mock()
+        fake_assign_variables = mocker.Mock()
+        fake_check_all_variables_assigned = mocker.Mock()
         fake_initialize_vars_algo = mocker.Mock(
             variables="Wind: Variable, mainly east to northeast",
+            tables="table an amendment",
             _get_raw_variables=fake_get_raw_variables,
             _create_variables=fake_create_variables,
+            _identify_variables=fake_identify_variables,
+            _assign_variables=fake_assign_variables,
+            _check_all_variables_assigned=fake_check_all_variables_assigned,
         )
         result = InitializeVariablesAlgorithm.run(fake_initialize_vars_algo)
         fake_get_raw_variables.assert_called_once_with()
         fake_create_variables.assert_called_once_with()
-        assert result == "Wind: Variable, mainly east to northeast"
+        fake_identify_variables.assert_called_once_with()
+        fake_assign_variables.assert_called_once_with()
+        fake_check_all_variables_assigned.assert_called_once_with()
+        assert result == (
+            "Wind: Variable, mainly east to northeast",
+            "table an amendment",
+        )
 
     def test_get_raw_variables(self, mocker):
         fake_results1 = mocker.Mock(list=["var0"], offset=0, count=7, total_count=17)
@@ -1597,7 +1577,6 @@ class TestInitializeVariablesAlgorithm:
             "description",
             "type",
             "folder_name",
-            "table_name",
             "is_selectable",
             "is_browsable",
             "is_exportable",
@@ -1612,7 +1591,6 @@ class TestInitializeVariablesAlgorithm:
             "Full Name",
             "Text",
             "Customer PII",
-            "Customers",
             True,
             False,
             False,
@@ -1627,7 +1605,6 @@ class TestInitializeVariablesAlgorithm:
             "Cost",
             "Numeric",
             "Transaction Main",
-            "Transactions",
             True,
             True,
             True,
@@ -1642,7 +1619,6 @@ class TestInitializeVariablesAlgorithm:
             "Item Code",
             "Selector",
             "Item Data",
-            "Items",
             True,
             True,
             True,
@@ -1656,15 +1632,22 @@ class TestInitializeVariablesAlgorithm:
         attrs1 = dict(zip(args_list, attrs_list1))
         attrs2 = dict(zip(args_list, attrs_list2))
         fake_raw_variables = [mocker.Mock() for __ in range(3)]
-        fake_raw_variables[0].configure_mock(**attrs0)
-        fake_raw_variables[1].configure_mock(**attrs1)
-        fake_raw_variables[2].configure_mock(**attrs2)
+        fake_raw_variables[0].configure_mock(**attrs0, table_name="Customers")
+        fake_raw_variables[1].configure_mock(**attrs1, table_name="Transactions")
+        fake_raw_variables[2].configure_mock(**attrs2, table_name="Items")
         fake_chosen_variable_class = mocker.Mock(
             side_effect=["Created 1st var", "Created 2nd var", "Created 3rd var"]
         )
         fake_choose_variable = mocker.Mock(return_value=fake_chosen_variable_class)
+        fake_tables = mocker.MagicMock()
+        fake_tables.__getitem__.side_effect = [
+            "Customers table",
+            "Transact. table",
+            "Items table",
+        ]
         fake_initialize_vars_algo = mocker.Mock(
             _choose_variable=fake_choose_variable,
+            tables=fake_tables,
             session="session musician",
             raw_variables=fake_raw_variables,
         )
@@ -1675,9 +1658,9 @@ class TestInitializeVariablesAlgorithm:
             mocker.call(fake_raw_variables[2]),
         ]
         variable_class_calls = [
-            mocker.call(**attrs0, session="session musician"),
-            mocker.call(**attrs1, session="session musician"),
-            mocker.call(**attrs2, session="session musician"),
+            mocker.call(**attrs0, table="Customers table", session="session musician"),
+            mocker.call(**attrs1, table="Transact. table", session="session musician"),
+            mocker.call(**attrs2, table="Items table", session="session musician"),
         ]
         fake_choose_variable.assert_has_calls(choose_variable_calls)
         fake_chosen_variable_class.assert_has_calls(variable_class_calls)
@@ -1848,3 +1831,46 @@ class TestInitializeVariablesAlgorithm:
             " did not recognise the type from determinant: "
             "('Numeric', 'Boolean', None, False)"
         )
+
+    def test_identify_variables(self, mocker):
+        fake_customers_table = mocker.Mock()
+        fake_purchases_table = mocker.Mock()
+        fake_items_table = mocker.Mock()
+        fake_web_visits_table = mocker.Mock()
+        fake_pages_viewed_table = mocker.Mock()
+        fake_customers_table.configure_mock(name="Customers")
+        fake_purchases_table.configure_mock(name="Purchases")
+        fake_items_table.configure_mock(name="Items")
+        fake_web_visits_table.configure_mock(name="Web visits")
+        fake_pages_viewed_table.configure_mock(name="Pages viewed")
+        var1 = mocker.Mock(table=fake_customers_table, description="Full name")
+        var2 = mocker.Mock(table=fake_customers_table, description="Gender")
+        var3 = mocker.Mock(table=fake_customers_table, description="Customer ID")
+        var4 = mocker.Mock(table=fake_purchases_table, description="Time")
+        var5 = mocker.Mock(table=fake_purchases_table, description="Total cost")
+        var6 = mocker.Mock(table=fake_items_table, description="Product code")
+        var7 = mocker.Mock(table=fake_web_visits_table, description="Origin")
+        var8 = mocker.Mock(table=fake_pages_viewed_table, description="URL")
+        var9 = mocker.Mock(table=fake_pages_viewed_table, description="Time requested")
+        fake_variables = {
+            1: var1,
+            2: var2,
+            3: var3,
+            4: var4,
+            5: var5,
+            6: var6,
+            7: var7,
+            8: var8,
+            9: var9,
+        }
+        correct_results = {
+            "Customers": {"Full name": var1, "Gender": var2, "Customer ID": var3},
+            "Purchases": {"Time": var4, "Total cost": var5},
+            "Items": {"Product code": var6},
+            "Web visits": {"Origin": var7},
+            "Pages viewed": {"URL": var8, "Time requested": var9},
+        }
+        fake_initialize_variables_algo = mocker.Mock(variables=fake_variables)
+        InitializeVariablesAlgorithm._identify_variables(fake_initialize_variables_algo)
+        assert fake_initialize_variables_algo.variables_lookup == correct_results
+        assert fake_initialize_variables_algo.variables_lookup.default_factory is None
