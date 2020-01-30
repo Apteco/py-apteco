@@ -43,7 +43,7 @@ The ``Table`` objects have several attributes with information about the table:
     >>> print(
     ...     f"There are {bookings.total_records:,}"
     ...     f" {bookings.plural_display_name.lower()}"
-    ...     " in the system.",
+    ...     f" in the system."
     ... )
     ...
     There are 2,130,081 bookings in the system.

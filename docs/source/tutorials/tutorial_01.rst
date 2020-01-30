@@ -20,6 +20,10 @@ with the following credentials as arguments:
 * **FastStats system name**: the name of the system you're using within the Dataview
 * **Username**: your username (the same as you use to log in to Orbit)
 
+.. todo::
+
+    add methods & classes to ``apteco.__init__``
+
 .. code-block:: python
 
    >>> from apteco.session import login
@@ -64,7 +68,7 @@ the session is connected to:
     ...     f", built on {sys_info.build_date.strftime('%d %B %Y at %X')}."
     ... )
     ...
-    Connected to Holidays Demo Database built on 25 January 2019 at 15:09:40.
+    Connected to Holidays Demo Database, built on 25 January 2019 at 15:09:40.
 
 The ``Session`` object holds more than just this metadata about the FastStats system,
 and in the next part we'll learn how to access the system Tables and Variables.

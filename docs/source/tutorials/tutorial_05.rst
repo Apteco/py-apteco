@@ -69,8 +69,16 @@ Numeric ranges
     >>> low_profit.count()
     211328
 
-**Numeric** variables also support *strict* inequality operators
+**Numeric** variables also support the *strict* inequality operators
 ``<`` and ``>`` .
+
+.. note::
+
+    Unlike the ``==`` and ``!=`` operators,
+    the inequality operators only accept a single value.
+
+    If necessary, you can use the Python built-in ``max()`` or ``min()`` function
+    to pick out the appropriate value to use for your selection.
 
 Date & DateTime ranges
 ----------------------
@@ -87,6 +95,7 @@ We can use inequality operators to create a selection with a range of dates or t
     >>> website_launch = datetime(2019, 5, 11, 15, 12, 36)
     >>> visits_to_new_site = web_visits["Web Visit Time"] >= website_launch
     >>> visits_to_new_site.count()
+    133564
 
 Because **Date** and **DateTime** variables use
 ``datetime.date`` and ``datetime.datetime`` objects,
@@ -105,6 +114,12 @@ Text Ranges
 
 Using the inequality operators with a **Text** variable
 allows you to select values that are alphabetically earlier or later than a given value.
+
+.. code-block:: python
+
+    >>> second_half_of_alphabet = people["Surname"] >= "N"
+    >>> second_half_of_alphabet.count()
+    410954
 
 Restrictions on using inequality operators
 ------------------------------------------

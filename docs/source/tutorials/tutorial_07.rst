@@ -17,15 +17,16 @@ to build more complex selections made of multiple parts:
     >>> low_price_deals_audience = eligible_for_discount & ~high_earner
 
 We could have even written the ``eligible_for_discount`` variable directly
-with its constituent parts:
+using its constituent parts:
 
 .. code-block:: python
 
     >>> low_price_deals_audience = (student | under_21) & ~high_earner
 
-Here we've had to use brackets so that the ``student | under_21`` gets combined first,
-before that whole selection is combined with ``~high_earner``.
-Without brackets, Python's `operator precedence rules
+Here we've had to use parentheses
+so that the ``student | under_21`` gets combined first,
+before the selection resulting from that is combined with ``~high_earner`` .
+Without parentheses, Python's `operator precedence rules
 <https://docs.python.org/3/reference/expressions.html#operator-precedence>`_
 mean this would be calculated as:
 
@@ -34,15 +35,20 @@ mean this would be calculated as:
     >>> not_what_we_meant = student | (under_21 & ~high_earner)  # since `&` takes precedence over `|`
 
 Even if operator precedence means that your selection would resolve as intended
-without brackets,
+without parentheses,
 it's probably sensible to include them to be explicit and improve readability:
 
 .. code-block:: python
 
     >>> either_of_two_pairs = (student & smith) | (high_earner & under_21)
 
-Changing the resolve table
-==========================
+The ``&`` operator 'binds' more tightly than the ``|`` operator,
+so this selection would resolve in the same way even if the parentheses were omitted,
+but including them makes the logic easier to read
+and enables the programmer to communicate their intent.
+
+Determining the resolve table
+=============================
 
 The *resolve table* simply refers to the FastStats system table
 that the selection is set to count records from.
@@ -68,7 +74,14 @@ As demonstrated in the following code:
     >>> (usa & student).table_name
     'Bookings'
 
-We can manually change the resolve table of a selection
+So if your selection uses elements from different tables,
+make sure you begin it with an element from the table
+you want to use for the overall count.
+
+Changing the resolve table
+==========================
+
+We can also manually change the resolve table of a selection
 using the multiplication operator ``*`` with the table:
 
     >>> been_to_usa = people * usa
@@ -79,10 +92,10 @@ using the multiplication operator ``*`` with the table:
 
 .. note::
 
-    The table that we 'multiply by' needs to be a ``Table`` object,
-    not the string of the table name.
+    The table that we 'multiply by' needs to be a ``Table`` object.
+    Using the string of the table name will **not** work.
 
-Again, we can use brackets to group different parts of the selection
+Again, we can use parentheses to group different parts of the selection
 to control how it is structured:
 
 .. code-block:: python
@@ -94,23 +107,31 @@ to control how it is structured:
     >>> audience_2.count()
     20098
 
-* ``audience_1`` selects people who have any booking to the USA costing at least £2000
-  — the ``usa`` and ``at_least_2k`` clauses are grouped together,
-  so a person must have a *single* booking matching *both* criteria to be selected.
-  It is equivalent to this selection in FastStats:
+``audience_1`` selects people who have any booking to the USA costing at least £2000
+— the ``usa`` and ``at_least_2k`` clauses are grouped together,
+so a person must have a *single* booking matching *both* criteria to be selected.
 
-  .. figure:: ../_static/audience_1.png
-    :scale: 50%
-    :align: center
+It is equivalent to this selection in FastStats:
 
+.. figure:: ../_static/audience_1.png
+  :scale: 50%
+  :align: center
 
-* ``audience_2`` selects people who have any booking to the USA,
-  and have any booking costing at least £2000.
-  The difference is that the conditions don't have to apply to the same booking
-  — the person's booking to the USA could cost less than £2000,
-  as long as they have another booking that *does* cost at least that much.
-  Here's the equivalent selection in FastStats:
+``audience_2`` selects people who have any booking to the USA,
+and have any booking costing at least £2000.
+The difference is that the conditions don't have to apply to the same booking
+— the person's booking to the USA could cost less than £2000,
+as long as they have another booking that *does* cost at least that much.
 
-  .. figure:: ../_static/audience_2.png
-    :scale: 50%
-    :align: center
+Here's the equivalent selection in FastStats:
+
+.. figure:: ../_static/audience_2.png
+  :scale: 50%
+  :align: center
+
+That's the end of the tutorial!
+Hopefully you're now equipped with the knowledge you need
+to build and count your own selections.
+Check out the rest of the documentation for more guidance,
+and if you have any questions,
+don't hesitate to `get in touch <mailto:support@apteco.com>`_.

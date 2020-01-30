@@ -1,6 +1,6 @@
-*****************************
-  Using logic in selections
-*****************************
+************************************
+  Combining selections using logic
+************************************
 
 In this part of the tutorial we'll learn
 how to build more complex selections by joining separate parts together,
@@ -13,7 +13,7 @@ So far we've only looked at selections with one condition based on a single vari
 but we can combine these to create selections with multiple conditions.
 
 We simply use the Python 'bitwise and' operator ``&``
-to combine the two parts into one selection:
+to combine two parts into one selection:
 
 .. code-block:: python
 
@@ -41,17 +41,16 @@ to combine selections using **OR** logic:
 .. note::
 
     Be sure to use the ``&`` and ``|`` operators,
-    i.e. the *ampersand* or *vertical bar* symbols.
+    i.e. the *ampersand* and *vertical bar* symbols.
     Using the ``and`` or ``or`` keywords will **not** work.
 
 Returning to the example from the previous part,
-here's how we can now create a selection with values in a bounded range:
+here's how we can create a selection with values in a range bounded on both sides:
 
 .. code-block:: python
 
     >>> born_in_1990 = (
-    ...     (people["DOB"] >= date(1990, 1, 1))
-    ...     & (people["DOB"] <= date(1990, 12, 31))
+    ...     (people["DOB"] >= date(1990, 1, 1)) & (people["DOB"] <= date(1990, 12, 31))
     ... )
 
 Negating a clause
@@ -89,7 +88,7 @@ rather than trying to reverse the overall logic by changing the invidivual parts
 Joining across different tables
 ================================
 
-The earlier two examples joined a pair of clauses from the *same* table,
+The previous examples joined a pair of clauses from the *same* table,
 but you can also combine clauses from *different* tables:
 
 .. code-block:: python
@@ -110,7 +109,7 @@ which is on the **People** table.
 **py-apteco** automatically adapts other parts of the selection to match this,
 by inserting the required table changes
 using the **ANY** or **THE** operations familiar from FastStats selection trees.
-So the selection in this example comprises either:
+So the selection in this example comprises:
 
     * *people* who have income of £60k+
     * *people* who have made ANY *booking* costing at least £2k

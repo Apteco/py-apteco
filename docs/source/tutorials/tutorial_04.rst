@@ -10,7 +10,7 @@ Selector, Array & FlagArray
 ===========================
 
 As mentioned in the previous part, FastStats **Selector** variables
-require selector codes given as strings (Python ``str`` type variables).
+require selector codes given as strings (Python ``str`` type).
 
 This is also true for **Array** and **FlagArray** variables:
 
@@ -34,7 +34,7 @@ This is also true for **Array** and **FlagArray** variables:
 
     Even selector codes that are numerical in form must be given
     as their string equivalents with appropriate 0-padding,
-    as in the *high earners* example before.
+    as in the *high earners* example in the previous part.
 
 Numeric
 =======
@@ -70,6 +70,8 @@ Text
     >>> smiths.count()
     13302
     >>> vowel_initial = people["Initial"] == list("AEIOU")
+    >>> vowel_initial.values
+    ['A', 'E', 'I', 'O', 'U']
     >>> vowel_initial.count()
     168548
 

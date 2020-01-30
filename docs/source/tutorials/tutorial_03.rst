@@ -39,10 +39,10 @@ We'll learn how to control which table we're counting later on.
 
 .. hint::
 
-    Make sure you use the ``=`` signs correctly:
+    Make sure you use the different ``=`` symbols correctly:
     use the ``==`` comparison operator with the FastStats variable and chosen value
     to create the selection,
-    and the single ``=`` to assign the result of this to the Python variable.
+    and the single ``=`` to assign the result of this to a Python variable.
 
 Specifying multiple values
 ==========================
