@@ -1,6 +1,6 @@
-************
-Installation
-************
+**********************
+  Installation Guide
+**********************
 
 This will take you through everything you need to install and set up
 to be able to start using the py-apteco package.

@@ -30,10 +30,9 @@ you would use to log in to Apteco Orbit™:
 
 .. code-block:: python
 
-   from apteco.session import login, Session
+   from apteco.session import login
 
-   credentials = login("https://my-site.com/OrbitAPI", "my_data_view", "jdoe")
-   holidays = Session(credentials, "holidays")
+   my_session = login("https://my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe")
 
 You will be asked to enter your password in the terminal, which won't be echoed.
 If Python is unable to ask for your password in this way,
@@ -43,15 +42,14 @@ so check your taskbar for a new window if nothing seems to be happening.
 
 If you don't want to enter your password every time,
 there is also a ``login_with_password()`` function which takes your password
-as a fourth argument:
+as a fifth argument:
 
 .. code-block:: python
 
    from apteco.session import login_with_password
 
    # password is in plain sight in the code!
-   credentials = login_with_password(
-       "https://my-site.com/OrbitAPI", "my_data_view", "jdoe", "password"
+   my_session = login_with_password(
+       "https://my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe", "password"
    )
-   holidays = Session(credentials, "holidays")
 

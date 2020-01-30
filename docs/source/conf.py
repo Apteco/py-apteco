@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'py-apteco'
-copyright = '2019, Apteco Ltd'
+copyright = '2020, Apteco Ltd'
 author = 'Apteco Ltd'
 
 # The short X.Y version
