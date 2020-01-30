@@ -12,6 +12,7 @@ Welcome to py-apteco's documentation!
 
    install.rst
    getting_started.rst
+   tutorial.rst
    changelog.rst
 
 
