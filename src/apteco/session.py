@@ -67,10 +67,10 @@ class Session:
             self.data_view, self.system
         )
         self.system_info = FastStatsSystem(
-            result.name,
-            result.view_name,
-            result.description,
-            result.fast_stats_build_date,
+            name=result.name,
+            description=result.description,
+            build_date=result.fast_stats_build_date,
+            view_name=result.view_name,
         )
 
     def _to_dict(self):
@@ -372,7 +372,9 @@ class Credentials:
         self.user = user
 
 
-FastStatsSystem = namedtuple("FastStatsSystem", "name description build_date view_name")
+FastStatsSystem = namedtuple(
+    "FastStatsSystem", ["name", "description", "build_date", "view_name"]
+)
 
 
 def login(base_url: str, data_view: str, system: str, user: str) -> Session:
@@ -489,10 +491,10 @@ class SimpleLoginAlgorithm:
         self.session_id = login_response.session_id
         self.access_token = login_response.access_token
         self.user = User(
-            login_response.user.username,
-            login_response.user.firstname,
-            login_response.user.surname,
-            login_response.user.email_address,
+            username=login_response.user.username,
+            first_name=login_response.user.firstname,
+            surname=login_response.user.surname,
+            email_address=login_response.user.email_address,
         )
 
     def _create_credentials(self):

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 
 from apteco.exceptions import DeserializeError
-from apteco.session import Session, User
+from apteco.session import Session, User, FastStatsSystem
 
 
 @pytest.fixture()
@@ -37,7 +37,50 @@ def fake_serialized_session():
     )
 
 
+@pytest.fixture()
+def fake_session_with_client():
+    return Mock(
+        data_view="dataView for the session",
+        system="system for the session",
+        api_client="API client for the session",
+    )
+
+
 class TestSession:
+    @patch("apteco.session.aa.FastStatsSystemsApi")
+    def test_fetch_system_info(
+            self,
+            patch_aa_faststats_systems_api,
+            fake_session_with_client
+    ):
+        fake_faststats_system_response = Mock()
+        fake_faststats_system_response.configure_mock(
+            name="ecosystem",
+            description="wasn't in the job description",
+            fast_stats_build_date="best-before date",
+            view_name="rear view mirror",
+        )
+        fake_get_system = Mock(return_value=fake_faststats_system_response)
+        fake_systems_controller = Mock(
+            fast_stats_systems_get_fast_stats_system=fake_get_system
+        )
+        patch_aa_faststats_systems_api.return_value = fake_systems_controller
+
+        Session._fetch_system_info(fake_session_with_client)
+        example_system_info = fake_session_with_client.system_info
+        assert type(example_system_info) == FastStatsSystem
+        assert example_system_info.name == "ecosystem"
+        assert example_system_info.description == "wasn't in the job description"
+        assert example_system_info.build_date == "best-before date"
+        assert example_system_info.view_name == "rear view mirror"
+
+        patch_aa_faststats_systems_api.assert_called_once_with(
+            "API client for the session"
+        )
+        fake_get_system.assert_called_once_with(
+            "dataView for the session", "system for the session"
+        )
+
     def test_serialize_session(
         self, fake_session_for_serialize_test, fake_serialized_session
     ):

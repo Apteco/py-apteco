@@ -305,10 +305,10 @@ class TestSession:
             "dataView for the session", "system for the session"
         )
         patch_faststats_system.assert_called_once_with(
-            "ecosystem",
-            "rear view mirror",
-            "wasn't in the job description",
-            "best-before date",
+            name="ecosystem",
+            description="wasn't in the job description",
+            build_date="best-before date",
+            view_name="rear view mirror",
         )
         assert fake_session_with_client.system_info == "Here's your FS system info."
 
@@ -889,10 +889,10 @@ class TestSimpleLoginAlgorithm:
         assert fake_simple_login_algo_with_bu_dv_ac.access_token == "access all areas"
         assert fake_simple_login_algo_with_bu_dv_ac.user == "you created the user"
         patch_user.assert_called_once_with(
-            "my_fake_username1",
-            "probably John",
-            "probably Smith",
-            "firstname.surname@company.biz",
+            username="my_fake_username1",
+            first_name="probably John",
+            surname="probably Smith",
+            email_address="firstname.surname@company.biz",
         )
 
     def test_create_credentials(
