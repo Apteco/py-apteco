@@ -203,3 +203,6 @@ fabric.properties
 
 # local development tests
 tests/local/
+
+# credentials for integration tests
+credentials.toml
