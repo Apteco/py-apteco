@@ -6,12 +6,14 @@ import toml
 
 from apteco.query import (
     ArrayClause,
+    BooleanClause,
     DateListClause,
     DateRangeClause,
     DateTimeRangeClause,
     FlagArrayClause,
     NumericClause,
     SelectorClause,
+    TableClause,
     TextClause,
 )
 from apteco.session import login_with_password
@@ -55,6 +57,7 @@ households = holidays.tables["Households"]
 policies = holidays.tables["Policies"]
 web_visits = holidays.tables["WebVisits"]
 communications = holidays.tables["Communications"]
+responses = holidays.tables["Responses Attributed"]
 
 
 @pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
@@ -392,3 +395,125 @@ def test_datetime_range_clause():
     assert not_after_4pm_halloween_2019.count() == 169_019
     not_all_communications = DateTimeRangeClause(communications.name, communications["Date of Communication"].name, "Earliest", "Latest", include=False, session=holidays)
     assert not_all_communications.count() == 0
+
+
+@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
+def test_boolean_operator():
+    sweden = bookings["Destination"] == "29"
+    single_product = bookings["Product"] == ["0", "2"]
+    single_sweden = sweden & single_product
+    assert single_sweden.count() == 2_541
+
+    high_earners = people["Income"] == [f"{i:02}" for i in range(7, 12)]
+    white_collar_jobs = people["Occupation"] == ["1", "2", "3"]
+    high_potential = high_earners | white_collar_jobs
+    assert high_potential.count() == 114_621
+
+    london_south_east = households["Region"] == ["03", "09"]  # type: SelectorClause
+    not_london_south_east = ~london_south_east  # type: BooleanClause
+    assert not_london_south_east.count() == 504_029
+
+
+@pytest.mark.xfail(reason="Inserting more clauses into existing boolean clause not implemented.")
+def test_boolean_operator_multiple():
+    sweden = bookings["Destination"] == "29"
+    single_product = bookings["Product"] == ["0", "2"]
+    unclassified_response = bookings["Reponse Code"] == "       !"
+    triple_and = sweden & single_product & unclassified_response
+    assert len(triple_and.operands) == 3
+    assert sweden in triple_and.operands
+    assert single_product in triple_and.operands
+    assert unclassified_response in triple_and.operands
+    assert triple_and.count() == 1_989
+
+    high_earners = people["Income"] == [f"{i:02}" for i in range(7, 12)]
+    white_collar_jobs = people["Occupation"] == ["1", "2", "3"]
+    various_sources = people["Source"] == ["05", "09", "10", "12", "27"]
+    triple_or = high_earners | white_collar_jobs | various_sources
+    assert len(triple_or.operands) == 3
+    assert high_earners in triple_or.operands
+    assert white_collar_jobs in triple_or.operands
+    assert various_sources in triple_or.operands
+    assert triple_or.count() == 129_655
+
+
+def test_boolean_clause():
+    sweden = SelectorClause(bookings.name, bookings["Destination"].name, ["29"], session=holidays)
+    single_product = SelectorClause(bookings.name, bookings["Product"].name, ["0", "2"], session=holidays)
+    single_sweden = BooleanClause(bookings.name, "AND", [sweden, single_product], session=holidays)
+    assert single_sweden.count() == 2_541
+    unclassified_response = SelectorClause(bookings.name, bookings["Response Code"].name, ["       !"], session=holidays)
+    triple_and = BooleanClause(bookings.name, "AND", [sweden, single_product, unclassified_response], session=holidays)
+    assert triple_and.count() == 1_989
+
+    high_earners = SelectorClause(people.name, people["Income"].name, [f"{i:02}" for i in range(7, 12)], session=holidays)
+    white_collar_jobs = SelectorClause(people.name, people["Occupation"].name, ["1", "2", "3"], session=holidays)
+    high_potential = BooleanClause(people.name, "OR", [high_earners, white_collar_jobs], session=holidays)
+    assert high_potential.count() == 114_621
+    various_sources = SelectorClause(people.name, people["Source"].name, ["05", "09", "10", "12", "27"], session=holidays)
+    triple_or = BooleanClause(people.name, "OR", [high_earners, white_collar_jobs, various_sources], session=holidays)
+    assert triple_or.count() == 129_655
+
+    london_south_east = SelectorClause(households.name, households["Region"].name, ["03", "09"], session=holidays)
+    not_london_south_east = BooleanClause(households.name, "NOT", [london_south_east], session=holidays)
+    assert not_london_south_east.count() == 504_029
+
+
+@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
+def test_table_operator():
+    sweden = bookings["Destination"] == "29"
+    been_to_sweden = people * sweden
+    assert been_to_sweden.count() == 25_175
+    suggested_booking = responses["Response Type"] == ["6", "8", "10"]
+    house_suggested_booking = suggested_booking * households
+    assert house_suggested_booking.count() == 695
+
+    mazda = households["Car Make Code"] == "MAZ"
+    mazda_drivers = mazda * people
+    assert mazda_drivers.count() == 6_959
+
+    vowel_initial = people["Initial"] == list("AEIOU")
+    responses_by_vowels = responses * vowel_initial
+    assert responses_by_vowels.count() == 216
+
+
+def test_table_clause():
+    sweden = SelectorClause(bookings.name, bookings["Destination"].name, ["29"], session=holidays)
+    been_to_sweden = TableClause(people.name, "ANY", sweden, session=holidays)
+    assert been_to_sweden.count() == 25_175
+    suggested_booking = SelectorClause(responses.name, responses["Response Type"].name, ["6", "8", "10"], session=holidays)
+    house_suggested_booking = TableClause(
+        households.name,
+        "ANY",
+        TableClause(
+            people.name,
+            "ANY",
+            TableClause(
+                communications.name,
+                "ANY",
+                suggested_booking,
+                session=holidays,
+            ),
+            session=holidays,
+        ),
+        session=holidays,
+    )
+    assert house_suggested_booking.count() == 695
+
+    mazda = ArrayClause(households.name, households["Car Make Code"].name, ["MAZ"], session=holidays)
+    mazda_drivers = TableClause(people.name, "THE", mazda, session=holidays)
+    assert mazda_drivers.count() == 6_959
+
+    vowel_initial = TextClause(people.name, people["Initial"].name, list("AEIOU"), session=holidays)
+    responses_by_vowels = TableClause(
+        responses.name,
+        "THE",
+        TableClause(
+            communications.name,
+            "THE",
+            vowel_initial,
+            session=holidays,
+        ),
+        session=holidays,
+    )
+    assert responses_by_vowels.count() == 216
