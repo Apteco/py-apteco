@@ -1,11 +1,14 @@
 import decimal
-from datetime import datetime
+from datetime import datetime, date
 
 import pytest
 import toml
 
 from apteco.query import (
     ArrayClause,
+    DateListClause,
+    DateRangeClause,
+    DateTimeRangeClause,
     FlagArrayClause,
     NumericClause,
     SelectorClause,
@@ -51,6 +54,7 @@ bookings = holidays.tables["Bookings"]
 households = holidays.tables["Households"]
 policies = holidays.tables["Policies"]
 web_visits = holidays.tables["WebVisits"]
+communications = holidays.tables["Communications"]
 
 
 @pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
@@ -287,3 +291,104 @@ def test_text_clause_wildcards():
     assert smith_like_double_barrelled.count() == 660
     first_2_not_vowel = TextClause(people.name, people["Surname"].name, [f"=\"{i}{j}*\"" for i in ("", "?") for j in list("aeiou")], "Ranges", False, include=False, session=holidays)
     assert first_2_not_vowel.count() == 295_815
+
+
+@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
+def test_date_operator():
+    valentines_day_2018 = bookings["Travel Date"] == date(2018, 2, 14)
+    assert valentines_day_2018.count() == 625
+    bank_holidays_2020 = bookings["Booking Date"] == [
+        date(2020, 1, 1),
+        date(2020, 4, 10),
+        date(2020, 4, 13),
+        date(2020, 5, 8),
+        date(2020, 5, 25),
+        date(2020, 8, 31),
+        date(2020, 12, 25),
+        date(2020, 12, 26),
+    ]
+    assert bank_holidays_2020.count() == 7_847
+    not_easter_2017 = policies["Policy Travel Date"] != date(2017, 4, 16)
+    assert not_easter_2017.count() == 213_442  # all - 125
+    exclude_solstices_and_equinoxes_2021 = policies["Policy Date"] != [
+        date(2021, 3, 20),
+        date(2021, 6, 21),
+        date(2021, 9, 22),
+        date(2021, 12, 21),
+    ]
+    assert exclude_solstices_and_equinoxes_2021.count() == 213_109  # all - 458
+    before_tax_year_end_2018_19 = policies["Policy Booking Date"] <= date(2019, 4, 5)
+    assert before_tax_year_end_2018_19.count() == 185_601
+    after_christmas_2016 = bookings["Booking Date"] >= date(2016, 12, 26)
+    assert after_christmas_2016.count() == 1_915_257
+
+
+def test_date_list_clause():
+    valentines_day_2018 = DateListClause(bookings.name, bookings["Travel Date"].name, ["20180214"], session=holidays)
+    assert valentines_day_2018.count() == 625
+    bank_holidays_2020 = DateListClause(bookings.name, bookings["Booking Date"].name, [
+        "20200101",
+        "20200410",
+        "20200413",
+        "20200508",
+        "20200525",
+        "20200831",
+        "20201225",
+        "20201226",
+    ], session=holidays)
+    assert bank_holidays_2020.count() == 7_847
+    not_easter_2017 = DateListClause(policies.name, policies["Policy Travel Date"].name, ["20170416"], include=False, session=holidays)
+    assert not_easter_2017.count() == 213_442  # all - 125
+    exclude_solstices_and_equinoxes_2021 = DateListClause(policies.name, policies["Policy Date"].name, [
+        "20210320",
+        "20210621",
+        "20210922",
+        "20211221",
+    ], include=False, session=holidays)
+    assert exclude_solstices_and_equinoxes_2021.count() == 213_109  # all - 458
+
+
+def test_date_range_clause():
+    olympics_summer_16_to_winter_18 = DateRangeClause(bookings.name, bookings["Travel Date"].name, "2016-08-22", "2018-02-08", session=holidays)
+    assert olympics_summer_16_to_winter_18.count() == 328_733
+    before_tax_year_end_2018_19 = DateRangeClause(policies.name, policies["Policy Booking Date"].name, "Earliest", "2019-04-05", session=holidays)
+    assert before_tax_year_end_2018_19.count() == 185_601
+    after_christmas_2016 = DateRangeClause(bookings.name, bookings["Booking Date"].name, "2016-12-26", "Latest", session=holidays)
+    assert after_christmas_2016.count() == 1_915_257
+    earliest_to_latest_policy_date = DateRangeClause(policies.name, policies["Policy Date"].name, "Earliest", "Latest", session=holidays)
+    assert earliest_to_latest_policy_date.count() == 213_567
+    not_between_world_cup_18_euro_20 = DateRangeClause(policies.name, policies["Policy Travel Date"].name, "2018-07-16", "2020-06-11", include=False, session=holidays)
+    assert not_between_world_cup_18_euro_20.count() == 151_691
+    not_before_christmas_2016 = DateRangeClause(bookings.name, bookings["Booking Date"].name, "Earliest", "2016-12-25", include=False, session=holidays)
+    assert not_before_christmas_2016.count() == 1_915_257
+    not_after_tax_year_end_2018_19 = DateRangeClause(policies.name, policies["Policy Booking Date"].name, "2019-04-06", "Latest", include=False, session=holidays)
+    assert not_after_tax_year_end_2018_19.count() == 185_601
+    not_earliest_to_latest_booking = DateRangeClause(bookings.name, bookings["Booking Date"].name, "Earliest", "Latest", include=False, session=holidays)
+    assert not_earliest_to_latest_booking.count() == 0
+
+
+@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
+def test_datetime_operator():
+    before_4pm_halloween_2019 = web_visits["Web Visit Time"] <= datetime(2019, 10, 31, 15, 59, 59)
+    assert before_4pm_halloween_2019.count() == 169_019
+    after_juy_2016 = communications["Date Of Communication"] >= datetime(2016, 8, 1, 0, 0, 0)
+    assert after_juy_2016.count() == 3_926
+
+
+def test_datetime_range_clause():
+    during_week_29_2016 = DateTimeRangeClause(communications.name, communications["Date of Communication"].name, "2016-07-18T08:00:00", "2016-07-22T17:59:59", session=holidays)
+    assert during_week_29_2016.count() == 19_298
+    before_4pm_halloween_2019 = DateTimeRangeClause(web_visits.name, web_visits["Web Visit Time"].name, "Earliest", "2019-10-31T15:59:59", session=holidays)
+    assert before_4pm_halloween_2019.count() == 169_019
+    after_juy_2016 = DateTimeRangeClause(communications.name, communications["Date of Communication"].name, "2016-08-01T00:00:00", "Latest", session=holidays)
+    assert after_juy_2016.count() == 3_926
+    all_web_visits = DateTimeRangeClause(web_visits.name, web_visits["Web Visit Time"].name, "Earliest", "Latest", session=holidays)
+    assert all_web_visits.count() == 279_538
+    not_during_lent_2021 = DateTimeRangeClause(web_visits.name, web_visits["Web Visit Time"].name, "2021-02-17T07:18:00", "2021-04-03T19:44:00", include=False, session=holidays)
+    assert not_during_lent_2021.count() == 270_245  # all - 9_293
+    not_before_july_2016 = DateTimeRangeClause(communications.name, communications["Date of Communication"].name, "Earliest", "2016-07-31T23:59:59", include=False, session=holidays)
+    assert not_before_july_2016.count() == 3_926
+    not_after_4pm_halloween_2019 = DateTimeRangeClause(web_visits.name, web_visits["Web Visit Time"].name, "2019-10-31T16:00:00", "Latest", include=False, session=holidays)
+    assert not_after_4pm_halloween_2019.count() == 169_019
+    not_all_communications = DateTimeRangeClause(communications.name, communications["Date of Communication"].name, "Earliest", "Latest", include=False, session=holidays)
+    assert not_all_communications.count() == 0
