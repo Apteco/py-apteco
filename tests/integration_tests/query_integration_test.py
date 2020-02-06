@@ -26,7 +26,7 @@ holidays = login_with_password(
 
 def test_session():
     assert len(holidays.tables) == 9
-    assert len(holidays.variables) == 88
+    assert len(holidays.variables) == 86
     assert holidays.master_table.name == "Households"
 
 
@@ -42,7 +42,7 @@ def test_system_info():
     system_info = holidays.system_info
     assert system_info.name == "holidays"
     assert system_info.description == "Holidays Demo Database"
-    assert system_info.build_date == datetime(2019, 1, 25, 15, 9, 40)
+    assert system_info.build_date == datetime(2019, 11, 27, 15, 57, 24)
     assert system_info.view_name == "Holidays"
 
 
