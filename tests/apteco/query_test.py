@@ -288,8 +288,44 @@ def test_normalize_datetime_input():
     assert exc_info.value.args[0] == "Can't sneak numbers through inside a list"
 
 
+@pytest.fixture()
+def fake_bookings_table():
+    fake = Mock()
+    fake.configure_mock(name="Bookings")
+    return fake
+
+
+@pytest.fixture()
+def fake_people_table():
+    fake = Mock()
+    fake.configure_mock(name="People")
+    return fake
+
+
+@pytest.fixture()
+def fake_households_table():
+    fake = Mock()
+    fake.configure_mock(name="Households")
+    return fake
+
+
 class TestSelectorClause:
-    def test_selector_clause_init(self):
+    def test_selector_clause_init(self, fake_bookings_table):
+        fake_destination_var = Mock()
+        fake_destination_var.configure_mock(name="boDest")
+        bookings_fr_de_us = SelectorClause(
+            fake_bookings_table,
+            fake_destination_var,
+            ["06", "07", "38"],
+            label="Bookings to France, Germany or USA",
+        )
+        assert bookings_fr_de_us.table_name == "Bookings"
+        assert bookings_fr_de_us.variable_name == "boDest"
+        assert bookings_fr_de_us.values == ["06", "07", "38"]
+        assert bookings_fr_de_us.label == "Bookings to France, Germany or USA"
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_selector_clause_init_var_as_str(self):
         bookings_fr_de_us = SelectorClause(
             "Bookings",
             "boDest",
@@ -333,7 +369,25 @@ class TestSelectorClause:
 
 
 class TestCombinedCategoriesClause:
-    def test_combined_categories_clause_init(self):
+    def test_combined_categories_clause_init(self, fake_bookings_table):
+        fake_continent_var = Mock()
+        fake_continent_var.configure_mock(name="boCont")
+        bookings_contains_u = CombinedCategoriesClause(
+            fake_bookings_table,
+            fake_continent_var,
+            {"boDest": ["28", "38", "12"], "boCont": ["! ", "AU", "EU"]},
+            label="Location contains 'u'",
+        )
+        assert bookings_contains_u.table_name == "Bookings"
+        assert bookings_contains_u.variable_name == "boCont"
+        assert bookings_contains_u.value_sets == {
+            "boDest": ["28", "38", "12"],
+            "boCont": ["! ", "AU", "EU"],
+        }
+        assert bookings_contains_u.label == "Location contains 'u'"
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_combined_categories_clause_init_var_as_str(self):
         bookings_contains_u = CombinedCategoriesClause(
             "Bookings",
             "boCont",
@@ -383,7 +437,31 @@ class TestCombinedCategoriesClause:
 
 
 class TestNumericClause:
-    def test_numeric_clause_init(self):
+    def test_numeric_clause_init(self, fake_people_table):
+        fake_total_spend_var = Mock()
+        fake_total_spend_var.configure_mock(name="peTotalS")
+        example_numeric_clause = NumericClause(
+            fake_people_table,
+            fake_total_spend_var,
+            ["<1066", ">=1558 - <=1603", "=1936", ">1952"],
+            include=False,
+            label="Exclude total spend matching monarch dates",
+        )
+        assert example_numeric_clause.table_name == "People"
+        assert example_numeric_clause.variable_name == "peTotalS"
+        assert example_numeric_clause.values == [
+            "<1066",
+            ">=1558 - <=1603",
+            "=1936",
+            ">1952",
+        ]
+        assert example_numeric_clause.include is False
+        assert (
+            example_numeric_clause.label == "Exclude total spend matching monarch dates"
+        )
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_numeric_clause_init_var_as_str(self):
         example_numeric_clause = NumericClause(
             "People",
             "peTotalS",
@@ -439,8 +517,30 @@ class TestNumericClause:
 
 
 class TestTextClause:
-    def test_text_clause_init(self):
+    def test_text_clause_init(self, fake_households_table):
         # TODO: add tests for other text match types
+        fake_address_var = Mock()
+        fake_address_var.configure_mock(name="hoAddr")
+        example_text_clause = TextClause(
+            fake_households_table,
+            fake_address_var,
+            ["Regent", "Oxford", "Bond"],
+            "Contains",
+            True,
+            label="Green Monopoly squares addresses (minus 'Street')",
+        )
+        assert example_text_clause.table_name == "Households"
+        assert example_text_clause.variable_name == "hoAddr"
+        assert example_text_clause.values == ["Regent", "Oxford", "Bond"]
+        assert example_text_clause.match_type == "Contains"
+        assert example_text_clause.match_case is True
+        assert (
+            example_text_clause.label
+            == "Green Monopoly squares addresses (minus 'Street')"
+        )
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_text_clause_init_var_as_str(self):
         example_text_clause = TextClause(
             "Households",
             "hoAddr",
@@ -492,7 +592,24 @@ class TestTextClause:
 
 
 class TestArrayClause:
-    def test_array_clause_init(self):
+    def test_array_clause_init(self, fake_households_table):
+        fake_car_make_code_var = Mock()
+        fake_car_make_code_var.configure_mock(name="HHCarmak")
+        example_array_clause = ArrayClause(
+            fake_households_table,
+            fake_car_make_code_var,
+            ["FOR", "PEU", "VOL"],
+            "AND",
+            label="House has Ford, Peugeot & Volvo",
+        )
+        assert example_array_clause.table_name == "Households"
+        assert example_array_clause.variable_name == "HHCarmak"
+        assert example_array_clause.values == ["FOR", "PEU", "VOL"]
+        assert example_array_clause.logic == "AND"
+        assert example_array_clause.label == "House has Ford, Peugeot & Volvo"
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_array_clause_init_var_as_str(self):
         example_array_clause = ArrayClause(
             "Households",
             "HHCarmak",
@@ -538,7 +655,36 @@ class TestArrayClause:
 
 
 class TestFlagArrayClause:
-    def test_flag_array_clause_init(self):
+    def test_flag_array_clause_init(self, fake_people_table):
+        fake_newspapers_var = Mock()
+        fake_newspapers_var.configure_mock(name="peNews")
+        example_flag_array_clause = FlagArrayClause(
+            fake_people_table,
+            fake_newspapers_var,
+            [
+                "Daily Express  ",
+                "The Sun        ",
+                "Daily Mirror   ",
+                "Daily Mail     ",
+                "Record         ",
+            ],
+            "OR",
+            label="Tabloid newspaper readers",
+        )
+        assert example_flag_array_clause.table_name == "People"
+        assert example_flag_array_clause.variable_name == "peNews"
+        assert example_flag_array_clause.values == [
+            "Daily Express  ",
+            "The Sun        ",
+            "Daily Mirror   ",
+            "Daily Mail     ",
+            "Record         ",
+        ]
+        assert example_flag_array_clause.logic == "OR"
+        assert example_flag_array_clause.label == "Tabloid newspaper readers"
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_flag_array_clause_init_var_as_str(self):
         example_flag_array_clause = FlagArrayClause(
             "People",
             "peNews",
@@ -612,7 +758,30 @@ class TestFlagArrayClause:
 
 
 class TestDateListClause:
-    def test_date_list_clause_init(self):
+    def test_date_list_clause_init(self, fake_bookings_table):
+        fake_travel_date_var = Mock()
+        fake_travel_date_var.configure_mock(name="boTrav")
+        exclude_bank_hols_cmas16_new_year17 = DateListClause(
+            fake_bookings_table,
+            fake_travel_date_var,
+            ["20161225", "20161226", "20170101"],
+            label="Not bank holidays within Xmas hols 2016-17",
+            include=False,
+        )
+        assert exclude_bank_hols_cmas16_new_year17.table_name == "Bookings"
+        assert exclude_bank_hols_cmas16_new_year17.variable_name == "boTrav"
+        assert exclude_bank_hols_cmas16_new_year17.values == [
+            "20161225",
+            "20161226",
+            "20170101",
+        ]
+        assert exclude_bank_hols_cmas16_new_year17.label == (
+            "Not bank holidays within Xmas hols 2016-17"
+        )
+        assert exclude_bank_hols_cmas16_new_year17.include is False
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_date_list_clause_init_var_as_str(self):
         exclude_bank_hols_cmas16_new_year17 = DateListClause(
             "Bookings",
             "boTrav",
@@ -704,7 +873,25 @@ class TestDateRangeClause:
             "range_end_date": "actually look like datesT00:00:00",
         }
 
-    def test_date_range_clause_init(self):
+    def test_date_range_clause_init(self, fake_bookings_table):
+        fake_booking_date_var = Mock()
+        fake_booking_date_var.configure_mock(name="boDate")
+        example_date_range_clause = DateRangeClause(
+            fake_bookings_table,
+            fake_booking_date_var,
+            "2016-03-27",
+            "2016-10-30",
+            label="Holidays booked during BST 2016",
+        )
+        assert example_date_range_clause.table_name == "Bookings"
+        assert example_date_range_clause.variable_name == "boDate"
+        assert example_date_range_clause.start == "2016-03-27"
+        assert example_date_range_clause.end == "2016-10-30"
+        assert example_date_range_clause.label == "Holidays booked during BST 2016"
+        assert example_date_range_clause.include is True
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_date_range_clause_init_var_as_str(self):
         example_date_range_clause = DateRangeClause(
             "Bookings",
             "boDate",
@@ -807,7 +994,28 @@ class TestDateTimeRangeClause:
             "range_end_date": "actually look like dates",
         }
 
-    def test_datetime_range_clause_init(self):
+    def test_datetime_range_clause_init(self, fake_bookings_table):
+        fake_travel_date_var = Mock()
+        fake_travel_date_var.configure_mock(name="boTrav")
+        example_date_range_clause = DateRangeClause(
+            fake_bookings_table,
+            fake_travel_date_var,
+            "2001-09-09T02:46:40",
+            "2033-05-18T04:33:20",
+            label="Holidays taken between 1B and 2B second Unix timestamps",
+        )
+        assert example_date_range_clause.table_name == "Bookings"
+        assert example_date_range_clause.variable_name == "boTrav"
+        assert example_date_range_clause.start == "2001-09-09T02:46:40"
+        assert example_date_range_clause.end == "2033-05-18T04:33:20"
+        assert (
+            example_date_range_clause.label
+            == "Holidays taken between 1B and 2B second Unix timestamps"
+        )
+        assert example_date_range_clause.include is True
+
+    @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
+    def test_datetime_range_clause_init_var_as_str(self):
         example_date_range_clause = DateRangeClause(
             "Bookings",
             "boTrav",
@@ -873,7 +1081,22 @@ class TestDateTimeRangeClause:
 
 
 class TestBooleanClause:
-    def test_boolean_clause_init(self):
+    def test_boolean_clause_init(self, fake_bookings_table):
+        clause1 = Mock()
+        clause2 = Mock()
+        example_boolean_clause = BooleanClause(
+            fake_bookings_table,
+            "AND",
+            [clause1, clause2],
+            label="Both of these please!",
+        )
+        assert example_boolean_clause.table_name == "Bookings"
+        assert example_boolean_clause.operation == "AND"
+        assert example_boolean_clause.operands == [clause1, clause2]
+        assert example_boolean_clause.label == "Both of these please!"
+
+    @pytest.mark.xfail(reason="Table parameter as str not implemented.")
+    def test_boolean_clause_init_table_as_str(self):
         clause1 = Mock()
         clause2 = Mock()
         example_boolean_clause = BooleanClause(
@@ -916,7 +1139,18 @@ class TestBooleanClause:
 
 
 class TestTableClause:
-    def test_table_clause_init(self):
+    def test_table_clause_init(self, fake_people_table):
+        subclause = Mock()
+        example_table_clause = TableClause(
+            fake_people_table, "THE", subclause, label="People who live at these houses"
+        )
+        assert example_table_clause.table_name == "People"
+        assert example_table_clause.operation == "THE"
+        assert example_table_clause.operand is subclause
+        assert example_table_clause.label == "People who live at these houses"
+
+    @pytest.mark.xfail(reason="Table parameter as str not implemented.")
+    def test_table_clause_init_table_as_str(self):
         subclause = Mock()
         example_table_clause = TableClause(
             "People", "THE", subclause, label="People who live at these houses"

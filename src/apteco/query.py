@@ -222,10 +222,10 @@ class SelectorVariableMixin:
     )
 
     def __eq__(self: "SelectorVariable", other):
-        return SelectorClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), session=self.session)
+        return SelectorClause(self.table, self, normalize_string_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "SelectorVariable", other):
-        return SelectorClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
+        return SelectorClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
 
 class NumericVariableMixin:
@@ -238,22 +238,22 @@ class NumericVariableMixin:
     )
 
     def __eq__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, normalize_number_input(other, self.general_error_msg), session=self.session)
+        return NumericClause(self.table, self, normalize_number_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, normalize_number_input(other, self.general_error_msg), include=False, session=self.session)
+        return NumericClause(self.table, self, normalize_number_input(other, self.general_error_msg), include=False, session=self.session)
 
     def __lt__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, [f"<{normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(self.table, self, [f"<{normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
 
     def __le__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, [f"<={normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(self.table, self, [f"<={normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
 
     def __gt__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, [f">{normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(self.table, self, [f">{normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
 
     def __ge__(self: "NumericVariable", other):
-        return NumericClause(self.table_name, self.name, [f">={normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(self.table, self, [f">={normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
 
 
 class TextVariableMixin:
@@ -266,16 +266,16 @@ class TextVariableMixin:
     )
 
     def __eq__(self: "TextVariable", other):
-        return TextClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), session=self.session)
+        return TextClause(self.table, self, normalize_string_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "TextVariable", other):
-        return TextClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
+        return TextClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
     def __le__(self: "TextVariable", other):
-        return TextClause(self.table_name, self.name, [f"<=\"{normalize_string_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
+        return TextClause(self.table, self, [f"<=\"{normalize_string_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
 
     def __ge__(self: "TextVariable", other):
-        return TextClause(self.table_name, self.name, [f">=\"{normalize_string_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
+        return TextClause(self.table, self, [f">=\"{normalize_string_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
 
 
 class ArrayVariableMixin:
@@ -285,10 +285,10 @@ class ArrayVariableMixin:
     )
 
     def __eq__(self: "ArrayVariable", other):
-        return ArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), session=self.session)
+        return ArrayClause(self.table, self, normalize_string_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "ArrayVariable", other):
-        return ArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
+        return ArrayClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
 
 class FlagArrayVariableMixin:
@@ -298,10 +298,10 @@ class FlagArrayVariableMixin:
     )
 
     def __eq__(self: "FlagArrayVariable", other):
-        return FlagArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), session=self.session)
+        return FlagArrayClause(self.table, self, normalize_string_input(other, self.general_error_msg), session=self.session)
 
     def __ne__(self: "FlagArrayVariable", other):
-        return FlagArrayClause(self.table_name, self.name, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
+        return FlagArrayClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
 
 class DateVariableMixin:
@@ -314,16 +314,16 @@ class DateVariableMixin:
     )
 
     def __eq__(self: "DateVariable", other):
-        return DateListClause(self.table_name, self.name, normalize_date_input(other, self.general_error_msg, basic=True), session=self.session)
+        return DateListClause(self.table, self, normalize_date_input(other, self.general_error_msg, basic=True), session=self.session)
 
     def __ne__(self: "DateVariable", other):
-        return DateListClause(self.table_name, self.name, normalize_date_input(other, self.general_error_msg, basic=True), include=False, session=self.session)
+        return DateListClause(self.table, self, normalize_date_input(other, self.general_error_msg, basic=True), include=False, session=self.session)
 
     def __le__(self: "DateVariable", other):
-        return DateRangeClause(self.table_name, self.name, "Earliest", normalize_date_value(other, self.single_value_error_msg), session=self.session)
+        return DateRangeClause(self.table, self, "Earliest", normalize_date_value(other, self.single_value_error_msg), session=self.session)
 
     def __ge__(self: "DateVariable", other):
-        return DateRangeClause(self.table_name, self.name, normalize_date_value(other, self.single_value_error_msg), "Latest", session=self.session)
+        return DateRangeClause(self.table, self, normalize_date_value(other, self.single_value_error_msg), "Latest", session=self.session)
 
 
 class DateTimeVariableMixin:
@@ -338,17 +338,21 @@ class DateTimeVariableMixin:
         raise NotImplementedError
 
     def __le__(self: "DateTimeVariable", other):
-        return DateTimeRangeClause(self.table_name, self.name, "Earliest", normalize_datetime_value(other, self.single_value_error_msg), session=self.session)
+        return DateTimeRangeClause(self.table, self, "Earliest", normalize_datetime_value(other, self.single_value_error_msg), session=self.session)
 
     def __ge__(self: "DateTimeVariable", other):
-        return DateTimeRangeClause(self.table_name, self.name, normalize_datetime_value(other, self.single_value_error_msg), "Latest", session=self.session)
+        return DateTimeRangeClause(self.table, self, normalize_datetime_value(other, self.single_value_error_msg), "Latest", session=self.session)
 
 
 class ClauseMixin:
 
     @property
-    def table(self):
-        return self.session.tables[self.table_name]
+    def table_name(self):
+        return self.table.name
+
+    @property
+    def variable_name(self):
+        return self.variable.name
 
     def select(self, table=None):
         if table is not None:
@@ -507,10 +511,10 @@ def logic_clause(
     name: Optional[str] = None,
     ):
     if operation in ['AND', 'OR', 'NOT']:
-        return BooleanClause(operands[0].table_name, operation, operands, label=name, session=operands[0].session)
+        return BooleanClause(operands[0].table, operation, operands, label=name, session=operands[0].session)
     elif operation in ["ANY", "THE"]:
         (operand,) = operands
-        return TableClause(new_table.name, operation, operand, label=name, session=operand.session)
+        return TableClause(new_table, operation, operand, label=name, session=operand.session)
     else:
         valid_operations = ['ANY', 'AND', 'OR', 'NOT', 'THE']
         raise ValueError(f"'{operation}' is not a valid operation: "
@@ -578,9 +582,9 @@ class LogicClauseMixin:
 
 class SelectorClause(ClauseMixin):
 
-    def __init__(self, table_name, variable_name, values, *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
+    def __init__(self, table, variable, values, *, label=None, include=True, session=None):
+        self.table = table
+        self.variable = variable
         self.values = values
 
         self.label = label
@@ -611,9 +615,9 @@ class SelectorClause(ClauseMixin):
 
 class CombinedCategoriesClause(ClauseMixin):
 
-    def __init__(self, table_name, variable_name, value_sets, *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
+    def __init__(self, table, variable, value_sets, *, label=None, include=True, session=None):
+        self.table = table
+        self.variable = variable
         self.value_sets = value_sets
 
         self.label = label
@@ -643,9 +647,9 @@ class CombinedCategoriesClause(ClauseMixin):
 
 class NumericClause(ClauseMixin):
 
-    def __init__(self, table_name, variable_name, values, *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
+    def __init__(self, table, variable, values, *, label=None, include=True, session=None):
+        self.table = table
+        self.variable = variable
         self.values = values
 
         self.label = label
@@ -676,9 +680,9 @@ class NumericClause(ClauseMixin):
 
 class TextClause(ClauseMixin):
 
-    def __init__(self, table_name, variable_name, values, match_type='Is', match_case=True, *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
+    def __init__(self, table, variable, values, match_type='Is', match_case=True, *, label=None, include=True, session=None):
+        self.table = table
+        self.variable = variable
         self.values = values
         self.match_type = match_type
         self.match_case = match_case
@@ -711,9 +715,9 @@ class TextClause(ClauseMixin):
 
 class ArrayClause(ClauseMixin):
 
-    def __init__(self, table_name, variable_name, values, logic='OR', *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
+    def __init__(self, table, variable, values, logic='OR', *, label=None, include=True, session=None):
+        self.table = table
+        self.variable = variable
         self.values = values
         self.logic = logic
 
@@ -749,9 +753,9 @@ class FlagArrayClause(ArrayClause):
 
 class DateListClause(ClauseMixin):
 
-    def __init__(self, table_name, variable_name, values, *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
+    def __init__(self, table, variable, values, *, label=None, include=True, session=None):
+        self.table = table
+        self.variable = variable
         self.values = values
 
         self.label = label
@@ -782,9 +786,9 @@ class DateListClause(ClauseMixin):
 
 
 class DateRangeClause(ClauseMixin):
-    def __init__(self, table_name, variable_name, start, end, *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
+    def __init__(self, table, variable, start, end, *, label=None, include=True, session=None):
+        self.table = table
+        self.variable = variable
         self.start = start
         self.end = end
 
@@ -832,9 +836,9 @@ class DateRangeClause(ClauseMixin):
 
 
 class TimeRangeClause(ClauseMixin):
-    def __init__(self, table_name, variable_name, start, end, *, label=None, include=True, session=None):
-        self.table_name = table_name
-        self.variable_name = variable_name
+    def __init__(self, table, variable, start, end, *, label=None, include=True, session=None):
+        self.table = table
+        self.variable = variable
         self.start = start
         self.end = end
 
@@ -882,8 +886,8 @@ class DateTimeRangeClause(DateRangeClause):
 
 class BooleanClause(ClauseMixin):
 
-    def __init__(self, table_name, operation, operands, *, label=None, session=None):
-        self.table_name = table_name
+    def __init__(self, table, operation, operands, *, label=None, session=None):
+        self.table = table
         self.operation = operation
         self.operands = operands
 
@@ -903,8 +907,8 @@ class BooleanClause(ClauseMixin):
 
 class TableClause(ClauseMixin):
 
-    def __init__(self, table_name, operation, operand, *, label=None, session=None):
-        self.table_name = table_name
+    def __init__(self, table, operation, operand, *, label=None, session=None):
+        self.table = table
         self.operation = operation
         self.operand = operand
 

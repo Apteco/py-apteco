@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
+from unittest.mock import Mock
 
 import pytest
 
@@ -25,13 +26,41 @@ from apteco.session import (
 )
 
 
+@pytest.fixture()
+def fake_supporters_table():
+    fake = Mock()
+    fake.configure_mock(name="Supporters")
+    return fake
+
+
+@pytest.fixture()
+def fake_donations_table():
+    fake = Mock()
+    fake.configure_mock(name="Donations")
+    return fake
+
+
+@pytest.fixture()
+def fake_campaigns_table():
+    fake = Mock()
+    fake.configure_mock(name="Campaigns")
+    return fake
+
+
+@pytest.fixture()
+def fake_web_visits_table():
+    fake = Mock()
+    fake.configure_mock(name="WebVisits")
+    return fake
+
+
 class TestSelectorVariable:
 
     @pytest.fixture()
-    def fake_selector_variable(self):
+    def fake_selector_variable(self, fake_supporters_table):
         sv_example = SelectorVariable.__new__(SelectorVariable)
         sv_example.type = "Selector"
-        sv_example.table_name = "Supporters"
+        sv_example.table = fake_supporters_table
         sv_example.name = "Membership"
         sv_example.session = "CharityDataViewSession"
         return sv_example
@@ -88,10 +117,10 @@ class TestSelectorVariable:
 class TestNumericVariable:
 
     @pytest.fixture()
-    def fake_numeric_variable(self):
+    def fake_numeric_variable(self, fake_donations_table):
         nv_example = NumericVariable.__new__(NumericVariable)
         nv_example.type = "Numeric"
-        nv_example.table_name = "Donations"
+        nv_example.table = fake_donations_table
         nv_example.name = "Amount"
         nv_example.session = "CharityDataViewSession"
         return nv_example
@@ -213,19 +242,19 @@ class TestNumericVariable:
 class TestTextVariable:
 
     @pytest.fixture()
-    def fake_text_variable_email(self):
+    def fake_text_variable_email(self, fake_supporters_table):
         tv_example = TextVariable.__new__(TextVariable)
         tv_example.type = "Text"
-        tv_example.table_name = "Supporters"
+        tv_example.table = fake_supporters_table
         tv_example.name = "EmailAddress"
         tv_example.session = "CharityDataViewSession"
         return tv_example
 
     @pytest.fixture()
-    def fake_text_variable_surname(self):
+    def fake_text_variable_surname(self, fake_supporters_table):
         tv_example = TextVariable.__new__(TextVariable)
         tv_example.type = "Text"
-        tv_example.table_name = "Supporters"
+        tv_example.table = fake_supporters_table
         tv_example.name = "Surname"
         tv_example.session = "CharityDataViewSession"
         return tv_example
@@ -334,10 +363,10 @@ class TestTextVariable:
 class TestArrayVariable:
 
     @pytest.fixture()
-    def fake_array_variable(self):
+    def fake_array_variable(self, fake_campaigns_table):
         av_example = ArrayVariable.__new__(ArrayVariable)
         av_example.type = "Array"
-        av_example.table_name = "Campaigns"
+        av_example.table = fake_campaigns_table
         av_example.name = "Tags"
         av_example.session = "CharityDataViewSession"
         return av_example
@@ -407,10 +436,10 @@ class TestArrayVariable:
 class TestFlagArrayVariable:
 
     @pytest.fixture()
-    def fake_flag_array_variable(self):
+    def fake_flag_array_variable(self, fake_supporters_table):
         fav_example = FlagArrayVariable.__new__(FlagArrayVariable)
         fav_example.type = "FlagArray"
-        fav_example.table_name = "Supporters"
+        fav_example.table = fake_supporters_table
         fav_example.name = "ContactPreferences"
         fav_example.session = "CharityDataViewSession"
         return fav_example
@@ -476,10 +505,10 @@ class TestFlagArrayVariable:
 class TestDateVariable:
 
     @pytest.fixture()
-    def fake_date_variable(self):
+    def fake_date_variable(self, fake_donations_table):
         dv_example = DateVariable.__new__(DateVariable)
         dv_example.type = "Date"
-        dv_example.table_name = "Donations"
+        dv_example.table = fake_donations_table
         dv_example.name = "DonationDate"
         dv_example.session = "CharityDataViewSession"
         return dv_example
@@ -595,10 +624,10 @@ class TestDateVariable:
 class TestDateTimeVariable:
 
     @pytest.fixture()
-    def fake_datetime_variable(self):
+    def fake_datetime_variable(self, fake_web_visits_table):
         dtv_example = DateTimeVariable.__new__(DateTimeVariable)
         dtv_example.type = "DateTime"
-        dtv_example.table_name = "WebVisits"
+        dtv_example.table = fake_web_visits_table
         dtv_example.name = "BrowsingSessionStart"
         dtv_example.session = "CharityDataViewSession"
         return dtv_example
