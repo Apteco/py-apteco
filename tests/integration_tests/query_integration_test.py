@@ -60,14 +60,13 @@ communications = holidays.tables["Communications"]
 responses = holidays.tables["Responses Attributed"]
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_selector_operators():
     sweden = bookings["Destination"] == "29"
     assert sweden.count() == 25_207
     high_earners = people["Income"] == (f"{i:02}" for i in range(7, 12))
     assert high_earners.count() == 7_114
     not_student = people["Occupation"] != "4"
-    assert not_student == 1_029_708
+    assert not_student.count() == 1_029_708
     england = households["Region"] != ["10", "11", "12", "14"]
     assert england.count() == 627_550
 
@@ -83,12 +82,11 @@ def test_selector_clause():
     assert england.count() == 627_550
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_array_operators():
     mazda = households["Car Make Code"] == "MAZ"
     assert mazda.count() == 3_587
     any_v = households["Car Make Code"] == ["VAU", "VLK", "VOL"]
-    assert any_v.count() == 15_105
+    assert any_v.count() == 12_418
     anything_but_ford = households["Car Make Code"] != "FOR"
     assert anything_but_ford.count() == 690_951
     exclude_top_6 = households["Car Make Code"] != ["FIA", "KIA", "  !", "CHE", "SUZ", "DAI"]
@@ -114,7 +112,6 @@ def test_array_clause():
     assert exclude_both_fiat_kia.count() == 742_265
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_flag_array_operators():
     ft_readers = people["Newspapers"] == "Financial Times"
     assert ft_readers.count() == 11_470
@@ -157,7 +154,6 @@ def test_flag_array_clause():
     assert not_both_m.count() == 1_148_318
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_numeric_operator():
     thirty_days_to_travel = policies["Days Until Travel"] == 30
     assert thirty_days_to_travel.count() == 2_647
@@ -204,15 +200,14 @@ def test_numeric_clause():
     assert not_high_profit.count() == 211_328 + 67_012  # should be same as > with include... but there are missing values
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_text_operator():
     smith = people["Surname"] == "Smith"
     assert smith.count() == 13_302
     vowel_initial = people["Initial"] == list("AEIOU")
     assert vowel_initial.count() == 168_548
-    not_t_initial = people["Surname"] != "T"
+    not_t_initial = people["Initial"] != "T"
     assert not_t_initial.count() == 1_051_815
-    outside_top_5_surnames = people["Initial"] != ["Smith", "Brown", "Jones", "Taylor", "Patel"]
+    outside_top_5_surnames = people["Surname"] != ["Smith", "Brown", "Jones", "Taylor", "Patel"]
     assert outside_top_5_surnames.count() == 1_113_731
     early_postcode = households["Postcode"] <= "E"
     assert early_postcode.count() == 208_569
@@ -296,7 +291,6 @@ def test_text_clause_wildcards():
     assert first_2_not_vowel.count() == 295_815
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_date_operator():
     valentines_day_2018 = bookings["Travel Date"] == date(2018, 2, 14)
     assert valentines_day_2018.count() == 625
@@ -370,11 +364,10 @@ def test_date_range_clause():
     assert not_earliest_to_latest_booking.count() == 0
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_datetime_operator():
     before_4pm_halloween_2019 = web_visits["Web Visit Time"] <= datetime(2019, 10, 31, 15, 59, 59)
     assert before_4pm_halloween_2019.count() == 169_019
-    after_juy_2016 = communications["Date Of Communication"] >= datetime(2016, 8, 1, 0, 0, 0)
+    after_juy_2016 = communications["Date of Communication"] >= datetime(2016, 8, 1, 0, 0, 0)
     assert after_juy_2016.count() == 3_926
 
 
@@ -397,7 +390,6 @@ def test_datetime_range_clause():
     assert not_all_communications.count() == 0
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_boolean_operator():
     sweden = bookings["Destination"] == "29"
     single_product = bookings["Product"] == ["0", "2"]
@@ -418,7 +410,7 @@ def test_boolean_operator():
 def test_boolean_operator_multiple():
     sweden = bookings["Destination"] == "29"
     single_product = bookings["Product"] == ["0", "2"]
-    unclassified_response = bookings["Reponse Code"] == "       !"
+    unclassified_response = bookings["Response Code"] == "       !"
     triple_and = sweden & single_product & unclassified_response
     assert len(triple_and.operands) == 3
     assert sweden in triple_and.operands
@@ -459,7 +451,6 @@ def test_boolean_clause():
     assert not_london_south_east.count() == 504_029
 
 
-@pytest.mark.xfail(reason="Variable needs to use table object for creating clauses.")
 def test_table_operator():
     sweden = bookings["Destination"] == "29"
     been_to_sweden = people * sweden
