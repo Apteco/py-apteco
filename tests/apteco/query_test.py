@@ -312,7 +312,7 @@ def fake_households_table():
 class TestSelectorClause:
     def test_selector_clause_init(self, fake_bookings_table):
         fake_destination_var = Mock()
-        fake_destination_var.configure_mock(name="boDest")
+        fake_destination_var.configure_mock(name="boDest", table=fake_bookings_table)
         bookings_fr_de_us = SelectorClause(
             fake_bookings_table,
             fake_destination_var,
@@ -371,7 +371,7 @@ class TestSelectorClause:
 class TestCombinedCategoriesClause:
     def test_combined_categories_clause_init(self, fake_bookings_table):
         fake_continent_var = Mock()
-        fake_continent_var.configure_mock(name="boCont")
+        fake_continent_var.configure_mock(name="boCont", table=fake_bookings_table)
         bookings_contains_u = CombinedCategoriesClause(
             fake_bookings_table,
             fake_continent_var,
@@ -439,7 +439,7 @@ class TestCombinedCategoriesClause:
 class TestNumericClause:
     def test_numeric_clause_init(self, fake_people_table):
         fake_total_spend_var = Mock()
-        fake_total_spend_var.configure_mock(name="peTotalS")
+        fake_total_spend_var.configure_mock(name="peTotalS", table=fake_people_table)
         example_numeric_clause = NumericClause(
             fake_people_table,
             fake_total_spend_var,
@@ -520,7 +520,7 @@ class TestTextClause:
     def test_text_clause_init(self, fake_households_table):
         # TODO: add tests for other text match types
         fake_address_var = Mock()
-        fake_address_var.configure_mock(name="hoAddr")
+        fake_address_var.configure_mock(name="hoAddr", table=fake_households_table)
         example_text_clause = TextClause(
             fake_households_table,
             fake_address_var,
@@ -594,7 +594,7 @@ class TestTextClause:
 class TestArrayClause:
     def test_array_clause_init(self, fake_households_table):
         fake_car_make_code_var = Mock()
-        fake_car_make_code_var.configure_mock(name="HHCarmak")
+        fake_car_make_code_var.configure_mock(name="HHCarmak", table=fake_households_table)
         example_array_clause = ArrayClause(
             fake_households_table,
             fake_car_make_code_var,
@@ -657,7 +657,7 @@ class TestArrayClause:
 class TestFlagArrayClause:
     def test_flag_array_clause_init(self, fake_people_table):
         fake_newspapers_var = Mock()
-        fake_newspapers_var.configure_mock(name="peNews")
+        fake_newspapers_var.configure_mock(name="peNews", table=fake_people_table)
         example_flag_array_clause = FlagArrayClause(
             fake_people_table,
             fake_newspapers_var,
@@ -760,7 +760,7 @@ class TestFlagArrayClause:
 class TestDateListClause:
     def test_date_list_clause_init(self, fake_bookings_table):
         fake_travel_date_var = Mock()
-        fake_travel_date_var.configure_mock(name="boTrav")
+        fake_travel_date_var.configure_mock(name="boTrav", table=fake_bookings_table)
         exclude_bank_hols_cmas16_new_year17 = DateListClause(
             fake_bookings_table,
             fake_travel_date_var,
@@ -875,7 +875,7 @@ class TestDateRangeClause:
 
     def test_date_range_clause_init(self, fake_bookings_table):
         fake_booking_date_var = Mock()
-        fake_booking_date_var.configure_mock(name="boDate")
+        fake_booking_date_var.configure_mock(name="boDate", table=fake_bookings_table)
         example_date_range_clause = DateRangeClause(
             fake_bookings_table,
             fake_booking_date_var,
@@ -996,7 +996,7 @@ class TestDateTimeRangeClause:
 
     def test_datetime_range_clause_init(self, fake_bookings_table):
         fake_travel_date_var = Mock()
-        fake_travel_date_var.configure_mock(name="boTrav")
+        fake_travel_date_var.configure_mock(name="boTrav", table=fake_bookings_table)
         example_date_range_clause = DateRangeClause(
             fake_bookings_table,
             fake_travel_date_var,

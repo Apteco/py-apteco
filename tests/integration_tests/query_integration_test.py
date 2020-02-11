@@ -1,5 +1,6 @@
 import decimal
 from datetime import datetime, date
+from pathlib import Path
 
 import pytest
 import toml
@@ -18,7 +19,7 @@ from apteco.query import (
 )
 from apteco.session import login_with_password
 
-credentials = toml.load("credentials.toml")["local"]
+credentials = toml.load(Path(__file__).parent / "credentials.toml")["local"]
 
 holidays = login_with_password(
     credentials["base_url"],

@@ -344,15 +344,11 @@ class DateTimeVariableMixin:
         return DateTimeRangeClause(self.table, self, normalize_datetime_value(other, self.single_value_error_msg), "Latest", session=self.session)
 
 
-class ClauseMixin:
+class Clause:
 
     @property
     def table_name(self):
         return self.table.name
-
-    @property
-    def variable_name(self):
-        return self.variable.name
 
     def select(self, table=None):
         if table is not None:
@@ -580,10 +576,17 @@ class LogicClauseMixin:
             return operands[0]._table
 
 
-class SelectorClause(ClauseMixin):
+class CriteriaClause(Clause):
+
+    @property
+    def variable_name(self):
+        return self.variable.name
+
+
+class SelectorClause(CriteriaClause):
 
     def __init__(self, table, variable, values, *, label=None, include=True, session=None):
-        self.table = table
+        self.table = variable.table
         self.variable = variable
         self.values = values
 
@@ -613,10 +616,10 @@ class SelectorClause(ClauseMixin):
         )
 
 
-class CombinedCategoriesClause(ClauseMixin):
+class CombinedCategoriesClause(CriteriaClause):
 
     def __init__(self, table, variable, value_sets, *, label=None, include=True, session=None):
-        self.table = table
+        self.table = variable.table
         self.variable = variable
         self.value_sets = value_sets
 
@@ -645,10 +648,10 @@ class CombinedCategoriesClause(ClauseMixin):
         )
 
 
-class NumericClause(ClauseMixin):
+class NumericClause(CriteriaClause):
 
     def __init__(self, table, variable, values, *, label=None, include=True, session=None):
-        self.table = table
+        self.table = variable.table
         self.variable = variable
         self.values = values
 
@@ -678,10 +681,10 @@ class NumericClause(ClauseMixin):
         )
 
 
-class TextClause(ClauseMixin):
+class TextClause(CriteriaClause):
 
     def __init__(self, table, variable, values, match_type='Is', match_case=True, *, label=None, include=True, session=None):
-        self.table = table
+        self.table = variable.table
         self.variable = variable
         self.values = values
         self.match_type = match_type
@@ -713,10 +716,10 @@ class TextClause(ClauseMixin):
         )
 
 
-class ArrayClause(ClauseMixin):
+class ArrayClause(CriteriaClause):
 
     def __init__(self, table, variable, values, logic='OR', *, label=None, include=True, session=None):
-        self.table = table
+        self.table = variable.table
         self.variable = variable
         self.values = values
         self.logic = logic
@@ -751,10 +754,10 @@ class FlagArrayClause(ArrayClause):
     pass
 
 
-class DateListClause(ClauseMixin):
+class DateListClause(CriteriaClause):
 
     def __init__(self, table, variable, values, *, label=None, include=True, session=None):
-        self.table = table
+        self.table = variable.table
         self.variable = variable
         self.values = values
 
@@ -785,9 +788,9 @@ class DateListClause(ClauseMixin):
         )
 
 
-class DateRangeClause(ClauseMixin):
+class DateRangeClause(CriteriaClause):
     def __init__(self, table, variable, start, end, *, label=None, include=True, session=None):
-        self.table = table
+        self.table = variable.table
         self.variable = variable
         self.start = start
         self.end = end
@@ -835,9 +838,9 @@ class DateRangeClause(ClauseMixin):
         )
 
 
-class TimeRangeClause(ClauseMixin):
+class TimeRangeClause(CriteriaClause):
     def __init__(self, table, variable, start, end, *, label=None, include=True, session=None):
-        self.table = table
+        self.table = variable.table
         self.variable = variable
         self.start = start
         self.end = end
@@ -884,7 +887,7 @@ class DateTimeRangeClause(DateRangeClause):
         return params
 
 
-class BooleanClause(ClauseMixin):
+class BooleanClause(Clause):
 
     def __init__(self, table, operation, operands, *, label=None, session=None):
         self.table = table
@@ -905,7 +908,7 @@ class BooleanClause(ClauseMixin):
         )
 
 
-class TableClause(ClauseMixin):
+class TableClause(Clause):
 
     def __init__(self, table, operation, operand, *, label=None, session=None):
         self.table = table
@@ -926,7 +929,7 @@ class TableClause(ClauseMixin):
         )
 
 
-class SubSelectionClause(ClauseMixin):
+class SubSelectionClause(Clause):
 
     def __init__(self, selection, *, label=None, session=None):
         self.selection = selection
