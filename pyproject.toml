@@ -24,7 +24,7 @@ pysimplegui = "^4.0"
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
 isort = "^4.3"
-black = {version = "^18.3-alpha.0", allows-prereleases = true}
+black = {version = "^18.3-alpha.0", allow-prereleases = true}
 pytest-mock = "^1.10"
 sphinx = "^2.1"
 sphinx_rtd_theme = "^0.4.3"

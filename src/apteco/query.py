@@ -65,7 +65,7 @@ class Selection:
             query=query
         )
 
-        return response  # type:aa.QueryResult
+        return response  # type: aa.QueryResult
 
     def get_count(self, table: str = None) -> int:
         """Get the count for the given table.
