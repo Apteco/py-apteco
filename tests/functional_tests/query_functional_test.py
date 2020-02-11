@@ -48,7 +48,7 @@ def fake_campaigns_table():
 
 
 @pytest.fixture()
-def fake_web_visits_table():
+def fake_website_visits_table():
     fake = Mock()
     fake.configure_mock(name="WebVisits")
     return fake
@@ -624,10 +624,10 @@ class TestDateVariable:
 class TestDateTimeVariable:
 
     @pytest.fixture()
-    def fake_datetime_variable(self, fake_web_visits_table):
+    def fake_datetime_variable(self, fake_website_visits_table):
         dtv_example = DateTimeVariable.__new__(DateTimeVariable)
         dtv_example.type = "DateTime"
-        dtv_example.table = fake_web_visits_table
+        dtv_example.table = fake_website_visits_table
         dtv_example.name = "BrowsingSessionStart"
         dtv_example.session = "CharityDataViewSession"
         return dtv_example
