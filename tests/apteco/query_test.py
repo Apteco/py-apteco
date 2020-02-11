@@ -1080,6 +1080,18 @@ class TestDateTimeRangeClause:
         )
 
 
+@pytest.mark.xfail(reason="Not implemented yet.")
+class TestReferenceClause:
+    def test_reference_clause_init(self):
+        raise NotImplementedError
+
+    def test_reference_clause_init_var_as_str(self):
+        raise NotImplementedError
+
+    def test_reference_clause_to_model(self):
+        raise NotImplementedError
+
+
 class TestBooleanClause:
     def test_boolean_clause_init(self, fake_bookings_table):
         clause1 = Mock()

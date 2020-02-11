@@ -228,6 +228,15 @@ class SelectorVariableMixin:
         return SelectorClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
 
 
+# TODO: write implementation
+class CombinedCategoriesVariableMixin:
+    def __eq__(self: "CombinedCategoriesVariable", other):
+        raise NotImplementedError
+
+    def __ne__(self: "CombinedCategoriesVariable", other):
+        raise NotImplementedError
+
+
 class NumericVariableMixin:
     general_error_msg = (
         "Chosen value(s) for a numeric variable"
@@ -342,6 +351,15 @@ class DateTimeVariableMixin:
 
     def __ge__(self: "DateTimeVariable", other):
         return DateTimeRangeClause(self.table, self, normalize_datetime_value(other, self.single_value_error_msg), "Latest", session=self.session)
+
+
+# TODO: write implementation
+class ReferenceVariableMixin:
+    def __eq__(self: "ReferenceVariable", other):
+        raise NotImplementedError
+
+    def __ne__(self: "ReferenceVariable", other):
+        raise NotImplementedError
 
 
 class Clause:
@@ -885,6 +903,15 @@ class DateTimeRangeClause(DateRangeClause):
             params["end_range_limit"] = "Actual"
             params["range_end_date"] = self.end
         return params
+
+
+# TODO: write implementation
+class ReferenceClause(CriteriaClause):
+    def __init__(self, table, variable, values, *, label=None, include=True, session=None):
+        raise NotImplementedError
+
+    def _to_model(self):
+        raise NotImplementedError
 
 
 class BooleanClause(Clause):

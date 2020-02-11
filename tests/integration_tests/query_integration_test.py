@@ -83,6 +83,16 @@ def test_selector_clause():
     assert england.count() == 627_550
 
 
+@pytest.mark.xfail(reason="Not yet implemented.")
+def test_combined_categories_operators():
+    raise NotImplementedError
+
+
+@pytest.mark.xfail(reason="Not yet implemented.")
+def test_combined_categories_clause():
+    raise NotImplementedError
+
+
 def test_array_operators():
     mazda = households["Car Make Code"] == "MAZ"
     assert mazda.count() == 3_587
@@ -389,6 +399,16 @@ def test_datetime_range_clause():
     assert not_after_4pm_halloween_2019.count() == 169_019
     not_all_communications = DateTimeRangeClause(communications, communications["Date of Communication"], "Earliest", "Latest", include=False, session=holidays)
     assert not_all_communications.count() == 0
+
+
+@pytest.mark.xfail(reason="Not yet implemented.")
+def test_refence_operators():
+    raise NotImplementedError
+
+
+@pytest.mark.xfail(reason="Not yet implemented.")
+def test_refence_clause():
+    raise NotImplementedError
 
 
 def test_boolean_operator():

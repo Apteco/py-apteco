@@ -17,10 +17,12 @@ from apteco.exceptions import (
 )
 from apteco.query import (
     ArrayVariableMixin,
-    DateVariableMixin,
+    CombinedCategoriesVariableMixin,
     DateTimeVariableMixin,
+    DateVariableMixin,
     FlagArrayVariableMixin,
     NumericVariableMixin,
+    ReferenceVariableMixin,
     SelectorVariableMixin,
     TableMixin,
     TextVariableMixin,
@@ -259,7 +261,7 @@ class SelectorVariable(BaseSelectorVariable, SelectorVariableMixin):
         self.type = "Selector"
 
 
-class CombinedCategoriesVariable(BaseSelectorVariable):
+class CombinedCategoriesVariable(BaseSelectorVariable, CombinedCategoriesVariableMixin):
     """Class representing a FastStats Combined Categories variable."""
 
     def __init__(self, **kwargs):
@@ -333,7 +335,7 @@ class DateTimeVariable(BaseDateVariable, DateTimeVariableMixin):
         self.type = "DateTime"
 
 
-class ReferenceVariable(Variable):
+class ReferenceVariable(Variable, ReferenceVariableMixin):
     """Class representing a FastStats Reference variable."""
 
     def __init__(self, **kwargs):

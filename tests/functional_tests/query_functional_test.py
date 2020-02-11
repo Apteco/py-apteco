@@ -7,6 +7,7 @@ import pytest
 
 from apteco.query import (
     SelectorClause,
+    CombinedCategoriesClause,
     NumericClause,
     TextClause,
     ArrayClause,
@@ -14,15 +15,18 @@ from apteco.query import (
     DateListClause,
     DateRangeClause,
     DateTimeRangeClause,
+    ReferenceClause,
 )
 from apteco.session import (
     SelectorVariable,
+    CombinedCategoriesVariable,
     NumericVariable,
     TextVariable,
     ArrayVariable,
     FlagArrayVariable,
     DateVariable,
     DateTimeVariable,
+    ReferenceVariable,
 )
 
 
@@ -113,6 +117,38 @@ class TestSelectorVariable:
             " must be given as a string or an iterable of strings."
         )
 
+
+@pytest.mark.xfail(reason="Not yet implemented.")
+class TestCombinedCategoriesVariable:
+
+    @pytest.fixture()
+    def fake_combined_categories_variable(self, fake_supporters_table):
+        ccv_example = CombinedCategoriesVariable.__new__(CombinedCategoriesVariable)
+        ccv_example.type = "CombinedCategories"
+        ccv_example.table = fake_supporters_table
+        ccv_example.name = "Region"
+        ccv_example.session = "CharityDataViewSession"
+        return ccv_example
+
+    # TODO: update when implemented
+    def test_eq(self, fake_combined_categories_variable):
+        northern_supporters = fake_combined_categories_variable == ["NE", "NW", "YRK"]
+        assert type(northern_supporters) == CombinedCategoriesClause
+        assert northern_supporters.table_name == "Supporters"
+        assert northern_supporters.variable_name == "Region"
+        assert northern_supporters.values == ["NE", "NW", "YRK"]
+        assert northern_supporters.include is True
+        assert northern_supporters.session == "CharityDataViewSession"
+
+    # TODO: update when implemented
+    def test_ne(self, fake_combined_categories_variable):
+        supporters_outside_london = fake_combined_categories_variable != "LDN"
+        assert type(supporters_outside_london) == CombinedCategoriesClause
+        assert supporters_outside_london.table_name == "Supporters"
+        assert supporters_outside_london.variable_name == "Region"
+        assert supporters_outside_london.values == ["LDN"]
+        assert supporters_outside_london.include is False
+        assert supporters_outside_london.session == "CharityDataViewSession"
 
 class TestNumericVariable:
 
@@ -665,3 +701,34 @@ class TestDateTimeVariable:
         assert exc_info.value.args[0] == (
             "Must specify a single datetime when using inequality operators."
         )
+
+
+@pytest.mark.xfail(reason="Not yet implemented.")
+class TestReferenceVariable:
+
+    @pytest.fixture()
+    def fake_reference_variable(self, fake_campaigns_table):
+        rv_example = ReferenceVariable.__new__(ReferenceVariable)
+        rv_example.type = "Reference"
+        rv_example.table = fake_campaigns_table
+        rv_example.name = "CampaignID"
+        rv_example.session = "CharityDataViewSession"
+        return rv_example
+
+    def test_eq(self, fake_reference_variable):
+        abc_campaign = fake_reference_variable == "abc"
+        assert type(abc_campaign) == ReferenceClause
+        assert abc_campaign.table_name == "Campaigns"
+        assert abc_campaign.variable_name == "CampaignID"
+        assert abc_campaign.values == ["abc"]
+        assert abc_campaign.include is True
+        assert abc_campaign.session == "CharityDataViewSession"
+
+    def test_ne(self, fake_reference_variable):
+        not_x_campaigns = fake_reference_variable != ["x", "xy", "xs", "xyz", "x1"]
+        assert type(not_x_campaigns) == ReferenceClause
+        assert not_x_campaigns.table_name == "Campaigns"
+        assert not_x_campaigns.variable_name == "CampaignID"
+        assert not_x_campaigns.values == ["x", "xy", "xs", "xyz", "x1"]
+        assert not_x_campaigns.include is False
+        assert not_x_campaigns.session == "CharityDataViewSession"
