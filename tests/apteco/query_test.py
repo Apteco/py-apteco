@@ -953,8 +953,16 @@ class TestDateRangeClause:
         )
 
 
+@pytest.mark.xfail(reason="Not implemented yet.")
 class TestTimeRangeClause:
-    pass
+    def test_time_range_clause_init(self):
+        raise NotImplementedError
+
+    def test_time_range_clause_init_var_as_str(self):
+        raise NotImplementedError
+
+    def test_time_range_clause_to_model(self):
+        raise NotImplementedError
 
 
 class TestDateTimeRangeClause:

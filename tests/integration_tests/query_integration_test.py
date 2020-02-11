@@ -382,6 +382,11 @@ def test_datetime_operator():
     assert after_juy_2016.count() == 3_926
 
 
+@pytest.mark.xfail(reason="Not yet implemented.")
+def test_time_range_clause():
+    raise NotImplementedError
+
+
 def test_datetime_range_clause():
     during_week_29_2016 = DateTimeRangeClause(communications, communications["Date of Communication"], "2016-07-18T08:00:00", "2016-07-22T17:59:59", session=holidays)
     assert during_week_29_2016.count() == 19_298
