@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 
 from apteco.exceptions import DeserializeError
-from apteco.session import Session, User, FastStatsSystem
+from apteco.session import FastStatsSystem, Session, User
 
 
 @pytest.fixture()

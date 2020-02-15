@@ -20,14 +20,14 @@ from apteco.query import (
     TableClause,
     TableMixin,
     TextClause,
-    normalize_string_input,
-    normalize_string_value,
-    normalize_number_input,
-    normalize_number_value,
     normalize_date_input,
     normalize_date_value,
     normalize_datetime_input,
     normalize_datetime_value,
+    normalize_number_input,
+    normalize_number_value,
+    normalize_string_input,
+    normalize_string_value,
 )
 
 

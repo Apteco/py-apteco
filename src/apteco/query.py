@@ -1,9 +1,10 @@
 from datetime import date, datetime
 from decimal import Decimal
-from numbers import Real, Integral, Number, Rational
-from typing import List, Optional, Iterable
+from numbers import Integral, Number, Rational, Real
+from typing import Iterable, List, Optional
 
 import apteco_api as aa
+
 from apteco.exceptions import AptecoException
 
 DECIMAL_PLACES = 4
@@ -11,27 +12,20 @@ DECIMAL_PLACES = 4
 
 class OperationError(AptecoException):
     """Raised when invalid operation attempted on clauses."""
-    pass
 
 
 class InvalidValuesError(AptecoException):
     """Raised when invalid values used in selection query."""
-    pass
 
 
 class SelectionCount(object):
-
     def __init__(self, count_response):
         self.table_name = count_response.table_name
         self.count = count_response.count_value
 
 
 class Selection:
-
-    def __init__(self,
-                 query: aa.Query,
-                 session: "Session"
-                 ):
+    def __init__(self, query: aa.Query, session: "Session"):
 
         self.queries_controller = aa.QueriesApi(session.api_client)
         self._response = self._run_query(session.data_view, session.system, query)
@@ -60,9 +54,7 @@ class Selection:
         """
 
         response = self.queries_controller.queries_perform_query_count_synchronously(
-            data_view_name=data_view_name,
-            system_name=system,
-            query=query
+            data_view_name=data_view_name, system_name=system, query=query
         )
 
         return response  # type: aa.QueryResult
@@ -89,7 +81,7 @@ class Selection:
         elif table in self.count_names:
             return self.counts[self.count_names.index(table)].count
         else:
-            raise ValueError('Table name not found')
+            raise ValueError("Table name not found")
 
     def set_table(self, table: str) -> None:
         """Set the resolve table level for the selection.
@@ -109,12 +101,11 @@ class Selection:
             self.count = self.counts[count_idx].count
             self.table_name = self.counts[count_idx].table_name
         else:
-            raise ValueError('Table name not found')
+            raise ValueError("Table name not found")
 
 
 # TODO: change name to Controller (confusing with APIClient otherwise)
 class APIController:
-
     def __init__(self, controller, session: "Session"):
         self._controller = controller(session.api_client)
 
@@ -123,7 +114,6 @@ class APIController:
 
 
 class TableMixin:
-
     def select(self):
         query_final = aa.Query(
             selection=aa.Selection(table_name=self.name, ancestor_counts=True)
@@ -133,7 +123,6 @@ class TableMixin:
 
 
 class VariableMixin:
-
     def isin(self, values):
         raise NotImplementedError
         # return criteria_clause(self, values)
@@ -222,10 +211,21 @@ class SelectorVariableMixin:
     )
 
     def __eq__(self: "SelectorVariable", other):
-        return SelectorClause(self.table, self, normalize_string_input(other, self.general_error_msg), session=self.session)
+        return SelectorClause(
+            self.table,
+            self,
+            normalize_string_input(other, self.general_error_msg),
+            session=self.session,
+        )
 
     def __ne__(self: "SelectorVariable", other):
-        return SelectorClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
+        return SelectorClause(
+            self.table,
+            self,
+            normalize_string_input(other, self.general_error_msg),
+            include=False,
+            session=self.session,
+        )
 
 
 # TODO: write implementation
@@ -247,22 +247,53 @@ class NumericVariableMixin:
     )
 
     def __eq__(self: "NumericVariable", other):
-        return NumericClause(self.table, self, normalize_number_input(other, self.general_error_msg), session=self.session)
+        return NumericClause(
+            self.table,
+            self,
+            normalize_number_input(other, self.general_error_msg),
+            session=self.session,
+        )
 
     def __ne__(self: "NumericVariable", other):
-        return NumericClause(self.table, self, normalize_number_input(other, self.general_error_msg), include=False, session=self.session)
+        return NumericClause(
+            self.table,
+            self,
+            normalize_number_input(other, self.general_error_msg),
+            include=False,
+            session=self.session,
+        )
 
     def __lt__(self: "NumericVariable", other):
-        return NumericClause(self.table, self, [f"<{normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(
+            self.table,
+            self,
+            [f"<{normalize_number_value(other, self.single_value_error_msg)}"],
+            session=self.session,
+        )
 
     def __le__(self: "NumericVariable", other):
-        return NumericClause(self.table, self, [f"<={normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(
+            self.table,
+            self,
+            [f"<={normalize_number_value(other, self.single_value_error_msg)}"],
+            session=self.session,
+        )
 
     def __gt__(self: "NumericVariable", other):
-        return NumericClause(self.table, self, [f">{normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(
+            self.table,
+            self,
+            [f">{normalize_number_value(other, self.single_value_error_msg)}"],
+            session=self.session,
+        )
 
     def __ge__(self: "NumericVariable", other):
-        return NumericClause(self.table, self, [f">={normalize_number_value(other, self.single_value_error_msg)}"], session=self.session)
+        return NumericClause(
+            self.table,
+            self,
+            [f">={normalize_number_value(other, self.single_value_error_msg)}"],
+            session=self.session,
+        )
 
 
 class TextVariableMixin:
@@ -275,16 +306,39 @@ class TextVariableMixin:
     )
 
     def __eq__(self: "TextVariable", other):
-        return TextClause(self.table, self, normalize_string_input(other, self.general_error_msg), session=self.session)
+        return TextClause(
+            self.table,
+            self,
+            normalize_string_input(other, self.general_error_msg),
+            session=self.session,
+        )
 
     def __ne__(self: "TextVariable", other):
-        return TextClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
+        return TextClause(
+            self.table,
+            self,
+            normalize_string_input(other, self.general_error_msg),
+            include=False,
+            session=self.session,
+        )
 
     def __le__(self: "TextVariable", other):
-        return TextClause(self.table, self, [f"<=\"{normalize_string_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
+        return TextClause(
+            self.table,
+            self,
+            [f'<="{normalize_string_value(other, self.single_value_error_msg)}"'],
+            "Ranges",
+            session=self.session,
+        )
 
     def __ge__(self: "TextVariable", other):
-        return TextClause(self.table, self, [f">=\"{normalize_string_value(other, self.single_value_error_msg)}\""], "Ranges", session=self.session)
+        return TextClause(
+            self.table,
+            self,
+            [f'>="{normalize_string_value(other, self.single_value_error_msg)}"'],
+            "Ranges",
+            session=self.session,
+        )
 
 
 class ArrayVariableMixin:
@@ -294,10 +348,21 @@ class ArrayVariableMixin:
     )
 
     def __eq__(self: "ArrayVariable", other):
-        return ArrayClause(self.table, self, normalize_string_input(other, self.general_error_msg), session=self.session)
+        return ArrayClause(
+            self.table,
+            self,
+            normalize_string_input(other, self.general_error_msg),
+            session=self.session,
+        )
 
     def __ne__(self: "ArrayVariable", other):
-        return ArrayClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
+        return ArrayClause(
+            self.table,
+            self,
+            normalize_string_input(other, self.general_error_msg),
+            include=False,
+            session=self.session,
+        )
 
 
 class FlagArrayVariableMixin:
@@ -307,10 +372,21 @@ class FlagArrayVariableMixin:
     )
 
     def __eq__(self: "FlagArrayVariable", other):
-        return FlagArrayClause(self.table, self, normalize_string_input(other, self.general_error_msg), session=self.session)
+        return FlagArrayClause(
+            self.table,
+            self,
+            normalize_string_input(other, self.general_error_msg),
+            session=self.session,
+        )
 
     def __ne__(self: "FlagArrayVariable", other):
-        return FlagArrayClause(self.table, self, normalize_string_input(other, self.general_error_msg), include=False, session=self.session)
+        return FlagArrayClause(
+            self.table,
+            self,
+            normalize_string_input(other, self.general_error_msg),
+            include=False,
+            session=self.session,
+        )
 
 
 class DateVariableMixin:
@@ -323,16 +399,39 @@ class DateVariableMixin:
     )
 
     def __eq__(self: "DateVariable", other):
-        return DateListClause(self.table, self, normalize_date_input(other, self.general_error_msg, basic=True), session=self.session)
+        return DateListClause(
+            self.table,
+            self,
+            normalize_date_input(other, self.general_error_msg, basic=True),
+            session=self.session,
+        )
 
     def __ne__(self: "DateVariable", other):
-        return DateListClause(self.table, self, normalize_date_input(other, self.general_error_msg, basic=True), include=False, session=self.session)
+        return DateListClause(
+            self.table,
+            self,
+            normalize_date_input(other, self.general_error_msg, basic=True),
+            include=False,
+            session=self.session,
+        )
 
     def __le__(self: "DateVariable", other):
-        return DateRangeClause(self.table, self, "Earliest", normalize_date_value(other, self.single_value_error_msg), session=self.session)
+        return DateRangeClause(
+            self.table,
+            self,
+            "Earliest",
+            normalize_date_value(other, self.single_value_error_msg),
+            session=self.session,
+        )
 
     def __ge__(self: "DateVariable", other):
-        return DateRangeClause(self.table, self, normalize_date_value(other, self.single_value_error_msg), "Latest", session=self.session)
+        return DateRangeClause(
+            self.table,
+            self,
+            normalize_date_value(other, self.single_value_error_msg),
+            "Latest",
+            session=self.session,
+        )
 
 
 class DateTimeVariableMixin:
@@ -347,10 +446,22 @@ class DateTimeVariableMixin:
         raise NotImplementedError
 
     def __le__(self: "DateTimeVariable", other):
-        return DateTimeRangeClause(self.table, self, "Earliest", normalize_datetime_value(other, self.single_value_error_msg), session=self.session)
+        return DateTimeRangeClause(
+            self.table,
+            self,
+            "Earliest",
+            normalize_datetime_value(other, self.single_value_error_msg),
+            session=self.session,
+        )
 
     def __ge__(self: "DateTimeVariable", other):
-        return DateTimeRangeClause(self.table, self, normalize_datetime_value(other, self.single_value_error_msg), "Latest", session=self.session)
+        return DateTimeRangeClause(
+            self.table,
+            self,
+            normalize_datetime_value(other, self.single_value_error_msg),
+            "Latest",
+            session=self.session,
+        )
 
 
 # TODO: write implementation
@@ -363,7 +474,6 @@ class ReferenceVariableMixin:
 
 
 class Clause:
-
     @property
     def table_name(self):
         return self.table.name
@@ -373,9 +483,9 @@ class Clause:
             return (self * table).select()
         query_final = aa.Query(
             selection=aa.Selection(
-                table_name=self.table_name, ancestor_counts=True, rule=aa.Rule(
-                    clause=self._to_model()
-                )
+                table_name=self.table_name,
+                ancestor_counts=True,
+                rule=aa.Rule(clause=self._to_model()),
             )
         )
         session = self.session
@@ -394,31 +504,42 @@ class Clause:
     def _change_table_main(self, new_table):
         if self.table < new_table:
             if self.table.parent == new_table:
-                return logic_clause('ANY', [self], new_table)
+                return logic_clause("ANY", [self], new_table)
             else:
-                return logic_clause('ANY', [self], self.table.parent)._change_table_main(new_table)
+                return logic_clause(
+                    "ANY", [self], self.table.parent
+                )._change_table_main(new_table)
         elif self.table > new_table:
             if self.table == new_table.parent:
-                return logic_clause('THE', [self], new_table)
+                return logic_clause("THE", [self], new_table)
             else:
-                return logic_clause('THE', [self._change_table_main(new_table.parent)], new_table)
+                return logic_clause(
+                    "THE", [self._change_table_main(new_table.parent)], new_table
+                )
         elif self.table == new_table:
             return self
         else:
             try:
-                common_ancestor_names = set(t.name for t in self.table.ancestors) & set(t.name for t in new_table.ancestors)
-                nearest_common_ancestor = min(self.table.system_session.tables[name] for name in common_ancestor_names)
+                common_ancestor_names = set(t.name for t in self.table.ancestors) & set(
+                    t.name for t in new_table.ancestors
+                )
+                nearest_common_ancestor = min(
+                    self.table.system_session.tables[name]
+                    for name in common_ancestor_names
+                )
             except:
                 raise OperationError(
                     "Could not establish relationship between "
                     "new table and current one."
                 )
-            return self._change_table_main(nearest_common_ancestor)._change_table_main(new_table)
+            return self._change_table_main(nearest_common_ancestor)._change_table_main(
+                new_table
+            )
 
     def _strip_table_changes(self):
-        if self.logic is None or self.logic.operation.upper() in ['AND', 'OR', 'NOT']:
+        if self.logic is None or self.logic.operation.upper() in ["AND", "OR", "NOT"]:
             return self
-        elif self.logic.operation.upper() in ['ANY', 'THE']:
+        elif self.logic.operation.upper() in ["ANY", "THE"]:
             if len(self.logic.operands) != 1:
                 raise OperationError(
                     f"'{self.logic.operation.upper()}' has invalid "
@@ -434,16 +555,16 @@ class Clause:
 
     def __and__(self, other):
         if self.table != other.table:
-            return logic_clause('AND', [self, other._change_table(self.table)])
-        return logic_clause('AND', [self, other])
+            return logic_clause("AND", [self, other._change_table(self.table)])
+        return logic_clause("AND", [self, other])
 
     def __or__(self, other):
         if self.table != other.table:
-            return logic_clause('OR', [self, other._change_table(self.table)])
-        return logic_clause('OR', [self, other])
+            return logic_clause("OR", [self, other._change_table(self.table)])
+        return logic_clause("OR", [self, other])
 
     def __invert__(self):
-        return logic_clause('NOT', [self])
+        return logic_clause("NOT", [self])
 
     def __mul__(self, other):
         return self._change_table(other)
@@ -453,22 +574,27 @@ class Clause:
 
 
 class SelectorClauseMixin:
-
     @staticmethod
     def _verify_values(values: Iterable[str], variable_name: str, session: "Session"):
         systems_controller = APIController(aa.FastStatsSystemsApi, session)
 
-        # TODO: separate this part into a (dynamic) getter for a .values property on the SystemVariable class
+        # TODO: separate this part into a (dynamic) getter for a .values property
+        #  on the SelectorVariable class
         var_codes_raw = []
         offset = 0
         while True:
-            var_code_results = systems_controller("fast_stats_systems_get_fast_stats_variable_codes",
-                                                  data_view_name=session.data_view,
-                                                  system_name=session.system,
-                                                  variable_name=variable_name,
-                                                  offset=offset)
+            var_code_results = systems_controller(
+                "fast_stats_systems_get_fast_stats_variable_codes",
+                data_view_name=session.data_view,
+                system_name=session.system,
+                variable_name=variable_name,
+                offset=offset,
+            )
             var_codes_raw.extend(var_code_results.list)
-            if var_code_results.offset + var_code_results.count >= var_code_results.total_count:
+            if (
+                var_code_results.offset + var_code_results.count
+                >= var_code_results.total_count
+            ):
                 break
             offset = var_code_results.offset + var_code_results.count
 
@@ -523,32 +649,39 @@ def logic_clause(
     new_table: Optional["Table"] = None,
     *,
     name: Optional[str] = None,
-    ):
-    if operation in ['AND', 'OR', 'NOT']:
-        return BooleanClause(operands[0].table, operation, operands, label=name, session=operands[0].session)
+):
+    if operation in ["AND", "OR", "NOT"]:
+        return BooleanClause(
+            operands[0].table,
+            operation,
+            operands,
+            label=name,
+            session=operands[0].session,
+        )
     elif operation in ["ANY", "THE"]:
         (operand,) = operands
-        return TableClause(new_table, operation, operand, label=name, session=operand.session)
+        return TableClause(
+            new_table, operation, operand, label=name, session=operand.session
+        )
     else:
-        valid_operations = ['ANY', 'AND', 'OR', 'NOT', 'THE']
-        raise ValueError(f"'{operation}' is not a valid operation: "
-                         f"must be one of: {', '.join(valid_operations)}")
+        valid_operations = ["ANY", "AND", "OR", "NOT", "THE"]
+        raise ValueError(
+            f"'{operation}' is not a valid operation: "
+            f"must be one of: {', '.join(valid_operations)}"
+        )
 
 
 class LogicClauseMixin:
-
     @staticmethod
     def _validate_operation(operation, operands, new_table):
 
         if len(operands) == 0:
-            raise OperationError(
-                "The operands list must contain at least one clause."
-            )
-        if operation in ['ANY', 'NOT', 'THE'] and len(operands) != 1:
+            raise OperationError("The operands list must contain at least one clause.")
+        if operation in ["ANY", "NOT", "THE"] and len(operands) != 1:
             raise OperationError(
                 f"'{operation}' can only be performed on a single clause."
             )
-        if operation in ['AND', 'OR']:
+        if operation in ["AND", "OR"]:
             if len(operands) == 1:
                 raise OperationError(
                     f"'{operation}' requires the operands list to contain "
@@ -559,10 +692,10 @@ class LogicClauseMixin:
                     f"Cannot change tables while performing '{operation}'."
                 )
 
-        if operation == 'NOT':
+        if operation == "NOT":
             return operands[0]._table
 
-        if operation in ['ANY', 'THE']:
+        if operation in ["ANY", "THE"]:
             if new_table is None:
                 raise OperationError(
                     f"'{operation}' requires "
@@ -570,21 +703,19 @@ class LogicClauseMixin:
                     f"table to be specified (none supplied)."
                 )
             operand_table = operands[0]._table
-            if operation == 'ANY':
+            if operation == "ANY":
                 if not operand_table < new_table:
                     raise OperationError(
-                        f"'ANY' requires an ancestor table"
-                        f" to be specified."
+                        f"'ANY' requires an ancestor table" f" to be specified."
                     )
-            elif operation == 'THE':
+            elif operation == "THE":
                 if not operand_table > new_table:
                     raise OperationError(
-                        f"'THE' requires a descendant table"
-                        f" to be specified."
+                        f"'THE' requires a descendant table" f" to be specified."
                     )
             return new_table
 
-        if operation in ['AND', 'OR', 'NOT']:
+        if operation in ["AND", "OR", "NOT"]:
             operand_table_names = [op._table.name for op in operands]
             if len(set(operand_table_names)) != 1:
                 raise OperationError(
@@ -595,15 +726,15 @@ class LogicClauseMixin:
 
 
 class CriteriaClause(Clause):
-
     @property
     def variable_name(self):
         return self.variable.name
 
 
 class SelectorClause(CriteriaClause):
-
-    def __init__(self, table, variable, values, *, label=None, include=True, session=None):
+    def __init__(
+        self, table, variable, values, *, label=None, include=True, session=None
+    ):
         self.table = variable.table
         self.variable = variable
         self.values = values
@@ -617,26 +748,27 @@ class SelectorClause(CriteriaClause):
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
                 include=self.include,
-                logic='OR',
+                logic="OR",
                 ignore_case=False,
-                text_match_type='Is',
+                text_match_type="Is",
                 value_rules=[
                     aa.ValueRule(
                         list_rule=aa.ListRule(
-                            list='\t'.join(self.values),
-                            variable_name=self.variable_name
+                            list="\t".join(self.values),
+                            variable_name=self.variable_name,
                         )
                     )
                 ],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
 
 class CombinedCategoriesClause(CriteriaClause):
-
-    def __init__(self, table, variable, value_sets, *, label=None, include=True, session=None):
+    def __init__(
+        self, table, variable, value_sets, *, label=None, include=True, session=None
+    ):
         self.table = variable.table
         self.variable = variable
         self.value_sets = value_sets
@@ -650,25 +782,27 @@ class CombinedCategoriesClause(CriteriaClause):
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
                 include=self.include,
-                logic='OR',
+                logic="OR",
                 ignore_case=False,
-                text_match_type='Is',
+                text_match_type="Is",
                 value_rules=[
                     aa.ValueRule(
                         list_rule=aa.ListRule(
-                            list='\t'.join(vals),
-                            variable_name=var_name
+                            list="\t".join(vals), variable_name=var_name
                         )
-                    ) for var_name, vals in self.value_sets.items()],
+                    )
+                    for var_name, vals in self.value_sets.items()
+                ],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
 
 class NumericClause(CriteriaClause):
-
-    def __init__(self, table, variable, values, *, label=None, include=True, session=None):
+    def __init__(
+        self, table, variable, values, *, label=None, include=True, session=None
+    ):
         self.table = variable.table
         self.variable = variable
         self.values = values
@@ -682,26 +816,36 @@ class NumericClause(CriteriaClause):
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
                 include=self.include,
-                logic='OR',
+                logic="OR",
                 ignore_case=False,
-                text_match_type='Is',
+                text_match_type="Is",
                 value_rules=[
                     aa.ValueRule(
                         list_rule=aa.ListRule(
-                            list='\t'.join(self.values),
-                            variable_name=self.variable_name
+                            list="\t".join(self.values),
+                            variable_name=self.variable_name,
                         )
                     )
                 ],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
 
 class TextClause(CriteriaClause):
-
-    def __init__(self, table, variable, values, match_type='Is', match_case=True, *, label=None, include=True, session=None):
+    def __init__(
+        self,
+        table,
+        variable,
+        values,
+        match_type="Is",
+        match_case=True,
+        *,
+        label=None,
+        include=True,
+        session=None,
+    ):
         self.table = variable.table
         self.variable = variable
         self.values = values
@@ -717,26 +861,35 @@ class TextClause(CriteriaClause):
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
                 include=self.include,
-                logic='OR',
+                logic="OR",
                 ignore_case=not self.match_case,
                 text_match_type=self.match_type,
                 value_rules=[
                     aa.ValueRule(
                         list_rule=aa.ListRule(
-                            list='\t'.join(self.values),
-                            variable_name=self.variable_name
+                            list="\t".join(self.values),
+                            variable_name=self.variable_name,
                         )
                     )
                 ],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
 
 class ArrayClause(CriteriaClause):
-
-    def __init__(self, table, variable, values, logic='OR', *, label=None, include=True, session=None):
+    def __init__(
+        self,
+        table,
+        variable,
+        values,
+        logic="OR",
+        *,
+        label=None,
+        include=True,
+        session=None,
+    ):
         self.table = variable.table
         self.variable = variable
         self.values = values
@@ -753,17 +906,17 @@ class ArrayClause(CriteriaClause):
                 include=self.include,
                 logic=self.logic,
                 ignore_case=False,
-                text_match_type='Is',
+                text_match_type="Is",
                 value_rules=[
                     aa.ValueRule(
                         list_rule=aa.ListRule(
-                            list='\t'.join(self.values),
-                            variable_name=self.variable_name
+                            list="\t".join(self.values),
+                            variable_name=self.variable_name,
                         )
                     )
                 ],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
@@ -773,8 +926,9 @@ class FlagArrayClause(ArrayClause):
 
 
 class DateListClause(CriteriaClause):
-
-    def __init__(self, table, variable, values, *, label=None, include=True, session=None):
+    def __init__(
+        self, table, variable, values, *, label=None, include=True, session=None
+    ):
         self.table = variable.table
         self.variable = variable
         self.values = values
@@ -788,26 +942,28 @@ class DateListClause(CriteriaClause):
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
                 include=self.include,
-                logic='OR',
+                logic="OR",
                 ignore_case=False,
-                text_match_type='Is',
+                text_match_type="Is",
                 value_rules=[
                     aa.ValueRule(
                         list_rule=aa.ListRule(
-                            list='\t'.join(self.values),
-                            variable_name=self.variable_name
+                            list="\t".join(self.values),
+                            variable_name=self.variable_name,
                         ),
-                        predefined_rule="AdhocDates"
+                        predefined_rule="AdhocDates",
                     )
                 ],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
 
 class DateRangeClause(CriteriaClause):
-    def __init__(self, table, variable, start, end, *, label=None, include=True, session=None):
+    def __init__(
+        self, table, variable, start, end, *, label=None, include=True, session=None
+    ):
         self.table = variable.table
         self.variable = variable
         self.start = start
@@ -851,13 +1007,15 @@ class DateRangeClause(CriteriaClause):
                     )
                 ],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
 
 class TimeRangeClause(CriteriaClause):
-    def __init__(self, table, variable, start, end, *, label=None, include=True, session=None):
+    def __init__(
+        self, table, variable, start, end, *, label=None, include=True, session=None
+    ):
         self.table = variable.table
         self.variable = variable
         self.start = start
@@ -884,7 +1042,7 @@ class TimeRangeClause(CriteriaClause):
                     )
                 ],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
@@ -907,7 +1065,9 @@ class DateTimeRangeClause(DateRangeClause):
 
 # TODO: write implementation
 class ReferenceClause(CriteriaClause):
-    def __init__(self, table, variable, values, *, label=None, include=True, session=None):
+    def __init__(
+        self, table, variable, values, *, label=None, include=True, session=None
+    ):
         raise NotImplementedError
 
     def _to_model(self):
@@ -915,7 +1075,6 @@ class ReferenceClause(CriteriaClause):
 
 
 class BooleanClause(Clause):
-
     def __init__(self, table, operation, operands, *, label=None, session=None):
         self.table = table
         self.operation = operation
@@ -930,13 +1089,12 @@ class BooleanClause(Clause):
                 operation=self.operation,
                 operands=[op._to_model() for op in self.operands],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
 
 class TableClause(Clause):
-
     def __init__(self, table, operation, operand, *, label=None, session=None):
         self.table = table
         self.operation = operation
@@ -951,13 +1109,12 @@ class TableClause(Clause):
                 operation=self.operation,
                 operands=[self.operand._to_model()],
                 table_name=self.table_name,
-                name=self.label
+                name=self.label,
             )
         )
 
 
 class SubSelectionClause(Clause):
-
     def __init__(self, selection, *, label=None, session=None):
         self.selection = selection
 
@@ -975,20 +1132,18 @@ class SubSelectionClause(Clause):
 # def select(clause, system_session):
 #     query_final = aa.Query(
 #         selection=aa.Selection(
-#             table_name=clause.table_name, rule=aa.Rule(
-#                 clause=clause._to_model()
-#             )
+#             table_name=clause.table_name, rule=aa.Rule(clause=clause._to_model())
 #         )
 #     )
-#     return Selection(system_session.system_name, query_final, system_session.api_session)
+#     return Selection(
+#         system_session.system_name, query_final, system_session.api_session
+#     )
 
 
 def select(clause, api_session, system_name):
     query_final = aa.Query(
         selection=aa.Selection(
-            table_name=clause.table_name, rule=aa.Rule(
-                clause=clause._to_model()
-            )
+            table_name=clause.table_name, rule=aa.Rule(clause=clause._to_model())
         )
     )
     return Selection(system_name, query_final, api_session)

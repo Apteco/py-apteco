@@ -6,27 +6,27 @@ from unittest.mock import Mock
 import pytest
 
 from apteco.query import (
-    SelectorClause,
-    CombinedCategoriesClause,
-    NumericClause,
-    TextClause,
     ArrayClause,
-    FlagArrayClause,
+    CombinedCategoriesClause,
     DateListClause,
     DateRangeClause,
     DateTimeRangeClause,
+    FlagArrayClause,
+    NumericClause,
     ReferenceClause,
+    SelectorClause,
+    TextClause,
 )
 from apteco.session import (
-    SelectorVariable,
-    CombinedCategoriesVariable,
-    NumericVariable,
-    TextVariable,
     ArrayVariable,
-    FlagArrayVariable,
-    DateVariable,
+    CombinedCategoriesVariable,
     DateTimeVariable,
+    DateVariable,
+    FlagArrayVariable,
+    NumericVariable,
     ReferenceVariable,
+    SelectorVariable,
+    TextVariable,
 )
 
 
