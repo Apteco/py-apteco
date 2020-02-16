@@ -212,7 +212,6 @@ class SelectorVariableMixin:
 
     def __eq__(self: "SelectorVariable", other):
         return SelectorClause(
-            self.table,
             self,
             normalize_string_input(other, self.general_error_msg),
             session=self.session,
@@ -220,7 +219,6 @@ class SelectorVariableMixin:
 
     def __ne__(self: "SelectorVariable", other):
         return SelectorClause(
-            self.table,
             self,
             normalize_string_input(other, self.general_error_msg),
             include=False,
@@ -248,7 +246,6 @@ class NumericVariableMixin:
 
     def __eq__(self: "NumericVariable", other):
         return NumericClause(
-            self.table,
             self,
             normalize_number_input(other, self.general_error_msg),
             session=self.session,
@@ -256,7 +253,6 @@ class NumericVariableMixin:
 
     def __ne__(self: "NumericVariable", other):
         return NumericClause(
-            self.table,
             self,
             normalize_number_input(other, self.general_error_msg),
             include=False,
@@ -265,7 +261,6 @@ class NumericVariableMixin:
 
     def __lt__(self: "NumericVariable", other):
         return NumericClause(
-            self.table,
             self,
             [f"<{normalize_number_value(other, self.single_value_error_msg)}"],
             session=self.session,
@@ -273,7 +268,6 @@ class NumericVariableMixin:
 
     def __le__(self: "NumericVariable", other):
         return NumericClause(
-            self.table,
             self,
             [f"<={normalize_number_value(other, self.single_value_error_msg)}"],
             session=self.session,
@@ -281,7 +275,6 @@ class NumericVariableMixin:
 
     def __gt__(self: "NumericVariable", other):
         return NumericClause(
-            self.table,
             self,
             [f">{normalize_number_value(other, self.single_value_error_msg)}"],
             session=self.session,
@@ -289,7 +282,6 @@ class NumericVariableMixin:
 
     def __ge__(self: "NumericVariable", other):
         return NumericClause(
-            self.table,
             self,
             [f">={normalize_number_value(other, self.single_value_error_msg)}"],
             session=self.session,
@@ -307,7 +299,6 @@ class TextVariableMixin:
 
     def __eq__(self: "TextVariable", other):
         return TextClause(
-            self.table,
             self,
             normalize_string_input(other, self.general_error_msg),
             session=self.session,
@@ -315,7 +306,6 @@ class TextVariableMixin:
 
     def __ne__(self: "TextVariable", other):
         return TextClause(
-            self.table,
             self,
             normalize_string_input(other, self.general_error_msg),
             include=False,
@@ -324,7 +314,6 @@ class TextVariableMixin:
 
     def __le__(self: "TextVariable", other):
         return TextClause(
-            self.table,
             self,
             [f'<="{normalize_string_value(other, self.single_value_error_msg)}"'],
             "Ranges",
@@ -333,7 +322,6 @@ class TextVariableMixin:
 
     def __ge__(self: "TextVariable", other):
         return TextClause(
-            self.table,
             self,
             [f'>="{normalize_string_value(other, self.single_value_error_msg)}"'],
             "Ranges",
@@ -349,7 +337,6 @@ class ArrayVariableMixin:
 
     def __eq__(self: "ArrayVariable", other):
         return ArrayClause(
-            self.table,
             self,
             normalize_string_input(other, self.general_error_msg),
             session=self.session,
@@ -357,7 +344,6 @@ class ArrayVariableMixin:
 
     def __ne__(self: "ArrayVariable", other):
         return ArrayClause(
-            self.table,
             self,
             normalize_string_input(other, self.general_error_msg),
             include=False,
@@ -373,7 +359,6 @@ class FlagArrayVariableMixin:
 
     def __eq__(self: "FlagArrayVariable", other):
         return FlagArrayClause(
-            self.table,
             self,
             normalize_string_input(other, self.general_error_msg),
             session=self.session,
@@ -381,7 +366,6 @@ class FlagArrayVariableMixin:
 
     def __ne__(self: "FlagArrayVariable", other):
         return FlagArrayClause(
-            self.table,
             self,
             normalize_string_input(other, self.general_error_msg),
             include=False,
@@ -400,7 +384,6 @@ class DateVariableMixin:
 
     def __eq__(self: "DateVariable", other):
         return DateListClause(
-            self.table,
             self,
             normalize_date_input(other, self.general_error_msg, basic=True),
             session=self.session,
@@ -408,7 +391,6 @@ class DateVariableMixin:
 
     def __ne__(self: "DateVariable", other):
         return DateListClause(
-            self.table,
             self,
             normalize_date_input(other, self.general_error_msg, basic=True),
             include=False,
@@ -417,7 +399,6 @@ class DateVariableMixin:
 
     def __le__(self: "DateVariable", other):
         return DateRangeClause(
-            self.table,
             self,
             "Earliest",
             normalize_date_value(other, self.single_value_error_msg),
@@ -426,7 +407,6 @@ class DateVariableMixin:
 
     def __ge__(self: "DateVariable", other):
         return DateRangeClause(
-            self.table,
             self,
             normalize_date_value(other, self.single_value_error_msg),
             "Latest",
@@ -447,7 +427,6 @@ class DateTimeVariableMixin:
 
     def __le__(self: "DateTimeVariable", other):
         return DateTimeRangeClause(
-            self.table,
             self,
             "Earliest",
             normalize_datetime_value(other, self.single_value_error_msg),
@@ -456,7 +435,6 @@ class DateTimeVariableMixin:
 
     def __ge__(self: "DateTimeVariable", other):
         return DateTimeRangeClause(
-            self.table,
             self,
             normalize_datetime_value(other, self.single_value_error_msg),
             "Latest",
@@ -733,7 +711,7 @@ class CriteriaClause(Clause):
 
 class SelectorClause(CriteriaClause):
     def __init__(
-        self, table, variable, values, *, label=None, include=True, session=None
+        self, variable, values, *, label=None, include=True, session=None
     ):
         self.table = variable.table
         self.variable = variable
@@ -767,7 +745,7 @@ class SelectorClause(CriteriaClause):
 
 class CombinedCategoriesClause(CriteriaClause):
     def __init__(
-        self, table, variable, value_sets, *, label=None, include=True, session=None
+        self, variable, value_sets, *, label=None, include=True, session=None
     ):
         self.table = variable.table
         self.variable = variable
@@ -801,7 +779,7 @@ class CombinedCategoriesClause(CriteriaClause):
 
 class NumericClause(CriteriaClause):
     def __init__(
-        self, table, variable, values, *, label=None, include=True, session=None
+        self, variable, values, *, label=None, include=True, session=None
     ):
         self.table = variable.table
         self.variable = variable
@@ -836,7 +814,6 @@ class NumericClause(CriteriaClause):
 class TextClause(CriteriaClause):
     def __init__(
         self,
-        table,
         variable,
         values,
         match_type="Is",
@@ -881,7 +858,6 @@ class TextClause(CriteriaClause):
 class ArrayClause(CriteriaClause):
     def __init__(
         self,
-        table,
         variable,
         values,
         logic="OR",
@@ -927,7 +903,7 @@ class FlagArrayClause(ArrayClause):
 
 class DateListClause(CriteriaClause):
     def __init__(
-        self, table, variable, values, *, label=None, include=True, session=None
+        self, variable, values, *, label=None, include=True, session=None
     ):
         self.table = variable.table
         self.variable = variable
@@ -962,7 +938,7 @@ class DateListClause(CriteriaClause):
 
 class DateRangeClause(CriteriaClause):
     def __init__(
-        self, table, variable, start, end, *, label=None, include=True, session=None
+        self, variable, start, end, *, label=None, include=True, session=None
     ):
         self.table = variable.table
         self.variable = variable
@@ -1014,7 +990,7 @@ class DateRangeClause(CriteriaClause):
 
 class TimeRangeClause(CriteriaClause):
     def __init__(
-        self, table, variable, start, end, *, label=None, include=True, session=None
+        self, variable, start, end, *, label=None, include=True, session=None
     ):
         self.table = variable.table
         self.variable = variable
@@ -1066,7 +1042,7 @@ class DateTimeRangeClause(DateRangeClause):
 # TODO: write implementation
 class ReferenceClause(CriteriaClause):
     def __init__(
-        self, table, variable, values, *, label=None, include=True, session=None
+        self, variable, values, *, label=None, include=True, session=None
     ):
         raise NotImplementedError
 

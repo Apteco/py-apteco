@@ -64,13 +64,13 @@ def test_selector_operators(bookings, people, households):
 
 
 def test_selector_clause(holidays, bookings, people, households):
-    sweden = SelectorClause(bookings, bookings["Destination"], ["29"], session=holidays)
+    sweden = SelectorClause(bookings["Destination"], ["29"], session=holidays)
     assert sweden.count() == 25_207
-    high_earners = SelectorClause(people, people["Income"], [f"{i:02}" for i in range(7, 12)], session=holidays)
+    high_earners = SelectorClause(people["Income"], [f"{i:02}" for i in range(7, 12)], session=holidays)
     assert high_earners.count() == 7_114
-    not_student = SelectorClause(people, people["Occupation"], ["4"], include=False, session=holidays)
+    not_student = SelectorClause(people["Occupation"], ["4"], include=False, session=holidays)
     assert not_student.count() == 1_029_708
-    england = SelectorClause(households, households["Region"], ["10", "11", "12", "14"], include=False, session=holidays)
+    england = SelectorClause(households["Region"], ["10", "11", "12", "14"], include=False, session=holidays)
     assert england.count() == 627_550
 
 
@@ -96,21 +96,21 @@ def test_array_operators(households):
 
 
 def test_array_clause(holidays, households):
-    mazda = ArrayClause(households, households["Car Make Code"], ["MAZ"], session=holidays)
+    mazda = ArrayClause(households["Car Make Code"], ["MAZ"], session=holidays)
     assert mazda.count() == 3_587
-    any_v = ArrayClause(households, households["Car Make Code"], ["VAU", "VLK", "VOL"], session=holidays)
+    any_v = ArrayClause(households["Car Make Code"], ["VAU", "VLK", "VOL"], session=holidays)
     assert any_v.count() == 12_418
-    anything_but_ford = ArrayClause(households, households["Car Make Code"], ["FOR"], include=False, session=holidays)
+    anything_but_ford = ArrayClause(households["Car Make Code"], ["FOR"], include=False, session=holidays)
     assert anything_but_ford.count() == 690_951
-    exclude_top_6 = ArrayClause(households, households["Car Make Code"], ["FIA", "KIA", "  !", "CHE", "SUZ", "DAI"], include=False, session=holidays)
+    exclude_top_6 = ArrayClause(households["Car Make Code"], ["FIA", "KIA", "  !", "CHE", "SUZ", "DAI"], include=False, session=holidays)
     assert exclude_top_6.count() == 236_798
-    mazda_and = ArrayClause(households, households["Car Make Code"], ["MAZ"], "AND", session=holidays)
+    mazda_and = ArrayClause(households["Car Make Code"], ["MAZ"], "AND", session=holidays)
     assert mazda_and.count() == 3_587  # should be same as with OR
-    all_aud_toy_vau = ArrayClause(households, households["Car Make Code"], ["AUD", "TOY", "VAU"], "AND", session=holidays)
+    all_aud_toy_vau = ArrayClause(households["Car Make Code"], ["AUD", "TOY", "VAU"], "AND", session=holidays)
     assert all_aud_toy_vau.count() == 34
-    anything_but_ford_and = ArrayClause(households, households["Car Make Code"], ["FOR"], "AND", include=False, session=holidays)
+    anything_but_ford_and = ArrayClause(households["Car Make Code"], ["FOR"], "AND", include=False, session=holidays)
     assert anything_but_ford_and.count() == 690_951  # should be same as with OR
-    exclude_both_fiat_kia = ArrayClause(households, households["Car Make Code"], ["FIA", "KIA"], "AND", include=False, session=holidays)
+    exclude_both_fiat_kia = ArrayClause(households["Car Make Code"], ["FIA", "KIA"], "AND", include=False, session=holidays)
     assert exclude_both_fiat_kia.count() == 742_265
 
 
@@ -132,9 +132,9 @@ def test_flag_array_operators(people, bookings):
 
 
 def test_flag_array_clause(holidays, people, bookings):
-    ft_readers = FlagArrayClause(people, people["Newspapers"], ["Financial Times"], session=holidays)
+    ft_readers = FlagArrayClause(people["Newspapers"], ["Financial Times"], session=holidays)
     assert ft_readers.count() == 11_470
-    broadsheet_readers = FlagArrayClause(people, people["Newspapers"], [
+    broadsheet_readers = FlagArrayClause(people["Newspapers"], [
         "Financial Times",
         "The Times",
         "Daily Telegraph",
@@ -142,17 +142,17 @@ def test_flag_array_clause(holidays, people, bookings):
         "Independent",
     ], session=holidays)
     assert broadsheet_readers.count() == 531_936
-    cant_email = FlagArrayClause(people, people["Contact Permission"], ["EPS"], include=False, session=holidays)
+    cant_email = FlagArrayClause(people["Contact Permission"], ["EPS"], include=False, session=holidays)
     assert cant_email.count() == 1_062_397
-    no_activities = FlagArrayClause(bookings, bookings["Facilities"], ["Entertainment", "Kidsclub", "Trips"], include=False, session=holidays)
+    no_activities = FlagArrayClause(bookings["Facilities"], ["Entertainment", "Kidsclub", "Trips"], include=False, session=holidays)
     assert no_activities.count() == 75_774
-    ft_readers_and = FlagArrayClause(people, people["Newspapers"], ["Financial Times"], "AND", session=holidays)
+    ft_readers_and = FlagArrayClause(people["Newspapers"], ["Financial Times"], "AND", session=holidays)
     assert ft_readers_and.count() == 11_470  # should be same as with OR
-    trips_and_ents = FlagArrayClause(bookings, bookings["Facilities"], ["Trips", "Entertainment"], "AND", session=holidays)
+    trips_and_ents = FlagArrayClause(bookings["Facilities"], ["Trips", "Entertainment"], "AND", session=holidays)
     assert trips_and_ents.count() == 674_890
-    cant_email_and = FlagArrayClause(people, people["Contact Permission"], ["EPS"], "AND", include=False, session=holidays)
+    cant_email_and = FlagArrayClause(people["Contact Permission"], ["EPS"], "AND", include=False, session=holidays)
     assert cant_email_and.count() == 1_062_397  # should be same as with OR
-    not_both_m = FlagArrayClause(people, people["Newspapers"], ["Daily Mail", "Daily Mirror"], "AND", include=False, session=holidays)
+    not_both_m = FlagArrayClause(people["Newspapers"], ["Daily Mail", "Daily Mirror"], "AND", include=False, session=holidays)
     assert not_both_m.count() == 1_148_318
 
 
@@ -176,29 +176,29 @@ def test_numeric_operator(policies, bookings, web_visits):
 
 
 def test_numeric_clause(holidays, policies, bookings, web_visits):
-    thirty_days_to_travel = NumericClause(policies, policies["Days Until Travel"], ["30"], session=holidays)
+    thirty_days_to_travel = NumericClause(policies["Days Until Travel"], ["30"], session=holidays)
     assert thirty_days_to_travel.count() == 2_647
-    multiple_of_100 = NumericClause(bookings, bookings["Cost"], [str(i * 100) for i in range(285)], session=holidays)
+    multiple_of_100 = NumericClause(bookings["Cost"], [str(i * 100) for i in range(285)], session=holidays)
     assert multiple_of_100.count() == 3_123
-    profit_not_33_33 = NumericClause(bookings, bookings["Profit"], ["33.33"], include=False, session=holidays)
+    profit_not_33_33 = NumericClause(bookings["Profit"], ["33.33"], include=False, session=holidays)
     assert profit_not_33_33.count() == 2_129_833
-    more_than_5_days_until_travel = NumericClause(policies, policies["Days Until Travel"], ["0", "1", "2", "3", "4", "5"], include=False, session=holidays)
+    more_than_5_days_until_travel = NumericClause(policies["Days Until Travel"], ["0", "1", "2", "3", "4", "5"], include=False, session=holidays)
     assert more_than_5_days_until_travel.count() == 172_044
-    low_profit = NumericClause(bookings, bookings["Profit"], ["<=25"], session=holidays)
+    low_profit = NumericClause(bookings["Profit"], ["<=25"], session=holidays)
     assert low_profit.count() == 211_328
-    cost_at_least_2k = NumericClause(bookings, bookings["Cost"], [">=2000"], session=holidays)
+    cost_at_least_2k = NumericClause(bookings["Cost"], [">=2000"], session=holidays)
     assert cost_at_least_2k.count() == 53_267
-    less_than_minute = NumericClause(web_visits, web_visits["Duration"], ["<60"], session=holidays)
+    less_than_minute = NumericClause(web_visits["Duration"], ["<60"], session=holidays)
     assert less_than_minute.count() == 44_399
-    more_than_8_weeks = NumericClause(policies, policies["Days Since Booking"], [">56"], session=holidays)
+    more_than_8_weeks = NumericClause(policies["Days Since Booking"], [">56"], session=holidays)
     assert more_than_8_weeks.count() == 23_950
-    not_le_8_weeks = NumericClause(policies, policies["Days Since Booking"], ["<=56"], include=False, session=holidays)
+    not_le_8_weeks = NumericClause(policies["Days Since Booking"], ["<=56"], include=False, session=holidays)
     assert not_le_8_weeks.count() == 23_950  # should be same as > with include
-    not_ge_minute = NumericClause(web_visits, web_visits["Duration"], [">=60"], include=False, session=holidays)
+    not_ge_minute = NumericClause(web_visits["Duration"], [">=60"], include=False, session=holidays)
     assert not_ge_minute.count() == 44_399 + 8_673  # should be same as < with include... but there are missing values
-    cost_not_less_than_2k = NumericClause(bookings, bookings["Cost"], ["<2000"], include=False, session=holidays)
+    cost_not_less_than_2k = NumericClause(bookings["Cost"], ["<2000"], include=False, session=holidays)
     assert cost_not_less_than_2k.count() == 53_267
-    not_high_profit = NumericClause(bookings, bookings["Profit"], [">25"], include=False, session=holidays)
+    not_high_profit = NumericClause(bookings["Profit"], [">25"], include=False, session=holidays)
     assert not_high_profit.count() == 211_328 + 67_012  # should be same as > with include... but there are missing values
 
 
@@ -218,78 +218,78 @@ def test_text_operator(people, households):
 
 
 def test_text_clause_is(holidays, people):
-    smith = TextClause(people, people["Surname"], ["Smith"], session=holidays)
+    smith = TextClause(people["Surname"], ["Smith"], session=holidays)
     assert smith.count() == 13_302
-    vowel_initial = TextClause(people, people["Initial"], list("AEIOU"), session=holidays)
+    vowel_initial = TextClause(people["Initial"], list("AEIOU"), session=holidays)
     assert vowel_initial.count() == 168_548
-    not_t_initial = TextClause(people, people["Initial"], ["T"], include=False, session=holidays)
+    not_t_initial = TextClause(people["Initial"], ["T"], include=False, session=holidays)
     assert not_t_initial.count() == 1_051_815
-    outside_top_5_surnames = TextClause(people, people["Surname"], ["Smith", "Brown", "Jones", "Taylor", "Patel"], include=False, session=holidays)
+    outside_top_5_surnames = TextClause(people["Surname"], ["Smith", "Brown", "Jones", "Taylor", "Patel"], include=False, session=holidays)
     assert outside_top_5_surnames.count() == 1_113_731
 
 
 def test_text_clause_contains(holidays, people, households):
-    gmail_emails = TextClause(people, people["Email Address"], ["gmail"], "Contains", session=holidays)
+    gmail_emails = TextClause(people["Email Address"], ["gmail"], "Contains", session=holidays)
     assert gmail_emails.count() == 20_787
-    address_without_1 = TextClause(households, households["Address"], ["1"], "Contains", include=False, session=holidays)
+    address_without_1 = TextClause(households["Address"], ["1"], "Contains", include=False, session=holidays)
     assert address_without_1.count() == 480_860
-    triple_digit_telephone = TextClause(households, households["Telephone"], [str(i) * 3 for i in range(10)], "Contains", session=holidays)
+    triple_digit_telephone = TextClause(households["Telephone"], [str(i) * 3 for i in range(10)], "Contains", session=holidays)
     assert triple_digit_telephone.count() == 53_962
-    xz_surname = TextClause(people, people["Surname"], ["x", "z"], "Contains", False, session=holidays)
+    xz_surname = TextClause(people["Surname"], ["x", "z"], "Contains", False, session=holidays)
     assert xz_surname.count() == 25_178
-    no_vowel_surname = TextClause(people, people["Surname"], list("AEIOU"), "Contains", False, include=False, session=holidays)
+    no_vowel_surname = TextClause(people["Surname"], list("AEIOU"), "Contains", False, include=False, session=holidays)
     assert no_vowel_surname.count() == 2_966
 
 
 def test_text_clause_begins(holidays, people, households, web_visits):
-    scottish_surname = TextClause(people, people["Surname"], ["Mc", "Mac"], "Begins", False, session=holidays)
+    scottish_surname = TextClause(people["Surname"], ["Mc", "Mac"], "Begins", False, session=holidays)
     assert scottish_surname.count() == 28_303
-    coventry_postcode = TextClause(households, households["Postcode"], ["CV"], "Begins", session=holidays)
+    coventry_postcode = TextClause(households["Postcode"], ["CV"], "Begins", session=holidays)
     assert coventry_postcode.count() == 9_267
-    not_cheap_domain_visits = TextClause(web_visits, web_visits["URL"], ["www.onecheapholiday.co.uk", "www.shabbychichotels.co.uk"], "Begins", include=False, session=holidays)
+    not_cheap_domain_visits = TextClause(web_visits["URL"], ["www.onecheapholiday.co.uk", "www.shabbychichotels.co.uk"], "Begins", include=False, session=holidays)
     assert not_cheap_domain_visits.count() == 223_658
-    not_t_surname = TextClause(people, people["Surname"], ["t"], "Begins", False, include=False, session=holidays)
+    not_t_surname = TextClause(people["Surname"], ["t"], "Begins", False, include=False, session=holidays)
     assert not_t_surname.count() == 1_108_912
 
 
 def test_text_clause_ends(holidays, people, households):
-    son_surname = TextClause(people, people["Surname"], ["son", "SON"], "Ends", True, session=holidays)
+    son_surname = TextClause(people["Surname"], ["son", "SON"], "Ends", True, session=holidays)
     assert son_surname.count() == 62_775
-    no_dot_com_email = TextClause(people, people["Email Address"], [".com"], "Ends", include=False, session=holidays)
+    no_dot_com_email = TextClause(people["Email Address"], [".com"], "Ends", include=False, session=holidays)
     assert no_dot_com_email.count() == 451_433
-    not_common_road_type = TextClause(households, households["Address"], [" Road", " Close", " Avenue", " Drive", " Street"], "Ends", False, include=False, session=holidays)
+    not_common_road_type = TextClause(households["Address"], [" Road", " Close", " Avenue", " Drive", " Street"], "Ends", False, include=False, session=holidays)
     assert not_common_road_type.count() == 303_948
-    profession_surnames = TextClause(people, people["Surname"], ["er"], "Ends", False, session=holidays)
+    profession_surnames = TextClause(people["Surname"], ["er"], "Ends", False, session=holidays)
     assert profession_surnames.count() == 89_460
 
 
 def test_text_clause_ranges(holidays, households):
-    early_postcode = TextClause(households, households["Postcode"], ["<=\"E\""], "Ranges", session=holidays)
+    early_postcode = TextClause(households["Postcode"], ["<=\"E\""], "Ranges", session=holidays)
     assert early_postcode.count() == 208_569
-    further_down_street = TextClause(households, households["Address"], [">=\"9\""], "Ranges", session=holidays)
+    further_down_street = TextClause(households["Address"], [">=\"9\""], "Ranges", session=holidays)
     assert further_down_street.count() == 31_197
 
 
 def test_text_clause_wildcards(holidays, people, households):
-    like_smith = TextClause(people, people["Surname"], ["=\"Sm?th\""], "Ranges", session=holidays)
+    like_smith = TextClause(people["Surname"], ["=\"Sm?th\""], "Ranges", session=holidays)
     assert like_smith.count() == 13_653
-    like_smith_long = TextClause(people, people["Surname"], ["=\"Sm?th*\""], "Ranges", session=holidays)
+    like_smith_long = TextClause(people["Surname"], ["=\"Sm?th*\""], "Ranges", session=holidays)
     assert like_smith_long.count() == 14_172
-    no_space_address = TextClause(households, households["Address"], ["=\"* *\""], "Ranges", include=False, session=holidays)
+    no_space_address = TextClause(households["Address"], ["=\"* *\""], "Ranges", include=False, session=holidays)
     assert no_space_address.count() == 366
-    two_digit_high_street = TextClause(households, households["Address"], ["=\"?? High Street\""], "Ranges", False, session=holidays)
+    two_digit_high_street = TextClause(households["Address"], ["=\"?? High Street\""], "Ranges", False, session=holidays)
     assert two_digit_high_street.count() == 2_187
-    not_10_something_road = TextClause(households, households["Address"], ["=\"10 *Road\""], "Ranges", False, include=False, session=holidays)
+    not_10_something_road = TextClause(households["Address"], ["=\"10 *Road\""], "Ranges", False, include=False, session=holidays)
     assert not_10_something_road.count() == 739_313
-    surname_5_long_2_4_vowels = TextClause(people, people["Surname"], [f"=\"?{i}?{j}?\"" for i in list("aeiou") for j in list("aeiou")], "Ranges", session=holidays)
+    surname_5_long_2_4_vowels = TextClause(people["Surname"], [f"=\"?{i}?{j}?\"" for i in list("aeiou") for j in list("aeiou")], "Ranges", session=holidays)
     assert surname_5_long_2_4_vowels.count() == 59_824
-    like_short_middle_long = TextClause(people, people["Surname"], ["=\"Sh?rt\"", "=\"M?ddle*\"", "=\"Lo*ng\""], "Ranges", session=holidays)
+    like_short_middle_long = TextClause(people["Surname"], ["=\"Sh?rt\"", "=\"M?ddle*\"", "=\"Lo*ng\""], "Ranges", session=holidays)
     assert like_short_middle_long.count() == 2_121
-    not_common_email_domains = TextClause(people, people["Email Address"], [f"=\"*@*{i}.{j}\"" for i in ("Mail", "Post") for j in ("com", "uk.com", "co.uk")], "Ranges", include=False, session=holidays)
+    not_common_email_domains = TextClause(people["Email Address"], [f"=\"*@*{i}.{j}\"" for i in ("Mail", "Post") for j in ("com", "uk.com", "co.uk")], "Ranges", include=False, session=holidays)
     assert not_common_email_domains.count() == 948_831
-    smith_like_double_barrelled = TextClause(people, people["Surname"], ["=\"Sm?th-*\"", "=\"*-Sm?th\""], "Ranges", False, session=holidays)
+    smith_like_double_barrelled = TextClause(people["Surname"], ["=\"Sm?th-*\"", "=\"*-Sm?th\""], "Ranges", False, session=holidays)
     assert smith_like_double_barrelled.count() == 660
-    first_2_not_vowel = TextClause(people, people["Surname"], [f"=\"{i}{j}*\"" for i in ("", "?") for j in list("aeiou")], "Ranges", False, include=False, session=holidays)
+    first_2_not_vowel = TextClause(people["Surname"], [f"=\"{i}{j}*\"" for i in ("", "?") for j in list("aeiou")], "Ranges", False, include=False, session=holidays)
     assert first_2_not_vowel.count() == 295_815
 
 
@@ -323,9 +323,9 @@ def test_date_operator(bookings, policies):
 
 
 def test_date_list_clause(holidays, bookings, policies):
-    valentines_day_2018 = DateListClause(bookings, bookings["Travel Date"], ["20180214"], session=holidays)
+    valentines_day_2018 = DateListClause(bookings["Travel Date"], ["20180214"], session=holidays)
     assert valentines_day_2018.count() == 625
-    bank_holidays_2020 = DateListClause(bookings, bookings["Booking Date"], [
+    bank_holidays_2020 = DateListClause(bookings["Booking Date"], [
         "20200101",
         "20200410",
         "20200413",
@@ -336,9 +336,9 @@ def test_date_list_clause(holidays, bookings, policies):
         "20201226",
     ], session=holidays)
     assert bank_holidays_2020.count() == 7_847
-    not_easter_2017 = DateListClause(policies, policies["Policy Travel Date"], ["20170416"], include=False, session=holidays)
+    not_easter_2017 = DateListClause(policies["Policy Travel Date"], ["20170416"], include=False, session=holidays)
     assert not_easter_2017.count() == 213_442  # all - 125
-    exclude_solstices_and_equinoxes_2021 = DateListClause(policies, policies["Policy Date"], [
+    exclude_solstices_and_equinoxes_2021 = DateListClause(policies["Policy Date"], [
         "20210320",
         "20210621",
         "20210922",
@@ -348,21 +348,21 @@ def test_date_list_clause(holidays, bookings, policies):
 
 
 def test_date_range_clause(holidays, bookings, policies):
-    olympics_summer_16_to_winter_18 = DateRangeClause(bookings, bookings["Travel Date"], "2016-08-22", "2018-02-08", session=holidays)
+    olympics_summer_16_to_winter_18 = DateRangeClause(bookings["Travel Date"], "2016-08-22", "2018-02-08", session=holidays)
     assert olympics_summer_16_to_winter_18.count() == 328_733
-    before_tax_year_end_2018_19 = DateRangeClause(policies, policies["Policy Booking Date"], "Earliest", "2019-04-05", session=holidays)
+    before_tax_year_end_2018_19 = DateRangeClause(policies["Policy Booking Date"], "Earliest", "2019-04-05", session=holidays)
     assert before_tax_year_end_2018_19.count() == 185_601
-    after_christmas_2016 = DateRangeClause(bookings, bookings["Booking Date"], "2016-12-26", "Latest", session=holidays)
+    after_christmas_2016 = DateRangeClause(bookings["Booking Date"], "2016-12-26", "Latest", session=holidays)
     assert after_christmas_2016.count() == 1_915_257
-    earliest_to_latest_policy_date = DateRangeClause(policies, policies["Policy Date"], "Earliest", "Latest", session=holidays)
+    earliest_to_latest_policy_date = DateRangeClause(policies["Policy Date"], "Earliest", "Latest", session=holidays)
     assert earliest_to_latest_policy_date.count() == 213_567
-    not_between_world_cup_18_euro_20 = DateRangeClause(policies, policies["Policy Travel Date"], "2018-07-16", "2020-06-11", include=False, session=holidays)
+    not_between_world_cup_18_euro_20 = DateRangeClause(policies["Policy Travel Date"], "2018-07-16", "2020-06-11", include=False, session=holidays)
     assert not_between_world_cup_18_euro_20.count() == 151_691
-    not_before_christmas_2016 = DateRangeClause(bookings, bookings["Booking Date"], "Earliest", "2016-12-25", include=False, session=holidays)
+    not_before_christmas_2016 = DateRangeClause(bookings["Booking Date"], "Earliest", "2016-12-25", include=False, session=holidays)
     assert not_before_christmas_2016.count() == 1_915_257
-    not_after_tax_year_end_2018_19 = DateRangeClause(policies, policies["Policy Booking Date"], "2019-04-06", "Latest", include=False, session=holidays)
+    not_after_tax_year_end_2018_19 = DateRangeClause(policies["Policy Booking Date"], "2019-04-06", "Latest", include=False, session=holidays)
     assert not_after_tax_year_end_2018_19.count() == 185_601
-    not_earliest_to_latest_booking = DateRangeClause(bookings, bookings["Booking Date"], "Earliest", "Latest", include=False, session=holidays)
+    not_earliest_to_latest_booking = DateRangeClause(bookings["Booking Date"], "Earliest", "Latest", include=False, session=holidays)
     assert not_earliest_to_latest_booking.count() == 0
 
 
@@ -379,21 +379,21 @@ def test_time_range_clause():
 
 
 def test_datetime_range_clause(holidays, communications, web_visits):
-    during_week_29_2016 = DateTimeRangeClause(communications, communications["Date of Communication"], "2016-07-18T08:00:00", "2016-07-22T17:59:59", session=holidays)
+    during_week_29_2016 = DateTimeRangeClause(communications["Date of Communication"], "2016-07-18T08:00:00", "2016-07-22T17:59:59", session=holidays)
     assert during_week_29_2016.count() == 19_298
-    before_4pm_halloween_2019 = DateTimeRangeClause(web_visits, web_visits["Web Visit Time"], "Earliest", "2019-10-31T15:59:59", session=holidays)
+    before_4pm_halloween_2019 = DateTimeRangeClause(web_visits["Web Visit Time"], "Earliest", "2019-10-31T15:59:59", session=holidays)
     assert before_4pm_halloween_2019.count() == 169_019
-    after_juy_2016 = DateTimeRangeClause(communications, communications["Date of Communication"], "2016-08-01T00:00:00", "Latest", session=holidays)
+    after_juy_2016 = DateTimeRangeClause(communications["Date of Communication"], "2016-08-01T00:00:00", "Latest", session=holidays)
     assert after_juy_2016.count() == 3_926
-    all_web_visits = DateTimeRangeClause(web_visits, web_visits["Web Visit Time"], "Earliest", "Latest", session=holidays)
+    all_web_visits = DateTimeRangeClause(web_visits["Web Visit Time"], "Earliest", "Latest", session=holidays)
     assert all_web_visits.count() == 279_538
-    not_during_lent_2021 = DateTimeRangeClause(web_visits, web_visits["Web Visit Time"], "2021-02-17T07:18:00", "2021-04-03T19:44:00", include=False, session=holidays)
+    not_during_lent_2021 = DateTimeRangeClause(web_visits["Web Visit Time"], "2021-02-17T07:18:00", "2021-04-03T19:44:00", include=False, session=holidays)
     assert not_during_lent_2021.count() == 270_245  # all - 9_293
-    not_before_july_2016 = DateTimeRangeClause(communications, communications["Date of Communication"], "Earliest", "2016-07-31T23:59:59", include=False, session=holidays)
+    not_before_july_2016 = DateTimeRangeClause(communications["Date of Communication"], "Earliest", "2016-07-31T23:59:59", include=False, session=holidays)
     assert not_before_july_2016.count() == 3_926
-    not_after_4pm_halloween_2019 = DateTimeRangeClause(web_visits, web_visits["Web Visit Time"], "2019-10-31T16:00:00", "Latest", include=False, session=holidays)
+    not_after_4pm_halloween_2019 = DateTimeRangeClause(web_visits["Web Visit Time"], "2019-10-31T16:00:00", "Latest", include=False, session=holidays)
     assert not_after_4pm_halloween_2019.count() == 169_019
-    not_all_communications = DateTimeRangeClause(communications, communications["Date of Communication"], "Earliest", "Latest", include=False, session=holidays)
+    not_all_communications = DateTimeRangeClause(communications["Date of Communication"], "Earliest", "Latest", include=False, session=holidays)
     assert not_all_communications.count() == 0
 
 
@@ -447,23 +447,23 @@ def test_boolean_operator_multiple(bookings, people):
 
 
 def test_boolean_clause(holidays, bookings, people, households):
-    sweden = SelectorClause(bookings, bookings["Destination"], ["29"], session=holidays)
-    single_product = SelectorClause(bookings, bookings["Product"], ["0", "2"], session=holidays)
+    sweden = SelectorClause(bookings["Destination"], ["29"], session=holidays)
+    single_product = SelectorClause(bookings["Product"], ["0", "2"], session=holidays)
     single_sweden = BooleanClause(bookings, "AND", [sweden, single_product], session=holidays)
     assert single_sweden.count() == 2_541
-    unclassified_response = SelectorClause(bookings, bookings["Response Code"], ["       !"], session=holidays)
+    unclassified_response = SelectorClause(bookings["Response Code"], ["       !"], session=holidays)
     triple_and = BooleanClause(bookings, "AND", [sweden, single_product, unclassified_response], session=holidays)
     assert triple_and.count() == 1_989
 
-    high_earners = SelectorClause(people, people["Income"], [f"{i:02}" for i in range(7, 12)], session=holidays)
-    white_collar_jobs = SelectorClause(people, people["Occupation"], ["1", "2", "3"], session=holidays)
+    high_earners = SelectorClause(people["Income"], [f"{i:02}" for i in range(7, 12)], session=holidays)
+    white_collar_jobs = SelectorClause(people["Occupation"], ["1", "2", "3"], session=holidays)
     high_potential = BooleanClause(people, "OR", [high_earners, white_collar_jobs], session=holidays)
     assert high_potential.count() == 114_621
-    various_sources = SelectorClause(people, people["Source"], ["05", "09", "10", "12", "27"], session=holidays)
+    various_sources = SelectorClause(people["Source"], ["05", "09", "10", "12", "27"], session=holidays)
     triple_or = BooleanClause(people, "OR", [high_earners, white_collar_jobs, various_sources], session=holidays)
     assert triple_or.count() == 129_655
 
-    london_south_east = SelectorClause(households, households["Region"], ["03", "09"], session=holidays)
+    london_south_east = SelectorClause(households["Region"], ["03", "09"], session=holidays)
     not_london_south_east = BooleanClause(households, "NOT", [london_south_east], session=holidays)
     assert not_london_south_east.count() == 504_029
 
@@ -486,10 +486,10 @@ def test_table_operator(bookings, people, responses, households):
 
 
 def test_table_clause(holidays, bookings, people, responses, households, communications):
-    sweden = SelectorClause(bookings, bookings["Destination"], ["29"], session=holidays)
+    sweden = SelectorClause(bookings["Destination"], ["29"], session=holidays)
     been_to_sweden = TableClause(people, "ANY", sweden, session=holidays)
     assert been_to_sweden.count() == 25_175
-    suggested_booking = SelectorClause(responses, responses["Response Type"], ["6", "8", "10"], session=holidays)
+    suggested_booking = SelectorClause(responses["Response Type"], ["6", "8", "10"], session=holidays)
     house_suggested_booking = TableClause(
         households,
         "ANY",
@@ -508,11 +508,11 @@ def test_table_clause(holidays, bookings, people, responses, households, communi
     )
     assert house_suggested_booking.count() == 695
 
-    mazda = ArrayClause(households, households["Car Make Code"], ["MAZ"], session=holidays)
+    mazda = ArrayClause(households["Car Make Code"], ["MAZ"], session=holidays)
     mazda_drivers = TableClause(people, "THE", mazda, session=holidays)
     assert mazda_drivers.count() == 6_959
 
-    vowel_initial = TextClause(people, people["Initial"], list("AEIOU"), session=holidays)
+    vowel_initial = TextClause(people["Initial"], list("AEIOU"), session=holidays)
     responses_by_vowels = TableClause(
         responses,
         "THE",
