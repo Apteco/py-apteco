@@ -989,7 +989,7 @@ class TestDateTimeRangeClause:
     def test_datetime_range_clause_init(self, fake_bookings_table):
         fake_travel_date_var = Mock()
         fake_travel_date_var.configure_mock(name="boTrav", table=fake_bookings_table)
-        example_date_range_clause = DateRangeClause(
+        example_date_range_clause = DateTimeRangeClause(
             fake_travel_date_var,
             "2001-09-09T02:46:40",
             "2033-05-18T04:33:20",
@@ -1007,7 +1007,7 @@ class TestDateTimeRangeClause:
 
     @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
     def test_datetime_range_clause_init_var_as_str(self):
-        example_date_range_clause = DateRangeClause(
+        example_date_range_clause = DateTimeRangeClause(
             "boTrav",
             "2001-09-09T02:46:40",
             "2033-05-18T04:33:20",

@@ -150,6 +150,7 @@ class TestCombinedCategoriesVariable:
         assert supporters_outside_london.include is False
         assert supporters_outside_london.session == "CharityDataViewSession"
 
+
 class TestNumericVariable:
 
     @pytest.fixture()

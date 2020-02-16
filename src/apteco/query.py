@@ -710,15 +710,13 @@ class CriteriaClause(Clause):
 
 
 class SelectorClause(CriteriaClause):
-    def __init__(
-        self, variable, values, *, label=None, include=True, session=None
-    ):
+    def __init__(self, variable, values, *, include=True, label=None, session=None):
         self.table = variable.table
         self.variable = variable
         self.values = values
 
-        self.label = label
         self.include = include
+        self.label = label
         self.session = session
 
     def _to_model(self):
@@ -744,15 +742,13 @@ class SelectorClause(CriteriaClause):
 
 
 class CombinedCategoriesClause(CriteriaClause):
-    def __init__(
-        self, variable, value_sets, *, label=None, include=True, session=None
-    ):
+    def __init__(self, variable, value_sets, *, include=True, label=None, session=None):
         self.table = variable.table
         self.variable = variable
         self.value_sets = value_sets
 
-        self.label = label
         self.include = include
+        self.label = label
         self.session = session
 
     def _to_model(self):
@@ -778,15 +774,13 @@ class CombinedCategoriesClause(CriteriaClause):
 
 
 class NumericClause(CriteriaClause):
-    def __init__(
-        self, variable, values, *, label=None, include=True, session=None
-    ):
+    def __init__(self, variable, values, *, include=True, label=None, session=None):
         self.table = variable.table
         self.variable = variable
         self.values = values
 
-        self.label = label
         self.include = include
+        self.label = label
         self.session = session
 
     def _to_model(self):
@@ -819,8 +813,8 @@ class TextClause(CriteriaClause):
         match_type="Is",
         match_case=True,
         *,
-        label=None,
         include=True,
+        label=None,
         session=None,
     ):
         self.table = variable.table
@@ -829,8 +823,8 @@ class TextClause(CriteriaClause):
         self.match_type = match_type
         self.match_case = match_case
 
-        self.label = label
         self.include = include
+        self.label = label
         self.session = session
 
     def _to_model(self):
@@ -857,22 +851,15 @@ class TextClause(CriteriaClause):
 
 class ArrayClause(CriteriaClause):
     def __init__(
-        self,
-        variable,
-        values,
-        logic="OR",
-        *,
-        label=None,
-        include=True,
-        session=None,
+        self, variable, values, logic="OR", *, include=True, label=None, session=None
     ):
         self.table = variable.table
         self.variable = variable
         self.values = values
         self.logic = logic
 
-        self.label = label
         self.include = include
+        self.label = label
         self.session = session
 
     def _to_model(self):
@@ -902,15 +889,13 @@ class FlagArrayClause(ArrayClause):
 
 
 class DateListClause(CriteriaClause):
-    def __init__(
-        self, variable, values, *, label=None, include=True, session=None
-    ):
+    def __init__(self, variable, values, *, include=True, label=None, session=None):
         self.table = variable.table
         self.variable = variable
         self.values = values
 
-        self.label = label
         self.include = include
+        self.label = label
         self.session = session
 
     def _to_model(self):
@@ -937,16 +922,14 @@ class DateListClause(CriteriaClause):
 
 
 class DateRangeClause(CriteriaClause):
-    def __init__(
-        self, variable, start, end, *, label=None, include=True, session=None
-    ):
+    def __init__(self, variable, start, end, *, include=True, label=None, session=None):
         self.table = variable.table
         self.variable = variable
         self.start = start
         self.end = end
 
-        self.label = label
         self.include = include
+        self.label = label
         self.session = session
 
     def _create_range_parameters(self):
@@ -989,16 +972,14 @@ class DateRangeClause(CriteriaClause):
 
 
 class TimeRangeClause(CriteriaClause):
-    def __init__(
-        self, variable, start, end, *, label=None, include=True, session=None
-    ):
+    def __init__(self, variable, start, end, *, include=True, label=None, session=None):
         self.table = variable.table
         self.variable = variable
         self.start = start
         self.end = end
 
-        self.label = label
         self.include = include
+        self.label = label
         self.session = session
 
     def _to_model(self):
@@ -1041,9 +1022,7 @@ class DateTimeRangeClause(DateRangeClause):
 
 # TODO: write implementation
 class ReferenceClause(CriteriaClause):
-    def __init__(
-        self, variable, values, *, label=None, include=True, session=None
-    ):
+    def __init__(self, variable, values, *, include=True, label=None, session=None):
         raise NotImplementedError
 
     def _to_model(self):

@@ -398,12 +398,12 @@ def test_datetime_range_clause(holidays, communications, web_visits):
 
 
 @pytest.mark.xfail(reason="Not yet implemented.")
-def test_refence_operators():
+def test_reference_operators():
     raise NotImplementedError
 
 
 @pytest.mark.xfail(reason="Not yet implemented.")
-def test_refence_clause():
+def test_reference_clause():
     raise NotImplementedError
 
 
