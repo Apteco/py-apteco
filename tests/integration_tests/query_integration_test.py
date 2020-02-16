@@ -1,9 +1,7 @@
 import decimal
 from datetime import date, datetime
-from pathlib import Path
 
 import pytest
-import toml
 
 from apteco.query import (
     ArrayClause,
@@ -17,51 +15,44 @@ from apteco.query import (
     TableClause,
     TextClause,
 )
-from apteco.session import login_with_password
-
-credentials = toml.load(Path(__file__).parent / "credentials.toml")["local"]
-
-holidays = login_with_password(
-    credentials["base_url"],
-    credentials["data_view"],
-    credentials["system"],
-    credentials["user"],
-    credentials["password"],
-)
 
 
-def test_session():
-    assert len(holidays.tables) == 9
-    assert len(holidays.variables) == 86
-    assert holidays.master_table.name == "Households"
+@pytest.fixture(scope="session")
+def people(holidays):
+    return holidays.tables["People"]
 
 
-def test_user():
-    user = holidays.user
-    assert user.first_name == "Admin"
-    assert user.surname == "User"
-    assert user.username == "Administrator"
-    assert user.email_address == "support@apteco.com"
+@pytest.fixture(scope="session")
+def bookings(holidays):
+    return holidays.tables["Bookings"]
 
 
-def test_system_info():
-    system_info = holidays.system_info
-    assert system_info.name == "holidays"
-    assert system_info.description == "Holidays Demo Database"
-    assert system_info.build_date == datetime(2019, 11, 27, 15, 57, 24)
-    assert system_info.view_name == "Holidays"
+@pytest.fixture(scope="session")
+def households(holidays):
+    return holidays.tables["Households"]
 
 
-people = holidays.tables["People"]
-bookings = holidays.tables["Bookings"]
-households = holidays.tables["Households"]
-policies = holidays.tables["Policies"]
-web_visits = holidays.tables["WebVisits"]
-communications = holidays.tables["Communications"]
-responses = holidays.tables["Responses Attributed"]
+@pytest.fixture(scope="session")
+def policies(holidays):
+    return holidays.tables["Policies"]
 
 
-def test_selector_operators():
+@pytest.fixture(scope="session")
+def web_visits(holidays):
+    return holidays.tables["WebVisits"]
+
+
+@pytest.fixture(scope="session")
+def communications(holidays):
+    return holidays.tables["Communications"]
+
+
+@pytest.fixture(scope="session")
+def responses(holidays):
+    return holidays.tables["Responses Attributed"]
+
+
+def test_selector_operators(bookings, people, households):
     sweden = bookings["Destination"] == "29"
     assert sweden.count() == 25_207
     high_earners = people["Income"] == (f"{i:02}" for i in range(7, 12))
@@ -72,7 +63,7 @@ def test_selector_operators():
     assert england.count() == 627_550
 
 
-def test_selector_clause():
+def test_selector_clause(holidays, bookings, people, households):
     sweden = SelectorClause(bookings, bookings["Destination"], ["29"], session=holidays)
     assert sweden.count() == 25_207
     high_earners = SelectorClause(people, people["Income"], [f"{i:02}" for i in range(7, 12)], session=holidays)
@@ -93,7 +84,7 @@ def test_combined_categories_clause():
     raise NotImplementedError
 
 
-def test_array_operators():
+def test_array_operators(households):
     mazda = households["Car Make Code"] == "MAZ"
     assert mazda.count() == 3_587
     any_v = households["Car Make Code"] == ["VAU", "VLK", "VOL"]
@@ -104,7 +95,7 @@ def test_array_operators():
     assert exclude_top_6.count() == 236_798
 
 
-def test_array_clause():
+def test_array_clause(holidays, households):
     mazda = ArrayClause(households, households["Car Make Code"], ["MAZ"], session=holidays)
     assert mazda.count() == 3_587
     any_v = ArrayClause(households, households["Car Make Code"], ["VAU", "VLK", "VOL"], session=holidays)
@@ -123,7 +114,7 @@ def test_array_clause():
     assert exclude_both_fiat_kia.count() == 742_265
 
 
-def test_flag_array_operators():
+def test_flag_array_operators(people, bookings):
     ft_readers = people["Newspapers"] == "Financial Times"
     assert ft_readers.count() == 11_470
     broadsheet_readers = people["Newspapers"] == [
@@ -140,7 +131,7 @@ def test_flag_array_operators():
     assert no_activities.count() == 75_774
 
 
-def test_flag_array_clause():
+def test_flag_array_clause(holidays, people, bookings):
     ft_readers = FlagArrayClause(people, people["Newspapers"], ["Financial Times"], session=holidays)
     assert ft_readers.count() == 11_470
     broadsheet_readers = FlagArrayClause(people, people["Newspapers"], [
@@ -165,7 +156,7 @@ def test_flag_array_clause():
     assert not_both_m.count() == 1_148_318
 
 
-def test_numeric_operator():
+def test_numeric_operator(policies, bookings, web_visits):
     thirty_days_to_travel = policies["Days Until Travel"] == 30
     assert thirty_days_to_travel.count() == 2_647
     multiple_of_100 = bookings["Cost"] == (i * 100 for i in range(285))
@@ -184,7 +175,7 @@ def test_numeric_operator():
     assert more_than_8_weeks.count() == 23_950
 
 
-def test_numeric_clause():
+def test_numeric_clause(holidays, policies, bookings, web_visits):
     thirty_days_to_travel = NumericClause(policies, policies["Days Until Travel"], ["30"], session=holidays)
     assert thirty_days_to_travel.count() == 2_647
     multiple_of_100 = NumericClause(bookings, bookings["Cost"], [str(i * 100) for i in range(285)], session=holidays)
@@ -211,7 +202,7 @@ def test_numeric_clause():
     assert not_high_profit.count() == 211_328 + 67_012  # should be same as > with include... but there are missing values
 
 
-def test_text_operator():
+def test_text_operator(people, households):
     smith = people["Surname"] == "Smith"
     assert smith.count() == 13_302
     vowel_initial = people["Initial"] == list("AEIOU")
@@ -226,7 +217,7 @@ def test_text_operator():
     assert further_down_street.count() == 31_197
 
 
-def test_text_clause_is():
+def test_text_clause_is(holidays, people):
     smith = TextClause(people, people["Surname"], ["Smith"], session=holidays)
     assert smith.count() == 13_302
     vowel_initial = TextClause(people, people["Initial"], list("AEIOU"), session=holidays)
@@ -237,7 +228,7 @@ def test_text_clause_is():
     assert outside_top_5_surnames.count() == 1_113_731
 
 
-def test_text_clause_contains():
+def test_text_clause_contains(holidays, people, households):
     gmail_emails = TextClause(people, people["Email Address"], ["gmail"], "Contains", session=holidays)
     assert gmail_emails.count() == 20_787
     address_without_1 = TextClause(households, households["Address"], ["1"], "Contains", include=False, session=holidays)
@@ -250,7 +241,7 @@ def test_text_clause_contains():
     assert no_vowel_surname.count() == 2_966
 
 
-def test_text_clause_begins():
+def test_text_clause_begins(holidays, people, households, web_visits):
     scottish_surname = TextClause(people, people["Surname"], ["Mc", "Mac"], "Begins", False, session=holidays)
     assert scottish_surname.count() == 28_303
     coventry_postcode = TextClause(households, households["Postcode"], ["CV"], "Begins", session=holidays)
@@ -261,7 +252,7 @@ def test_text_clause_begins():
     assert not_t_surname.count() == 1_108_912
 
 
-def test_text_clause_ends():
+def test_text_clause_ends(holidays, people, households):
     son_surname = TextClause(people, people["Surname"], ["son", "SON"], "Ends", True, session=holidays)
     assert son_surname.count() == 62_775
     no_dot_com_email = TextClause(people, people["Email Address"], [".com"], "Ends", include=False, session=holidays)
@@ -272,14 +263,14 @@ def test_text_clause_ends():
     assert profession_surnames.count() == 89_460
 
 
-def test_text_clause_ranges():
+def test_text_clause_ranges(holidays, households):
     early_postcode = TextClause(households, households["Postcode"], ["<=\"E\""], "Ranges", session=holidays)
     assert early_postcode.count() == 208_569
     further_down_street = TextClause(households, households["Address"], [">=\"9\""], "Ranges", session=holidays)
     assert further_down_street.count() == 31_197
 
 
-def test_text_clause_wildcards():
+def test_text_clause_wildcards(holidays, people, households):
     like_smith = TextClause(people, people["Surname"], ["=\"Sm?th\""], "Ranges", session=holidays)
     assert like_smith.count() == 13_653
     like_smith_long = TextClause(people, people["Surname"], ["=\"Sm?th*\""], "Ranges", session=holidays)
@@ -302,7 +293,7 @@ def test_text_clause_wildcards():
     assert first_2_not_vowel.count() == 295_815
 
 
-def test_date_operator():
+def test_date_operator(bookings, policies):
     valentines_day_2018 = bookings["Travel Date"] == date(2018, 2, 14)
     assert valentines_day_2018.count() == 625
     bank_holidays_2020 = bookings["Booking Date"] == [
@@ -331,7 +322,7 @@ def test_date_operator():
     assert after_christmas_2016.count() == 1_915_257
 
 
-def test_date_list_clause():
+def test_date_list_clause(holidays, bookings, policies):
     valentines_day_2018 = DateListClause(bookings, bookings["Travel Date"], ["20180214"], session=holidays)
     assert valentines_day_2018.count() == 625
     bank_holidays_2020 = DateListClause(bookings, bookings["Booking Date"], [
@@ -356,7 +347,7 @@ def test_date_list_clause():
     assert exclude_solstices_and_equinoxes_2021.count() == 213_109  # all - 458
 
 
-def test_date_range_clause():
+def test_date_range_clause(holidays, bookings, policies):
     olympics_summer_16_to_winter_18 = DateRangeClause(bookings, bookings["Travel Date"], "2016-08-22", "2018-02-08", session=holidays)
     assert olympics_summer_16_to_winter_18.count() == 328_733
     before_tax_year_end_2018_19 = DateRangeClause(policies, policies["Policy Booking Date"], "Earliest", "2019-04-05", session=holidays)
@@ -375,7 +366,7 @@ def test_date_range_clause():
     assert not_earliest_to_latest_booking.count() == 0
 
 
-def test_datetime_operator():
+def test_datetime_operator(web_visits, communications):
     before_4pm_halloween_2019 = web_visits["Web Visit Time"] <= datetime(2019, 10, 31, 15, 59, 59)
     assert before_4pm_halloween_2019.count() == 169_019
     after_juy_2016 = communications["Date of Communication"] >= datetime(2016, 8, 1, 0, 0, 0)
@@ -387,7 +378,7 @@ def test_time_range_clause():
     raise NotImplementedError
 
 
-def test_datetime_range_clause():
+def test_datetime_range_clause(holidays, communications, web_visits):
     during_week_29_2016 = DateTimeRangeClause(communications, communications["Date of Communication"], "2016-07-18T08:00:00", "2016-07-22T17:59:59", session=holidays)
     assert during_week_29_2016.count() == 19_298
     before_4pm_halloween_2019 = DateTimeRangeClause(web_visits, web_visits["Web Visit Time"], "Earliest", "2019-10-31T15:59:59", session=holidays)
@@ -416,7 +407,7 @@ def test_refence_clause():
     raise NotImplementedError
 
 
-def test_boolean_operator():
+def test_boolean_operator(bookings, people, households):
     sweden = bookings["Destination"] == "29"
     single_product = bookings["Product"] == ["0", "2"]
     single_sweden = sweden & single_product
@@ -433,7 +424,7 @@ def test_boolean_operator():
 
 
 @pytest.mark.xfail(reason="Inserting more clauses into existing boolean clause not implemented.")
-def test_boolean_operator_multiple():
+def test_boolean_operator_multiple(bookings, people):
     sweden = bookings["Destination"] == "29"
     single_product = bookings["Product"] == ["0", "2"]
     unclassified_response = bookings["Response Code"] == "       !"
@@ -455,7 +446,7 @@ def test_boolean_operator_multiple():
     assert triple_or.count() == 129_655
 
 
-def test_boolean_clause():
+def test_boolean_clause(holidays, bookings, people, households):
     sweden = SelectorClause(bookings, bookings["Destination"], ["29"], session=holidays)
     single_product = SelectorClause(bookings, bookings["Product"], ["0", "2"], session=holidays)
     single_sweden = BooleanClause(bookings, "AND", [sweden, single_product], session=holidays)
@@ -477,7 +468,7 @@ def test_boolean_clause():
     assert not_london_south_east.count() == 504_029
 
 
-def test_table_operator():
+def test_table_operator(bookings, people, responses, households):
     sweden = bookings["Destination"] == "29"
     been_to_sweden = people * sweden
     assert been_to_sweden.count() == 25_175
@@ -494,7 +485,7 @@ def test_table_operator():
     assert responses_by_vowels.count() == 216
 
 
-def test_table_clause():
+def test_table_clause(holidays, bookings, people, responses, households, communications):
     sweden = SelectorClause(bookings, bookings["Destination"], ["29"], session=holidays)
     been_to_sweden = TableClause(people, "ANY", sweden, session=holidays)
     assert been_to_sweden.count() == 25_175
