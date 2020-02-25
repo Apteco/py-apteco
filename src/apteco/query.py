@@ -1084,21 +1084,10 @@ class SubSelectionClause(Clause):
         )
 
 
-# def select(clause, system_session):
-#     query_final = aa.Query(
-#         selection=aa.Selection(
-#             table_name=clause.table_name, rule=aa.Rule(clause=clause._to_model())
-#         )
-#     )
-#     return Selection(
-#         system_session.system_name, query_final, system_session.api_session
-#     )
-
-
-def select(clause, api_session, system_name):
+def select(clause):
     query_final = aa.Query(
         selection=aa.Selection(
             table_name=clause.table_name, rule=aa.Rule(clause=clause._to_model())
         )
     )
-    return Selection(system_name, query_final, api_session)
+    return Selection(query_final, clause.session)
