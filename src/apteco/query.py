@@ -483,14 +483,14 @@ class Clause:
             return self._change_table_main(new_table)
 
     def _change_table_main(self, new_table):
-        if self.table < new_table:
+        if self.table.is_descendant(new_table):
             if self.table.parent == new_table:
                 return logic_clause("ANY", [self], new_table)
             else:
                 return logic_clause(
                     "ANY", [self], self.table.parent
                 )._change_table_main(new_table)
-        elif self.table > new_table:
+        elif self.table.is_ancestor(new_table):
             if self.table == new_table.parent:
                 return logic_clause("THE", [self], new_table)
             else:
@@ -685,14 +685,14 @@ class LogicClauseMixin:
                 )
             operand_table = operands[0]._table
             if operation == "ANY":
-                if not operand_table < new_table:
+                if not new_table.is_ancestor(operand_table):
                     raise OperationError(
-                        f"'ANY' requires an ancestor table" f" to be specified."
+                        f"'ANY' requires an ancestor table to be specified."
                     )
             elif operation == "THE":
-                if not operand_table > new_table:
+                if not new_table.is_descendant(operand_table):
                     raise OperationError(
-                        f"'THE' requires a descendant table" f" to be specified."
+                        f"'THE' requires a descendant table to be specified."
                     )
             return new_table
 

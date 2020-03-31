@@ -515,21 +515,21 @@ class TestTable:
         assert fake_people_table1 == fake_people_table2
         assert fake_people_table1 != fake_purchases_table
 
-    def test_table_gt(
+    def test_table_lt(
         self, fake_customers_table, fake_purchases_table, fake_web_visits_table
     ):
-        assert fake_customers_table > fake_purchases_table
-        assert not fake_web_visits_table > fake_purchases_table
+        assert fake_customers_table < fake_purchases_table
+        assert not fake_web_visits_table < fake_purchases_table
 
-    def test_table_lt(
+    def test_table_gt(
         self,
         fake_customers_table,
         fake_purchases_table,
         fake_products_table,
         fake_web_visits_table,
     ):
-        assert fake_products_table < fake_purchases_table
-        assert not fake_web_visits_table < fake_purchases_table
+        assert fake_products_table > fake_purchases_table
+        assert not fake_web_visits_table > fake_purchases_table
 
     def test_table_getitem(self, fake_table_with_variables):
         assert fake_table_with_variables["var1"] == "my first variable"

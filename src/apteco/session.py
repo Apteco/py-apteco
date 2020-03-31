@@ -196,17 +196,53 @@ class Table(TableMixin):
         self.variables = variables
         self.session = session
 
-    def __eq__(self, other):
-        """Test whether this is the same table as another."""
+    def is_same(self, other: "Table"):
+        """Return whether this table is the same as `other`.
+
+        Args:
+            other (Table): the table to check against
+
+        Returns:
+            bool: ``True`` if this is the same as `other`, otherwise ``False``
+
+        """
         return self.name == other.name
 
-    def __gt__(self, other):
-        """Test whether this is an ancestor table of another."""
+    def is_ancestor(self, other: "Table"):
+        """Return whether this table is an ancestor of `other`.
+
+        Args:
+            other (Table): the table to check against
+
+        Returns:
+            bool: ``True`` if this is an ancestor of `other`, otherwise ``False``
+
+        """
         return self in other.ancestors
 
-    def __lt__(self, other):
-        """Test whether this is a descendant table of another."""
+    def is_descendant(self, other: "Table"):
+        """Return whether this table is a descendant of `other`.
+
+        Args:
+            other (Table): the table to check against
+
+        Returns:
+            bool: ``True`` if this is a descendant of `other`, otherwise ``False``
+
+        """
         return self in other.descendants
+
+    def __eq__(self, other):
+        """Return whether this is the same table as `other`."""
+        return self.is_same(other)
+
+    def __lt__(self, other):
+        """Return whether this table is an ancestor of `other`."""
+        return self.is_ancestor(other)
+
+    def __gt__(self, other):
+        """Return whether this table is a descendant of `other`."""
+        return self.is_descendant(other)
 
     def __getitem__(self, item):
         return self.variables[item]
