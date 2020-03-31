@@ -166,7 +166,7 @@ class Table(TableMixin):
             parent_name (str): name of this table's parent table
                 (an empty string for the master table)
             parent (Table): the parent table of this table
-                (```None``` for the master table)
+                (``None`` for the master table)
             children (List[Table]): list of child tables of this table
                 (an empty list if table has no children)
             ancestors (List[Table]): list of ancestor tables
@@ -851,7 +851,7 @@ class InitializeVariablesAlgorithm:
             return variable_type_lookup[determinant]
         except KeyError as exc:
             raise VariablesError(
-                f"Failed to initialize variable,"
+                f"Failed to initialize variable '{raw_variable.name}',"
                 f" did not recognise the type from determinant: {determinant}"
             ) from exc
 

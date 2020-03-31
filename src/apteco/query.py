@@ -121,6 +121,9 @@ class TableMixin:
         session = self.session
         return Selection(query_final, session)
 
+    def count(self):
+        return self.select().count
+
 
 class VariableMixin:
     def isin(self, values):
