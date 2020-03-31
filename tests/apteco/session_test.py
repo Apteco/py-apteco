@@ -1823,11 +1823,12 @@ class TestInitializeVariablesAlgorithm:
                 }
             ),
         )
+        bad_raw_var.configure_mock(name="BadVariable")
         with pytest.raises(VariablesError) as exc_info:
             InitializeVariablesAlgorithm._choose_variable(bad_raw_var)
         exception_msg = exc_info.value.args[0]
         assert exception_msg == (
-            "Failed to initialize variable,"
+            "Failed to initialize variable 'BadVariable',"
             " did not recognise the type from determinant: "
             "('Numeric', 'Boolean', None, False)"
         )
