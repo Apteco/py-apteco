@@ -80,9 +80,6 @@ using the Python comparison operators::
 For details on variable types, their supported operators and accepted values,
 see the variables :ref:`variable_api_reference` section below.
 
-.. seealso::
-    Find more details on building selections in the :ref:`create_selection` guide.
-
 .. _variable_api_reference:
 
 API reference
