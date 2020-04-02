@@ -1,6 +1,6 @@
-**************************************
+***************************************
   Connecting to your FastStats system
-**************************************
+***************************************
 
 In this part of the tutorial we'll learn
 about creating a connection to your FastStats system.
@@ -15,7 +15,7 @@ To get started, import the ``login`` function from the ``apteco`` package.
 You can then connect to your FastStats system by calling the function
 with the following credentials as arguments:
 
-* **API base URL**: the URL for your Apteco API (OrbitAPI) installation
+* **API base URL**: the URL for your Apteco API (Orbit API) installation
 * **DataView name**: the name of the DataView you're connecting to
 * **FastStats system name**: the name of the system you're using within the Dataview
 * **Username**: your username (the same as you use to log in to Orbit)
