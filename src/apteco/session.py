@@ -834,7 +834,7 @@ class InitializeVariablesAlgorithm:
     def _create_variables(self):
         """Create py-apteco variables from apteco_api ones."""
         self.variables = {
-            v.description: self._choose_variable(v)(
+            v.name: self._choose_variable(v)(
                 name=v.name,
                 description=v.description,
                 type=v.type,
@@ -893,7 +893,7 @@ class InitializeVariablesAlgorithm:
         """Identify variables for each table."""
         self.variables_lookup = defaultdict(dict)
         for variable in self.variables.values():
-            self.variables_lookup[variable.table.name][variable.description] = variable
+            self.variables_lookup[variable.table.name][variable.name] = variable
         self.variables_lookup.default_factory = None  # 'freeze' as normal dict
 
     def _assign_variables(self):

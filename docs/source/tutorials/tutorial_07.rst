@@ -63,8 +63,8 @@ As demonstrated in the following code:
 
 .. code-block:: python
 
-    >>> student = people["Occupation"] == "4"
-    >>> usa = bookings["Destination"] == "38"
+    >>> student = people["peOccu"] == "4"
+    >>> usa = bookings["boDest"] == "38"
     >>> student.table_name
     'People'
     >>> usa.table_name

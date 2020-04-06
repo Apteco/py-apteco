@@ -1664,9 +1664,9 @@ class TestInitializeVariablesAlgorithm:
         fake_choose_variable.assert_has_calls(choose_variable_calls)
         fake_chosen_variable_class.assert_has_calls(variable_class_calls)
         assert fake_initialize_vars_algo.variables == {
-            "Full Name": "Created 1st var",
-            "Cost": "Created 2nd var",
-            "Item Code": "Created 3rd var",
+            "cuName": "Created 1st var",
+            "trCost": "Created 2nd var",
+            "itCode": "Created 3rd var",
         }
 
     def test_choose_variable_with_selector_var(self, mocker):
@@ -1852,6 +1852,15 @@ class TestInitializeVariablesAlgorithm:
         var7 = mocker.Mock(table=fake_web_visits_table, description="Origin")
         var8 = mocker.Mock(table=fake_pages_viewed_table, description="URL")
         var9 = mocker.Mock(table=fake_pages_viewed_table, description="Time requested")
+        var1.configure_mock(name="cuName")
+        var2.configure_mock(name="cuGender")
+        var3.configure_mock(name="cuID")
+        var4.configure_mock(name="puTime")
+        var5.configure_mock(name="puCost")
+        var6.configure_mock(name="itPCode")
+        var7.configure_mock(name="wvOrigin")
+        var8.configure_mock(name="pvURL")
+        var9.configure_mock(name="pvTime")
         fake_variables = {
             1: var1,
             2: var2,
@@ -1864,11 +1873,11 @@ class TestInitializeVariablesAlgorithm:
             9: var9,
         }
         correct_results = {
-            "Customers": {"Full name": var1, "Gender": var2, "Customer ID": var3},
-            "Purchases": {"Time": var4, "Total cost": var5},
-            "Items": {"Product code": var6},
-            "Web visits": {"Origin": var7},
-            "Pages viewed": {"URL": var8, "Time requested": var9},
+            "Customers": {"cuName": var1, "cuGender": var2, "cuID": var3},
+            "Purchases": {"puTime": var4, "puCost": var5},
+            "Items": {"itPCode": var6},
+            "Web visits": {"wvOrigin": var7},
+            "Pages viewed": {"pvURL": var8, "pvTime": var9},
         }
         fake_initialize_variables_algo = mocker.Mock(variables=fake_variables)
         InitializeVariablesAlgorithm._identify_variables(fake_initialize_variables_algo)

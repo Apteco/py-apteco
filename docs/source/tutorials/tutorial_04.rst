@@ -17,10 +17,10 @@ This is also true for **Array** and **FlagArray** variables:
 .. code-block::
 
     >>> households = my_session.tables["Households"]
-    >>> ford_owners = households["Car Make Code"] == "FOR"
+    >>> ford_owners = households["HHCarmak"] == "FOR"
     >>> ford_owners.count()
     51614
-    >>> broadsheet_readers = people["Newspapers"] == [
+    >>> broadsheet_readers = people["peNews"] == [
     ...     "Financial Times",
     ...     "The Times",
     ...     "Daily Telegraph",
@@ -44,10 +44,10 @@ Numeric
 .. code-block:: python
 
     >>> policies = my_session.tables["Policies"]
-    >>> ten_days_until_travel = policies["Days Until Travel"] == 10
+    >>> ten_days_until_travel = policies["PoDaysUn"] == 10
     >>> ten_days_until_travel.count()
     5085
-    >>> premium_87_65 = policies["Premium"] == 87.65
+    >>> premium_87_65 = policies["PoPremiu"] == 87.65
     >>> premium_87_65.count()
     8
 
@@ -55,7 +55,7 @@ As well as ``int`` and ``float`` types, you can use other numerical types
 like ``Decimal`` from the built-in ``decimal`` module:
 
     >>> from decimal import Decimal
-    >>> cost12345 = bookings["Cost"] == Decimal("123.45")
+    >>> cost12345 = bookings["boCost"] == Decimal("123.45")
     >>> cost12345.count()
     11
 
@@ -66,10 +66,10 @@ Text
 
 .. code-block:: python
 
-    >>> smiths = people["Surname"] == "Smith"
+    >>> smiths = people["peSName"] == "Smith"
     >>> smiths.count()
     13302
-    >>> vowel_initial = people["Initial"] == list("AEIOU")
+    >>> vowel_initial = people["peInit"] == list("AEIOU")
     >>> vowel_initial.values
     ['A', 'E', 'I', 'O', 'U']
     >>> vowel_initial.count()
@@ -84,10 +84,10 @@ and ``datetime.datetime`` types.
 .. code-block:: python
 
     >>> from datetime import date
-    >>> christmas_day_2019 = bookings["Booking Date"] == date(2019, 12, 25)
+    >>> christmas_day_2019 = bookings["boDate"] == date(2019, 12, 25)
     >>> christmas_day_2019.count()
     204
-    >>> travel_on_1st = bookings["Travel Date"] == [
+    >>> travel_on_1st = bookings["boTrav"] == [
     ...     date(y, m, 1)
     ...     for y in range(2016, 2020)
     ...     for m in range(1, 13)

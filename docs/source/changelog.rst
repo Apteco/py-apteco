@@ -34,6 +34,8 @@ Changed
 
 * ``login()`` and ``login_with_password()`` functions now return ``Session`` object
   directly, instead of an intermediary ``Credentials`` object.
+* The variables dictionaries on ``Session`` and ``Table`` objects
+  now have variable *names* as keys, instead of *descriptions*.
 * ``Variable`` classes now have ``table`` attribute
   which returns the ``Table`` object for the table they belong to.
 * ``CriteriaClause`` classes no longer have ``table`` parameter in signature;

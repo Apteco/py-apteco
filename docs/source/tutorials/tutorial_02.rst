@@ -53,21 +53,21 @@ Variables
 
 The FastStats system variables are similarly stored in a dictionary
 at the ``variables`` attribute on the ``Session``.
-The keys of the dictionary are variable descriptions
+The keys of the dictionary are variable names
 and the values are ``Variable`` objects which represent the variable.
 
-You can retrieve a variable from the dictionary using its description:
+You can retrieve a variable from the dictionary using its name:
 
 .. code-block:: python
 
-    >>> cost = my_session.variables["Cost"]
+    >>> cost = my_session.variables["boCost"]
 
 The ``Variable`` object has attributes providing information about the variable:
 
 .. code-block:: python
 
-    >>> cost.name
-    'boCost'
+    >>> cost.description
+    'Cost'
     >>> cost.type
     'Numeric'
 
@@ -83,12 +83,12 @@ which returns a dictionary containing just the variables on that table:
     >>> len(bookings_vars)
     14
 
-The variables on the table can be accessed by description in the same way:
+The variables on the table can be accessed by name in the same way:
 
 .. code-block:: python
 
-    >>> dest = bookings.variables["Destination"]
-    >>> dest.type
+    >>> destination = bookings.variables["boDest"]
+    >>> destination.type
     'Selector'
 
 A variable's attributes differ according to its type:
@@ -97,11 +97,11 @@ A variable's attributes differ according to its type:
 
     >>> cost.currency_symbol
     '£'
-    >>> dest.num_codes
+    >>> destination.num_codes
     20
 
 Here, ``cost`` is a numeric variable representing an amount of British Pounds (£),
-and ``dest`` is a selector variable with 20 different selector codes.
+and ``destination`` is a selector variable with 20 different selector codes.
 
 At the moment we've only seen how to access our variables and their attributes,
 but in the next part we'll learn how to use them to build selections.
