@@ -19,7 +19,7 @@ with the Python equality operator ``==`` to specify chosen values:
 Normally, the ``==`` operator would `test for equality
 <https://docs.python.org/3/library/stdtypes.html#comparisons>`_
 and return either ``True`` or ``False``.
-However, in *py-apteco* it is a shortcut for creating a selection:
+However, in **py-apteco** it is a shortcut for creating a selection:
 
 .. code-block:: python
 
@@ -37,7 +37,7 @@ Because the **Destination** variable is on the **Bookings** table,
 this is a count of bookings.
 We'll learn how to control which table we're counting later on.
 
-.. hint::
+.. tip::
 
     Make sure you use the different ``=`` symbols correctly:
     use the ``==`` comparison operator with the FastStats variable and chosen value

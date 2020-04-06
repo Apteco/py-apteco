@@ -62,13 +62,13 @@ the session is connected to:
 
 .. code-block:: python
 
-    >>> info = my_session.system_info
+    >>> sys_info = my_session.system_info
     >>> print(
     ...     f"Connected to {sys_info.description}"
     ...     f", built on {sys_info.build_date.strftime('%d %B %Y at %X')}."
     ... )
     ...
-    Connected to Holidays Demo Database, built on 25 January 2019 at 15:09:40.
+    Connected to Holidays Demo Database, built on 27 November 2019 at 15:57:24.
 
 The ``Session`` object holds more than just this metadata about the FastStats system,
 and in the next part we'll learn how to access the system Tables and Variables.

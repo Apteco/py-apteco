@@ -22,7 +22,7 @@ Added
   of empty query comprising just a table.
 * Added ``system_info`` attribute to ``Session`` class which returns
   FastStats system metadata as a ``namedtuple``.
-* Added installation guide, tutorial
+* Added installation guide, tutorial,
   and reference guides for ``Session`` and ``Variable`` objects.
 * Added keywords and classifiers to project (for PyPI).
 * Added continuous integration using Azure Pipelines
@@ -57,16 +57,17 @@ Removed
 * Removed ``CombinedCategoriesVariable`` class,
   as its implementation didn't cover all types of Combined Categories variables.
   Variables of this type have reverted to the more general ``SelectorVariable``.
-  Planned to re-implement Combined Categories variable support in future.
+  It is planned to re-implement Combined Categories variable support in future.
 * Removed ``isin()`` method on variables, as it's not applicable to all variable types.
-  Planned to re-implement for relevant variables in future.
+  It is planned to re-implement this method for relevant variables in future.
 
 Fixed
 -----
 
 * Session initialization process now loads all system tables,
   not just the first 10.
-* Using generators to make selections (with ``==`` operator) now works.
+* Using generators to return selector codes
+  for building selections (with ``==`` operator) now works.
 
 Version 0.3.2
 =============

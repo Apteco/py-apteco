@@ -77,7 +77,7 @@ rather than trying to reverse the overall logic by changing the invidivual parts
 
     >>> eligible_for_discount = student | under_21
     >>> pay_full_price = ~eligible_for_discount
-    >>> pay_full_prince.count()
+    >>> pay_full_price.count()
     968189
 
 .. note::
@@ -110,9 +110,9 @@ which is on the **People** table.
 **py-apteco** automatically adapts other parts of the selection to match this,
 by inserting the required table changes
 using the **ANY** or **THE** operations familiar from FastStats selection trees.
-So the selection in this example comprises:
+So the selection in this example comprises either:
 
-    * *people* who have income of £60k+
+    * *people* who have income of £60k+, or
     * *people* who have made ANY *booking* costing at least £2k
 
 Although the automatic table changes are often what we want,

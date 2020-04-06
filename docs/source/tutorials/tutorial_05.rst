@@ -25,8 +25,8 @@ so this a selection of all households in the UK 'proper')
 .. hint::
 
     Just as with the ``==`` operator seen in previous examples,
-    instead of performing a comparison
-    the ``!=`` has been 'overloaded' to create a selection,
+    instead of performing a comparison,
+    the ``!=`` operator has been 'overloaded' to create a selection
     but with the ``include`` flag set to ``False``
     — to *exclude* the given value.
 
@@ -139,10 +139,21 @@ and allows all values above or below this (depending on the operator used).
         >>> born_in_1990 = date(1990, 1, 1) <= people["peDOB"] <= date(1990, 12, 31)
 
     Python *does* normally support this 'operator chaining' syntax
-    when using the inequality operators for standard comparison,
+    when `using the inequality operators for standard comparison
+    <https://realpython.com/python-operators-expressions/
+    #compound-logical-expressions-and-short-circuit-evaluation>`_,
     but it doesn't work in our situation where the operators have been overloaded
     for creating selections.
-    This applies to all FastStats variable types, not just **Date** variables.
+    This applies to *all* FastStats variable types, not just **Date** variables.
 
-We will learn in the next part how to achieve the same effect
-by joining more than one selection together.
+    In this example, because of the way `operator chaining
+    <https://realpython.com/python-operators-expressions/#chained-comparisons>`_
+    and short-circuit evaluation work,
+    this ends up being equivalent to just the right-hand part of the expression:
+
+    .. code-block:: python
+
+        >>> born_in_1990 = people["peDOB"] <= date(1990, 12, 31)
+
+We will learn in the next part how to achieve the desired result
+by joining more than one selection together instead.

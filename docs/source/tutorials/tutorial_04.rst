@@ -6,13 +6,13 @@ In this part of the tutorial we'll learn
 what kind of values you can specify when making selections
 with different types of FastStats variables.
 
-Selector, Array & FlagArray
+Selector, Array & Flag Array
 ===========================
 
 As mentioned in the previous part, FastStats **Selector** variables
 require selector codes given as strings (Python ``str`` type).
 
-This is also true for **Array** and **FlagArray** variables:
+This is also true for **Array** and **Flag Array** variables:
 
 .. code-block::
 
@@ -86,7 +86,7 @@ and ``datetime.datetime`` types.
     >>> from datetime import date
     >>> christmas_day_2019 = bookings["boDate"] == date(2019, 12, 25)
     >>> christmas_day_2019.count()
-    204
+    627
     >>> travel_on_1st = bookings["boTrav"] == [
     ...     date(y, m, 1)
     ...     for y in range(2016, 2020)

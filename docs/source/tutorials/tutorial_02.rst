@@ -78,7 +78,7 @@ which returns a dictionary containing just the variables on that table:
 
     >>> all_vars = my_session.variables
     >>> len(all_vars)
-    88
+    94
     >>> bookings_vars = bookings.variables
     >>> len(bookings_vars)
     14
@@ -100,7 +100,8 @@ A variable's attributes differ according to its type:
     >>> destination.num_codes
     20
 
-Here, ``cost`` is a numeric variable representing an amount of British Pounds (£),
+Here, ``cost`` is a Numeric variable
+representing an amount of British Pounds Sterling (£),
 and ``destination`` is a selector variable with 20 different selector codes.
 
 At the moment we've only seen how to access our variables and their attributes,
