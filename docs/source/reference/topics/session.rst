@@ -2,7 +2,7 @@
   Session
 ***********
 
-.. module:: session
+.. module:: session.Session
 
 Introduction
 ============

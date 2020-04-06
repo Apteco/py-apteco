@@ -1,11 +1,11 @@
-====================
-apteco-api changelog
-====================
+=============================
+Change Log for ``apteco-api``
+=============================
 
-Record of changes to the ``apteco-api`` package
-(that is, changes to the ``OrbitAPI`` spec)
-which are relevant to ``py-apteco``.
-
+A record of changes to the ``apteco-api`` package
+which are, or may be, relevant to **py-apteco**.
+Since the ``apteco-api`` package is auto-generated from the **OrbitAPI** spec,
+these changes correspond directly to changes there.
 
 Version 0.2.0
 -------------

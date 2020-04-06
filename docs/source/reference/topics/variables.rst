@@ -2,7 +2,7 @@
   Variables
 *************
 
-.. module:: session
+.. py:currentmodule:: session
 
 Introduction
 ============
@@ -55,6 +55,8 @@ on a :class:`Session` object.
 This is a :class:`dict` where variables can be looked up by their description::
 
     >>> income = my_session.variables["Income"]
+
+.. py:currentmodule:: apteco.session.Table
 
 Similarly, there is a :attr:`variables` attribute on each :class:`Table` object
 with just the variables for that table::
