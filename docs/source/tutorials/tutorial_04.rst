@@ -7,7 +7,7 @@ what kind of values you can specify when making selections
 with different types of FastStats variables.
 
 Selector, Array & Flag Array
-===========================
+============================
 
 As mentioned in the previous part, FastStats **Selector** variables
 require selector codes given as strings (Python ``str`` type).
