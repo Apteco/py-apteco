@@ -52,8 +52,12 @@ Changed
 Removed
 -------
 
+* Removed ``CombinedCategoriesVariable`` class,
+  as its implementation didn't cover all types of Combined Categories variables.
+  Variables of this type have reverted to the more general ``SelectorVariable``.
+  Planned to re-implement Combined Categories variable support in future.
 * Removed ``isin()`` method on variables, as it's not applicable to all variable types.
-  Plan to re-implement for relevant variables in future.
+  Planned to re-implement for relevant variables in future.
 
 Fixed
 -----

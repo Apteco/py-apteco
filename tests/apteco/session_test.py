@@ -15,7 +15,6 @@ from apteco.exceptions import (
 from apteco.session import (
     NOT_ASSIGNED,
     ArrayVariable,
-    CombinedCategoriesVariable,
     DateTimeVariable,
     DateVariable,
     FlagArrayVariable,
@@ -1713,7 +1712,7 @@ class TestInitializeVariablesAlgorithm:
         )
         assert (
             InitializeVariablesAlgorithm._choose_variable(raw_combined_cat_var)
-            == CombinedCategoriesVariable
+            == SelectorVariable
         )
 
     def test_choose_variable_with_numeric_var(self, mocker):

@@ -123,12 +123,6 @@ Selector variable
 
 *(no extra properties beyond the common ones)*
 
-Combined categories variable
-----------------------------
-
-    * :attr:`combined_from` (:class:`str`): name of variable which this variable
-      was combined from
-
 Numeric variable
 ----------------
 

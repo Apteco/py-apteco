@@ -858,17 +858,15 @@ class InitializeVariablesAlgorithm:
         """Get class to create given variable according to its type."""
         variable_type_lookup = {
             ("Selector", "Categorical", "SingleValue", False): SelectorVariable,
-            (
-                "Selector",
-                "Categorical",
-                "SingleValue",
-                True,
-            ): CombinedCategoriesVariable,
+            ("Selector", "Categorical", "SingleValue", True,): SelectorVariable,  # should be Combined Categories type
             ("Numeric", None, None, False): NumericVariable,
             ("Text", None, None, False): TextVariable,
             ("Selector", "Categorical", "OrArray", False): ArrayVariable,
+            ("Selector", "Categorical", "OrArray", True): ArrayVariable,  # should be Combined Categories type
             ("Selector", "Categorical", "OrBitArray", False): FlagArrayVariable,
+            ("Selector", "Categorical", "OrBitArray", True): FlagArrayVariable,  # should be Combined Categories type
             ("Selector", "Date", "SingleValue", False): DateVariable,
+            ("Selector", "Date", "OrBitArray", False): FlagArrayVariable,  # some kind of VV
             ("Selector", "DateTime", "SingleValue", False): DateTimeVariable,
             ("Reference", None, None, False): ReferenceVariable,
         }
