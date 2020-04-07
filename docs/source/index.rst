@@ -15,11 +15,3 @@ Welcome to py-apteco's documentation!
    tutorial.rst
    reference.rst
    changelog.rst
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

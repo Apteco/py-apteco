@@ -13,7 +13,7 @@ There are three things you need in total:
 You may skip any steps where you already meet the requirements.
 
 .. note::
-    This guide is written with Windows users in mind,
+    This guide was written with Windows users in mind,
     but the content should apply similarly to other operating systems.
 
 Apteco API
@@ -79,7 +79,7 @@ you can download it from the official Python website:
 https://www.python.org/downloads/
 
 If in doubt, choose the newest release of the latest version
-(at the time of writing, this is Python 3.8.0),
+(at the time of writing, this is Python 3.8.2),
 though be aware that this won't necessarily be at the top of the download list.
 Once you're on the page for that release,
 scroll to the bottom and choose the appropriate download under **Files**.
@@ -122,7 +122,7 @@ It will also fetch and install its dependencies
 
 .. note::
     Be careful with names:
-    **py-apteco** is the name of this tool as a whole,
+    **py-apteco** is the name given to this tool as a whole,
     but the name you use to install and use the actual package is just ``apteco``.
 
 Checking your installation
