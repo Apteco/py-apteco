@@ -21,6 +21,7 @@ python = "^3.6.1"  # pandas 1.0 requires >=3.6.1, see: https://github.com/pandas
 apteco-api = "^0.1.8"
 pysimplegui = "^4.0"
 pandas = "^1.0"
+numpy = "^1.18"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
