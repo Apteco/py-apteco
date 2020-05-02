@@ -17,9 +17,10 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.6.1"  # pandas 1.0 requires >=3.6.1, see: https://github.com/pandas-dev/pandas/pull/29212#issuecomment-551370118
 apteco-api = "^0.1.8"
 pysimplegui = "^4.0"
+pandas = "^1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
