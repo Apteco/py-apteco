@@ -15,10 +15,9 @@ class Cube:
         return pd.DataFrame(
             self._data.ravel(),
             index=pd.MultiIndex.from_product(
-                self._headers["descs"],
-                names=[d.description for d in self.dimensions],
+                self._headers["descs"], names=[d.description for d in self.dimensions]
             ),
-            columns=[f"{self.table.plural_display_name.title()}"]
+            columns=[f"{self.table.plural_display_name.title()}"],
         )
 
     def _create_dimensions(self):
@@ -29,11 +28,12 @@ class Cube:
 
     def _create_measures(self):
         if self.measures is None:
-            return [aa.Measure(
-                id="0",
-                resolve_table_name=self.table.name,
-                function="Count",
-                variable_name=None,
+            return [
+                aa.Measure(
+                    id="0",
+                    resolve_table_name=self.table.name,
+                    function="Count",
+                    variable_name=None,
                 )
             ]
         return [
@@ -62,15 +62,19 @@ class Cube:
 
     def _get_data(self):
         cube_result = self._get_cube()
-        raw_data = [int(x) for row in cube_result.measure_results[0].rows for x in row.split("\t")]
+        raw_data = [
+            int(x)
+            for row in cube_result.measure_results[0].rows
+            for x in row.split("\t")
+        ]
         headers = {
             "codes": [
                 dimension.header_codes.split("\t")
                 for dimension in cube_result.dimension_results
             ],
             "descs": [
-                    dimension.header_descriptions.split("\t")
-                    for dimension in cube_result.dimension_results
+                dimension.header_descriptions.split("\t")
+                for dimension in cube_result.dimension_results
             ],
         }
         sizes = tuple(len(h) for h in headers["codes"])
