@@ -3,16 +3,42 @@ import pandas as pd
 
 
 class DataGrid:
-    def __init__(self, columns, table, *, session=None):
+    def __init__(self, columns, table=None, *, session=None):
         self.columns = columns
         self.table = table
         self.session = session
+        self._check_inputs()
         self._data = self._get_data()
 
     def to_df(self, index=None):
         return pd.DataFrame(
             self._data, columns=[v.description for v in self.columns]
         ).set_index(index.description)
+
+    def _check_inputs(self):
+        if self.session is None:
+            raise ValueError("You must provide a valid session (none was given).")
+        if not self.columns:
+            raise ValueError(
+                "You must specify at least one variable"
+                " to use as a column on the data grid (none was given)."
+            )
+        if self.table is None:
+            raise ValueError(
+                "You must specify the resolve table of the cube (no table was given)."
+            )
+        self._check_columns()
+
+    def _check_columns(self):
+        for column in self.columns:
+            if column.table != self.table:
+                raise ValueError(
+                    f"The resolve table of the data grid is '{self.table.name}',"
+                    f" but the variable '{column.name}' belongs to the"
+                    f" '{column.table.name}' table."
+                    f"\nCurrently, only variables from the same table as the data grid"
+                    f" are supported as data grid columns."
+                )
 
     def _create_columns(self):
         return [

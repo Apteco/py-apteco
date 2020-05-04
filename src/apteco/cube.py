@@ -2,6 +2,8 @@ import apteco_api as aa
 import numpy as np
 import pandas as pd
 
+from apteco.session import Table
+
 
 class Cube:
     def __init__(self, dimensions, measures=None, table=None, *, session=None):
@@ -9,6 +11,7 @@ class Cube:
         self.measures = measures
         self.table = table
         self.session = session
+        self._check_inputs()
         self._data, self._headers, self._sizes = self._get_data()
 
     def to_df(self):
@@ -19,6 +22,49 @@ class Cube:
             ),
             columns=[f"{self.table.plural_display_name.title()}"],
         )
+
+    def _check_inputs(self):
+        if self.session is None:
+            raise ValueError("You must provide a valid session (none was given).")
+        if not self.dimensions:
+            raise ValueError(
+                "You must specify at least one variable"
+                " to use as a dimension on the cube (none was given)."
+            )
+        if self.measures is not None:
+            if self.table is None and isinstance(self.measures, Table):
+                self.table = self.measures
+                self.measures = None
+            else:
+                raise ValueError(
+                    "Measures are not currently supported for cubes:"
+                    " `measures` argument should either be `None`,"
+                    " or used to specify the resolve table of the cube"
+                    " using a `Table` object"
+                    " (in the latter case the `table` argument should be `None`)."
+                )
+        if self.table is None:
+            raise ValueError(
+                "You must specify the resolve table of the cube (no table was given)."
+            )
+        self._check_dimensions()
+
+    def _check_dimensions(self):
+        for dimension in self.dimensions:
+            if dimension.type != "Selector":
+                raise ValueError(
+                    f"The variable '{dimension.name}' has type '{dimension.type}'."
+                    f"\nOnly Selector variables (excluding sub-types)"
+                    f" are currently supported as cube dimensions."
+                )
+            if dimension.table != self.table:
+                raise ValueError(
+                    f"The counting table of the cube is '{self.table.name}',"
+                    f" but the variable '{dimension.name}' belongs to the"
+                    f" '{dimension.table.name}' table."
+                    f"\nCurrently, only variables from the same table as the cube"
+                    f" are supported as cube dimensions."
+                )
 
     def _create_dimensions(self):
         return [
