@@ -6,9 +6,10 @@ from apteco.session import Table
 
 
 class Cube:
-    def __init__(self, dimensions, measures=None, table=None, *, session=None):
+    def __init__(self, dimensions, measures=None, selection=None, table=None, *, session=None):
         self.dimensions = dimensions
         self.measures = measures
+        self.selection = selection
         self.table = table
         self.session = session
         self._check_inputs()
@@ -44,9 +45,13 @@ class Cube:
                     " (in the latter case the `table` argument should be `None`)."
                 )
         if self.table is None:
-            raise ValueError(
-                "You must specify the resolve table of the cube (no table was given)."
-            )
+            if self.selection is not None:
+                self.table = self.selection.table
+            else:
+                raise ValueError(
+                    "You must specify the resolve table of the cube"
+                    " (no table or selection was given)."
+                )
         self._check_dimensions()
 
     def _check_dimensions(self):
@@ -62,8 +67,8 @@ class Cube:
                     f"The counting table of the cube is '{self.table.name}',"
                     f" but the variable '{dimension.name}' belongs to the"
                     f" '{dimension.table.name}' table."
-                    f"\nCurrently, only variables from the same table as the cube"
-                    f" are supported as cube dimensions."
+                    f"\nOnly variables from the same table as the cube"
+                    f" are currently supported as cube dimensions."
                 )
 
     def _create_dimensions(self):
@@ -73,28 +78,25 @@ class Cube:
         ]
 
     def _create_measures(self):
-        if self.measures is None:
-            return [
-                aa.Measure(
-                    id="0",
-                    resolve_table_name=self.table.name,
-                    function="Count",
-                    variable_name=None,
-                )
-            ]
         return [
             aa.Measure(
-                id=str(i),
+                id="0",
                 resolve_table_name=self.table.name,
                 function="Count",
                 variable_name=None,
             )
-            for i, v in enumerate(self.measures)
         ]
 
     def _get_cube(self):
         cube = aa.Cube(
-            base_query=aa.Query(selection=aa.Selection(table_name=self.table.name)),
+            base_query=aa.Query(
+                selection=aa.Selection(
+                    table_name=self.selection.table.name,
+                    rule=aa.Rule(clause=self.selection._to_model()),
+                ) if self.selection is not None else aa.Selection(
+                    table_name=self.table.name,
+                )
+            ),
             resolve_table_name=self.table.name,
             storage="Full",
             dimensions=self._create_dimensions(),
