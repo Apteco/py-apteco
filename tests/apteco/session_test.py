@@ -368,7 +368,7 @@ class TestSession:
 
     def test_deserialize(self, patch_json_loads, patch_session_from_dict):
         result = Session.deserialize("cereal eyes-d session")
-        patch_json_loads.called_once_with("cereal eyes-d session")
+        patch_json_loads.assert_called_once_with("cereal eyes-d session")
         patch_session_from_dict.assert_called_once_with("Loads of Jason")
         assert result == "Court of Session"
 

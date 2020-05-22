@@ -14,9 +14,9 @@ def fake_table_customers():
 
 
 @pytest.fixture()
-def fake_table_baskets():
+def fake_table_purchases():
     table = Mock()
-    table.configure_mock(name="Baskets")
+    table.configure_mock(name="Purchases")
     return table
 
 
@@ -54,12 +54,12 @@ def fake_var_customer_surname(fake_table_customers):
 
 
 @pytest.fixture()
-def fake_var_basket_id(fake_table_baskets):
+def fake_var_purchase_id(fake_table_purchases):
     var = Mock()
     var.configure_mock(
-        name="baID",
-        description="Basket ID",
-        table=fake_table_baskets,
+        name="puID",
+        description="Purchase ID",
+        table=fake_table_purchases,
     )
     return var
 
@@ -74,7 +74,7 @@ def fake_sel_last_week_customers(fake_table_customers):
 
 @pytest.fixture()
 def fake_session():
-    return Mock(data_view="acme_inc", system="orders", api_client="my_api_client")
+    return Mock(data_view="acme_inc", system="sales", api_client="my_api_client")
 
 
 @pytest.fixture()
@@ -95,7 +95,7 @@ def fake_datagrid(
     dg.selection = fake_sel_last_week_customers
     dg.table = fake_table_customers
     dg.session = fake_session
-    dg._data = "my_data"
+    dg._data = "my_datagrid_data"
     return dg
 
 
@@ -103,7 +103,7 @@ class TestDataGrid:
     @patch("apteco.datagrid.DataGrid._get_data")
     @patch("apteco.datagrid.DataGrid._check_inputs")
     def test_init(self, patch__check_inputs, patch__get_data):
-        patch__get_data.return_value = "my_data"
+        patch__get_data.return_value = "my_datagrid_data"
         datagrid_example = DataGrid(
             ["variables", "for", "my", "columns"],
             "my_selection",
@@ -114,7 +114,7 @@ class TestDataGrid:
         assert datagrid_example.selection == "my_selection"
         assert datagrid_example.table == "my_table"
         assert datagrid_example.session == "my_session"
-        assert datagrid_example._data == "my_data"
+        assert datagrid_example._data == "my_datagrid_data"
         patch__check_inputs.assert_called_once_with()
         patch__check_inputs.assert_called_once_with()
 
@@ -124,11 +124,11 @@ class TestDataGrid:
         patch_pd_dataframe,
         fake_datagrid,
     ):
-        patch_pd_dataframe.return_value = "my_df"
+        patch_pd_dataframe.return_value = "my_datagrid_df"
         df = fake_datagrid.to_df()
-        assert df == "my_df"
+        assert df == "my_datagrid_df"
         patch_pd_dataframe.assert_called_once_with(
-            "my_data",
+            "my_datagrid_data",
             columns=["Customer ID", "Customer First Name", "Customer Surname"]
         )
 
@@ -184,14 +184,14 @@ class TestDataGrid:
     def test__check_columns(self, fake_datagrid):
         fake_datagrid._check_columns()
 
-    def test__check_columns_bad_columns(self, fake_datagrid, fake_var_basket_id):
-        fake_datagrid.columns.append(fake_var_basket_id)
+    def test__check_columns_bad_columns(self, fake_datagrid, fake_var_purchase_id):
+        fake_datagrid.columns.append(fake_var_purchase_id)
         with pytest.raises(ValueError) as exc_info:
             fake_datagrid._check_columns()
         assert exc_info.value.args[0] == (
             "The resolve table of the data grid is 'Customers',"
-            " but the variable 'baID' belongs to the"
-            " 'Baskets' table."
+            " but the variable 'puID' belongs to the"
+            " 'Purchases' table."
             "\nCurrently, only variables from the same table as the data grid"
             " are supported as data grid columns."
         )
@@ -199,12 +199,12 @@ class TestDataGrid:
     @patch("apteco_api.Column")
     def test__create_columns(self, patch_aa_column, fake_datagrid):
         patch_aa_column.side_effect = ["First column", "Second column", "Third column"]
-        columns = fake_datagrid._create_columns()
         column_calls = [
             call(id="0", variable_name="cuID", column_header="Customer ID"),
             call(id="1", variable_name="cuFName", column_header="Customer First Name"),
             call(id="2", variable_name="cuSName", column_header="Customer Surname"),
         ]
+        columns = fake_datagrid._create_columns()
         assert columns == ["First column", "Second column", "Third column"]
         patch_aa_column.assert_has_calls(column_calls)
 
@@ -232,7 +232,7 @@ class TestDataGrid:
         assert export_result == "your_export_result"
         patch_aa_exports_api.assert_called_once_with("my_api_client")
         fake_exports_perform_export_sync.assert_called_once_with(
-            "acme_inc", "orders", export=expected_export
+            "acme_inc", "sales", export=expected_export
         )
 
     @patch("apteco.datagrid.DataGrid._get_export")
