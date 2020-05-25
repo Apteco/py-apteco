@@ -208,25 +208,15 @@ class TestCube:
         patch__check_dimensions.assert_not_called()
 
     @patch("apteco.cube.Cube._check_dimensions")
-    def test__check_inputs_measures_is_table(self, patch__check_dimensions, fake_cube, fake_table_purchases):
-        fake_cube.measures = fake_table_purchases
-        fake_cube.table = None
-        fake_cube._check_inputs()
-        assert fake_cube.table == fake_table_purchases
-        assert fake_cube.measures is None
-        patch__check_dimensions.assert_called_once_with()
-
-    @patch("apteco.cube.Cube._check_dimensions")
-    def test__check_inputs_measues_is_bad(self, patch__check_dimensions, fake_cube, fake_var_purchase_department):
+    def test__check_inputs_measures_is_bad(self, patch__check_dimensions, fake_cube, fake_var_purchase_department):
         fake_cube.measures = [fake_var_purchase_department]
         with pytest.raises(ValueError) as exc_info:
             fake_cube._check_inputs()
         assert exc_info.value.args[0] == (
-            "Measures are not currently supported for cubes:"
-            " `measures` argument should either be `None`,"
-            " or used to specify the resolve table of the cube"
-            " using a `Table` object"
-            " (in the latter case the `table` argument should be `None`)."
+            "Only the default count measure is currently supported"
+            " for cubes, and this is set automatically."
+            " `measures` argument should be `None` or omitted,"
+            " and is only included now for forwards-compatibility."
         )
         patch__check_dimensions.assert_not_called()
 

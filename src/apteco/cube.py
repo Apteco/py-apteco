@@ -33,17 +33,12 @@ class Cube:
                 " to use as a dimension on the cube (none was given)."
             )
         if self.measures is not None:
-            if self.table is None and isinstance(self.measures, Table):
-                self.table = self.measures
-                self.measures = None
-            else:
-                raise ValueError(
-                    "Measures are not currently supported for cubes:"
-                    " `measures` argument should either be `None`,"
-                    " or used to specify the resolve table of the cube"
-                    " using a `Table` object"
-                    " (in the latter case the `table` argument should be `None`)."
-                )
+            raise ValueError(
+                "Only the default count measure is currently supported"
+                " for cubes, and this is set automatically."
+                " `measures` argument should be `None` or omitted,"
+                " and is only included now for forwards-compatibility."
+            )
         if self.table is None:
             if self.selection is not None:
                 self.table = self.selection.table
