@@ -192,8 +192,8 @@ class TestDataGrid:
             "The resolve table of the data grid is 'Customers',"
             " but the variable 'puID' belongs to the"
             " 'Purchases' table."
-            "\nCurrently, only variables from the same table as the data grid"
-            " are supported as data grid columns."
+            "\nOnly variables from the same table as the data grid"
+            " are currently supported as data grid columns."
         )
 
     @patch("apteco_api.Column")

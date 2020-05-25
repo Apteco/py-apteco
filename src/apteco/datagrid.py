@@ -41,8 +41,8 @@ class DataGrid:
                     f"The resolve table of the data grid is '{self.table.name}',"
                     f" but the variable '{column.name}' belongs to the"
                     f" '{column.table.name}' table."
-                    f"\nCurrently, only variables from the same table as the data grid"
-                    f" are supported as data grid columns."
+                    f"\nOnly variables from the same table as the data grid"
+                    f" are currently supported as data grid columns."
                 )
 
     def _create_columns(self):
@@ -62,7 +62,7 @@ class DataGrid:
                 )
             ),
             resolve_table_name=self.table.name,
-            maximum_number_of_rows_to_browse=100,
+            maximum_number_of_rows_to_browse=1000,
             return_browse_rows=True,
             columns=self._create_columns(),
         )
