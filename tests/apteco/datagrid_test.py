@@ -54,6 +54,18 @@ def fake_var_customer_surname(fake_table_customers):
 
 
 @pytest.fixture()
+def fake_var_customer_contact_pref(fake_table_customers):
+    var = Mock()
+    var.configure_mock(
+        name="cuContac",
+        description="Customer Contact Preferences",
+        type="FlagArray",
+        table=fake_table_customers,
+    )
+    return var
+
+
+@pytest.fixture()
 def fake_var_purchase_id(fake_table_purchases):
     var = Mock()
     var.configure_mock(
@@ -184,7 +196,7 @@ class TestDataGrid:
     def test__check_columns(self, fake_datagrid):
         fake_datagrid._check_columns()
 
-    def test__check_columns_bad_columns(self, fake_datagrid, fake_var_purchase_id):
+    def test__check_columns_bad_table(self, fake_datagrid, fake_var_purchase_id):
         fake_datagrid.columns.append(fake_var_purchase_id)
         with pytest.raises(ValueError) as exc_info:
             fake_datagrid._check_columns()
@@ -194,6 +206,20 @@ class TestDataGrid:
             " 'Purchases' table."
             "\nOnly variables from the same table as the data grid"
             " are currently supported as data grid columns."
+        )
+
+    def test__check_columns_bad_variable(
+        self,
+        fake_datagrid,
+        fake_var_customer_contact_pref,
+    ):
+        fake_datagrid.columns.append(fake_var_customer_contact_pref)
+        with pytest.raises(ValueError) as exc_info:
+            fake_datagrid._check_columns()
+        assert exc_info.value.args[0] == (
+            "The variable 'cuContac' has type 'FlagArray'."
+            "\nArray and Flag Array variables"
+            " are not currently supported as data grid columns."
         )
 
     @patch("apteco_api.Column")

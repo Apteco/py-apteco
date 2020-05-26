@@ -44,6 +44,12 @@ class DataGrid:
                     f"\nOnly variables from the same table as the data grid"
                     f" are currently supported as data grid columns."
                 )
+            if column.type in ("Array", "FlagArray"):
+                raise ValueError(
+                    f"The variable '{column.name}' has type '{column.type}'."
+                    f"\nArray and Flag Array variables"
+                    f" are not currently supported as data grid columns."
+                )
 
     def _create_columns(self):
         return [
