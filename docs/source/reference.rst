@@ -9,6 +9,7 @@ Reference topics:
 
     reference/topics/session.rst
     reference/topics/variables.rst
+    reference/topics/datagrids.rst
 
 Other reference:
 
