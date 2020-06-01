@@ -10,6 +10,7 @@ Reference topics:
     reference/topics/session.rst
     reference/topics/variables.rst
     reference/topics/datagrids.rst
+    reference/topics/cubes.rst
 
 Other reference:
 

@@ -112,11 +112,17 @@ class Cube:
         ]
         headers = {
             "codes": [
-                dimension.header_codes.split("\t")
+                [
+                    c if c != "iTOTAL" else "TOTAL"
+                    for c in dimension.header_codes.split("\t")
+                ]
                 for dimension in cube_result.dimension_results
             ],
             "descs": [
-                dimension.header_descriptions.split("\t")
+                [
+                    d if d != "iTOTAL" else "TOTAL"
+                    for d in dimension.header_descriptions.split("\t")
+                ]
                 for dimension in cube_result.dimension_results
             ],
         }
