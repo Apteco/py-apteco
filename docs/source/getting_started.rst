@@ -30,7 +30,7 @@ you would use to log in to Apteco Orbit™:
 
 .. code-block:: python
 
-   from apteco.session import login
+   from apteco import login
 
    my_session = login("https://my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe")
 
@@ -46,7 +46,7 @@ as a fifth argument:
 
 .. code-block:: python
 
-   from apteco.session import login_with_password
+   from apteco import login_with_password
 
    # password is in plain sight in the code!
    my_session = login_with_password(

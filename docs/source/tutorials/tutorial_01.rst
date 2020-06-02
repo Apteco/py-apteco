@@ -26,7 +26,7 @@ with the following credentials as arguments:
 
 .. code-block:: python
 
-   >>> from apteco.session import login
+   >>> from apteco import login
    >>> my_session = login("https://my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe")
 
 If you're working in the terminal, you'll be asked to enter your password,
@@ -43,7 +43,7 @@ as a fifth argument:
 
 .. code-block:: python
 
-   >>> from apteco.session import login_with_password
+   >>> from apteco import login_with_password
    >>> my_session = login_with_password(
    ...     "https://my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe", "password"
    ... )

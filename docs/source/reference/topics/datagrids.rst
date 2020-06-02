@@ -37,7 +37,7 @@ Basic use
 
 Importing :class:`DataGrid` and setting up other variables::
 
-    >>> from apteco.datagrid import DataGrid
+    >>> from apteco import DataGrid
     >>> bookings = my_session.tables["Bookings"]
     >>> urn = bookings["boURN"]
     >>> dest = bookings["boDest"]

@@ -29,13 +29,13 @@ Basic use
 
 Logging in by entering your password in the terminal (it won't be echoed)::
 
-    >>> from apteco.session import login
+    >>> from apteco import login
     >>> my_session = login("https://orbit.my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe")
     Enter your password:
 
 Logging in by giving your password in the function call::
 
-    >>> from apteco.session import login_with_password
+    >>> from apteco import login_with_password
     >>> my_session = login_with_password(
             "https://orbit.my-site.com/OrbitAPI",
             "my_data_view",
@@ -52,7 +52,7 @@ Accessing tables and variables::
 Serializing and deserializing the session::
 
     >>> s = my_session.serialize()
-    >>> from apteco.session import Session
+    >>> from apteco import Session
     >>> my_restoed_session = Session.deserialize(s)
 
 .. Ending a session::

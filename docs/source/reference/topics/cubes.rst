@@ -40,7 +40,7 @@ Basic use
 
 Importing :class:`Cube` and setting up other variables::
 
-    >>> from apteco.cube import Cube
+    >>> from apteco import Cube
     >>> bookings = my_session.tables["Bookings"]
     >>> dest = bookings["boDest"]
     >>> product = bookings["boProd"]

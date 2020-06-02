@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import toml
 
-from apteco.session import login_with_password
+from apteco import login_with_password
 
 credentials = toml.load(Path(__file__).parent / "credentials.toml")["local"]
 
