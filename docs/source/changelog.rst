@@ -2,6 +2,34 @@
 Change Log
 **********
 
+Version 0.5.0
+=============
+
+*2020-06-02*
+
+Added
+-----
+
+* Added ``DataGrid`` class for creating Data Grids (export of FastStats data).
+* Added ``Cube`` class for creating Cubes (summary of FastStats data).
+* Added ``to_df()`` method to ``DataGrid`` and ``Cube`` classes
+  for converting these objects to a Pandas ``DataFrame``.
+
+Changed
+-------
+
+* You can now import ``login``, ``login_with_password`` and ``Session``,
+  along with the new ``DataGrid`` and ``Cube``, directly from the ``apteco`` package.
+
+Removed
+-------
+
+* Removed ``select()`` method from ``Table`` and ``Clause`` classes
+  and ``select()`` function from query module,
+  as this was not publicly documented and the direct ``count()`` method is preferred
+  over ``select().count``.
+  It was wanted to reserve the ``select`` name for other potential future functionality.
+
 Version 0.4.0
 =============
 
