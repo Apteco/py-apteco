@@ -251,3 +251,6 @@ Be especially careful where compound clauses involve table changes:
     8687
 
 For a more thorough introduction, check out the :ref:`tutorial`.
+
+You can find the `complete documentation <https://help.apteco.com/python/index.html>`_
+on the Apteco website.
