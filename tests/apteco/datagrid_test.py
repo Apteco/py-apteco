@@ -106,6 +106,7 @@ def fake_datagrid(
     ]
     dg.selection = fake_sel_last_week_customers
     dg.table = fake_table_customers
+    dg.max_rows = 1234
     dg.session = fake_session
     dg._data = "my_datagrid_data"
     return dg
@@ -157,6 +158,56 @@ class TestDataGrid:
         assert exc_info.value.args[0] == (
             "You must provide a valid session (none was given)."
         )
+        patch__check_columns.assert_not_called()
+
+    @patch("apteco.datagrid.DataGrid._check_columns")
+    def test__check_inputs_max_rows_is_float(self, patch__check_columns, fake_datagrid):
+        fake_datagrid.max_rows = 987.6
+        fake_datagrid._check_inputs()
+        assert fake_datagrid.max_rows == 987
+        patch__check_columns.assert_called_once_with()
+
+    @patch("apteco.datagrid.DataGrid._check_columns")
+    def test__check_inputs_max_rows_is_int_as_str(
+        self,
+        patch__check_columns,
+        fake_datagrid
+    ):
+        fake_datagrid.max_rows = "456"
+        fake_datagrid._check_inputs()
+        assert fake_datagrid.max_rows == 456
+        patch__check_columns.assert_called_once_with()
+
+    @patch("apteco.datagrid.DataGrid._check_columns")
+    def test__check_inputs_max_rows_is_negative(
+        self,
+        patch__check_columns,
+        fake_datagrid
+    ):
+        fake_datagrid.max_rows = -2468
+        with pytest.raises(ValueError) as exc_info:
+            fake_datagrid._check_inputs()
+        assert exc_info.value.args[0] == "max_rows must be a number greater than 0"
+        patch__check_columns.assert_not_called()
+
+    @patch("apteco.datagrid.DataGrid._check_columns")
+    def test__check_inputs_max_rows_is_not_number(
+        self,
+        patch__check_columns,
+        fake_datagrid
+    ):
+        fake_datagrid.max_rows = "all"
+        with pytest.raises(ValueError) as exc_info:
+            fake_datagrid._check_inputs()
+        assert exc_info.value.args[0] == "max_rows must be a number greater than 0"
+        patch__check_columns.assert_not_called()
+
+    @patch("apteco.datagrid.DataGrid._check_columns")
+    def test__check_inputs_max_rows_is_none(self, patch__check_columns, fake_datagrid):
+        fake_datagrid.max_rows = None
+        with pytest.raises(ValueError) as exc_info:
+            fake_datagrid._check_inputs()
+        assert exc_info.value.args[0] == "max_rows must be a number greater than 0"
         patch__check_columns.assert_not_called()
 
     @patch("apteco.datagrid.DataGrid._check_columns")
@@ -250,7 +301,7 @@ class TestDataGrid:
                 )
             ),
             resolve_table_name="Customers",
-            maximum_number_of_rows_to_browse=1000,
+            maximum_number_of_rows_to_browse=1234,
             return_browse_rows=True,
             columns=["a", "list", "of", "columns"]
         )

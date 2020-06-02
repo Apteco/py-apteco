@@ -18,6 +18,9 @@ The data to export is specified by:
     * a base **selection** *(optional)* – this filters records in the table
       to only return ones that match the given criteria
 
+There are also other parameters that determine things such as
+how many rows of data to return.
+
 .. note::
 
     The data grid functionality is still under active development,
@@ -55,6 +58,18 @@ Converting to a Pandas :class:`DataFrame`::
     2    10011532       Germany  29-08-2021        181.68
     3    10011533       Germany  21-08-2021        300.67
     4    10015830  Unclassified  02-05-2016        228.70
+
+Specifying the number of rows to return::
+
+    >>> dg = DataGrid(
+            [urn, dest, trav, cost],
+            table=bookings,
+            max_rows=100,
+            session=my_session,
+        )
+    >>> df = dg.to_df()
+    >>> len(df)
+    100
 
 Using a base selection to filter the records::
 
@@ -101,6 +116,7 @@ API reference
     :param list[Variable] columns: variables to use as columns in the data grid
     :param Clause selection: base selection to apply to the data grid
     :param Table table: resolve table of the data grid
+    :param max_rows int: maximum number of records to return *(default is 1000)*
     :param Session session: current Apteco API session
 
     At least one of :attr:`selection` or :attr:`table` must be given:

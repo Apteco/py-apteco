@@ -3,10 +3,19 @@ import pandas as pd
 
 
 class DataGrid:
-    def __init__(self, columns, selection=None, table=None, *, session=None):
+    def __init__(
+        self,
+        columns,
+        selection=None,
+        table=None,
+        max_rows=1000,
+        *,
+        session=None,
+    ):
         self.columns = columns
         self.selection = selection
         self.table = table
+        self.max_rows = max_rows
         self.session = session
         self._check_inputs()
         self._data = self._get_data()
@@ -19,6 +28,11 @@ class DataGrid:
     def _check_inputs(self):
         if self.session is None:
             raise ValueError("You must provide a valid session (none was given).")
+        try:
+            self.max_rows = int(self.max_rows)
+            assert self.max_rows > 0
+        except (ValueError, TypeError, AssertionError) as exc:
+            raise ValueError("max_rows must be a number greater than 0") from exc
         if not self.columns:
             raise ValueError(
                 "You must specify at least one variable"
@@ -68,7 +82,7 @@ class DataGrid:
                 )
             ),
             resolve_table_name=self.table.name,
-            maximum_number_of_rows_to_browse=1000,
+            maximum_number_of_rows_to_browse=self.max_rows,
             return_browse_rows=True,
             columns=self._create_columns(),
         )
