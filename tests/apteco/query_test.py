@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import apteco_api as aa
 import pytest
@@ -18,7 +18,6 @@ from apteco.query import (
     SelectorClause,
     SubSelectionClause,
     TableClause,
-    TableMixin,
     TextClause,
     normalize_date_input,
     normalize_date_value,

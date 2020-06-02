@@ -2,8 +2,6 @@ import apteco_api as aa
 import numpy as np
 import pandas as pd
 
-from apteco.session import Table
-
 
 class Cube:
     def __init__(self, dimensions, measures=None, selection=None, table=None, *, session=None):
