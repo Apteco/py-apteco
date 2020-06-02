@@ -31,21 +31,6 @@ from apteco.query import (
 )
 
 
-class TestTableMixin:
-
-    @patch("apteco.query.Selection")
-    def test_select(self, patched_selection):
-        fake_table = Mock()
-        fake_table.configure_mock(name="Bookings", session="MySession")
-        patched_selection.return_value = "You selected this whole table."
-        expected_query_final = aa.Query(
-            selection=aa.Selection(table_name="Bookings", ancestor_counts=True)
-        )
-        example_selection = TableMixin.select(fake_table)
-        assert example_selection == "You selected this whole table."
-        patched_selection.assert_called_once_with(expected_query_final, "MySession")
-
-
 def test_normalize_string_value():
     assert normalize_string_value("MyVarCode", "Error shouldn't be raised") == "MyVarCode"
     assert normalize_string_value("", "Error shouldn't be raised") == ""

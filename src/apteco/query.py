@@ -114,15 +114,12 @@ class APIController:
 
 
 class TableMixin:
-    def select(self):
-        query_final = aa.Query(
-            selection=aa.Selection(table_name=self.name, ancestor_counts=True)
-        )
-        session = self.session
-        return Selection(query_final, session)
 
     def count(self):
-        return self.select().count
+        query_final = aa.Query(
+            selection=aa.Selection(table_name=self.name, ancestor_counts=True))
+        session = self.session
+        return Selection(query_final, session).count
 
 
 class VariableMixin:
@@ -459,21 +456,16 @@ class Clause:
     def table_name(self):
         return self.table.name
 
-    def select(self, table=None):
-        if table is not None:
-            return (self * table).select()
+    def count(self):
         query_final = aa.Query(
             selection=aa.Selection(
                 table_name=self.table_name,
                 ancestor_counts=True,
-                rule=aa.Rule(clause=self._to_model()),
+                rule=aa.Rule(clause=self._to_model())
             )
         )
         session = self.session
-        return Selection(query_final, session)
-
-    def count(self):
-        return self.select().count
+        return Selection(query_final, session).count
 
     def _change_table(self, new_table, simplify=False):
 
@@ -1085,12 +1077,3 @@ class SubSelectionClause(Clause):
             #  the final shape of the base py-apteco Selection object
             sub_selection=self.selection._to_model()
         )
-
-
-def select(clause):
-    query_final = aa.Query(
-        selection=aa.Selection(
-            table_name=clause.table_name, rule=aa.Rule(clause=clause._to_model())
-        )
-    )
-    return Selection(query_final, clause.session)
