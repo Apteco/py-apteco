@@ -5,6 +5,7 @@ description = "A Python package for interacting with Apteco Marketing Suite reso
 authors = ["Apteco Ltd <support@apteco.com>"]
 license = "Apache-2.0"
 readme = "docs/source/getting_started.rst"
+homepage = "https://help.apteco.com/python/index.html"
 repository = "https://github.com/Apteco/py-apteco"
 keywords = ["Apteco", "FastStats", "Orbit", "API", "Marketing"]
 classifiers = [

@@ -86,7 +86,7 @@ You can retrieve a variable using its name:
 
     >>> cost = my_session.variables["boCost"]
 
-Each table also has a :attr:``variables`` dictionary containing just the variables
+Each table also has a :attr:`variables` dictionary containing just the variables
 on that table:
 
 .. code-block:: python
@@ -251,6 +251,3 @@ Be especially careful where compound clauses involve table changes:
     8687
 
 For a more thorough introduction, check out the :ref:`tutorial`.
-
-You can find the `complete documentation <https://help.apteco.com/python/index.html>`_
-on the Apteco website.
