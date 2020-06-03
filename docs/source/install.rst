@@ -136,7 +136,7 @@ Then type the following commands:
 
     >>> import apteco
     >>> print(apteco.__version__)
-    0.4.0
+    0.5.0
 
 If everything is working as expected,
 this should print the version of py-apteco you have installed.
