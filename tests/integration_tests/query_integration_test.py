@@ -17,41 +17,6 @@ from apteco.query import (
 )
 
 
-@pytest.fixture(scope="session")
-def people(holidays):
-    return holidays.tables["People"]
-
-
-@pytest.fixture(scope="session")
-def bookings(holidays):
-    return holidays.tables["Bookings"]
-
-
-@pytest.fixture(scope="session")
-def households(holidays):
-    return holidays.tables["Households"]
-
-
-@pytest.fixture(scope="session")
-def policies(holidays):
-    return holidays.tables["Policies"]
-
-
-@pytest.fixture(scope="session")
-def web_visits(holidays):
-    return holidays.tables["WebVisits"]
-
-
-@pytest.fixture(scope="session")
-def communications(holidays):
-    return holidays.tables["Communications"]
-
-
-@pytest.fixture(scope="session")
-def responses(holidays):
-    return holidays.tables["Responses Attributed"]
-
-
 def test_selector_operators(bookings, people, households):
     sweden = bookings["boDest"] == "29"
     assert sweden.count() == 25_207
