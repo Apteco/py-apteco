@@ -1,4 +1,4 @@
-from unittest.mock import Mock, call, patch
+from unittest.mock import MagicMock, Mock, call, patch
 
 import apteco_api as aa
 import pytest
@@ -26,6 +26,7 @@ def fake_var_customer_id(fake_table_customers):
     var.configure_mock(
         name="cuID",
         description="Customer ID",
+        type="Reference",
         table=fake_table_customers,
     )
     return var
@@ -37,6 +38,7 @@ def fake_var_customer_first_name(fake_table_customers):
     var.configure_mock(
         name="cuFName",
         description="Customer First Name",
+        type="Text",
         table=fake_table_customers,
     )
     return var
@@ -48,6 +50,7 @@ def fake_var_customer_surname(fake_table_customers):
     var.configure_mock(
         name="cuSName",
         description="Customer Surname",
+        type="Text",
         table=fake_table_customers,
     )
     return var
@@ -137,13 +140,44 @@ class TestDataGrid:
         patch_pd_dataframe,
         fake_datagrid,
     ):
-        patch_pd_dataframe.return_value = "my_datagrid_df"
+        fake_getitem = MagicMock(side_effect=["column1", "column2", "column3"])
+        fake_setitem = MagicMock()
+        fake_dataframe = Mock(iloc=MagicMock(
+            __getitem__=fake_getitem,
+            __setitem__=fake_setitem,
+        ))
+        patch_pd_dataframe.return_value = fake_dataframe
+        fake_datagrid._convert_column = Mock(side_effect=[
+            "converted_column1",
+            "converted_column2",
+            "converted_column3",
+        ])
+
         df = fake_datagrid.to_df()
-        assert df == "my_datagrid_df"
+
+        assert df is fake_dataframe
         patch_pd_dataframe.assert_called_once_with(
             "my_datagrid_data",
             columns=["Customer ID", "Customer First Name", "Customer Surname"]
         )
+        convert_column_calls = [
+            call("column1", "Reference"),
+            call("column2", "Text"),
+            call("column3", "Text"),
+        ]
+        getitem_calls = [
+            call((slice(None, None, None), 0)),
+            call((slice(None, None, None), 1)),
+            call((slice(None, None, None), 2)),
+        ]
+        setitem_calls = [
+            call((slice(None, None, None), 0), "converted_column1"),
+            call((slice(None, None, None), 1), "converted_column2"),
+            call((slice(None, None, None), 2), "converted_column3"),
+        ]
+        fake_datagrid._convert_column.assert_has_calls(convert_column_calls)
+        fake_getitem.assert_has_calls(getitem_calls)
+        fake_setitem.assert_has_calls(setitem_calls)
 
     @patch("apteco.datagrid.DataGrid._check_columns")
     def test__check_inputs(self, patch__check_columns, fake_datagrid):

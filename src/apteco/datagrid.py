@@ -1,4 +1,5 @@
 import apteco_api as aa
+import numpy as np
 import pandas as pd
 
 
@@ -21,9 +22,31 @@ class DataGrid:
         self._data = self._get_data()
 
     def to_df(self):
-        return pd.DataFrame(
+        df = pd.DataFrame(
             self._data, columns=[v.description for v in self.columns]
         )
+        for i, v in enumerate(self.columns):
+            df.iloc[:, i] = self._convert_column(df.iloc[:, i], v.type)
+        return df
+
+    @staticmethod
+    def _convert_column(data: pd.Series, column_type):
+        if column_type in ("Selector", "Text", "Reference"):
+            return data.astype(str)
+        elif column_type == "Numeric":
+            if "." in data.iloc[0]:
+                return data.astype(float)
+            else:
+                try:
+                    return data.astype(int)
+                except ValueError:
+                    return data.replace("", np.NaN).astype(float)
+        elif column_type == "Date":
+            return pd.to_datetime(data, format="%d-%m-%Y").dt.date
+        elif column_type == "DateTime":
+            return pd.to_datetime(data, format="%d-%m-%Y %H:%M:%S")
+        else:
+            raise ValueError(f"Unrecognised column type: {column_type}")
 
     def _check_inputs(self):
         if self.session is None:

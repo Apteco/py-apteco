@@ -9,6 +9,11 @@ credentials = toml.load(Path(__file__).parent / "credentials.toml")["local"]
 
 
 @pytest.fixture(scope="session", autouse=True)
+def data_dir():
+    return Path(__file__).parent / "data"
+
+
+@pytest.fixture(scope="session", autouse=True)
 def holidays():
     return login_with_password(
         credentials["base_url"],

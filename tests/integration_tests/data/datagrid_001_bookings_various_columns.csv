@@ -1,0 +1,1001 @@
+﻿Booking URN,Destination,Product,Cost,Booking Date
+10001265,France,Package Holiday,1392.35,12/05/2019
+10001266,France,Package Holiday,780.34,06/05/2019
+10011532,Germany,Package Holiday,181.68,08/08/2021
+10011533,Germany,Flight Only,300.67,11/08/2021
+10015830,Unclassified,Accommodation Only,228.7,27/02/2016
+10018937,France,Package Holiday,224.63,09/04/2021
+10018938,France,Package Holiday,186.62,01/04/2016
+10019035,France,Package Holiday,224.65,05/04/2016
+10019036,Germany,Flight Only,324.64,04/04/2021
+10019037,Germany,Package Holiday,298.63,03/04/2021
+10024275,France,Flight Only,316.25,06/06/2020
+10024276,Portugal,Flight Only,564.24,12/06/2021
+10024277,Italy,Package Holiday,316.23,04/06/2019
+10024278,Italy,Flight Only,692.22,27/06/2021
+10033133,United States,Package Holiday,218.67,02/09/2018
+10033134,United States,Package Holiday,326.66,21/02/2021
+10033135,United States,Package Holiday,394.65,17/02/2020
+10033136,Australia,Package Holiday,386.64,14/02/2021
+10033137,United States,Package Holiday,531.63,04/02/2017
+10033138,Australia,Package Holiday,527.62,30/01/2018
+10035621,France,Package Holiday,2213.79,01/04/2017
+10035622,France,Package Holiday,1358.78,22/04/2019
+10036394,United States,Package Holiday,1018.06,01/04/2019
+10036395,Australia,Flight Only,432.05,27/04/2020
+10036396,Greece,Package Holiday,481.04,29/04/2017
+10036397,United States,Package Holiday,1233.03,07/04/2017
+10036398,Australia,Package Holiday,3549.02,05/04/2017
+10039199,France,Package Holiday,861.01,12/07/2020
+10039200,Germany,Package Holiday,551,26/07/2017
+10039201,Germany,Flight Only,1316.99,01/07/2017
+10047907,France,Package Holiday,886.93,14/04/2018
+10047908,France,Package Holiday,374.92,02/04/2018
+10061354,France,Package Holiday,510.46,01/06/2020
+10061355,France,Package Holiday,929.45,08/06/2020
+10061494,Germany,Package Holiday,556.06,08/05/2021
+10061495,Germany,Flight Only,633.05,19/07/2020
+10069210,Greece,Package Holiday,376.9,06/03/2017
+10069211,Portugal,Package Holiday,700.89,18/11/2017
+10069212,Kuwait,Package Holiday,989.88,21/04/2017
+10078261,France,Flight Only,180.39,10/07/2016
+10078262,France,Package Holiday,100.38,21/09/2019
+10078565,United States,Flight Only,1718.35,05/09/2018
+10078566,Australia,Package Holiday,555.34,24/09/2018
+10078567,Greece,Package Holiday,234.33,10/09/2018
+10078568,United States,Package Holiday,246.32,22/09/2018
+10078569,Australia,Flight Only,816.31,30/09/2018
+10090301,United States,Flight Only,542.99,16/03/2017
+10090302,United States,Package Holiday,1788.98,08/04/2018
+10090303,United States,Package Holiday,392.97,22/03/2017
+10090304,United States,Package Holiday,412.96,23/06/2020
+10090305,Australia,Package Holiday,328.95,20/03/2020
+10090306,Italy,Package Holiday,426.94,29/03/2019
+10094720,United States,Package Holiday,701.8,02/06/2017
+10094721,United States,Package Holiday,837.79,19/06/2017
+10094722,Australia,Package Holiday,570.78,26/06/2017
+10100325,France,Flight Only,1246.75,13/02/2019
+10100326,France,Package Holiday,282.74,17/11/2017
+10108690,France,Package Holiday,766.1,31/07/2018
+10108691,Germany,Package Holiday,1276.09,02/07/2018
+10108692,Germany,Flight Only,1063.08,01/07/2018
+10108821,United States,Package Holiday,585.79,17/07/2018
+10108822,United States,Package Holiday,621.78,28/07/2018
+10108823,Australia,Flight Only,1290.77,20/07/2018
+10109070,France,Package Holiday,310.3,22/08/2018
+10109666,United States,Package Holiday,280.34,18/08/2018
+10109667,Australia,Flight Only,280.33,20/08/2018
+10109668,United States,Package Holiday,490.32,14/08/2018
+10109669,United States,Flight Only,490.31,07/08/2018
+10109670,United States,Package Holiday,1264.3,02/08/2018
+10109671,United States,Package Holiday,1264.29,16/08/2018
+10109672,United States,Package Holiday,682.28,03/08/2018
+10109673,United States,Package Holiday,682.27,14/08/2018
+10109674,United States,Flight Only,440.26,20/08/2018
+10109675,United States,Package Holiday,440.25,21/08/2018
+10118219,France,Package Holiday,551.81,11/08/2020
+10123543,Sierra Leone,Package Holiday,1167.57,02/08/2021
+10123544,United States,Package Holiday,562.56,19/08/2021
+10123545,Australia,Package Holiday,960.55,08/08/2021
+10123640,United States,Package Holiday,455.6,22/08/2021
+10123641,Australia,Flight Only,626.59,17/08/2021
+10123776,Germany,Package Holiday,1045.24,23/09/2021
+10123777,Germany,Package Holiday,436.23,14/09/2021
+10123784,France,Package Holiday,331.16,22/09/2021
+10123785,France,Package Holiday,846.15,17/09/2021
+10123830,France,Package Holiday,590.7,24/08/2017
+10123831,Germany,Package Holiday,450.69,08/06/2018
+10123832,Germany,Package Holiday,816.68,15/09/2021
+10133093,France,Package Holiday,1096.07,30/05/2019
+10134631,Germany,Flight Only,452.69,13/09/2018
+10134632,Germany,Flight Only,2003.68,26/09/2018
+10140587,Italy,Package Holiday,164.13,03/07/2016
+10141278,Germany,Flight Only,306.22,19/08/2021
+10141279,Germany,Package Holiday,510.21,05/08/2019
+10147803,Portugal,Package Holiday,252.97,04/04/2017
+10147804,Italy,Flight Only,1872.96,05/04/2017
+10147805,Italy,Flight Only,848.95,11/04/2017
+10149199,France,Package Holiday,354.01,15/04/2021
+10149200,Germany,Package Holiday,231,30/04/2017
+10149201,Germany,Flight Only,390.99,26/04/2017
+10149202,Germany,Package Holiday,300.98,27/04/2017
+10152035,Germany,Package Holiday,498.65,14/08/2021
+10152036,Germany,Package Holiday,439.64,03/08/2021
+10152151,France,Package Holiday,541.49,11/08/2017
+10152288,United States,Package Holiday,368.12,26/08/2017
+10152289,Australia,Flight Only,714.11,20/08/2017
+10152290,Germany,Package Holiday,535.1,21/08/2020
+10152291,Germany,Package Holiday,678.09,06/08/2020
+10154254,Portugal,Package Holiday,676.46,09/10/2020
+10154255,Italy,Package Holiday,777.45,30/10/2019
+10154256,Italy,Package Holiday,1633.44,27/10/2019
+10165468,France,Package Holiday,348.32,05/08/2018
+10165469,United States,Package Holiday,338.31,01/08/2018
+10165470,United States,Package Holiday,338.3,13/08/2018
+10165471,Australia,Flight Only,1392.29,30/08/2018
+10166067,France,Flight Only,388.33,16/08/2018
+10166068,France,Flight Only,388.32,17/08/2018
+10172319,Sweden,Accommodation Only,1201.81,21/04/2020
+10172320,United States,Flight Only,1616.8,31/03/2020
+10173729,France,Package Holiday,581.71,30/06/2020
+10173730,France,Package Holiday,2224.7,24/07/2020
+10177047,France,Package Holiday,686.53,31/03/2021
+10177048,France,Package Holiday,417.52,01/02/2021
+10177049,Italy,Package Holiday,484.51,14/02/2021
+10180417,France,Package Holiday,467.83,14/10/2021
+10180418,Germany,Flight Only,295.82,21/10/2021
+10180419,Germany,Package Holiday,417.81,16/10/2021
+10183645,France,Flight Only,0,06/02/2016
+10183646,France,Package Holiday,210.54,01/02/2021
+10187571,United States,Package Holiday,452.29,24/04/2016
+10187572,Australia,Package Holiday,708.28,03/04/2016
+10187573,Australia,Accommodation Only,284.27,15/04/2016
+10187574,United States,Package Holiday,296.26,02/04/2021
+10187575,United States,Package Holiday,228.25,11/04/2020
+10187576,United States,Package Holiday,382.24,21/04/2018
+10188159,Germany,Package Holiday,230.41,11/05/2019
+10188160,Germany,Flight Only,708.4,26/05/2021
+10188161,Germany,Package Holiday,990.39,15/05/2020
+10190082,France,Package Holiday,461.18,19/04/2019
+10190084,Unclassified,Accommodation Only,114.16,28/04/2016
+10197062,France,Package Holiday,110.38,03/08/2021
+10197143,France,Flight Only,156.57,21/08/2019
+10197144,France,Package Holiday,198.56,17/08/2016
+10197410,United States,Package Holiday,998.9,02/08/2021
+10197411,United States,Package Holiday,130.89,16/08/2020
+10197412,United States,Flight Only,212.88,13/08/2020
+10197413,Australia,Flight Only,119.87,24/08/2019
+10197415,Unclassified,Accommodation Only,299.85,03/08/2019
+10197483,France,Package Holiday,98.17,21/08/2020
+10197484,France,Package Holiday,648.16,26/08/2021
+10201101,France,Package Holiday,584.99,31/01/2017
+10205982,Germany,Flight Only,674.18,31/03/2020
+10205983,Germany,Flight Only,1508.17,09/03/2020
+10206901,France,Package Holiday,836.99,03/06/2021
+10207317,France,Package Holiday,1606.83,11/07/2017
+10207318,United States,Package Holiday,211.82,28/07/2019
+10207319,United States,Package Holiday,530.81,31/07/2021
+10207320,United States,Package Holiday,426.8,25/07/2020
+10207321,Australia,Package Holiday,572.79,14/07/2020
+10208821,France,Package Holiday,702.79,13/08/2020
+10208822,France,Package Holiday,170.78,14/08/2017
+10219239,Greece,Package Holiday,492.61,09/06/2018
+10219240,Australia,Flight Only,561.6,22/06/2018
+10219241,Greece,Package Holiday,434.59,03/06/2018
+10219242,United States,Package Holiday,726.58,04/06/2018
+10219243,United States,Package Holiday,837.57,12/06/2018
+10219244,United States,Package Holiday,202.56,25/06/2018
+10219245,Australia,Package Holiday,1728.55,24/06/2018
+10219809,United States,Package Holiday,318.91,04/06/2018
+10219810,Australia,Flight Only,966.9,04/06/2018
+10219811,France,Package Holiday,805.89,15/06/2018
+10221763,France,Package Holiday,297.37,03/08/2018
+10221764,France,Package Holiday,652.36,03/08/2018
+10225707,France,Package Holiday,540.93,12/07/2019
+10225708,United States,Package Holiday,336.92,14/07/2019
+10225709,United States,Flight Only,948.91,12/07/2019
+10225876,Greece,Flight Only,622.24,22/07/2019
+10225877,United States,Flight Only,2332.23,19/07/2019
+10225878,United States,Flight Only,792.22,01/02/2019
+10225879,United States,Package Holiday,659.21,24/07/2019
+10225880,Australia,Flight Only,743.2,23/08/2019
+10225881,United States,Package Holiday,276.19,18/07/2019
+10225882,United States,Flight Only,371.18,30/07/2019
+10225883,United States,Package Holiday,907.17,23/07/2019
+10225884,Australia,Flight Only,881.16,09/08/2021
+10227741,France,Package Holiday,1216.59,20/02/2020
+10227742,France,Package Holiday,605.58,21/02/2020
+10229001,France,Package Holiday,768.99,10/04/2020
+10229003,Unclassified,Accommodation Only,870.97,23/04/2019
+10231218,France,Flight Only,292.82,16/09/2020
+10231219,Germany,Package Holiday,615.81,22/09/2020
+10231220,Germany,Flight Only,337.8,29/09/2020
+10232871,United States,Package Holiday,737.29,07/03/2019
+10232872,United States,Accommodation Only,653.28,22/08/2020
+10232873,United States,Package Holiday,185.27,01/02/2017
+10232874,Australia,Package Holiday,138.26,01/12/2017
+10234323,France,Package Holiday,228.77,11/02/2021
+10234324,France,Package Holiday,288.76,01/03/2021
+10235686,Greece,Package Holiday,1137.14,29/08/2021
+10235687,Kuwait,Package Holiday,410.13,30/08/2021
+10235688,United States,Package Holiday,603.12,01/08/2021
+10235689,Australia,Package Holiday,676.11,04/08/2021
+10236655,Germany,Package Holiday,692.45,05/10/2021
+10236656,Germany,Flight Only,656.44,25/10/2021
+10238490,France,Flight Only,981.1,19/01/2021
+10238491,France,Package Holiday,587.09,21/01/2016
+10238828,United States,Package Holiday,852.72,15/09/2020
+10238829,Australia,Package Holiday,340.71,09/02/2019
+10238830,Germany,Flight Only,269.7,24/02/2020
+10238831,Germany,Flight Only,156.69,24/02/2019
+10242122,France,Package Holiday,539.78,11/08/2018
+10242123,Germany,Package Holiday,441.77,25/03/2020
+10242124,Germany,Flight Only,1025.76,10/03/2019
+10242251,Germany,Package Holiday,192.49,12/03/2021
+10242252,Germany,Flight Only,68.48,27/03/2019
+10248953,Germany,Package Holiday,452.47,12/07/2020
+10248954,Germany,Package Holiday,380.46,16/07/2020
+10249960,Germany,Package Holiday,426.4,26/09/2020
+10249961,Germany,Package Holiday,332.39,13/09/2021
+10251202,Germany,Package Holiday,253.98,28/06/2016
+10251203,Germany,Package Holiday,420.97,27/06/2016
+10259421,France,Package Holiday,314.79,18/03/2017
+10259422,France,Package Holiday,492.78,26/03/2020
+10262342,France,Flight Only,440.58,15/03/2017
+10262343,Germany,Flight Only,668.57,18/03/2020
+10262344,Germany,Flight Only,334.56,24/03/2019
+10263832,Germany,Flight Only,392.68,08/07/2017
+10263833,Germany,Accommodation Only,1988.67,05/07/2017
+10264553,Greece,Package Holiday,762.47,20/08/2020
+10264554,United States,Package Holiday,3127.46,13/08/2020
+10264555,Australia,Flight Only,2194.45,01/08/2020
+10264556,Germany,Package Holiday,390.44,05/08/2017
+10264557,Germany,Flight Only,356.43,15/08/2017
+10269043,Germany,Package Holiday,576.57,18/11/2017
+10269044,Germany,Flight Only,410.56,05/11/2017
+10273599,Germany,Flight Only,1086.01,30/03/2020
+10273600,Germany,Package Holiday,593,16/03/2021
+10273885,France,Package Holiday,581.15,24/04/2018
+10275629,France,Package Holiday,430.71,08/06/2018
+10276005,Unclassified,Accommodation Only,820.95,16/06/2018
+10278405,Germany,Flight Only,618.95,28/08/2018
+10278406,Germany,Package Holiday,716.94,11/08/2018
+10278725,France,Flight Only,854.75,13/08/2018
+10278726,Germany,Package Holiday,729.74,04/08/2018
+10278727,Germany,Package Holiday,729.73,14/08/2018
+10281481,Unclassified,Accommodation Only,322.19,01/12/2018
+10281987,France,Package Holiday,528.13,06/05/2019
+10281988,France,Package Holiday,785.12,28/06/2019
+10282290,France,Package Holiday,1301.1,23/06/2019
+10282291,France,Package Holiday,687.09,30/07/2019
+10282950,Unclassified,Accommodation Only,2492.5,05/02/2020
+10285658,Germany,Flight Only,671.42,22/04/2020
+10285659,Germany,Package Holiday,189.41,25/04/2020
+10285660,Jamaica,Package Holiday,220.4,18/04/2020
+10286570,France,Package Holiday,890.3,06/04/2016
+10286571,Germany,Package Holiday,2760.29,27/06/2020
+10286572,Germany,Package Holiday,2369.28,17/06/2020
+10290426,France,Package Holiday,420.74,22/01/2017
+10290427,France,Package Holiday,582.73,01/12/2020
+10295318,France,Flight Only,258.82,23/12/2021
+10295319,France,Flight Only,338.81,21/12/2021
+10295429,United States,Package Holiday,422.71,02/12/2021
+10295430,Australia,Package Holiday,172.7,30/12/2021
+10296878,France,Package Holiday,74.22,03/11/2018
+10296879,France,Package Holiday,194.21,29/02/2016
+10298022,France,Package Holiday,140.78,11/03/2016
+10298023,France,Package Holiday,180.77,01/12/2018
+10303248,France,Package Holiday,88.52,27/03/2020
+10303249,France,Package Holiday,228.51,11/03/2021
+10304100,United States,Package Holiday,877,08/09/2018
+10304101,United States,Package Holiday,326.99,17/09/2018
+10304102,Australia,Flight Only,269.98,03/09/2018
+10304103,Australia,Flight Only,715.97,03/09/2018
+10304104,Germany,Package Holiday,231.96,27/09/2018
+10304105,Germany,Package Holiday,356.95,12/09/2018
+10304138,France,Package Holiday,466.62,08/09/2018
+10304139,France,Package Holiday,687.61,06/09/2018
+10305115,United States,Flight Only,228.85,21/02/2018
+10305116,United States,Flight Only,163.84,21/11/2017
+10305117,United States,Package Holiday,102.83,09/06/2021
+10305118,United States,Package Holiday,438.82,10/02/2017
+10305119,United States,Package Holiday,449.81,14/03/2018
+10305120,United States,Package Holiday,1005.8,26/06/2018
+10305121,United States,Package Holiday,1008.79,21/12/2021
+10305122,United States,Flight Only,180.78,04/08/2019
+10309209,France,Package Holiday,152.91,09/06/2019
+10310893,France,Flight Only,178.07,17/08/2020
+10311058,Germany,Package Holiday,178.42,04/08/2016
+10311059,Germany,Flight Only,168.41,21/08/2016
+10313247,France,Package Holiday,140.53,24/11/2021
+10314019,France,Package Holiday,542.81,21/08/2020
+10314020,Germany,Package Holiday,598.8,12/07/2018
+10314021,Germany,Package Holiday,398.79,09/01/2017
+10314022,Germany,Package Holiday,544.78,19/12/2017
+10315120,France,Package Holiday,215.8,19/01/2018
+10315772,Germany,Package Holiday,384.28,17/05/2017
+10315773,Germany,Package Holiday,756.27,22/05/2017
+10325521,Germany,Package Holiday,434.79,11/11/2020
+10325522,Germany,Package Holiday,880.78,30/12/2019
+10326707,United States,Package Holiday,285.93,13/01/2021
+10326708,United States,Package Holiday,285.92,01/01/2020
+10326709,Australia,Flight Only,285.91,09/01/2021
+10326710,Greece,Package Holiday,342.9,20/01/2018
+10326711,United States,Package Holiday,1388.89,20/01/2018
+10326712,Australia,Flight Only,2378.88,12/01/2018
+10331472,United States,Package Holiday,529.28,12/04/2018
+10331473,Australia,Flight Only,330.27,21/04/2018
+10331474,United States,Package Holiday,768.26,10/04/2018
+10331475,United States,Package Holiday,1394.25,22/04/2018
+10331476,United States,Package Holiday,220.24,19/04/2018
+10331477,United States,Package Holiday,1700.23,10/04/2018
+10331478,United States,Flight Only,622.22,22/04/2018
+10331479,Australia,Package Holiday,1728.21,30/04/2018
+10335557,France,Package Holiday,1306.43,01/08/2018
+10335558,France,Package Holiday,1306.42,09/08/2018
+10336119,France,Package Holiday,887.81,07/08/2018
+10336120,France,Package Holiday,178.8,11/08/2018
+10339869,France,Package Holiday,20.31,22/10/2019
+10339870,France,Package Holiday,598.3,26/09/2019
+10340230,United States,Package Holiday,903.7,16/11/2019
+10340231,United States,Package Holiday,1574.69,02/11/2019
+10340232,Australia,Package Holiday,452.68,19/11/2019
+10340233,Australia,Flight Only,267.67,03/11/2019
+10340234,Greece,Package Holiday,458.66,27/11/2021
+10340235,Australia,Package Holiday,908.65,12/02/2017
+10346695,France,Package Holiday,254.05,02/12/2021
+10346697,Unclassified,Accommodation Only,210.03,23/01/2017
+10348740,France,Package Holiday,971.6,29/07/2021
+10348741,France,Package Holiday,696.59,03/07/2021
+10351030,France,Package Holiday,391.7,07/04/2018
+10351031,France,Package Holiday,822.69,22/01/2020
+10351620,France,Flight Only,886.8,10/12/2021
+10351621,France,Flight Only,226.79,23/02/2017
+10355631,Greece,Package Holiday,168.69,19/04/2016
+10355632,United States,Flight Only,240.68,04/04/2016
+10355633,Australia,Flight Only,284.67,02/04/2016
+10355634,Greece,Package Holiday,136.66,20/04/2021
+10355635,Australia,Flight Only,230.65,28/04/2021
+10361052,United States,Flight Only,903.48,18/09/2018
+10361053,Australia,Package Holiday,472.47,09/09/2018
+10363495,France,Package Holiday,1045.05,02/10/2017
+10363497,Unclassified,Accommodation Only,1418.03,21/09/2021
+10364364,Germany,Flight Only,156.36,18/06/2019
+10364365,Germany,Package Holiday,296.35,04/06/2020
+10365892,Unclassified,Accommodation Only,88.08,18/07/2021
+10371572,France,Package Holiday,1484.28,04/01/2017
+10371573,France,Package Holiday,383.27,12/08/2018
+10372252,Kuwait,Package Holiday,190.48,02/11/2019
+10372253,United States,Package Holiday,888.47,22/11/2020
+10372254,United States,Flight Only,1464.46,17/04/2018
+10374956,France,Package Holiday,334.44,05/04/2021
+10374958,Unclassified,Accommodation Only,852.42,07/04/2017
+10375587,France,Package Holiday,1056.13,20/04/2017
+10375588,France,Package Holiday,394.12,23/04/2021
+10378242,Greece,Package Holiday,1080.58,18/07/2017
+10378243,Australia,Flight Only,198.57,11/07/2017
+10378244,United States,Package Holiday,397.56,09/07/2019
+10379590,Greece,Package Holiday,391.1,17/09/2019
+10379591,Australia,Flight Only,348.09,08/09/2020
+10380043,France,Package Holiday,454.57,28/10/2017
+10380044,France,Flight Only,603.56,27/10/2020
+10384465,Germany,Package Holiday,1318.35,02/02/2018
+10384466,Germany,Package Holiday,584.34,02/03/2018
+10384467,Germany,Flight Only,540.33,11/02/2018
+10384468,Germany,Package Holiday,470.32,24/02/2018
+10384469,Germany,Package Holiday,678.31,27/02/2018
+10384970,Sweden,Package Holiday,344.3,08/02/2018
+10384971,United States,Flight Only,218.29,18/02/2018
+10384972,Germany,Package Holiday,634.28,24/02/2019
+10384973,Germany,Flight Only,854.27,14/02/2020
+10388191,Germany,Package Holiday,546.09,19/05/2018
+10388192,Germany,Flight Only,414.08,28/05/2018
+10389278,Sierra Leone,Package Holiday,634.22,01/06/2018
+10389279,Australia,Flight Only,322.21,14/06/2018
+10389280,Greece,Package Holiday,966.2,09/06/2018
+10389281,Kuwait,Package Holiday,912.19,16/06/2018
+10389282,United States,Flight Only,642.18,18/06/2018
+10389283,Australia,Flight Only,1406.17,28/06/2018
+10390852,United States,Package Holiday,779.48,21/08/2018
+10390853,Australia,Package Holiday,395.47,06/08/2018
+10390854,United States,Package Holiday,395.46,18/08/2018
+10390855,Australia,Flight Only,630.45,15/08/2018
+10392212,France,Flight Only,264.88,09/08/2018
+10392213,Germany,Flight Only,264.87,05/08/2018
+10392214,Germany,Flight Only,1085.86,21/08/2018
+10396547,Greece,Package Holiday,610.53,10/02/2017
+10396548,Australia,Package Holiday,274.52,19/11/2019
+10396549,United States,Flight Only,786.51,29/11/2019
+10396550,Australia,Package Holiday,178.5,10/11/2019
+10398505,France,Package Holiday,585.95,06/04/2020
+10398506,France,Package Holiday,445.94,28/05/2020
+10401457,France,Package Holiday,742.43,17/11/2020
+10401458,France,Package Holiday,1055.42,26/11/2020
+10401968,France,Package Holiday,457.32,28/01/2021
+10401969,France,Flight Only,950.31,27/01/2021
+10405584,Portugal,Package Holiday,1206.16,12/09/2021
+10405585,Italy,Package Holiday,1338.15,07/09/2021
+10405586,Italy,Package Holiday,905.14,12/09/2021
+10405587,Italy,Package Holiday,348.13,16/09/2021
+10405740,Unclassified,Accommodation Only,585.6,06/09/2021
+10407155,France,Package Holiday,124.45,06/06/2021
+10411048,France,Package Holiday,208.52,19/03/2016
+10415198,Greece,Package Holiday,170.02,20/02/2020
+10415199,Australia,Package Holiday,205.01,11/02/2020
+10415200,United States,Package Holiday,549,10/02/2016
+10415201,Australia,Flight Only,174.99,02/02/2016
+10415599,France,Package Holiday,152.01,17/04/2016
+10416715,Germany,Package Holiday,1710.85,22/09/2018
+10416716,Germany,Flight Only,350.84,03/09/2018
+10416918,Germany,Package Holiday,525.82,03/09/2018
+10416919,Germany,Flight Only,720.81,16/09/2018
+10417445,France,Package Holiday,677.55,06/01/2017
+10417446,Germany,Package Holiday,466.54,23/05/2021
+10418882,Germany,Package Holiday,572.18,06/04/2017
+10418883,Germany,Flight Only,1120.17,18/08/2021
+10420094,France,Flight Only,668.06,28/10/2020
+10420096,Unclassified,Accommodation Only,499.04,21/10/2021
+10420540,France,Package Holiday,178.6,17/06/2019
+10420802,Greece,Package Holiday,88.98,25/06/2020
+10420803,Portugal,Package Holiday,356.97,25/06/2019
+10420804,Kuwait,Package Holiday,192.96,20/06/2021
+10420805,United States,Package Holiday,132.95,23/06/2021
+10420806,United States,Package Holiday,260.94,13/06/2019
+10421007,Greece,Package Holiday,152.93,21/06/2016
+10421008,Kuwait,Flight Only,510.92,04/06/2016
+10421009,United States,Flight Only,380.91,31/05/2016
+10421010,Australia,Package Holiday,184.9,12/06/2016
+10421011,Sweden,Package Holiday,322.89,04/06/2019
+10421012,United States,Package Holiday,298.88,15/06/2020
+10422705,France,Flight Only,162.95,22/07/2019
+10425298,Sweden,Package Holiday,880.02,02/10/2020
+10425299,United States,Flight Only,616.01,04/11/2019
+10426673,France,Package Holiday,534.27,14/02/2020
+10426674,France,Package Holiday,448.26,06/02/2017
+10431340,Germany,Flight Only,170.6,11/05/2017
+10431341,Germany,Package Holiday,154.59,20/05/2017
+10431720,France,Package Holiday,603.8,18/03/2019
+10431721,France,Package Holiday,1394.79,12/03/2017
+10431842,France,Package Holiday,438.58,11/05/2017
+10447159,France,Package Holiday,1177.41,07/08/2018
+10447160,Portugal,Flight Only,653.4,15/08/2018
+10447581,Germany,Package Holiday,330.19,30/08/2018
+10447582,Germany,Flight Only,330.18,06/08/2018
+10451237,France,Flight Only,531.63,11/08/2019
+10451238,France,Flight Only,473.62,07/08/2019
+10454690,United States,Package Holiday,1050.1,07/04/2020
+10454691,Australia,Package Holiday,333.09,21/04/2020
+10456843,France,Package Holiday,1162.57,12/09/2020
+10456844,France,Package Holiday,488.56,20/09/2020
+10458597,Germany,Package Holiday,430.03,26/11/2018
+10458598,Germany,Flight Only,662.02,27/05/2018
+10461061,Greece,Flight Only,443.39,29/07/2021
+10461062,United States,Package Holiday,443.38,25/07/2021
+10461063,Australia,Package Holiday,1321.37,08/07/2021
+10463309,France,Package Holiday,768.91,02/08/2021
+10463310,France,Package Holiday,2219.9,22/03/2017
+10463348,France,Package Holiday,1120.52,15/04/2018
+10463349,Germany,Package Holiday,452.51,19/07/2019
+10463350,Germany,Package Holiday,456.5,15/09/2018
+10463818,France,Package Holiday,546.82,25/04/2020
+10463819,France,Package Holiday,290.81,21/09/2018
+10465045,France,Package Holiday,96.55,10/02/2021
+10471170,France,Package Holiday,536.3,26/05/2020
+10471171,Germany,Package Holiday,180.29,12/05/2016
+10471172,Germany,Flight Only,362.28,03/05/2016
+10472313,France,Package Holiday,1029.87,04/09/2018
+10472314,Portugal,Package Holiday,510.86,12/09/2018
+10473774,United States,Package Holiday,461.26,22/05/2017
+10473775,United States,Package Holiday,406.25,16/07/2018
+10473776,Australia,Package Holiday,404.24,05/11/2017
+10479109,Sweden,Flight Only,172.91,08/08/2020
+10479110,United States,Flight Only,245.9,13/08/2020
+10479111,Greece,Package Holiday,308.89,16/08/2016
+10479112,Sweden,Package Holiday,988.88,13/05/2018
+10479113,Portugal,Package Holiday,96.87,25/08/2016
+10479114,United States,Package Holiday,112.86,31/07/2016
+10479939,Germany,Package Holiday,90.61,22/09/2019
+10479940,Germany,Flight Only,254.6,28/09/2019
+10484207,Germany,Package Holiday,346.93,14/03/2017
+10484208,Germany,Package Holiday,908.92,26/06/2017
+10485843,Germany,Package Holiday,674.57,10/04/2017
+10485844,Germany,Package Holiday,444.56,02/04/2017
+10489814,France,Package Holiday,838.86,22/08/2017
+10489816,Unclassified,Accommodation Only,991.84,13/08/2019
+10490268,France,Package Holiday,230.32,12/07/2017
+10490269,France,Package Holiday,384.31,17/09/2018
+10490425,France,Package Holiday,214.75,17/08/2020
+10490916,United States,Flight Only,634.84,17/07/2017
+10490917,United States,Flight Only,892.83,11/07/2017
+10490918,United States,Package Holiday,358.82,18/07/2017
+10490919,Australia,Package Holiday,491.81,26/02/2018
+10490920,Australia,Package Holiday,1428.8,02/06/2018
+10490921,Greece,Package Holiday,527.79,02/08/2018
+10490922,United States,Package Holiday,527.78,09/08/2018
+10490923,United States,Package Holiday,1056.77,02/02/2021
+10490924,United States,Package Holiday,332.76,26/11/2019
+10490925,Australia,Flight Only,398.75,02/03/2019
+10492204,France,Package Holiday,283.96,03/10/2020
+10492635,Greece,Package Holiday,848.65,16/10/2020
+10492636,Kuwait,Package Holiday,1548.64,30/10/2020
+10492637,United States,Flight Only,520.63,31/10/2019
+10492638,United States,Package Holiday,504.62,09/10/2021
+10492639,United States,Package Holiday,836.61,22/10/2021
+10492640,United States,Package Holiday,698.6,30/09/2020
+10492641,Australia,Package Holiday,440.59,15/10/2021
+10493002,France,Package Holiday,430.98,28/10/2021
+10493003,Portugal,Package Holiday,264.97,20/10/2017
+10493004,Italy,Package Holiday,264.96,23/10/2017
+10493005,Italy,Flight Only,635.95,26/10/2017
+10496693,France,Package Holiday,454.07,19/02/2018
+10496694,France,Package Holiday,2288.06,27/02/2019
+10497446,France,Package Holiday,526.54,16/05/2018
+10497447,France,Package Holiday,411.53,05/05/2018
+10498151,France,Package Holiday,545.49,21/03/2018
+10498152,France,Package Holiday,334.48,19/03/2021
+10498486,France,Package Holiday,258.14,27/03/2020
+10498487,France,Package Holiday,1559.13,08/03/2018
+10499869,Unclassified,Accommodation Only,254.31,03/04/2018
+10502121,France,Package Holiday,799.79,27/08/2018
+10502122,Germany,Flight Only,799.78,19/08/2018
+10502123,Germany,Flight Only,1266.77,27/07/2018
+10502446,United States,Package Holiday,1045.54,12/07/2018
+10502447,United States,Package Holiday,256.53,22/07/2018
+10502448,United States,Package Holiday,230.52,16/07/2018
+10502449,United States,Package Holiday,584.51,13/07/2018
+10502450,United States,Package Holiday,276.5,04/07/2018
+10502451,United States,Package Holiday,396.49,05/07/2018
+10502452,United States,Package Holiday,1446.48,24/07/2018
+10502453,United States,Package Holiday,290.47,21/07/2018
+10502454,Sweden,Package Holiday,932.46,20/07/2018
+10502455,United States,Package Holiday,350.45,26/07/2018
+10502456,United States,Flight Only,1960.44,26/07/2018
+10502457,United States,Flight Only,422.43,11/07/2018
+10502458,United States,Flight Only,328.42,28/07/2018
+10502459,United States,Package Holiday,536.41,27/07/2018
+10509972,Germany,Package Holiday,699.28,22/03/2020
+10509973,Germany,Package Holiday,1844.27,08/02/2018
+10511717,Greece,Package Holiday,905.83,30/07/2020
+10511718,Australia,Flight Only,800.82,19/07/2020
+10511719,Greece,Package Holiday,656.81,11/07/2020
+10511720,United States,Flight Only,1880.8,30/06/2020
+10511721,United States,Package Holiday,582.79,02/07/2020
+10511722,Australia,Package Holiday,519.78,03/07/2020
+10511933,Germany,Flight Only,426.67,09/07/2020
+10511934,Germany,Package Holiday,642.66,16/08/2020
+10516231,France,Package Holiday,326.69,15/04/2021
+10516232,France,Package Holiday,1319.68,21/04/2021
+10519185,France,Package Holiday,265.15,01/04/2016
+10519186,France,Package Holiday,176.14,16/06/2021
+10519597,France,Package Holiday,92.03,07/08/2019
+10519598,France,Package Holiday,260.02,15/07/2020
+10519783,Unclassified,Accommodation Only,771.17,11/06/2016
+10523606,Germany,Package Holiday,898.94,13/03/2016
+10523607,Germany,Package Holiday,608.93,30/03/2016
+10523608,Germany,Package Holiday,574.92,09/03/2016
+10523857,France,Package Holiday,246.43,25/04/2016
+10523858,France,Accommodation Only,140.42,04/04/2020
+10529352,France,Package Holiday,362.48,30/09/2018
+10529915,Germany,Package Holiday,2679.85,12/06/2019
+10529916,Germany,Flight Only,564.84,11/06/2019
+10540845,Germany,Package Holiday,630.55,27/03/2017
+10540846,Germany,Flight Only,456.54,27/03/2017
+10542769,Germany,Package Holiday,701.31,28/05/2020
+10542770,Germany,Flight Only,516.3,11/09/2021
+10543384,France,Package Holiday,478.16,03/05/2019
+10543385,France,Package Holiday,302.15,28/05/2017
+10547511,France,Package Holiday,444.89,29/09/2017
+10547512,France,Package Holiday,508.88,08/09/2021
+10551792,France,Package Holiday,431.08,02/02/2021
+10551793,France,Package Holiday,332.07,28/11/2017
+10552679,Germany,Package Holiday,338.21,11/02/2018
+10552871,France,Flight Only,3491.29,04/02/2018
+10552872,Germany,Package Holiday,408.28,31/01/2021
+10552873,Germany,Flight Only,2341.27,25/02/2019
+10552874,Germany,Package Holiday,198.26,01/02/2020
+10556001,France,Package Holiday,518.99,10/05/2018
+10558910,Germany,Flight Only,702.9,10/07/2018
+10558911,Germany,Package Holiday,5094.89,13/07/2018
+10564613,France,Package Holiday,279.87,29/11/2019
+10564614,France,Package Holiday,340.86,21/11/2019
+10566656,France,Package Holiday,1440.44,20/04/2021
+10566657,France,Package Holiday,2001.43,07/03/2021
+10568975,France,Package Holiday,550.25,27/10/2020
+10570352,France,Package Holiday,575.48,18/03/2019
+10570353,United States,Flight Only,583.47,01/02/2019
+10570354,United States,Package Holiday,521.46,19/06/2021
+10570355,United States,Package Holiday,519.45,19/02/2019
+10570356,Australia,Package Holiday,544.44,04/06/2019
+10572030,Italy,Package Holiday,606.7,28/03/2021
+10572420,France,Package Holiday,653.8,12/05/2021
+10573528,Germany,Package Holiday,264.72,22/08/2021
+10573529,Germany,Package Holiday,820.71,22/08/2021
+10573569,France,Package Holiday,355.31,09/08/2021
+10573570,Germany,Flight Only,321.3,04/06/2020
+10573571,Germany,Package Holiday,422.29,06/08/2021
+10578349,Germany,Flight Only,633.51,28/03/2016
+10578350,Germany,Package Holiday,412.5,19/03/2016
+10580098,France,Package Holiday,156.02,28/04/2016
+10580099,France,Package Holiday,676.01,08/04/2020
+10583011,Germany,Package Holiday,707.89,22/07/2019
+10583012,Germany,Package Holiday,240.88,21/05/2019
+10583376,France,Package Holiday,519.24,27/02/2019
+10583377,Germany,Package Holiday,152.23,15/02/2020
+10583378,Germany,Flight Only,132.22,15/02/2021
+10583877,France,Package Holiday,208.23,06/05/2021
+10583878,France,Package Holiday,1771.22,20/05/2020
+10584682,France,Package Holiday,252.18,04/09/2018
+10584683,Germany,Package Holiday,198.17,22/09/2018
+10584684,Germany,Package Holiday,936.16,21/09/2018
+10584977,United States,Package Holiday,844.23,19/09/2018
+10584978,Australia,Package Holiday,2410.22,27/09/2018
+10584979,Greece,Package Holiday,434.21,13/09/2018
+10584980,Australia,Flight Only,288.2,21/09/2018
+10591563,Sweden,Flight Only,76.37,26/08/2021
+10591564,Kuwait,Package Holiday,176.36,11/08/2019
+10591565,United States,Package Holiday,204.35,23/09/2019
+10591566,United States,Package Holiday,168.34,08/08/2016
+10591567,Australia,Package Holiday,176.33,25/08/2016
+10592026,Sweden,Package Holiday,156.74,13/09/2020
+10592027,Kuwait,Package Holiday,154.73,22/09/2019
+10592028,United States,Package Holiday,164.72,02/09/2020
+10592029,United States,Package Holiday,145.71,13/09/2020
+10592030,Australia,Flight Only,180.7,16/09/2020
+10598472,France,Package Holiday,471.28,14/05/2020
+10598473,Germany,Package Holiday,275.27,01/05/2017
+10598474,Germany,Package Holiday,692.26,13/05/2017
+10598918,France,Package Holiday,262.82,08/09/2018
+10598919,Italy,Flight Only,842.81,23/03/2021
+10598920,Italy,Package Holiday,388.8,28/03/2020
+10598921,Italy,Flight Only,826.79,06/03/2021
+10598922,Italy,Package Holiday,746.78,28/03/2021
+10598923,Italy,Flight Only,382.77,08/03/2020
+10598924,Italy,Package Holiday,72.76,11/03/2020
+10598925,Italy,Package Holiday,624.75,23/03/2020
+10598926,Italy,Package Holiday,356.74,24/07/2018
+10600041,Unclassified,Accommodation Only,1070.59,04/08/2018
+10600784,Germany,Package Holiday,215.16,14/07/2017
+10600785,Germany,Package Holiday,1032.15,24/07/2017
+10604103,Germany,Package Holiday,396.97,25/10/2019
+10604104,Germany,Package Holiday,384.96,31/10/2019
+10604248,Germany,Package Holiday,798.52,07/10/2020
+10604249,Germany,Flight Only,388.51,22/10/2021
+10609376,Germany,Package Holiday,1054.24,17/04/2018
+10610568,Greece,Package Holiday,424.32,01/04/2018
+10610569,Australia,Accommodation Only,396.31,10/03/2020
+10610570,United States,Package Holiday,355.3,28/03/2018
+10610571,United States,Package Holiday,808.29,09/03/2018
+10610572,United States,Package Holiday,554.28,02/08/2018
+10610573,United States,Flight Only,554.27,05/08/2018
+10611294,France,Package Holiday,278.06,10/04/2018
+10611295,France,Package Holiday,282.05,29/04/2018
+10612717,France,Package Holiday,198.83,19/06/2018
+10612718,Greece,Package Holiday,1262.82,18/06/2018
+10612719,United States,Package Holiday,716.81,20/06/2018
+10612720,Australia,Package Holiday,495.8,05/06/2018
+10614657,France,Package Holiday,766.43,08/07/2018
+10615513,France,Package Holiday,310.87,11/08/2018
+10615514,Germany,Package Holiday,310.86,30/08/2018
+10615515,Germany,Flight Only,344.85,16/08/2018
+10615553,France,Package Holiday,952.47,28/08/2018
+10627143,Unclassified,Accommodation Only,156.57,10/02/2016
+10632171,United States,Package Holiday,944.29,08/12/2021
+10632172,United States,Package Holiday,520.28,04/12/2021
+10632173,Australia,Accommodation Only,940.27,24/12/2021
+10638028,United States,Package Holiday,156.72,27/05/2020
+10638029,Australia,Flight Only,820.71,28/05/2021
+10638030,Sweden,Package Holiday,136.7,25/05/2021
+10638031,United States,Flight Only,224.69,21/05/2019
+10638032,United States,Package Holiday,172.68,22/05/2019
+10651206,United States,Package Holiday,483.94,01/02/2017
+10651207,United States,Package Holiday,1250.93,08/02/2017
+10651208,United States,Package Holiday,583.92,03/02/2017
+10651209,United States,Package Holiday,438.91,16/02/2017
+10651210,United States,Package Holiday,640.9,05/02/2017
+10651211,United States,Package Holiday,582.89,27/02/2017
+10651212,United States,Package Holiday,344.88,20/02/2017
+10651213,Australia,Package Holiday,464.87,19/02/2017
+10651214,Portugal,Package Holiday,394.86,26/02/2020
+10655397,United States,Package Holiday,248.03,15/03/2017
+10655398,Australia,Flight Only,1047.02,30/03/2017
+10655399,United States,Package Holiday,617.01,16/04/2020
+10655400,United States,Package Holiday,230,28/04/2021
+10655401,United States,Package Holiday,569.99,07/04/2019
+10655402,United States,Package Holiday,614.98,10/04/2021
+10655403,Australia,Package Holiday,928.97,05/04/2020
+10660423,Germany,Package Holiday,421.77,13/10/2017
+10660424,Germany,Package Holiday,536.76,01/10/2017
+10666243,Germany,Package Holiday,560.57,19/03/2020
+10666244,Germany,Flight Only,490.56,14/11/2018
+10670823,France,Package Holiday,261.77,18/07/2018
+10676488,France,Package Holiday,224.12,09/10/2019
+10677780,Germany,Package Holiday,1224.2,04/08/2020
+10680593,Greece,Package Holiday,1026.07,03/09/2020
+10680594,United States,Package Holiday,250.06,11/10/2019
+10680595,Australia,Flight Only,230.05,27/10/2019
+10680596,Germany,Package Holiday,558.04,27/08/2020
+10680597,Germany,Package Holiday,504.03,26/01/2021
+10682252,France,Package Holiday,215.48,10/04/2019
+10682253,Germany,Package Holiday,712.47,17/04/2020
+10682254,Germany,Package Holiday,277.46,09/07/2021
+10683310,Germany,Package Holiday,1140.9,31/05/2021
+10683311,Germany,Flight Only,258.89,26/04/2019
+10683312,Germany,Package Holiday,252.88,08/03/2020
+10683313,Germany,Package Holiday,1100.87,22/02/2021
+10683508,Greece,Package Holiday,192.92,03/02/2016
+10683509,Australia,Flight Only,914.91,16/11/2021
+10683510,Germany,Package Holiday,748.9,20/02/2020
+10683511,Germany,Package Holiday,904.89,10/05/2018
+10683512,Germany,Flight Only,1505.88,01/10/2021
+10685360,Germany,Flight Only,307.4,15/08/2021
+10685361,Germany,Package Holiday,790.39,11/08/2021
+10689866,Portugal,Package Holiday,278.34,21/02/2020
+10692553,France,Package Holiday,937.47,09/04/2020
+10692554,France,Package Holiday,174.46,06/04/2019
+10693505,United States,Package Holiday,202.95,21/04/2021
+10693506,United States,Package Holiday,140.94,04/04/2019
+10693507,United States,Package Holiday,591.93,08/04/2021
+10693508,United States,Package Holiday,352.92,27/04/2021
+10693509,United States,Package Holiday,485.91,11/04/2021
+10693510,Australia,Package Holiday,188.9,26/04/2021
+10694623,United States,Flight Only,404.77,31/05/2019
+10694624,Australia,Accommodation Only,104.76,06/05/2019
+10694625,France,Package Holiday,224.75,18/05/2016
+10697367,France,Package Holiday,444.33,13/09/2018
+10697368,Germany,Package Holiday,480.32,22/09/2018
+10697369,Germany,Package Holiday,738.31,14/09/2018
+10697370,Germany,Package Holiday,640.3,09/09/2018
+10697834,France,Package Holiday,348.66,04/09/2016
+10697835,France,Package Holiday,853.65,29/05/2017
+10698724,France,Package Holiday,777.76,05/07/2020
+10704468,Germany,Flight Only,110.32,02/09/2021
+10704469,Germany,Package Holiday,247.31,27/09/2021
+10705379,Germany,Package Holiday,218.21,05/11/2021
+10705380,Germany,Flight Only,810.2,21/11/2020
+10711314,Germany,Package Holiday,421.86,28/04/2020
+10711315,Germany,Flight Only,278.85,08/04/2020
+10712084,France,Accommodation Only,240.16,29/05/2019
+10712085,France,Accommodation Only,374.15,01/05/2017
+10713225,Germany,Package Holiday,498.75,30/07/2020
+10713226,Germany,Package Holiday,1148.74,22/07/2021
+10715641,Germany,Package Holiday,864.59,07/09/2021
+10715642,Germany,Flight Only,555.58,12/09/2020
+10716963,France,Package Holiday,148.37,21/09/2020
+10722830,France,Package Holiday,272.7,14/03/2018
+10724604,France,Package Holiday,426.96,13/05/2018
+10730596,Unclassified,Accommodation Only,782.04,02/04/2019
+10731865,United States,Package Holiday,2539.35,08/08/2019
+10731866,Australia,Flight Only,171.34,05/09/2019
+10731867,United States,Package Holiday,711.33,17/09/2019
+10731868,Australia,Flight Only,437.32,03/09/2019
+10735575,France,Flight Only,318.25,22/03/2019
+10735576,France,Package Holiday,562.24,08/06/2019
+10736528,France,Package Holiday,578.72,08/08/2020
+10736529,France,Package Holiday,576.71,03/08/2020
+10744369,Germany,Package Holiday,1466.31,18/02/2021
+10744370,Germany,Flight Only,350.3,04/02/2019
+10746211,France,Package Holiday,242.89,13/03/2019
+10746212,France,Package Holiday,540.88,25/06/2016
+10746482,Germany,Package Holiday,1811.18,15/03/2016
+10746483,Germany,Flight Only,408.17,18/03/2016
+10750839,Italy,Package Holiday,512.61,26/05/2021
+10753719,France,Flight Only,977.81,27/02/2021
+10753721,Unclassified,Accommodation Only,1122.79,14/02/2018
+10757164,France,Package Holiday,272.36,13/06/2020
+10759912,United States,Package Holiday,351.88,16/02/2018
+10760212,Greece,Package Holiday,326.88,14/09/2020
+10760213,United States,Package Holiday,248.87,27/09/2021
+10760214,Australia,Accommodation Only,156.86,07/09/2020
+10760215,Australia,Flight Only,180.85,27/09/2021
+10760216,Greece,Flight Only,230.84,24/09/2021
+10760217,Australia,Package Holiday,246.83,13/09/2020
+10768345,United States,Flight Only,317.55,17/12/2017
+10768346,United States,Package Holiday,1252.54,28/08/2018
+10768347,Australia,Flight Only,548.53,05/04/2018
+10768348,Greece,Package Holiday,1802.52,14/07/2019
+10768349,Kuwait,Package Holiday,1515.51,18/02/2021
+10768350,United States,Package Holiday,1160.5,13/08/2018
+10768351,United States,Package Holiday,1160.49,23/08/2018
+10769103,Unclassified,Accommodation Only,1302.97,27/08/2018
+10771732,Greece,Package Holiday,398.68,04/09/2020
+10771733,Portugal,Package Holiday,1682.67,23/09/2020
+10771734,Australia,Package Holiday,623.66,04/09/2020
+10771735,United States,Package Holiday,337.65,14/09/2017
+10771736,United States,Package Holiday,547.64,09/09/2017
+10771737,Australia,Package Holiday,896.63,11/09/2017
+10776958,France,Flight Only,367.42,03/02/2019
+10776959,France,Package Holiday,456.41,26/02/2018
+10780093,France,Package Holiday,628.07,08/04/2018
+10780094,France,Package Holiday,384.06,19/05/2018
+10783165,France,Package Holiday,504.35,19/07/2018
+10783166,France,Flight Only,508.34,02/07/2018
+10788867,Germany,Flight Only,787.33,07/11/2019
+10788868,Germany,Package Holiday,895.32,22/09/2021
+10790526,France,Package Holiday,441.74,27/11/2021
+10794903,Germany,Package Holiday,962.97,22/04/2017
+10794904,Germany,Package Holiday,478.96,13/02/2017
+10794905,Germany,Package Holiday,814.95,07/04/2018
+10796067,Jamaica,Package Holiday,386.33,10/01/2021
+10802105,Greece,Package Holiday,284.95,27/02/2016
+10802106,United States,Package Holiday,312.94,12/04/2016
+10802107,United States,Package Holiday,152.93,07/02/2016
+10802108,United States,Package Holiday,234.92,11/02/2016
+10802109,Australia,Flight Only,132.91,25/02/2016
+10802110,Greece,Package Holiday,156.9,29/02/2020
+10802111,Kuwait,Flight Only,128.89,17/02/2020
+10804954,France,Package Holiday,782.46,04/04/2021
+10804955,United States,Package Holiday,256.45,16/04/2020
+10804956,Australia,Flight Only,314.44,07/04/2021
+10806468,France,Package Holiday,124.32,07/05/2016
+10812323,Greece,Package Holiday,1523.77,08/10/2019
+10812324,Australia,Flight Only,278.76,12/10/2019
+10812649,Unclassified,Accommodation Only,628.51,13/10/2016
+10812651,Unclassified,Accommodation Only,642.49,17/10/2019
+10815435,France,Package Holiday,112.65,21/08/2021
+10816598,Greece,Package Holiday,187.02,14/09/2016
+10816599,Australia,Flight Only,88.01,10/09/2016
+10816600,United States,Flight Only,107,09/09/2019
+10816601,Australia,Package Holiday,196.99,11/09/2021
+10820557,Germany,Package Holiday,1208.43,14/05/2017
+10820558,Germany,Package Holiday,410.42,31/05/2017
+10820643,France,Package Holiday,288.57,28/03/2021
+10820644,Germany,Package Holiday,736.56,13/04/2017
+10820645,Germany,Package Holiday,588.55,06/03/2017
+10829917,France,Flight Only,1021.83,02/08/2018
+10829918,Germany,Package Holiday,758.82,24/11/2019
+10829919,Germany,Package Holiday,365.81,23/04/2018
+10837350,Unclassified,Accommodation Only,1530.5,16/06/2018
+10838383,France,Package Holiday,814.17,26/07/2018
+10838384,France,Package Holiday,449.16,21/07/2018
+10843147,Greece,Flight Only,740.53,29/05/2019
+10843148,Australia,Package Holiday,369.52,21/05/2019
+10843149,Greece,Package Holiday,515.51,13/05/2019
+10843150,Australia,Flight Only,664.5,16/05/2019
+10844159,France,Flight Only,286.41,26/09/2019
+10844160,France,Package Holiday,1963.4,29/09/2019
+10844615,United States,Accommodation Only,558.85,16/10/2019
+10844616,Australia,Flight Only,853.84,31/10/2019
+10845522,United States,Package Holiday,786.78,17/01/2020
+10845523,Australia,Flight Only,703.77,30/12/2019
+10845524,United States,Package Holiday,890.76,10/03/2019
+10845525,Australia,Package Holiday,290.75,01/12/2019
+10852681,United States,Package Holiday,391.19,03/04/2021
+10852682,Australia,Flight Only,1573.18,22/04/2021
+10852846,United States,Package Holiday,584.54,31/05/2021
+10852847,United States,Package Holiday,433.53,21/05/2021
+10852848,Australia,Package Holiday,668.52,07/05/2021
+10852849,United States,Flight Only,771.51,11/05/2021
+10852850,United States,Package Holiday,884.5,01/06/2016
+10852851,United States,Flight Only,564.49,22/03/2018
+10852852,United States,Flight Only,1528.48,02/05/2021
+10852853,United States,Package Holiday,366.47,21/05/2021
+10852854,Australia,Package Holiday,111.46,08/05/2021
+10858848,Greece,Package Holiday,981.52,18/03/2019
+10858849,Australia,Flight Only,302.51,23/03/2021
+10859437,France,Package Holiday,156.63,27/03/2019
+10859438,France,Package Holiday,156.62,16/03/2016
+10859573,France,Package Holiday,214.27,10/03/2016
+10859574,Germany,Package Holiday,292.26,15/03/2019
+10859575,Germany,Package Holiday,517.25,05/03/2020
+10859650,France,Package Holiday,938.5,12/01/2017
+10861367,Germany,Package Holiday,266.33,05/04/2021
+10861368,Germany,Flight Only,569.32,08/04/2021
+10865824,United States,Package Holiday,152.76,24/07/2016
+10865825,Australia,Flight Only,84.75,07/06/2016
+10865826,United States,Package Holiday,530.74,04/10/2020
+10865827,Australia,Package Holiday,698.73,01/11/2021
+10868938,France,Package Holiday,192.62,08/06/2021
+10868939,France,Package Holiday,224.61,12/06/2016
+10880683,United States,Package Holiday,603.17,04/06/2017
+10880684,United States,Package Holiday,326.16,29/06/2017
+10880685,Australia,Package Holiday,448.15,18/06/2017
+10880686,Greece,Package Holiday,421.14,11/06/2021
+10880687,Australia,Flight Only,1224.13,05/06/2021
+10884502,France,Flight Only,266.98,19/10/2019
+10884503,France,Package Holiday,625.97,22/02/2018
+10885635,Australia,Package Holiday,1104.65,15/02/2018
+10885636,France,Package Holiday,755.64,08/01/2021
+10889616,Greece,Package Holiday,662.84,11/04/2018
+10889617,Australia,Flight Only,780.83,08/09/2018
+10889618,Sierra Leone,Package Holiday,156.82,12/11/2018
+10889619,Australia,Flight Only,282.81,18/08/2018
+10890551,France,Package Holiday,1168.49,07/03/2018
+10895616,United States,Package Holiday,348.84,11/08/2018
+10895617,Australia,Flight Only,348.83,27/08/2018
+10896172,Greece,Package Holiday,388.28,28/08/2018
+10896173,United States,Package Holiday,388.27,05/08/2018
+10896174,United States,Package Holiday,324.26,16/08/2018
+10896175,Australia,Flight Only,324.25,14/08/2018
+10896176,Kuwait,Package Holiday,1364.24,21/08/2018
+10896177,United States,Package Holiday,1364.23,23/08/2018
+10896178,United States,Package Holiday,474.22,13/08/2018
+10896179,United States,Package Holiday,474.21,25/08/2018
+10896180,United States,Package Holiday,418.2,29/08/2018
+10896181,Australia,Package Holiday,418.19,14/08/2018
+10902015,Greece,Package Holiday,176.85,12/03/2020
+10902016,United States,Package Holiday,744.84,23/03/2020
+10902017,United States,Package Holiday,954.83,20/04/2019
+10902018,United States,Package Holiday,710.82,30/03/2020
+10902019,Australia,Package Holiday,325.81,06/03/2020
+10902020,Greece,Package Holiday,739.8,23/03/2020
+10902021,Kuwait,Package Holiday,455.79,21/03/2019
+10902022,United States,Package Holiday,589.78,23/03/2020
+10902023,United States,Package Holiday,487.77,08/03/2020
+10902024,United States,Package Holiday,212.76,15/03/2020
+10902025,United States,Package Holiday,693.75,15/03/2020
+10902026,United States,Package Holiday,230.74,05/03/2020
+10902027,United States,Package Holiday,228.73,31/03/2020
+10904192,United States,Package Holiday,413.08,18/07/2021
+10904193,United States,Package Holiday,436.07,06/09/2016
+10904194,Australia,Package Holiday,424.06,29/08/2020
+10904195,France,Package Holiday,469.05,08/08/2020
+10905690,United States,Flight Only,749.1,25/10/2019
+10905691,Australia,Package Holiday,418.09,19/10/2019
+10905692,United States,Package Holiday,449.08,29/02/2020
+10905693,United States,Package Holiday,560.07,03/05/2020
+10905694,Australia,Flight Only,521.06,12/10/2020
+10907892,Greece,Flight Only,538.08,26/02/2021
+10907893,United States,Package Holiday,359.07,09/02/2021
+10907894,United States,Package Holiday,629.06,09/02/2021
+10907895,Australia,Flight Only,684.05,22/02/2021
+10928569,Unclassified,Accommodation Only,244.31,21/09/2019
+10929362,France,Package Holiday,1608.38,27/07/2018
+10929363,Germany,Package Holiday,257.37,29/03/2017
+10929364,Germany,Flight Only,294.36,01/07/2020
+10931165,Germany,Package Holiday,422.35,12/02/2020
+10931166,Germany,Package Holiday,2295.34,08/02/2021
+10931167,Germany,Flight Only,422.33,16/02/2020
+10931168,Germany,Package Holiday,1660.32,16/02/2020
+10933525,France,Package Holiday,304.75,12/03/2017
+10933526,France,Package Holiday,710.74,29/11/2018
+10935924,France,Package Holiday,918.76,13/03/2021
+10935925,France,Package Holiday,530.75,05/03/2017
+10943424,Germany,Package Holiday,2029.76,04/02/2018
+10943425,Germany,Package Holiday,282.75,03/02/2018
+10943897,Greece,Package Holiday,388.03,08/02/2018
+10943898,United States,Package Holiday,1740.02,13/02/2018
+10943899,Australia,Flight Only,346.01,12/02/2018
+10943900,United States,Package Holiday,591,24/02/2020
+10947402,Unclassified,Accommodation Only,386.98,15/04/2018
+10959200,France,Package Holiday,874,16/05/2020
+10959201,Germany,Package Holiday,336.99,18/06/2020
+10959202,Germany,Package Holiday,278.98,25/05/2020
+10959212,Germany,Flight Only,188.88,22/05/2020
+10959213,Germany,Flight Only,1376.87,21/05/2020
+10965530,France,Flight Only,648.7,12/08/2021
+10965531,United States,Package Holiday,819.69,23/08/2021
+10965532,United States,Package Holiday,1179.68,13/08/2021
+10965533,United States,Flight Only,628.67,21/08/2021
+10965534,United States,Package Holiday,608.66,17/08/2021
+10965535,United States,Package Holiday,510.65,25/08/2021
+10965536,Australia,Package Holiday,263.64,28/08/2021
+10965750,France,Package Holiday,978.5,10/08/2021
+10965751,Germany,Package Holiday,2307.49,15/08/2021
+10965752,Germany,Flight Only,538.48,24/08/2021
+10969833,Germany,Package Holiday,200.67,06/02/2016
+10969834,Germany,Flight Only,280.66,20/03/2016
+10972790,United States,Package Holiday,202.1,07/04/2016
+10972791,United States,Accommodation Only,172.09,22/04/2016
+10972792,United States,Package Holiday,316.08,10/04/2016
+10972793,United States,Package Holiday,1320.07,04/04/2016
+10972794,United States,Package Holiday,872.06,26/04/2016
+10972795,Australia,Package Holiday,1043.05,16/04/2016
+10978657,Unclassified,Accommodation Only,493.43,15/07/2021
+10978990,United States,Package Holiday,366.1,06/07/2021
+10978991,United States,Package Holiday,786.09,24/07/2021
+10978992,United States,Package Holiday,484.08,20/07/2021
+10978993,United States,Package Holiday,988.07,01/07/2021
+10978994,United States,Package Holiday,2655.06,14/08/2018
+10978995,Australia,Package Holiday,2655.05,01/08/2018
+10978996,Greece,Flight Only,502.04,07/07/2021
+10978997,United States,Package Holiday,1516.03,20/07/2021
+10978998,Australia,Package Holiday,872.02,24/07/2019
+10979371,France,Package Holiday,658.29,26/08/2020
+10979372,France,Package Holiday,477.28,22/08/2016
+10985954,France,Package Holiday,814.46,04/11/2016
+10985955,France,Package Holiday,624.45,14/09/2018
+10986392,United States,Package Holiday,357.08,14/12/2021
+10986393,United States,Package Holiday,692.07,16/12/2021
+10986394,United States,Accommodation Only,1918.06,01/06/2019
+10986395,United States,Package Holiday,876.05,11/06/2018
+10986396,United States,Package Holiday,681.04,03/09/2018
+10986397,United States,Package Holiday,981.03,13/12/2020
+10986398,United States,Package Holiday,442.02,16/12/2020
+10986399,Australia,Package Holiday,346.01,05/12/2019
+10991456,France,Package Holiday,371.44,23/04/2017
+10992158,Australia,Flight Only,1350.42,12/08/2017
+10992159,Germany,Package Holiday,378.41,27/04/2021
+10992160,Germany,Accommodation Only,581.4,26/05/2019
+10993127,Unclassified,Accommodation Only,408.73,10/07/2021
+10993140,Germany,Package Holiday,932.6,01/08/2018
+10993141,Germany,Package Holiday,586.59,14/07/2017
+10994487,United States,Package Holiday,800.13,08/02/2019
+10994488,Australia,Flight Only,318.12,12/03/2020
+10996173,Greece,Package Holiday,1063.27,12/09/2021
+10996174,United States,Flight Only,570.26,20/09/2019
+10996175,United States,Package Holiday,563.25,08/09/2020
+10996176,United States,Package Holiday,241.24,21/09/2021
+10996177,Greece,Package Holiday,343.23,08/09/2017
+10996178,United States,Flight Only,636.22,01/09/2017
+10996179,United States,Package Holiday,356.21,27/09/2017
+10996180,United States,Package Holiday,438.2,30/09/2017
