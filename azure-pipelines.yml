@@ -30,5 +30,5 @@ steps:
 
 - script: |
     poetry run python -m pip install pytest pytest-azurepipelines pytest-cov
-    poetry run pytest tests/apteco tests/functional_tests --test-run-title="Windows test (python $(python.version))" --cov apteco --cov-report html
+    poetry run pytest tests/unit_tests tests/functional_tests --test-run-title="Windows test (python $(python.version))" --cov apteco --cov-report html
   displayName: 'pytest'
