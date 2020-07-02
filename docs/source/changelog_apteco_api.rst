@@ -1,6 +1,6 @@
-=============================
-Change Log for ``apteco-api``
-=============================
+*********************************
+  Change Log for ``apteco-api``
+*********************************
 
 A record of changes to the ``apteco-api`` package
 which are, or may be, relevant to **py-apteco**.
@@ -8,7 +8,7 @@ Since the ``apteco-api`` package is auto-generated from the **OrbitAPI** spec,
 these changes correspond directly to changes there.
 
 Version 0.2.0
--------------
+=============
 
 **25 Oct 2019**
 
@@ -17,24 +17,26 @@ Version 0.2.0
 * OrbitAPI date: 25 Oct 2019
 
 Added
-^^^^^
+------
 
 * ``/{dataViewName}/Exports``
 * ``/{dataViewName}/Exports/{systemName}``
 * ``/{dataViewName}/Queries/{systemName}/SaveFileSync``
 
 Changed
-^^^^^^^
+-------
 
 * ``Selection``, ``Logic``, ``Criteria``:
+
     - ``tableName`` now required
+
 * ``FastStatsSystemSummary``, ``FastStatsSystemDetail``:
+
     - ``velocityType`` removed
 
 
-
 Version 0.1.10
---------------
+==============
 
 **19 Oct 2019**
 
@@ -43,18 +45,23 @@ Version 0.1.10
 * OrbitAPI date: 12 Oct 2019
 
 Added
-^^^^^
+------
 
 * ``NumericVariableInfo``
+
     - ``currencySymbol`` property
+
 * ``Dimension``
+
     - ``filterQuery`` property
+
 * ``FastStatsSystemSummary``, ``FastStatsSystemDetail``
+
     - ``velocityType`` property
 
 
 Version 0.1.9
---------------
+==============
 
 **01 Oct 2019**
 
@@ -66,7 +73,7 @@ Version 0.1.9
 
 
 Version 0.1.8
---------------
+==============
 
 **01 Oct 2019**
 
@@ -75,15 +82,16 @@ Version 0.1.8
 * (OrbitAPI date: 27 Sep 2019)
 
 Fixed
-^^^^^
+-----
 
 * ``/{dataViewName}/Telemetry/States/ForUser/{username}`` **GET**
+
     - Corrected capitalisation of ``username`` (previously ``Username``)
     - Spec incorrect - did not match API behaviour
 
 
 Version 0.1.7
---------------
+==============
 
 **30 Sep 2019**
 
@@ -92,40 +100,51 @@ Version 0.1.7
 * OrbitAPI date: 27 Sep 2019
 
 Added
-^^^^^
+------
 
 * ``/{dataViewName}/Sessions/TokenLogin``  **POST**
 * ``/{dataViewName}/Settings/DataView`` **GET** **PUT** **DELETE**
 * ``/{dataViewName}/Settings/DataView/{settingsPath}`` **GET** **PUT** **DELETE**
 * ``/{dataViewName}/Users/{username}/LoginHistory`` **GET**
 * ``SelectorVariableInfo``
+
     - ``combinedFromVariableName`` property
+
 * ``SessionDetails``
+
     - ``lastLogin`` property
+
 * ``TokenLoginDetails``
 * ``PagedResults[UserLogin]``
 * ``UserLogin``
 
 Changed
-^^^^^^^
+-------
 
 * ``/{dataViewName}/Cubes/{systemName}/CalculateSync`` **POST**, ``/{dataViewName}/Exports/{systemName}/ExportSync`` **POST**, ``/{dataViewName}/Queries/{systemName}/CountSync`` **POST**, ``/{dataViewName}/Queries/{systemName}/CountFileSync`` **POST**
+
     - ``returnDefinition`` defaults to false
+
 * ``CubeResult``
+
     - No longer requires any properties (previously required ``ranSuccessfully``, ``dimensionResults``, ``measureResults``)
+
 * ``ExportResult``
+
     - No longer requires any properties (previously required ``ranSuccessfully``)
+
 * ``SessionDetails``
+
     - ``lastLogin`` property now required (in addition to ``accessToken``, ``user``, ``sessionId``, ``license``)
 
 Removed
-^^^^^^^
+-------
 
 * ``PagedResults[FastStatsSystemDetail]``
 
 
 Version 0.1.6
---------------
+==============
 
 **08 Aug 2019**
 
@@ -134,15 +153,16 @@ Version 0.1.6
 * (OrbitAPI date: 21 Jun 2019)
 
 Fixed
-^^^^^
+-----
 
 * ``/{dataViewName}/FastStatsSystems/{systemName}`` **GET**
+
     - Now returns ``PagedResults[FastStatsSystemDetail]`` (previously ``FastStatsSystemDetail``)
     - Spec incorrect - did not match API behaviour
 
 
 Version 0.1.5
---------------
+==============
 
 **03 Jul 2019**
 
@@ -154,7 +174,7 @@ Version 0.1.5
 
 
 Version 0.1.4
---------------
+==============
 
 **02 Jul 2019**
 
@@ -163,7 +183,7 @@ Version 0.1.4
 * OrbitAPI date: 21 Jun 2019
 
 Added
-^^^^^
+------
 
 * ``/About/Language`` **GET**
 * ``/About/DataViews/{dataViewName}`` **GET**
@@ -171,25 +191,38 @@ Added
 * ``Capabilities``
 
 Changed
-^^^^^^^
+-------
 
 * ``/About/DataViews`` **GET**, ``/About/DataViews/Domains/{domain}`` **GET**, ``/About/DataViews/Systems/{systemName}`` **GET**
+
     - returns ``PagedResults[DataViewSummary]`` (previously ``PagedResults[DataViewDetails]``)
+
 * ``/{dataViewName}/FastStatsSystems/{systemName}/Folders`` **GET**
+
     - ``filter`` and ``orderBy`` parameters now also accept ``Type``, ``TableName``, ``VariableType`` fields, in addition to ``Name``, ``Description``
+
 * ``/{dataViewName}/FastStatsSystems/{systemName}/Folders/{path}`` **GET**
+
     - now takes ``filter``, ``orderBy``, ``offset``, ``count`` parameters
+
 * ``/{dataViewName}/FastStatsSystems/{systemName}/All`` **GET**
+
     - ``filter`` and ``orderBy`` parameters now also accept ``TableName``, ``VariableType`` fields, in addition to ``Key``, ``Type``
+
 * ``/{dataViewName}/Sessions/LoginParameters`` **POST**, ``/{dataViewName}/Sessions/SaltedLogin`` **POST**, ``/{dataViewName}/Sessions/ConvertSession`` **POST**
+
     - now consumes ``application/x-www-form-urlencoded`` (previously ``multipart/form-data``)
+
 * ``DataViewDetails``
+
     - ``capabilities`` now required
+
 * ``FolderStructureNode``, ``FastStatsSystemItem``
+
     - ``variable`` property type now ``Variable`` (previously ``VariableItem``)
 
 Removed
-^^^^^^^
+-------
 
 * ``/{dataViewName}/DataGrids/{systemName}/Files/{filePath}`` **POST**
 * ``DataGridResult``
@@ -197,7 +230,7 @@ Removed
 
 
 Version 0.1.0
---------------
+==============
 
 **28 Jun 2019**
 
