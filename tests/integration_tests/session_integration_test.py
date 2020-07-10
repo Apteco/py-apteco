@@ -3,7 +3,7 @@ from datetime import datetime
 
 def test_session(holidays):
     assert len(holidays.tables) == 9
-    assert len([v for v in holidays.variables.values() if not v.is_virtual]) == 77
+    assert len([v for v in holidays.variables if not v.is_virtual]) == 77
     assert holidays.master_table.name == "Households"
 
 

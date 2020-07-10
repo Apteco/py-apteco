@@ -73,6 +73,13 @@ def patch_initialize_variables_algo(mocker, fake_tables_with_master_table):
 
 
 @pytest.fixture()
+def patch_variables_accessor(mocker):
+    return mocker.patch(
+        "apteco.session.VariablesAccessor", return_value="fake variables accessor"
+    )
+
+
+@pytest.fixture()
 def fake_credentials_with_attrs(mocker):
     return mocker.Mock(
         base_url="baseless assumptions",
@@ -212,10 +219,11 @@ def test_create_session_with_credentials(
     patch_fetch_system_info,
     patch_initialize_variables_algo,
     patch_initialize_tables_algo,
+    patch_variables_accessor,
 ):
     session_example = Session(fake_credentials_with_attrs, "solar system")
     assert session_example.system == "solar system"
-    assert session_example.variables == "fake variables"
+    assert session_example.variables == "fake variables accessor"
     assert session_example.tables is fake_tables_with_master_table
     assert session_example.master_table == "fake master table"
     patch_fetch_system_info.assert_called_once_with()
@@ -223,6 +231,7 @@ def test_create_session_with_credentials(
     patch_initialize_variables_algo.assert_called_once_with(
         session_example, "fake tables no vars"
     )
+    patch_variables_accessor.assert_called_once_with("fake variables")
     assert session_example.base_url == "baseless assumptions"
     assert session_example.data_view == "a room with a view"
     assert session_example.session_id == "0246813579"
@@ -240,6 +249,7 @@ class TestSession:
         fake_tables_with_master_table,
         patch_initialize_tables_algo,
         patch_initialize_variables_algo,
+        patch_variables_accessor,
     ):
         session_example = Session(fake_credentials_with_attrs, "solar system")
         patch_unpack_credentials.assert_called_once_with(fake_credentials_with_attrs)
@@ -250,7 +260,8 @@ class TestSession:
         patch_initialize_variables_algo.assert_called_once_with(
             session_example, "fake tables no vars"
         )
-        assert session_example.variables == "fake variables"
+        patch_variables_accessor.assert_called_once_with("fake variables")
+        assert session_example.variables == "fake variables accessor"
         assert session_example.tables is fake_tables_with_master_table
         assert session_example.master_table == "fake master table"
 
@@ -1663,11 +1674,11 @@ class TestInitializeVariablesAlgorithm:
         ]
         fake_choose_variable.assert_has_calls(choose_variable_calls)
         fake_chosen_variable_class.assert_has_calls(variable_class_calls)
-        assert fake_initialize_vars_algo.variables == {
-            "cuName": "Created 1st var",
-            "trCost": "Created 2nd var",
-            "itCode": "Created 3rd var",
-        }
+        assert fake_initialize_vars_algo.variables == [
+            "Created 1st var",
+            "Created 2nd var",
+            "Created 3rd var",
+        ]
 
     def test_choose_variable_with_selector_var(self, mocker):
         raw_selector_var = mocker.Mock(
@@ -1843,15 +1854,15 @@ class TestInitializeVariablesAlgorithm:
         fake_items_table.configure_mock(name="Items")
         fake_web_visits_table.configure_mock(name="Web visits")
         fake_pages_viewed_table.configure_mock(name="Pages viewed")
-        var1 = mocker.Mock(table=fake_customers_table, description="Full name")
-        var2 = mocker.Mock(table=fake_customers_table, description="Gender")
-        var3 = mocker.Mock(table=fake_customers_table, description="Customer ID")
-        var4 = mocker.Mock(table=fake_purchases_table, description="Time")
-        var5 = mocker.Mock(table=fake_purchases_table, description="Total cost")
-        var6 = mocker.Mock(table=fake_items_table, description="Product code")
-        var7 = mocker.Mock(table=fake_web_visits_table, description="Origin")
-        var8 = mocker.Mock(table=fake_pages_viewed_table, description="URL")
-        var9 = mocker.Mock(table=fake_pages_viewed_table, description="Time requested")
+        var1 = mocker.Mock(table_name="Customers", description="Full name")
+        var2 = mocker.Mock(table_name="Customers", description="Gender")
+        var3 = mocker.Mock(table_name="Customers", description="Customer ID")
+        var4 = mocker.Mock(table_name="Purchases", description="Time")
+        var5 = mocker.Mock(table_name="Purchases", description="Total cost")
+        var6 = mocker.Mock(table_name="Items", description="Product code")
+        var7 = mocker.Mock(table_name="Web visits", description="Origin")
+        var8 = mocker.Mock(table_name="Pages viewed", description="URL")
+        var9 = mocker.Mock(table_name="Pages viewed", description="Time requested")
         var1.configure_mock(name="cuName")
         var2.configure_mock(name="cuGender")
         var3.configure_mock(name="cuID")
@@ -1861,23 +1872,23 @@ class TestInitializeVariablesAlgorithm:
         var7.configure_mock(name="wvOrigin")
         var8.configure_mock(name="pvURL")
         var9.configure_mock(name="pvTime")
-        fake_variables = {
-            1: var1,
-            2: var2,
-            3: var3,
-            4: var4,
-            5: var5,
-            6: var6,
-            7: var7,
-            8: var8,
-            9: var9,
-        }
+        fake_variables = [
+            var1,
+            var2,
+            var3,
+            var4,
+            var5,
+            var6,
+            var7,
+            var8,
+            var9,
+        ]
         correct_results = {
-            "Customers": {"cuName": var1, "cuGender": var2, "cuID": var3},
-            "Purchases": {"puTime": var4, "puCost": var5},
-            "Items": {"itPCode": var6},
-            "Web visits": {"wvOrigin": var7},
-            "Pages viewed": {"pvURL": var8, "pvTime": var9},
+            "Customers": [var1, var2, var3],
+            "Purchases": [var4, var5],
+            "Items": [var6],
+            "Web visits": [var7],
+            "Pages viewed": [var8, var9],
         }
         fake_initialize_variables_algo = mocker.Mock(variables=fake_variables)
         InitializeVariablesAlgorithm._identify_variables(fake_initialize_variables_algo)

@@ -3,7 +3,7 @@ import json
 import warnings
 from collections import Counter, defaultdict, namedtuple
 from json import JSONDecodeError
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Iterable
 
 import apteco_api as aa
 import PySimpleGUI
@@ -40,9 +40,10 @@ class Session:
         self.system = system
         self._fetch_system_info()
         tables_without_vars, master_table_name = InitializeTablesAlgorithm(self).run()
-        self.variables, self.tables = InitializeVariablesAlgorithm(
+        variables, self.tables = InitializeVariablesAlgorithm(
             self, tables_without_vars
         ).run()
+        self.variables = VariablesAccessor(variables)
         self.master_table = self.tables[master_table_name]
 
     def _unpack_credentials(self, credentials):
@@ -759,8 +760,7 @@ class InitializeVariablesAlgorithm:
         tables (Dict[str, Table]): mapping from table name
             to its Table object
         raw_variables (List[aa.Variable]): list of raw variables
-        variables (Dict[str, Variable]): mapping from variable name
-            to its Variable object
+        variables (List[Variable]): list of variables as py-apteco Variable objects
         variables_lookup (Dict[str, List[str]]): mapping from table name
             to list of its variables
 
@@ -785,14 +785,14 @@ class InitializeVariablesAlgorithm:
         self.session = session
         self.tables = tables_without_variables
 
-    def run(self) -> Tuple[Dict[str, Variable], Dict[str, Table]]:
+    def run(self) -> Tuple[List[Variable], Dict[str, Table]]:
         """Run the algorithm.
 
         Returns:
             (tuple): tuple containing:
 
-                variables (Dict[str], Variable): mapping from
-                    variable name to its Variable object
+                variables (List[Variable]): list of variables
+                    as py-apteco Variable objects
                 tables (Dict[str, Table]): mapping from table name
                     to its Table object, initially with
                     ``variables`` attribute as ``NOT_ASSIGNED``
@@ -833,8 +833,8 @@ class InitializeVariablesAlgorithm:
 
     def _create_variables(self):
         """Create py-apteco variables from apteco_api ones."""
-        self.variables = {
-            v.name: self._choose_variable(v)(
+        self.variables = [
+            self._choose_variable(v)(
                 name=v.name,
                 description=v.description,
                 type=v.type,
@@ -851,7 +851,7 @@ class InitializeVariablesAlgorithm:
                 session=self.session,
             )
             for v in self.raw_variables
-        }
+        ]
 
     @staticmethod
     def _choose_variable(raw_variable: aa.Variable):
@@ -891,16 +891,16 @@ class InitializeVariablesAlgorithm:
 
     def _identify_variables(self):
         """Identify variables for each table."""
-        self.variables_lookup = defaultdict(dict)
-        for variable in self.variables.values():
-            self.variables_lookup[variable.table.name][variable.name] = variable
+        self.variables_lookup = defaultdict(list)
+        for variable in self.variables:
+            self.variables_lookup[variable.table.name].append(variable)
         self.variables_lookup.default_factory = None  # 'freeze' as normal dict
 
     def _assign_variables(self):
         """Assign variables to each table."""
         for table in self.tables.values():
             try:
-                table.variables = self.variables_lookup[table.name]
+                table.variables = VariablesAccessor(self.variables_lookup[table.name])
             except KeyError:
                 raise VariablesError(f"No variables found for '{table.name}' table.")
 
@@ -914,3 +914,30 @@ class InitializeVariablesAlgorithm:
             raise VariablesError(
                 f"{len(no_variables)} table(s) had no variables assigned."
             )
+
+
+class VariablesAccessor:
+    """Dictionary-like access for variables by name or description."""
+
+    def __init__(self, variables: Iterable[Variable]):
+        self._variables_by_name = {var.name: var for var in variables}
+        self._variables_by_desc = {var.description: var for var in variables}
+        self._variables = variables
+
+    def __getitem__(self, item):
+        name_match = self._variables_by_name.get(item)
+        desc_match = self._variables_by_desc.get(item)
+        match_count = (name_match is not None) + (desc_match is not None)
+        if match_count == 1:
+            return name_match or desc_match
+        elif match_count == 2:
+            if name_match == desc_match:
+                return name_match
+            raise KeyError(f"Lookup key '{item}' was ambiguous.")
+        else:
+            raise KeyError(
+                f"Lookup key '{item}' did not match a variable name or description."
+            )
+
+    def __iter__(self):
+        return iter(self._variables)
