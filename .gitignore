@@ -201,6 +201,12 @@ fabric.properties
 ##################################################
 # Manually added
 
+# PyCharm project files with user-specific values
+# https://stackoverflow.com/questions/38590022/
+.idea/*.iml
+.idea/misc.xml
+.idea/other.xml
+
 # local development tests
 tests/local/
 
