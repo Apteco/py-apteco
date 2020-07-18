@@ -278,6 +278,10 @@ class Variable(VariableMixin):
         self.is_virtual = is_virtual
         self.session = session
 
+    @property
+    def table_name(self):
+        return self.table.name
+
 
 class BaseSelectorVariable(Variable):
     def __init__(self, **kwargs):
@@ -893,7 +897,7 @@ class InitializeVariablesAlgorithm:
         """Identify variables for each table."""
         self.variables_lookup = defaultdict(list)
         for variable in self.variables:
-            self.variables_lookup[variable.table.name].append(variable)
+            self.variables_lookup[variable.table_name].append(variable)
         self.variables_lookup.default_factory = None  # 'freeze' as normal dict
 
     def _assign_variables(self):
