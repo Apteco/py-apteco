@@ -24,6 +24,27 @@ def holidays():
     )
 
 
+"""
+Holidays table structure:
+
+Households
+└── People
+    ├── Bookings
+    ├── Policies
+    ├── WebVisits
+    ├── Communications
+    │   ├── Content
+    │   └── Responses
+    └── Journeys
+
+"""
+
+
+@pytest.fixture(scope="session")
+def households(holidays):
+    return holidays.tables["Households"]
+
+
 @pytest.fixture(scope="session")
 def people(holidays):
     return holidays.tables["People"]
@@ -32,11 +53,6 @@ def people(holidays):
 @pytest.fixture(scope="session")
 def bookings(holidays):
     return holidays.tables["Bookings"]
-
-
-@pytest.fixture(scope="session")
-def households(holidays):
-    return holidays.tables["Households"]
 
 
 @pytest.fixture(scope="session")

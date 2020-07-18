@@ -209,29 +209,53 @@ class Table(TableMixin):
         """
         return self.name == other.name
 
-    def is_ancestor(self, other: "Table"):
+    def is_ancestor(self, other: "Table", allow_same: bool = False):
         """Return whether this table is an ancestor of `other`.
 
         Args:
             other (Table): the table to check against
+            allow_same (bool): whether to include the table itself as an 'ancestor'
+                (default is ``False``)
 
         Returns:
             bool: ``True`` if this is an ancestor of `other`, otherwise ``False``
 
         """
-        return self in other.ancestors
+        return self in other.ancestors or (allow_same and self.is_same(other))
 
-    def is_descendant(self, other: "Table"):
+    def is_descendant(self, other: "Table", allow_same: bool = False):
         """Return whether this table is a descendant of `other`.
 
         Args:
             other (Table): the table to check against
+            allow_same (bool): whether to include the table itself as an 'ancestor'
+                (default is ``False``)
 
         Returns:
             bool: ``True`` if this is a descendant of `other`, otherwise ``False``
 
         """
-        return self in other.descendants
+        return self in other.descendants or (allow_same and self.is_same(other))
+
+    def is_related(self, other: "Table", allow_same: bool = False):
+        """Return whether this table is related to `other`.
+
+        'related' is defined as being either an ancestor or descendant.
+
+        Args:
+            other (Table): the table to check against
+            allow_same (bool): whether to include the table itself as 'related'
+                (default is ``False``)
+
+        Returns:
+            bool: ``True`` if this is related to `other`, otherwise ``False``
+
+        """
+        return (
+            self.is_ancestor(other)
+            or self.is_descendant(other)
+            or (allow_same and self.is_same(other))
+        )
 
     def __eq__(self, other):
         """Return whether this is the same table as `other`."""
