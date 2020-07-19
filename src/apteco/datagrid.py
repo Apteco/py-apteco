@@ -73,13 +73,13 @@ class DataGrid:
 
     def _check_columns(self):
         for column in self.columns:
-            if column.table != self.table:
+            if not column.table.is_ancestor(self.table, allow_same=True):
                 raise ValueError(
                     f"The resolve table of the data grid is '{self.table.name}',"
                     f" but the variable '{column.name}' belongs to the"
                     f" '{column.table.name}' table."
                     f"\nOnly variables from the same table as the data grid"
-                    f" are currently supported as data grid columns."
+                    f" or from ancestor tables can be used as data grid columns."
                 )
             if column.type in ("Array", "FlagArray"):
                 raise ValueError(

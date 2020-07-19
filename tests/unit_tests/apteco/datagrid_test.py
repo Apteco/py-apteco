@@ -281,8 +281,20 @@ class TestDataGrid:
     def test__check_columns(self, fake_datagrid):
         fake_datagrid._check_columns()
 
-    def test__check_columns_bad_table(self, fake_datagrid, fake_var_purchase_id):
+    def test__check_columns_multiple_tables(
+        self, fake_datagrid, fake_table_customers, fake_var_purchase_id
+    ):
         fake_datagrid.columns.append(fake_var_purchase_id)
+        fake_table_customers.is_ancestor = Mock(side_effect=[True, True, True])
+        fake_var_purchase_id.table.is_ancestor = Mock(side_effect=[True])
+        fake_datagrid._check_columns()
+
+    def test__check_columns_bad_table(
+        self, fake_datagrid, fake_table_customers, fake_var_purchase_id
+    ):
+        fake_datagrid.columns.append(fake_var_purchase_id)
+        fake_table_customers.is_ancestor = Mock(side_effect=[True, True, True])
+        fake_var_purchase_id.table.is_ancestor = Mock(side_effect=[False])
         with pytest.raises(ValueError) as exc_info:
             fake_datagrid._check_columns()
         assert exc_info.value.args[0] == (
@@ -290,7 +302,7 @@ class TestDataGrid:
             " but the variable 'puID' belongs to the"
             " 'Purchases' table."
             "\nOnly variables from the same table as the data grid"
-            " are currently supported as data grid columns."
+            " or from ancestor tables can be used as data grid columns."
         )
 
     def test__check_columns_bad_variable(
