@@ -252,8 +252,28 @@ class TestCube:
             " are currently supported as cube dimensions."
         )
 
-    def test__check_dimensions_bad_table(self, fake_cube, fake_var_customer_gender):
+    def test__check_dimensions_multiple_tables(
+        self,
+        fake_cube,
+        fake_table_purchases,
+        fake_table_customers,
+        fake_var_customer_gender,
+    ):
         fake_cube.dimensions.append(fake_var_customer_gender)
+        fake_table_purchases.is_related = Mock(side_effect=[True, True, True])
+        fake_table_customers.is_related = Mock(side_effect=[True])
+        fake_cube._check_dimensions()
+
+    def test__check_dimensions_bad_table(
+        self,
+        fake_cube,
+        fake_table_purchases,
+        fake_table_customers,
+        fake_var_customer_gender,
+    ):
+        fake_cube.dimensions.append(fake_var_customer_gender)
+        fake_table_purchases.is_related = Mock(side_effect=[True, True, True])
+        fake_table_customers.is_related = Mock(side_effect=[False])
         with pytest.raises(ValueError) as exc_info:
             fake_cube._check_dimensions()
         assert exc_info.value.args[0] == (
@@ -261,7 +281,7 @@ class TestCube:
             " but the variable 'cuGender' belongs to the"
             " 'Customers' table."
             "\nOnly variables from the same table as the cube"
-            " are currently supported as cube dimensions."
+            " or from related tables can be used as cube dimensions."
         )
 
     @patch("apteco_api.Dimension")

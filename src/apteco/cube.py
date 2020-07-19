@@ -55,13 +55,13 @@ class Cube:
                     f"\nOnly Selector variables (excluding sub-types)"
                     f" are currently supported as cube dimensions."
                 )
-            if dimension.table != self.table:
+            if not dimension.table.is_related(self.table, allow_same=True):
                 raise ValueError(
                     f"The counting table of the cube is '{self.table.name}',"
                     f" but the variable '{dimension.name}' belongs to the"
                     f" '{dimension.table.name}' table."
                     f"\nOnly variables from the same table as the cube"
-                    f" are currently supported as cube dimensions."
+                    f" or from related tables can be used as cube dimensions."
                 )
 
     def _create_dimensions(self):
