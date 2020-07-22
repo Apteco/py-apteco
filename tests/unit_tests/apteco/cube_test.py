@@ -2,11 +2,25 @@ from unittest.mock import MagicMock, Mock, call, patch
 
 import apteco_api as aa
 import pytest
+from pytest_cases import parametrize_with_cases, case
 
 from apteco.cube import Cube
-from tests.unit_tests.apteco.conftest import (
-    fake_sel_high_value_purchases, fake_table_purchases
-)  # have to import fixtures like this to use in parametrized testing
+
+
+@case(id="no_selection")
+def sel_empty():
+    return None, aa.Selection(table_name="Purchases")
+
+
+@case(id="with_selection")
+def sel_nonempty(fake_sel_high_value_purchases):
+    return (
+        fake_sel_high_value_purchases,
+        aa.Selection(
+            table_name="Purchases",
+            rule=aa.Rule(clause="selection_high_value_purchases_model")
+        ),
+    )
 
 
 @pytest.fixture()
@@ -220,24 +234,10 @@ class TestCube:
             id="0", resolve_table_name="Purchases", function="Count", variable_name=None
         )
 
-    @pytest.mark.parametrize(
-        "selection, expected_selection",
-        [
-            (None, aa.Selection(table_name="Purchases")),
-            (
-                # https://github.com/pytest-dev/pytest/issues/349#issuecomment-230353026
-                fake_sel_high_value_purchases(fake_table_purchases()),
-                aa.Selection(
-                    table_name="Purchases",
-                    rule=aa.Rule(clause="selection_high_value_purchases_model")
-                ),
-            ),
-        ],
-        ids=["no_selection", "with_selection"],
-    )
     @patch("apteco_api.CubesApi")
     @patch("apteco.cube.Cube._create_measures")
     @patch("apteco.cube.Cube._create_dimensions")
+    @parametrize_with_cases("selection, expected_selection", cases=".", prefix="sel_")
     def test__get_cube(
         self,
         patch__create_dimensions,
