@@ -269,6 +269,14 @@ class Table(TableMixin):
         """Return whether this table is a descendant of `other`."""
         return self.is_descendant(other)
 
+    def __le__(self, other):
+        """Return whether this table is the same or an ancestor of `other`."""
+        return self.is_ancestor(other, allow_same=True)
+
+    def __ge__(self, other):
+        """Return whether this table is the same or a descendant of `other`."""
+        return self.is_descendant(other, allow_same=True)
+
     def __getitem__(self, item):
         return self.variables[item]
 
