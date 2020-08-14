@@ -198,19 +198,19 @@ class Table(TableMixin):
         self.session = session
 
     def is_same(self, other: "Table"):
-        """Return whether this table is the same as `other`.
+        """Return whether this table is the same as ``other``.
 
         Args:
             other (Table): the table to check against
 
         Returns:
-            bool: ``True`` if this is the same as `other`, otherwise ``False``
+            bool: ``True`` if this is the same as ``other``, otherwise ``False``
 
         """
         return self.name == other.name
 
     def is_ancestor(self, other: "Table", allow_same: bool = False):
-        """Return whether this table is an ancestor of `other`.
+        """Return whether this table is an ancestor of ``other``.
 
         Args:
             other (Table): the table to check against
@@ -218,13 +218,13 @@ class Table(TableMixin):
                 (default is ``False``)
 
         Returns:
-            bool: ``True`` if this is an ancestor of `other`, otherwise ``False``
+            bool: ``True`` if this is an ancestor of ``other``, otherwise ``False``
 
         """
         return self in other.ancestors or (allow_same and self.is_same(other))
 
     def is_descendant(self, other: "Table", allow_same: bool = False):
-        """Return whether this table is a descendant of `other`.
+        """Return whether this table is a descendant of ``other``.
 
         Args:
             other (Table): the table to check against
@@ -232,13 +232,13 @@ class Table(TableMixin):
                 (default is ``False``)
 
         Returns:
-            bool: ``True`` if this is a descendant of `other`, otherwise ``False``
+            bool: ``True`` if this is a descendant of ``other``, otherwise ``False``
 
         """
         return self in other.descendants or (allow_same and self.is_same(other))
 
     def is_related(self, other: "Table", allow_same: bool = False):
-        """Return whether this table is related to `other`.
+        """Return whether this table is related to ``other``.
 
         'related' is defined as being either an ancestor or descendant.
 
@@ -248,7 +248,7 @@ class Table(TableMixin):
                 (default is ``False``)
 
         Returns:
-            bool: ``True`` if this is related to `other`, otherwise ``False``
+            bool: ``True`` if this is related to ``other``, otherwise ``False``
 
         """
         return (
@@ -258,23 +258,23 @@ class Table(TableMixin):
         )
 
     def __eq__(self, other):
-        """Return whether this is the same table as `other`."""
+        """Return whether this is the same table as ``other``."""
         return self.is_same(other)
 
     def __lt__(self, other):
-        """Return whether this table is an ancestor of `other`."""
+        """Return whether this table is an ancestor of ``other``."""
         return self.is_ancestor(other)
 
     def __gt__(self, other):
-        """Return whether this table is a descendant of `other`."""
+        """Return whether this table is a descendant of ``other``."""
         return self.is_descendant(other)
 
     def __le__(self, other):
-        """Return whether this table is the same or an ancestor of `other`."""
+        """Return whether this table is the same or an ancestor of ``other``."""
         return self.is_ancestor(other, allow_same=True)
 
     def __ge__(self, other):
-        """Return whether this table is the same or a descendant of `other`."""
+        """Return whether this table is the same or a descendant of ``other``."""
         return self.is_descendant(other, allow_same=True)
 
     def __getitem__(self, item):
