@@ -122,6 +122,27 @@ class TableMixin:
         return Selection(query_final, session).count
 
 
+general_error_msg_selector = (
+    "Chosen value(s) for a selector variable"
+    " must be given as a string or an iterable of strings."
+)
+general_error_msg_text = (
+    "Chosen value(s) for a text variable"
+    " must be given as a string or an iterable of strings."
+)
+single_value_error_msg_text = (
+    "Must specify a single string when using inequality operators."
+)
+general_error_msg_array = (
+    "Chosen value(s) for an array variable"
+    " must be given as a string or an iterable of strings."
+)
+general_error_msg_flag_array = (
+    "Chosen value(s) for a flag array variable"
+    " must be given as a string or an iterable of strings."
+)
+
+
 def normalize_string_value(value, error_msg):
     if isinstance(value, str):
         return value
@@ -136,6 +157,15 @@ def normalize_string_input(input_value, error_msg):
         return [normalize_string_value(v, error_msg) for v in input_value]
     else:
         raise ValueError(error_msg)
+
+
+general_error_msg_numeric = (
+    "Chosen value(s) for a numeric variable"
+    " must be given as a number or an iterable of numbers."
+)
+single_value_error_msg_numeric = (
+    "Must specify a single number when using inequality operators."
+)
 
 
 def normalize_number_value(value, error_msg):
@@ -159,6 +189,15 @@ def normalize_number_input(input_value, error_msg):
         raise ValueError(error_msg)
 
 
+general_error_msg_date = (
+    "Chosen value for a date variable"
+    " must be a date object or an iterable of date objects."
+)
+single_value_error_msg_date = (
+    "Must specify a single date when using inequality operators."
+)
+
+
 def normalize_date_value(value, error_msg, *, basic=False):
     if isinstance(value, date):
         if basic:  # format for DateListClause
@@ -176,6 +215,11 @@ def normalize_date_input(input_value, error_msg, *, basic=False):
         return [normalize_date_value(v, error_msg, basic=basic) for v in input_value]
     else:
         raise ValueError(error_msg)
+
+
+single_value_error_msg_datetime = (
+    "Must specify a single datetime when using inequality operators."
+)
 
 
 def normalize_datetime_value(value, error_msg):

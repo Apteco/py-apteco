@@ -16,20 +16,20 @@ from apteco.query import (
     normalize_date_value,
     DateTimeRangeClause,
     normalize_datetime_value,
+    general_error_msg_selector,
+    general_error_msg_numeric,
+    single_value_error_msg_numeric,
+    general_error_msg_text,
+    single_value_error_msg_text,
+    general_error_msg_array,
+    general_error_msg_flag_array,
+    general_error_msg_date,
+    single_value_error_msg_date,
+    single_value_error_msg_datetime,
 )
 
 
-class VariableMixin:
-    def isin(self, values):
-        raise NotImplementedError
-        # return criteria_clause(self, values)
-
-    # TODO: implement contains method for variables
-    def contains(self, needle):
-        raise NotImplementedError
-
-
-class Variable(VariableMixin):
+class Variable:
     """Class representing a FastStats system variable."""
 
     def __init__(
@@ -74,45 +74,30 @@ class BaseSelectorVariable(Variable):
         self.var_code_order = selector_info.var_code_order
 
 
-class SelectorVariableMixin:
-    general_error_msg = (
-        "Chosen value(s) for a selector variable"
-        " must be given as a string or an iterable of strings."
-    )
-
-    def __eq__(self: "SelectorVariable", other):
-        return SelectorClause(
-            self,
-            normalize_string_input(other, self.general_error_msg),
-            session=self.session,
-        )
-
-    def __ne__(self: "SelectorVariable", other):
-        return SelectorClause(
-            self,
-            normalize_string_input(other, self.general_error_msg),
-            include=False,
-            session=self.session,
-        )
-
-
-class SelectorVariable(BaseSelectorVariable, SelectorVariableMixin):
+class SelectorVariable(BaseSelectorVariable):
     """Class representing a FastStats Selector variable."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.type = "Selector"
 
+    def __eq__(self: "SelectorVariable", other):
+        return SelectorClause(
+            self,
+            normalize_string_input(other, general_error_msg_selector),
+            session=self.session,
+        )
 
-class CombinedCategoriesVariableMixin:
-    def __eq__(self: "CombinedCategoriesVariable", other):
-        raise NotImplementedError
+    def __ne__(self: "SelectorVariable", other):
+        return SelectorClause(
+            self,
+            normalize_string_input(other, general_error_msg_selector),
+            include=False,
+            session=self.session,
+        )
 
-    def __ne__(self: "CombinedCategoriesVariable", other):
-        raise NotImplementedError
 
-
-class CombinedCategoriesVariable(BaseSelectorVariable, CombinedCategoriesVariableMixin):
+class CombinedCategoriesVariable(BaseSelectorVariable):
     """Class representing a FastStats Combined Categories variable."""
 
     def __init__(self, **kwargs):
@@ -121,61 +106,14 @@ class CombinedCategoriesVariable(BaseSelectorVariable, CombinedCategoriesVariabl
         selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
         self.combined_from = selector_info.combined_from_variable_name
 
+    def __eq__(self: "CombinedCategoriesVariable", other):
+        raise NotImplementedError
 
-class NumericVariableMixin:
-    general_error_msg = (
-        "Chosen value(s) for a numeric variable"
-        " must be given as a number or an iterable of numbers."
-    )
-    single_value_error_msg = (
-        "Must specify a single number when using inequality operators."
-    )
-
-    def __eq__(self: "NumericVariable", other):
-        return NumericClause(
-            self,
-            normalize_number_input(other, self.general_error_msg),
-            session=self.session,
-        )
-
-    def __ne__(self: "NumericVariable", other):
-        return NumericClause(
-            self,
-            normalize_number_input(other, self.general_error_msg),
-            include=False,
-            session=self.session,
-        )
-
-    def __lt__(self: "NumericVariable", other):
-        return NumericClause(
-            self,
-            [f"<{normalize_number_value(other, self.single_value_error_msg)}"],
-            session=self.session,
-        )
-
-    def __le__(self: "NumericVariable", other):
-        return NumericClause(
-            self,
-            [f"<={normalize_number_value(other, self.single_value_error_msg)}"],
-            session=self.session,
-        )
-
-    def __gt__(self: "NumericVariable", other):
-        return NumericClause(
-            self,
-            [f">{normalize_number_value(other, self.single_value_error_msg)}"],
-            session=self.session,
-        )
-
-    def __ge__(self: "NumericVariable", other):
-        return NumericClause(
-            self,
-            [f">={normalize_number_value(other, self.single_value_error_msg)}"],
-            session=self.session,
-        )
+    def __ne__(self: "CombinedCategoriesVariable", other):
+        raise NotImplementedError
 
 
-class NumericVariable(Variable, NumericVariableMixin):
+class NumericVariable(Variable):
     """Class representing a FastStats Numeric variable."""
 
     def __init__(self, **kwargs):
@@ -188,49 +126,51 @@ class NumericVariable(Variable, NumericVariableMixin):
         self.currency_locale = numeric_info.currency_locale
         self.currency_symbol = numeric_info.currency_symbol
 
-
-class TextVariableMixin:
-    general_error_msg = (
-        "Chosen value(s) for a text variable"
-        " must be given as a string or an iterable of strings."
-    )
-    single_value_error_msg = (
-        "Must specify a single string when using inequality operators."
-    )
-
-    def __eq__(self: "TextVariable", other):
-        return TextClause(
+    def __eq__(self: "NumericVariable", other):
+        return NumericClause(
             self,
-            normalize_string_input(other, self.general_error_msg),
+            normalize_number_input(other, general_error_msg_numeric),
             session=self.session,
         )
 
-    def __ne__(self: "TextVariable", other):
-        return TextClause(
+    def __ne__(self: "NumericVariable", other):
+        return NumericClause(
             self,
-            normalize_string_input(other, self.general_error_msg),
+            normalize_number_input(other, general_error_msg_numeric),
             include=False,
             session=self.session,
         )
 
-    def __le__(self: "TextVariable", other):
-        return TextClause(
+    def __lt__(self: "NumericVariable", other):
+        return NumericClause(
             self,
-            [f'<="{normalize_string_value(other, self.single_value_error_msg)}"'],
-            "Ranges",
+            [f"<{normalize_number_value(other, single_value_error_msg_numeric)}"],
             session=self.session,
         )
 
-    def __ge__(self: "TextVariable", other):
-        return TextClause(
+    def __le__(self: "NumericVariable", other):
+        return NumericClause(
             self,
-            [f'>="{normalize_string_value(other, self.single_value_error_msg)}"'],
-            "Ranges",
+            [f"<={normalize_number_value(other, single_value_error_msg_numeric)}"],
+            session=self.session,
+        )
+
+    def __gt__(self: "NumericVariable", other):
+        return NumericClause(
+            self,
+            [f">{normalize_number_value(other, single_value_error_msg_numeric)}"],
+            session=self.session,
+        )
+
+    def __ge__(self: "NumericVariable", other):
+        return NumericClause(
+            self,
+            [f">={normalize_number_value(other, single_value_error_msg_numeric)}"],
             session=self.session,
         )
 
 
-class TextVariable(Variable, TextVariableMixin):
+class TextVariable(Variable):
     """Class representing a FastStats Text variable."""
 
     def __init__(self, **kwargs):
@@ -239,65 +179,82 @@ class TextVariable(Variable, TextVariableMixin):
         text_info = kwargs["text_info"]  # type: aa.TextVariableInfo
         self.max_length = text_info.maximum_text_length
 
-
-class ArrayVariableMixin:
-    general_error_msg = (
-        "Chosen value(s) for an array variable"
-        " must be given as a string or an iterable of strings."
-    )
-
-    def __eq__(self: "ArrayVariable", other):
-        return ArrayClause(
+    def __eq__(self: "TextVariable", other):
+        return TextClause(
             self,
-            normalize_string_input(other, self.general_error_msg),
+            normalize_string_input(other, general_error_msg_text),
             session=self.session,
         )
 
-    def __ne__(self: "ArrayVariable", other):
-        return ArrayClause(
+    def __ne__(self: "TextVariable", other):
+        return TextClause(
             self,
-            normalize_string_input(other, self.general_error_msg),
+            normalize_string_input(other, general_error_msg_text),
             include=False,
             session=self.session,
         )
 
+    def __le__(self: "TextVariable", other):
+        return TextClause(
+            self,
+            [f'<="{normalize_string_value(other, single_value_error_msg_text)}"'],
+            "Ranges",
+            session=self.session,
+        )
 
-class ArrayVariable(BaseSelectorVariable, ArrayVariableMixin):
+    def __ge__(self: "TextVariable", other):
+        return TextClause(
+            self,
+            [f'>="{normalize_string_value(other, single_value_error_msg_text)}"'],
+            "Ranges",
+            session=self.session,
+        )
+
+
+class ArrayVariable(BaseSelectorVariable):
     """Class representing a FastStats Array variable."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.type = "Array"
 
+    def __eq__(self: "ArrayVariable", other):
+        return ArrayClause(
+            self,
+            normalize_string_input(other, general_error_msg_array),
+            session=self.session,
+        )
 
-class FlagArrayVariableMixin:
-    general_error_msg = (
-        "Chosen value(s) for a flag array variable"
-        " must be given as a string or an iterable of strings."
-    )
+    def __ne__(self: "ArrayVariable", other):
+        return ArrayClause(
+            self,
+            normalize_string_input(other, general_error_msg_array),
+            include=False,
+            session=self.session,
+        )
+
+
+class FlagArrayVariable(BaseSelectorVariable):
+    """Class representing a FastStats Flag Array variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "FlagArray"
 
     def __eq__(self: "FlagArrayVariable", other):
         return FlagArrayClause(
             self,
-            normalize_string_input(other, self.general_error_msg),
+            normalize_string_input(other, general_error_msg_flag_array),
             session=self.session,
         )
 
     def __ne__(self: "FlagArrayVariable", other):
         return FlagArrayClause(
             self,
-            normalize_string_input(other, self.general_error_msg),
+            normalize_string_input(other, general_error_msg_flag_array),
             include=False,
             session=self.session,
         )
-
-
-class FlagArrayVariable(BaseSelectorVariable, FlagArrayVariableMixin):
-    """Class representing a FastStats Flag Array variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "FlagArray"
 
 
 class BaseDateVariable(BaseSelectorVariable):
@@ -308,26 +265,24 @@ class BaseDateVariable(BaseSelectorVariable):
         self.max_date = selector_info.maximum_date
 
 
-class DateVariableMixin:
-    general_error_msg = (
-        "Chosen value for a date variable"
-        " must be a date object or an iterable of date objects."
-    )
-    single_value_error_msg = (
-        "Must specify a single date when using inequality operators."
-    )
+class DateVariable(BaseDateVariable):
+    """Class representing a FastStats Date variable."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.type = "Date"
 
     def __eq__(self: "DateVariable", other):
         return DateListClause(
             self,
-            normalize_date_input(other, self.general_error_msg, basic=True),
+            normalize_date_input(other, general_error_msg_date, basic=True),
             session=self.session,
         )
 
     def __ne__(self: "DateVariable", other):
         return DateListClause(
             self,
-            normalize_date_input(other, self.general_error_msg, basic=True),
+            normalize_date_input(other, general_error_msg_date, basic=True),
             include=False,
             session=self.session,
         )
@@ -336,31 +291,25 @@ class DateVariableMixin:
         return DateRangeClause(
             self,
             "Earliest",
-            normalize_date_value(other, self.single_value_error_msg),
+            normalize_date_value(other, single_value_error_msg_date),
             session=self.session,
         )
 
     def __ge__(self: "DateVariable", other):
         return DateRangeClause(
             self,
-            normalize_date_value(other, self.single_value_error_msg),
+            normalize_date_value(other, single_value_error_msg_date),
             "Latest",
             session=self.session,
         )
 
 
-class DateVariable(BaseDateVariable, DateVariableMixin):
-    """Class representing a FastStats Date variable."""
+class DateTimeVariable(BaseDateVariable):
+    """Class representing a FastStats DateTime variable."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "Date"
-
-
-class DateTimeVariableMixin:
-    single_value_error_msg = (
-        "Must specify a single datetime when using inequality operators."
-    )
+        self.type = "DateTime"
 
     def __eq__(self, other):
         raise NotImplementedError
@@ -372,38 +321,28 @@ class DateTimeVariableMixin:
         return DateTimeRangeClause(
             self,
             "Earliest",
-            normalize_datetime_value(other, self.single_value_error_msg),
+            normalize_datetime_value(other, single_value_error_msg_datetime),
             session=self.session,
         )
 
     def __ge__(self: "DateTimeVariable", other):
         return DateTimeRangeClause(
             self,
-            normalize_datetime_value(other, self.single_value_error_msg),
+            normalize_datetime_value(other, single_value_error_msg_datetime),
             "Latest",
             session=self.session,
         )
 
 
-class DateTimeVariable(BaseDateVariable, DateTimeVariableMixin):
-    """Class representing a FastStats DateTime variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "DateTime"
-
-
-class ReferenceVariableMixin:
-    def __eq__(self: "ReferenceVariable", other):
-        raise NotImplementedError
-
-    def __ne__(self: "ReferenceVariable", other):
-        raise NotImplementedError
-
-
-class ReferenceVariable(Variable, ReferenceVariableMixin):
+class ReferenceVariable(Variable):
     """Class representing a FastStats Reference variable."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.type = "Reference"
+
+    def __eq__(self: "ReferenceVariable", other):
+        raise NotImplementedError
+
+    def __ne__(self: "ReferenceVariable", other):
+        raise NotImplementedError
