@@ -15,18 +15,17 @@ from apteco.exceptions import (
     TablesError,
     VariablesError,
 )
-from apteco.query import (
-    ArrayVariableMixin,
-    CombinedCategoriesVariableMixin,
-    DateTimeVariableMixin,
-    DateVariableMixin,
-    FlagArrayVariableMixin,
-    NumericVariableMixin,
-    ReferenceVariableMixin,
-    SelectorVariableMixin,
-    TableMixin,
-    TextVariableMixin,
-    VariableMixin,
+from apteco.query import TableMixin
+from apteco.variables import (
+    Variable,
+    SelectorVariable,
+    NumericVariable,
+    TextVariable,
+    ArrayVariable,
+    FlagArrayVariable,
+    DateVariable,
+    DateTimeVariable,
+    ReferenceVariable,
 )
 
 NOT_ASSIGNED: Any = object()
@@ -139,7 +138,7 @@ class Table(TableMixin):
         children: List["Table"],
         ancestors: List["Table"],
         descendants: List["Table"],
-        variables: Dict[str, "Variable"],
+        variables: Dict[str, Variable],
         *,
         session: Optional[Session] = None,
     ):
@@ -279,141 +278,6 @@ class Table(TableMixin):
 
     def __getitem__(self, item):
         return self.variables[item]
-
-
-class Variable(VariableMixin):
-    """Class representing a FastStats system variable."""
-
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        type: str,
-        folder_name: str,
-        table: Table,
-        is_selectable: bool,
-        is_browsable: bool,
-        is_exportable: bool,
-        is_virtual: bool,
-        *,
-        session: Optional[Session] = None,
-        **kwargs,
-    ):
-        self.name = name
-        self.description = description
-        self._model_type = type
-        self.folder_name = folder_name
-        self.table = table
-        self.is_selectable = is_selectable
-        self.is_browsable = is_browsable
-        self.is_exportable = is_exportable
-        self.is_virtual = is_virtual
-        self.session = session
-
-    @property
-    def table_name(self):
-        return self.table.name
-
-
-class BaseSelectorVariable(Variable):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
-        self.code_length = selector_info.code_length
-        self.num_codes = selector_info.number_of_codes
-        self.var_code_min_count = selector_info.minimum_var_code_count
-        self.var_code_max_count = selector_info.maximum_var_code_count
-        self.var_code_order = selector_info.var_code_order
-
-
-class SelectorVariable(BaseSelectorVariable, SelectorVariableMixin):
-    """Class representing a FastStats Selector variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "Selector"
-
-
-class CombinedCategoriesVariable(BaseSelectorVariable, CombinedCategoriesVariableMixin):
-    """Class representing a FastStats Combined Categories variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "CombinedCategories"
-        selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
-        self.combined_from = selector_info.combined_from_variable_name
-
-
-class NumericVariable(Variable, NumericVariableMixin):
-    """Class representing a FastStats Numeric variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "Numeric"
-        numeric_info = kwargs["numeric_info"]  # type: aa.NumericVariableInfo
-        self.min = numeric_info.minimum
-        self.max = numeric_info.maximum
-        self.is_currency = numeric_info.is_currency
-        self.currency_locale = numeric_info.currency_locale
-        self.currency_symbol = numeric_info.currency_symbol
-
-
-class TextVariable(Variable, TextVariableMixin):
-    """Class representing a FastStats Text variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "Text"
-        text_info = kwargs["text_info"]  # type: aa.TextVariableInfo
-        self.max_length = text_info.maximum_text_length
-
-
-class ArrayVariable(BaseSelectorVariable, ArrayVariableMixin):
-    """Class representing a FastStats Array variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "Array"
-
-
-class FlagArrayVariable(BaseSelectorVariable, FlagArrayVariableMixin):
-    """Class representing a FastStats Flag Array variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "FlagArray"
-
-
-class BaseDateVariable(BaseSelectorVariable):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
-        self.min_date = selector_info.minimum_date
-        self.max_date = selector_info.maximum_date
-
-
-class DateVariable(BaseDateVariable, DateVariableMixin):
-    """Class representing a FastStats Date variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "Date"
-
-
-class DateTimeVariable(BaseDateVariable, DateTimeVariableMixin):
-    """Class representing a FastStats DateTime variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "DateTime"
-
-
-class ReferenceVariable(Variable, ReferenceVariableMixin):
-    """Class representing a FastStats Reference variable."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.type = "Reference"
 
 
 User = namedtuple("User", ["username", "first_name", "surname", "email_address"])

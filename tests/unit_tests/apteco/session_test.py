@@ -14,23 +14,25 @@ from apteco.exceptions import (
 )
 from apteco.session import (
     NOT_ASSIGNED,
-    ArrayVariable,
-    DateTimeVariable,
-    DateVariable,
-    FlagArrayVariable,
     InitializeTablesAlgorithm,
     InitializeVariablesAlgorithm,
-    NumericVariable,
-    ReferenceVariable,
-    SelectorVariable,
     Session,
     SimpleLoginAlgorithm,
     Table,
-    TextVariable,
     User,
     _get_password,
     login,
     login_with_password,
+)
+from apteco.variables import (
+    SelectorVariable,
+    NumericVariable,
+    TextVariable,
+    ArrayVariable,
+    FlagArrayVariable,
+    DateVariable,
+    DateTimeVariable,
+    ReferenceVariable,
 )
 
 

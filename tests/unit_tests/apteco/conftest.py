@@ -2,8 +2,14 @@ from unittest.mock import Mock
 
 import pytest
 
-from apteco.session import Table, SelectorVariable, DateTimeVariable, TextVariable, \
-    ReferenceVariable, FlagArrayVariable
+from apteco.session import Table
+from apteco.variables import (
+    SelectorVariable,
+    TextVariable,
+    FlagArrayVariable,
+    DateTimeVariable,
+    ReferenceVariable,
+)
 
 """
 Fake system table structure:

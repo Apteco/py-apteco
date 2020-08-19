@@ -17,16 +17,16 @@ from apteco.query import (
     SelectorClause,
     TextClause,
 )
-from apteco.session import (
-    ArrayVariable,
-    CombinedCategoriesVariable,
-    DateTimeVariable,
-    DateVariable,
-    FlagArrayVariable,
-    NumericVariable,
-    ReferenceVariable,
+from apteco.variables import (
     SelectorVariable,
+    CombinedCategoriesVariable,
+    NumericVariable,
     TextVariable,
+    ArrayVariable,
+    FlagArrayVariable,
+    DateVariable,
+    DateTimeVariable,
+    ReferenceVariable,
 )
 
 
