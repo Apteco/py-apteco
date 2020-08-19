@@ -3,7 +3,7 @@ import json
 import warnings
 from collections import Counter, defaultdict, namedtuple
 from json import JSONDecodeError
-from typing import Any, Dict, List, Optional, Tuple, Iterable
+from typing import Any, Dict, List, Optional, Tuple, Iterable, Mapping
 
 import apteco_api as aa
 import PySimpleGUI
@@ -138,7 +138,7 @@ class Table(TableMixin):
         children: List["Table"],
         ancestors: List["Table"],
         descendants: List["Table"],
-        variables: Dict[str, Variable],
+        variables: "VariablesAccessor",
         *,
         session: Optional[Session] = None,
     ):
@@ -173,9 +173,7 @@ class Table(TableMixin):
                 of this table (an empty list for the master table)
             descendants (List[Table]): list of descendant tables
                 of this table (an empty list if table has no children)
-            variables (Dict[str, Variable]): variables on this table,
-                mapping from variable description
-                to its Variable object
+            variables (VariablesAccessor): variables on this table
             session (Session): API session the tables data belongs to
 
         """
@@ -822,7 +820,14 @@ class VariablesAccessor:
     def __init__(self, variables: Iterable[Variable]):
         self._variables_by_name = {var.name: var for var in variables}
         self._variables_by_desc = {var.description: var for var in variables}
-        self._variables = variables
+        self._variables = list(variables)
+        self.names = VariableNamesAccessor(self._variables_by_name)
+        self.descs = VariableDescsAccessor(self._variables_by_desc)
+
+    @property
+    def descriptions(self):
+        """Alias of ``descs``"""
+        return self.descs
 
     def __getitem__(self, item):
         name_match = self._variables_by_name.get(item)
@@ -831,7 +836,7 @@ class VariablesAccessor:
         if match_count == 1:
             return name_match or desc_match
         elif match_count == 2:
-            if name_match == desc_match:
+            if name_match.name == desc_match.name:
                 return name_match
             raise KeyError(f"Lookup key '{item}' was ambiguous.")
         else:
@@ -841,3 +846,41 @@ class VariablesAccessor:
 
     def __iter__(self):
         return iter(self._variables)
+
+
+class VariableNamesAccessor:
+    """Dictionary-like access for variables by name."""
+
+    def __init__(self, variables_by_name: Mapping[str, Variable]):
+        self._variables_by_name = dict(variables_by_name)
+        self._variable_names = list(self._variables_by_name.keys())
+
+    def __getitem__(self, item):
+        try:
+            return self._variables_by_name[item]
+        except KeyError as exc:
+            raise KeyError(
+                f"Lookup key '{item}' did not match a variable name."
+            ) from exc
+
+    def __iter__(self):
+        return iter(self._variable_names)
+
+
+class VariableDescsAccessor:
+    """Dictionary-like access for variables by description."""
+
+    def __init__(self, variables_by_desc: Mapping[str, Variable]):
+        self._variables_by_desc = dict(variables_by_desc)
+        self._variable_descs = list(self._variables_by_desc.keys())
+
+    def __getitem__(self, item):
+        try:
+            return self._variables_by_desc[item]
+        except KeyError as exc:
+            raise KeyError(
+                f"Lookup key '{item}' did not match a variable description."
+            ) from exc
+
+    def __iter__(self):
+        return iter(self._variable_descs)
