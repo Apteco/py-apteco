@@ -156,6 +156,7 @@ class TestVariablesAccessor:
         bookings.variables._variables_by_desc["deGrade"] = grade_var_for_setup
         grade = bookings.variables["deGrade"]
         assert grade.description == "Grade"
+        del bookings.variables._variables_by_desc["deGrade"]
 
     def test_variables_getitem_ambiguous_key(self, bookings):
         product = bookings.variables._variables_by_name["boProd"]
@@ -165,6 +166,7 @@ class TestVariablesAccessor:
         assert exc_info.value.args[0] == (
             "Lookup key 'boCost' was ambiguous."
         )
+        del bookings.variables._variables_by_desc["boCost"]
 
     def test_variables_iter(self, bookings):
         all_vars = [var.name for var in bookings.variables if not var.is_virtual]
