@@ -1,7 +1,6 @@
-from unittest.mock import Mock
-
 import pytest
 
+from apteco.session import Table
 from apteco.variables import (
     ArrayVariable,
     CombinedCategoriesVariable,
@@ -50,31 +49,67 @@ Website visits  | BrowsingSessionStart  | DateTime              |
 
 
 @pytest.fixture()
-def chy_supporters_table():
-    fake = Mock()
-    fake.configure_mock(name="Supporters")
-    return fake
+def chy_tables():
+    supporters_table = Table.__new__(Table)
+    supporters_table.name = "Supporters"
+    supporters_table.parent = None
+    supporters_table.ancestors = []
+
+    campaigns_table = Table.__new__(Table)
+    campaigns_table.name = "Campaigns"
+    campaigns_table.parent = supporters_table
+    campaigns_table.ancestors = [supporters_table]
+
+    donations_table = Table.__new__(Table)
+    donations_table.name = "Donations"
+    donations_table.parent = campaigns_table
+    donations_table.ancestors = [campaigns_table, supporters_table]
+
+    website_visits_table = Table.__new__(Table)
+    website_visits_table.name = "WebVisits"
+    website_visits_table.parent = supporters_table
+    website_visits_table.ancestors = [supporters_table]
+
+    supporters_table.children = [campaigns_table]
+    supporters_table.descendants = [
+        campaigns_table, donations_table, website_visits_table
+    ]
+
+    campaigns_table.children = [donations_table]
+    campaigns_table.descendants = [donations_table]
+
+    donations_table.children = []
+    donations_table.descendants = []
+
+    website_visits_table.children = []
+    website_visits_table.descendants = []
+
+    return {
+        "Supporters": supporters_table,
+        "Campaigns": campaigns_table,
+        "Donations": donations_table,
+        "WebVisits": website_visits_table,
+    }
 
 
 @pytest.fixture()
-def chy_donations_table():
-    fake = Mock()
-    fake.configure_mock(name="Donations")
-    return fake
+def chy_supporters_table(chy_tables):
+    return chy_tables["Supporters"]
 
 
 @pytest.fixture()
-def chy_campaigns_table():
-    fake = Mock()
-    fake.configure_mock(name="Campaigns")
-    return fake
+def chy_campaigns_table(chy_tables):
+    return chy_tables["Campaigns"]
 
 
 @pytest.fixture()
-def chy_website_visits_table():
-    fake = Mock()
-    fake.configure_mock(name="WebVisits")
-    return fake
+def chy_donations_table(chy_tables):
+    return chy_tables["Donations"]
+
+
+@pytest.fixture()
+def chy_website_visits_table(chy_tables):
+    return chy_tables["WebVisits"]
 
 
 @pytest.fixture()
