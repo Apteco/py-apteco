@@ -1,7 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
-from unittest.mock import Mock
 
 import pytest
 
@@ -17,92 +16,9 @@ from apteco.query import (
     SelectorClause,
     TextClause,
 )
-from apteco.variables import (
-    SelectorVariable,
-    CombinedCategoriesVariable,
-    NumericVariable,
-    TextVariable,
-    ArrayVariable,
-    FlagArrayVariable,
-    DateVariable,
-    DateTimeVariable,
-    ReferenceVariable,
-)
-
-
-"""
-Fake 'Charity' system
-=====================
-
-Tables
-------
-
-Supporters
-├── Campaigns
-│   └── Donations
-└── Website visits
-
-Variables
----------
-
- Table          |  Name                 |  Type                 |
------------------------------------------------------------------
-Supporters      | Membership            | Selector              |
-Supporters      | Region                | CombinedCategories    |
-Supporters      | EmailAddress          | Text                  |
-Supporters      | Surname               | Text                  |
-Supporters      | ContactPreferences    | FlagArray             |
-----------------|-----------------------|-----------------------|
-Campaigns       | CampaignID            | Reference             |
-Campaigns       | Tags                  | Array                 |
-----------------|-----------------------|-----------------------|
-Donations       | Amount                | Numeric               |
-Donations       | DonationDate          | Date                  |
-----------------|-----------------------|-----------------------|
-Website visits  | BrowsingSessionStart  | DateTime              |
-
-"""
-
-
-@pytest.fixture()
-def chy_supporters_table():
-    fake = Mock()
-    fake.configure_mock(name="Supporters")
-    return fake
-
-
-@pytest.fixture()
-def chy_donations_table():
-    fake = Mock()
-    fake.configure_mock(name="Donations")
-    return fake
-
-
-@pytest.fixture()
-def chy_campaigns_table():
-    fake = Mock()
-    fake.configure_mock(name="Campaigns")
-    return fake
-
-
-@pytest.fixture()
-def chy_website_visits_table():
-    fake = Mock()
-    fake.configure_mock(name="WebVisits")
-    return fake
 
 
 class TestSelectorVariable:
-
-    @pytest.fixture()
-    def fake_selector_variable(self, chy_supporters_table):
-        sv_example = SelectorVariable.__new__(SelectorVariable)
-        sv_example.type = "Selector"
-        sv_example.table = chy_supporters_table
-        sv_example.name = "Membership"
-        sv_example.session = "CharityDataViewSession"
-        return sv_example
-
     def test_eq(self, fake_selector_variable):
         high_value_supporters = fake_selector_variable == ("Gold", "Platinum")
         assert type(high_value_supporters) == SelectorClause
@@ -154,16 +70,6 @@ class TestSelectorVariable:
 
 @pytest.mark.xfail(reason="Not yet implemented.")
 class TestCombinedCategoriesVariable:
-
-    @pytest.fixture()
-    def fake_combined_categories_variable(self, chy_supporters_table):
-        ccv_example = CombinedCategoriesVariable.__new__(CombinedCategoriesVariable)
-        ccv_example.type = "CombinedCategories"
-        ccv_example.table = chy_supporters_table
-        ccv_example.name = "Region"
-        ccv_example.session = "CharityDataViewSession"
-        return ccv_example
-
     # TODO: update when implemented
     def test_eq(self, fake_combined_categories_variable):
         northern_supporters = fake_combined_categories_variable == ["NE", "NW", "YRK"]
@@ -186,16 +92,6 @@ class TestCombinedCategoriesVariable:
 
 
 class TestNumericVariable:
-
-    @pytest.fixture()
-    def fake_numeric_variable(self, chy_donations_table):
-        nv_example = NumericVariable.__new__(NumericVariable)
-        nv_example.type = "Numeric"
-        nv_example.table = chy_donations_table
-        nv_example.name = "Amount"
-        nv_example.session = "CharityDataViewSession"
-        return nv_example
-
     def test_eq(self, fake_numeric_variable):
         donations_100 = fake_numeric_variable == 100
         assert type(donations_100) == NumericClause
@@ -311,25 +207,6 @@ class TestNumericVariable:
 
 
 class TestTextVariable:
-
-    @pytest.fixture()
-    def fake_text_variable_email(self, chy_supporters_table):
-        tv_example = TextVariable.__new__(TextVariable)
-        tv_example.type = "Text"
-        tv_example.table = chy_supporters_table
-        tv_example.name = "EmailAddress"
-        tv_example.session = "CharityDataViewSession"
-        return tv_example
-
-    @pytest.fixture()
-    def fake_text_variable_surname(self, chy_supporters_table):
-        tv_example = TextVariable.__new__(TextVariable)
-        tv_example.type = "Text"
-        tv_example.table = chy_supporters_table
-        tv_example.name = "Surname"
-        tv_example.session = "CharityDataViewSession"
-        return tv_example
-
     def test_eq(self, fake_text_variable_email):
         specific_donor = fake_text_variable_email == "donor@domain.com"
         assert type(specific_donor) == TextClause
@@ -432,16 +309,6 @@ class TestTextVariable:
 
 
 class TestArrayVariable:
-
-    @pytest.fixture()
-    def fake_array_variable(self, chy_campaigns_table):
-        av_example = ArrayVariable.__new__(ArrayVariable)
-        av_example.type = "Array"
-        av_example.table = chy_campaigns_table
-        av_example.name = "Tags"
-        av_example.session = "CharityDataViewSession"
-        return av_example
-
     def test_eq(self, fake_array_variable):
         national_campaigns = fake_array_variable == "National"
         assert type(national_campaigns) == ArrayClause
@@ -505,16 +372,6 @@ class TestArrayVariable:
 
 
 class TestFlagArrayVariable:
-
-    @pytest.fixture()
-    def fake_flag_array_variable(self, chy_supporters_table):
-        fav_example = FlagArrayVariable.__new__(FlagArrayVariable)
-        fav_example.type = "FlagArray"
-        fav_example.table = chy_supporters_table
-        fav_example.name = "ContactPreferences"
-        fav_example.session = "CharityDataViewSession"
-        return fav_example
-
     def test_eq(self, fake_flag_array_variable):
         can_post = fake_flag_array_variable == "DirectMail"
         assert type(can_post) == FlagArrayClause
@@ -574,16 +431,6 @@ class TestFlagArrayVariable:
 
 
 class TestDateVariable:
-
-    @pytest.fixture()
-    def fake_date_variable(self, chy_donations_table):
-        dv_example = DateVariable.__new__(DateVariable)
-        dv_example.type = "Date"
-        dv_example.table = chy_donations_table
-        dv_example.name = "DonationDate"
-        dv_example.session = "CharityDataViewSession"
-        return dv_example
-
     def test_eq(self, fake_date_variable):
         august_bank_holiday_2018 = fake_date_variable == date(2018, 8, 27)
         assert type(august_bank_holiday_2018) == DateListClause
@@ -693,16 +540,6 @@ class TestDateVariable:
 
 
 class TestDateTimeVariable:
-
-    @pytest.fixture()
-    def fake_datetime_variable(self, chy_website_visits_table):
-        dtv_example = DateTimeVariable.__new__(DateTimeVariable)
-        dtv_example.type = "DateTime"
-        dtv_example.table = chy_website_visits_table
-        dtv_example.name = "BrowsingSessionStart"
-        dtv_example.session = "CharityDataViewSession"
-        return dtv_example
-
     def test_le(self, fake_datetime_variable):
         xmas_campaign_launch = datetime(2019, 11, 25, 11, 22, 33)
         before_christmas_campaign = fake_datetime_variable <= xmas_campaign_launch
@@ -740,16 +577,6 @@ class TestDateTimeVariable:
 
 @pytest.mark.xfail(reason="Not yet implemented.")
 class TestReferenceVariable:
-
-    @pytest.fixture()
-    def fake_reference_variable(self, chy_campaigns_table):
-        rv_example = ReferenceVariable.__new__(ReferenceVariable)
-        rv_example.type = "Reference"
-        rv_example.table = chy_campaigns_table
-        rv_example.name = "CampaignID"
-        rv_example.session = "CharityDataViewSession"
-        return rv_example
-
     def test_eq(self, fake_reference_variable):
         abc_campaign = fake_reference_variable == "abc"
         assert type(abc_campaign) == ReferenceClause
