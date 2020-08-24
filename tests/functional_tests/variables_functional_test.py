@@ -30,29 +30,63 @@ from apteco.variables import (
 )
 
 
+"""
+Fake 'Charity' system
+=====================
+
+Tables
+------
+
+Supporters
+├── Campaigns
+│   └── Donations
+└── Website visits
+
+Variables
+---------
+
+ Table          |  Name                 |  Type                 |
+-----------------------------------------------------------------
+Supporters      | Membership            | Selector              |
+Supporters      | Region                | CombinedCategories    |
+Supporters      | EmailAddress          | Text                  |
+Supporters      | Surname               | Text                  |
+Supporters      | ContactPreferences    | FlagArray             |
+----------------|-----------------------|-----------------------|
+Campaigns       | CampaignID            | Reference             |
+Campaigns       | Tags                  | Array                 |
+----------------|-----------------------|-----------------------|
+Donations       | Amount                | Numeric               |
+Donations       | DonationDate          | Date                  |
+----------------|-----------------------|-----------------------|
+Website visits  | BrowsingSessionStart  | DateTime              |
+
+"""
+
+
 @pytest.fixture()
-def fake_supporters_table():
+def chy_supporters_table():
     fake = Mock()
     fake.configure_mock(name="Supporters")
     return fake
 
 
 @pytest.fixture()
-def fake_donations_table():
+def chy_donations_table():
     fake = Mock()
     fake.configure_mock(name="Donations")
     return fake
 
 
 @pytest.fixture()
-def fake_campaigns_table():
+def chy_campaigns_table():
     fake = Mock()
     fake.configure_mock(name="Campaigns")
     return fake
 
 
 @pytest.fixture()
-def fake_website_visits_table():
+def chy_website_visits_table():
     fake = Mock()
     fake.configure_mock(name="WebVisits")
     return fake
@@ -61,10 +95,10 @@ def fake_website_visits_table():
 class TestSelectorVariable:
 
     @pytest.fixture()
-    def fake_selector_variable(self, fake_supporters_table):
+    def fake_selector_variable(self, chy_supporters_table):
         sv_example = SelectorVariable.__new__(SelectorVariable)
         sv_example.type = "Selector"
-        sv_example.table = fake_supporters_table
+        sv_example.table = chy_supporters_table
         sv_example.name = "Membership"
         sv_example.session = "CharityDataViewSession"
         return sv_example
@@ -122,10 +156,10 @@ class TestSelectorVariable:
 class TestCombinedCategoriesVariable:
 
     @pytest.fixture()
-    def fake_combined_categories_variable(self, fake_supporters_table):
+    def fake_combined_categories_variable(self, chy_supporters_table):
         ccv_example = CombinedCategoriesVariable.__new__(CombinedCategoriesVariable)
         ccv_example.type = "CombinedCategories"
-        ccv_example.table = fake_supporters_table
+        ccv_example.table = chy_supporters_table
         ccv_example.name = "Region"
         ccv_example.session = "CharityDataViewSession"
         return ccv_example
@@ -154,10 +188,10 @@ class TestCombinedCategoriesVariable:
 class TestNumericVariable:
 
     @pytest.fixture()
-    def fake_numeric_variable(self, fake_donations_table):
+    def fake_numeric_variable(self, chy_donations_table):
         nv_example = NumericVariable.__new__(NumericVariable)
         nv_example.type = "Numeric"
-        nv_example.table = fake_donations_table
+        nv_example.table = chy_donations_table
         nv_example.name = "Amount"
         nv_example.session = "CharityDataViewSession"
         return nv_example
@@ -279,19 +313,19 @@ class TestNumericVariable:
 class TestTextVariable:
 
     @pytest.fixture()
-    def fake_text_variable_email(self, fake_supporters_table):
+    def fake_text_variable_email(self, chy_supporters_table):
         tv_example = TextVariable.__new__(TextVariable)
         tv_example.type = "Text"
-        tv_example.table = fake_supporters_table
+        tv_example.table = chy_supporters_table
         tv_example.name = "EmailAddress"
         tv_example.session = "CharityDataViewSession"
         return tv_example
 
     @pytest.fixture()
-    def fake_text_variable_surname(self, fake_supporters_table):
+    def fake_text_variable_surname(self, chy_supporters_table):
         tv_example = TextVariable.__new__(TextVariable)
         tv_example.type = "Text"
-        tv_example.table = fake_supporters_table
+        tv_example.table = chy_supporters_table
         tv_example.name = "Surname"
         tv_example.session = "CharityDataViewSession"
         return tv_example
@@ -400,10 +434,10 @@ class TestTextVariable:
 class TestArrayVariable:
 
     @pytest.fixture()
-    def fake_array_variable(self, fake_campaigns_table):
+    def fake_array_variable(self, chy_campaigns_table):
         av_example = ArrayVariable.__new__(ArrayVariable)
         av_example.type = "Array"
-        av_example.table = fake_campaigns_table
+        av_example.table = chy_campaigns_table
         av_example.name = "Tags"
         av_example.session = "CharityDataViewSession"
         return av_example
@@ -473,10 +507,10 @@ class TestArrayVariable:
 class TestFlagArrayVariable:
 
     @pytest.fixture()
-    def fake_flag_array_variable(self, fake_supporters_table):
+    def fake_flag_array_variable(self, chy_supporters_table):
         fav_example = FlagArrayVariable.__new__(FlagArrayVariable)
         fav_example.type = "FlagArray"
-        fav_example.table = fake_supporters_table
+        fav_example.table = chy_supporters_table
         fav_example.name = "ContactPreferences"
         fav_example.session = "CharityDataViewSession"
         return fav_example
@@ -542,10 +576,10 @@ class TestFlagArrayVariable:
 class TestDateVariable:
 
     @pytest.fixture()
-    def fake_date_variable(self, fake_donations_table):
+    def fake_date_variable(self, chy_donations_table):
         dv_example = DateVariable.__new__(DateVariable)
         dv_example.type = "Date"
-        dv_example.table = fake_donations_table
+        dv_example.table = chy_donations_table
         dv_example.name = "DonationDate"
         dv_example.session = "CharityDataViewSession"
         return dv_example
@@ -661,10 +695,10 @@ class TestDateVariable:
 class TestDateTimeVariable:
 
     @pytest.fixture()
-    def fake_datetime_variable(self, fake_website_visits_table):
+    def fake_datetime_variable(self, chy_website_visits_table):
         dtv_example = DateTimeVariable.__new__(DateTimeVariable)
         dtv_example.type = "DateTime"
-        dtv_example.table = fake_website_visits_table
+        dtv_example.table = chy_website_visits_table
         dtv_example.name = "BrowsingSessionStart"
         dtv_example.session = "CharityDataViewSession"
         return dtv_example
@@ -708,10 +742,10 @@ class TestDateTimeVariable:
 class TestReferenceVariable:
 
     @pytest.fixture()
-    def fake_reference_variable(self, fake_campaigns_table):
+    def fake_reference_variable(self, chy_campaigns_table):
         rv_example = ReferenceVariable.__new__(ReferenceVariable)
         rv_example.type = "Reference"
-        rv_example.table = fake_campaigns_table
+        rv_example.table = chy_campaigns_table
         rv_example.name = "CampaignID"
         rv_example.session = "CharityDataViewSession"
         return rv_example

@@ -8,23 +8,23 @@ from apteco.datagrid import DataGrid
 
 @pytest.fixture()
 def fake_datagrid(
-    fake_var_customer_id,
-    fake_var_customer_first_name,
-    fake_var_customer_surname,
-    fake_sel_last_week_customers,
-    fake_table_customers,
-    fake_session,
+    rtl_var_customer_id,
+    rtl_var_customer_first_name,
+    rtl_var_customer_surname,
+    rtl_sel_last_week_customers,
+    rtl_table_customers,
+    rtl_session,
 ):
     dg = DataGrid.__new__(DataGrid)
     dg.columns = [
-        fake_var_customer_id,
-        fake_var_customer_first_name,
-        fake_var_customer_surname,
+        rtl_var_customer_id,
+        rtl_var_customer_first_name,
+        rtl_var_customer_surname,
     ]
-    dg.selection = fake_sel_last_week_customers
-    dg.table = fake_table_customers
+    dg.selection = rtl_sel_last_week_customers
+    dg.table = rtl_table_customers
     dg.max_rows = 1234
-    dg.session = fake_session
+    dg.session = rtl_session
     dg._data = "my_datagrid_data"
     return dg
 
@@ -174,11 +174,11 @@ class TestDataGrid:
         self,
         patch__check_columns,
         fake_datagrid,
-        fake_table_customers
+        rtl_table_customers
     ):
         fake_datagrid.table = None
         fake_datagrid._check_inputs()
-        assert fake_datagrid.table is fake_table_customers
+        assert fake_datagrid.table is rtl_table_customers
         patch__check_columns.assert_called_once_with()
 
     @patch("apteco.datagrid.DataGrid._check_columns")
@@ -196,19 +196,19 @@ class TestDataGrid:
         fake_datagrid._check_columns()
 
     def test__check_columns_multiple_tables(
-        self, fake_datagrid, fake_table_customers, fake_var_purchase_id
+        self, fake_datagrid, rtl_table_customers, rtl_var_purchase_id
     ):
-        fake_datagrid.columns.append(fake_var_purchase_id)
-        fake_table_customers.is_ancestor = Mock(side_effect=[True, True, True])
-        fake_var_purchase_id.table.is_ancestor = Mock(side_effect=[True])
+        fake_datagrid.columns.append(rtl_var_purchase_id)
+        rtl_table_customers.is_ancestor = Mock(side_effect=[True, True, True])
+        rtl_var_purchase_id.table.is_ancestor = Mock(side_effect=[True])
         fake_datagrid._check_columns()
 
     def test__check_columns_bad_table(
-        self, fake_datagrid, fake_table_customers, fake_var_purchase_id
+        self, fake_datagrid, rtl_table_customers, rtl_var_purchase_id
     ):
-        fake_datagrid.columns.append(fake_var_purchase_id)
-        fake_table_customers.is_ancestor = Mock(side_effect=[True, True, True])
-        fake_var_purchase_id.table.is_ancestor = Mock(side_effect=[False])
+        fake_datagrid.columns.append(rtl_var_purchase_id)
+        rtl_table_customers.is_ancestor = Mock(side_effect=[True, True, True])
+        rtl_var_purchase_id.table.is_ancestor = Mock(side_effect=[False])
         with pytest.raises(ValueError) as exc_info:
             fake_datagrid._check_columns()
         assert exc_info.value.args[0] == (
@@ -222,9 +222,9 @@ class TestDataGrid:
     def test__check_columns_bad_variable(
         self,
         fake_datagrid,
-        fake_var_customer_contact_pref,
+        rtl_var_customer_contact_pref,
     ):
-        fake_datagrid.columns.append(fake_var_customer_contact_pref)
+        fake_datagrid.columns.append(rtl_var_customer_contact_pref)
         with pytest.raises(ValueError) as exc_info:
             fake_datagrid._check_columns()
         assert exc_info.value.args[0] == (
@@ -269,7 +269,7 @@ class TestDataGrid:
         assert export_result == "your_export_result"
         patch_aa_exports_api.assert_called_once_with("my_api_client")
         fake_exports_perform_export_sync.assert_called_once_with(
-            "acme_inc", "sales", export=expected_export
+            "acme_inc", "retail", export=expected_export
         )
 
     @patch("apteco.datagrid.DataGrid._get_export")

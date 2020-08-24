@@ -13,9 +13,9 @@ def sel_empty():
 
 
 @case(id="with_selection")
-def sel_nonempty(fake_sel_high_value_purchases):
+def sel_nonempty(rtl_sel_high_value_purchases):
     return (
-        fake_sel_high_value_purchases,
+        rtl_sel_high_value_purchases,
         aa.Selection(
             table_name="Purchases",
             rule=aa.Rule(clause="selection_high_value_purchases_model")
@@ -42,26 +42,26 @@ def fake_cube_sizes():
 
 @pytest.fixture()
 def fake_cube(
-    fake_var_purchase_store_type,
-    fake_var_purchase_payment_method,
-    fake_var_purchase_department,
-    fake_sel_high_value_purchases,
-    fake_table_purchases,
-    fake_session,
+    rtl_var_purchase_store_type,
+    rtl_var_purchase_payment_method,
+    rtl_var_purchase_department,
+    rtl_sel_high_value_purchases,
+    rtl_table_purchases,
+    rtl_session,
     fake_cube_data,
     fake_cube_headers,
     fake_cube_sizes,
 ):
     cube = Cube.__new__(Cube)
     cube.dimensions = [
-        fake_var_purchase_store_type,
-        fake_var_purchase_payment_method,
-        fake_var_purchase_department,
+        rtl_var_purchase_store_type,
+        rtl_var_purchase_payment_method,
+        rtl_var_purchase_department,
     ]
     cube.measures = None
-    cube.selection = fake_sel_high_value_purchases
-    cube.table = fake_table_purchases
-    cube.session = fake_session
+    cube.selection = rtl_sel_high_value_purchases
+    cube.table = rtl_table_purchases
+    cube.session = rtl_session
     cube._data = fake_cube_data
     cube._headers = fake_cube_headers
     cube._sizes = fake_cube_sizes
@@ -137,8 +137,8 @@ class TestCube:
         patch__check_dimensions.assert_not_called()
 
     @patch("apteco.cube.Cube._check_dimensions")
-    def test__check_inputs_measures_is_bad(self, patch__check_dimensions, fake_cube, fake_var_purchase_department):
-        fake_cube.measures = [fake_var_purchase_department]
+    def test__check_inputs_measures_is_bad(self, patch__check_dimensions, fake_cube, rtl_var_purchase_department):
+        fake_cube.measures = [rtl_var_purchase_department]
         with pytest.raises(ValueError) as exc_info:
             fake_cube._check_inputs()
         assert exc_info.value.args[0] == (
@@ -150,10 +150,10 @@ class TestCube:
         patch__check_dimensions.assert_not_called()
 
     @patch("apteco.cube.Cube._check_dimensions")
-    def test__check_inputs_no_table_with_sel(self, patch__check_dimensions, fake_cube, fake_table_purchases):
+    def test__check_inputs_no_table_with_sel(self, patch__check_dimensions, fake_cube, rtl_table_purchases):
         fake_cube.table = None
         fake_cube._check_inputs()
-        assert fake_cube.table == fake_table_purchases
+        assert fake_cube.table == rtl_table_purchases
         patch__check_dimensions.assert_called_once_with()
 
     @patch("apteco.cube.Cube._check_dimensions")
@@ -171,8 +171,8 @@ class TestCube:
     def test__check_dimensions(self, fake_cube):
         fake_cube._check_dimensions()
 
-    def test__check_dimensions_bad_type(self, fake_cube, fake_var_purchase_date):
-        fake_cube.dimensions.append(fake_var_purchase_date)
+    def test__check_dimensions_bad_type(self, fake_cube, rtl_var_purchase_date):
+        fake_cube.dimensions.append(rtl_var_purchase_date)
         with pytest.raises(ValueError) as exc_info:
             fake_cube._check_dimensions()
         assert exc_info.value.args[0] == (
@@ -184,25 +184,25 @@ class TestCube:
     def test__check_dimensions_multiple_tables(
         self,
         fake_cube,
-        fake_table_purchases,
-        fake_table_customers,
-        fake_var_customer_gender,
+        rtl_table_purchases,
+        rtl_table_customers,
+        rtl_var_customer_gender,
     ):
-        fake_cube.dimensions.append(fake_var_customer_gender)
-        fake_table_purchases.is_related = Mock(side_effect=[True, True, True])
-        fake_table_customers.is_related = Mock(side_effect=[True])
+        fake_cube.dimensions.append(rtl_var_customer_gender)
+        rtl_table_purchases.is_related = Mock(side_effect=[True, True, True])
+        rtl_table_customers.is_related = Mock(side_effect=[True])
         fake_cube._check_dimensions()
 
     def test__check_dimensions_bad_table(
         self,
         fake_cube,
-        fake_table_purchases,
-        fake_table_customers,
-        fake_var_customer_gender,
+        rtl_table_purchases,
+        rtl_table_customers,
+        rtl_var_customer_gender,
     ):
-        fake_cube.dimensions.append(fake_var_customer_gender)
-        fake_table_purchases.is_related = Mock(side_effect=[True, True, True])
-        fake_table_customers.is_related = Mock(side_effect=[False])
+        fake_cube.dimensions.append(rtl_var_customer_gender)
+        rtl_table_purchases.is_related = Mock(side_effect=[True, True, True])
+        rtl_table_customers.is_related = Mock(side_effect=[False])
         with pytest.raises(ValueError) as exc_info:
             fake_cube._check_dimensions()
         assert exc_info.value.args[0] == (
@@ -268,7 +268,7 @@ class TestCube:
         assert cube_result == "your_cube_result"
         patch_aa_cubes_api.assert_called_once_with("my_api_client")
         fake_cubes_calculate_cube_sync.assert_called_once_with(
-            "acme_inc", "sales", cube=expected_cube
+            "acme_inc", "retail", cube=expected_cube
         )
 
     @patch("numpy.array")
