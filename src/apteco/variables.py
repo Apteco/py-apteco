@@ -179,36 +179,105 @@ class TextVariable(Variable):
         text_info = kwargs["text_info"]  # type: aa.TextVariableInfo
         self.max_length = text_info.maximum_text_length
 
-    def __eq__(self: "TextVariable", other):
+    def equals(self, value, match_case=True, *, include=True, label=None):
         return TextClause(
             self,
-            normalize_string_input(other, general_error_msg_text),
+            normalize_string_input(value, general_error_msg_text),
+            match_type="Is",
+            match_case=match_case,
+            include=include,
+            label=label,
             session=self.session,
         )
+
+    def contains(self, value, match_case=True, *, include=True, label=None):
+        return TextClause(
+            self,
+            normalize_string_input(value, general_error_msg_text),
+            match_type="Contains",
+            match_case=match_case,
+            include=include,
+            label=label,
+            session=self.session,
+        )
+
+    def startswith(self, value, match_case=True, *, include=True, label=None):
+        return TextClause(
+            self,
+            normalize_string_input(value, general_error_msg_text),
+            match_type="Begins",
+            match_case=match_case,
+            include=include,
+            label=label,
+            session=self.session,
+        )
+
+    def endswith(self, value, match_case=True, *, include=True, label=None):
+        return TextClause(
+            self,
+            normalize_string_input(value, general_error_msg_text),
+            match_type="Ends",
+            match_case=match_case,
+            include=include,
+            label=label,
+            session=self.session,
+        )
+
+    def before(self, value, *, include=True, label=None):
+        return TextClause(
+            self,
+            [f'<="{normalize_string_value(value, single_value_error_msg_text)}"'],
+            match_type="Ranges",
+            include=include,
+            label=label,
+            session=self.session,
+        )
+
+    def after(self, value, *, include=True, label=None):
+        return TextClause(
+            self,
+            [f'>="{normalize_string_value(value, single_value_error_msg_text)}"'],
+            match_type="Ranges",
+            include=include,
+            label=label,
+            session=self.session,
+        )
+
+    def between(self, start, end, *, include=True, label=None):
+        normalized_start = normalize_string_value(start, single_value_error_msg_text)
+        normalized_end = normalize_string_value(end, single_value_error_msg_text)
+        return TextClause(
+            self,
+            [f'>="{normalized_start}" - <="{normalized_end}"'],
+            match_type="Ranges",
+            include=include,
+            label=label,
+            session=self.session,
+        )
+
+    def matches(self, value, match_case=True, *, include=True, label=None):
+        normalized_input = normalize_string_input(value, general_error_msg_text)
+        return TextClause(
+            self,
+            [f'="{v}"' for v in normalized_input],
+            match_type="Ranges",
+            match_case=match_case,
+            include=include,
+            label=label,
+            session=self.session,
+        )
+
+    def __eq__(self: "TextVariable", other):
+        return self.equals(other, include=True)
 
     def __ne__(self: "TextVariable", other):
-        return TextClause(
-            self,
-            normalize_string_input(other, general_error_msg_text),
-            include=False,
-            session=self.session,
-        )
+        return self.equals(other, include=False)
 
     def __le__(self: "TextVariable", other):
-        return TextClause(
-            self,
-            [f'<="{normalize_string_value(other, single_value_error_msg_text)}"'],
-            "Ranges",
-            session=self.session,
-        )
+        return self.before(other)
 
     def __ge__(self: "TextVariable", other):
-        return TextClause(
-            self,
-            [f'>="{normalize_string_value(other, single_value_error_msg_text)}"'],
-            "Ranges",
-            session=self.session,
-        )
+        return self.after(other)
 
 
 class ArrayVariable(BaseSelectorVariable):

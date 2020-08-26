@@ -101,14 +101,20 @@ class TestNumericVariable:
         assert donations_100.include is True
         assert donations_100.session == "CharityDataViewSession"
 
-        hundreds_donations = fake_numeric_variable == (
-            i * 100 for i in range(1, 10)
-        )
+        hundreds_donations = fake_numeric_variable == (i * 100 for i in range(1, 10))
         assert type(hundreds_donations) == NumericClause
         assert hundreds_donations.table_name == "Donations"
         assert hundreds_donations.variable_name == "Amount"
         assert hundreds_donations.values == [
-            "100", "200", "300", "400", "500", "600", "700", "800", "900"
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900",
         ]
         assert hundreds_donations.include is True
         assert hundreds_donations.session == "CharityDataViewSession"
@@ -254,13 +260,15 @@ class TestTextVariable:
         assert dont_want_this_person.session == "CharityDataViewSession"
 
         not_these_people = fake_text_variable_email != {
-            "dont_email_me@domain.com", "unsubscribed@domain.org"
+            "dont_email_me@domain.com",
+            "unsubscribed@domain.org",
         }
         assert type(not_these_people) == TextClause
         assert not_these_people.table_name == "Supporters"
         assert not_these_people.variable_name == "EmailAddress"
         assert sorted(not_these_people.values) == [
-            "dont_email_me@domain.com", "unsubscribed@domain.org"
+            "dont_email_me@domain.com",
+            "unsubscribed@domain.org",
         ]
         assert not_these_people.match_type == "Is"
         assert not_these_people.match_case is True
@@ -305,7 +313,182 @@ class TestTextVariable:
         with pytest.raises(ValueError) as exc_info:
             later_than_tuple = fake_text_variable_surname >= ("A", "e", "i", "O")
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators.")
+            "Must specify a single string when using inequality operators."
+        )
+
+    def test_equals(self, fake_text_variable_email):
+        specific_donor = fake_text_variable_email.equals("donor@domain.com")
+        assert type(specific_donor) == TextClause
+        assert specific_donor.table_name == "Supporters"
+        assert specific_donor.variable_name == "EmailAddress"
+        assert specific_donor.values == ["donor@domain.com"]
+        assert specific_donor.match_type == "Is"
+        assert specific_donor.match_case is True
+        assert specific_donor.include is True
+        assert specific_donor.session == "CharityDataViewSession"
+
+        donors_by_email = fake_text_variable_email.equals(
+            [f"donor_{i}@domain.com" for i in range(4)]
+        )
+        assert type(donors_by_email) == TextClause
+        assert donors_by_email.table_name == "Supporters"
+        assert donors_by_email.variable_name == "EmailAddress"
+        assert donors_by_email.values == [
+            "donor_0@domain.com",
+            "donor_1@domain.com",
+            "donor_2@domain.com",
+            "donor_3@domain.com",
+        ]
+        assert donors_by_email.match_type == "Is"
+        assert donors_by_email.match_case is True
+        assert donors_by_email.include is True
+        assert donors_by_email.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            donors_by_number = fake_text_variable_email.equals({34, 765, 2930})
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+        dont_want_this_person = fake_text_variable_email.equals(
+            "bad_donor@domain.com", include=False
+        )
+        assert type(dont_want_this_person) == TextClause
+        assert dont_want_this_person.table_name == "Supporters"
+        assert dont_want_this_person.variable_name == "EmailAddress"
+        assert dont_want_this_person.values == ["bad_donor@domain.com"]
+        assert dont_want_this_person.match_type == "Is"
+        assert dont_want_this_person.match_case is True
+        assert dont_want_this_person.include is False
+        assert dont_want_this_person.session == "CharityDataViewSession"
+
+        not_these_people = fake_text_variable_email.equals(
+            {"dont_email_me@domain.com", "unsubscribed@domain.org",}, include=False
+        )
+        assert type(not_these_people) == TextClause
+        assert not_these_people.table_name == "Supporters"
+        assert not_these_people.variable_name == "EmailAddress"
+        assert sorted(not_these_people.values) == [
+            "dont_email_me@domain.com",
+            "unsubscribed@domain.org",
+        ]
+        assert not_these_people.match_type == "Is"
+        assert not_these_people.match_case is True
+        assert not_these_people.include is False
+        assert not_these_people.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            donor_not_an_obj = fake_text_variable_email.equals(object(), include=False)
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    def test_contains(self, fake_text_variable_surname):
+        contains_nuts = fake_text_variable_surname.contains("nuts")
+        assert type(contains_nuts) == TextClause
+        assert contains_nuts.table_name == "Supporters"
+        assert contains_nuts.variable_name == "Surname"
+        assert contains_nuts.values == ["nuts"]
+        assert contains_nuts.match_type == "Contains"
+        assert contains_nuts.match_case is True
+        assert contains_nuts.include is True
+        assert contains_nuts.session == "CharityDataViewSession"
+
+    def test_starts_with(self, fake_text_variable_surname):
+        starts_with_smith = fake_text_variable_surname.startswith("Smith")
+        assert type(starts_with_smith) == TextClause
+        assert starts_with_smith.table_name == "Supporters"
+        assert starts_with_smith.variable_name == "Surname"
+        assert starts_with_smith.values == ["Smith"]
+        assert starts_with_smith.match_type == "Begins"
+        assert starts_with_smith.match_case is True
+        assert starts_with_smith.include is True
+        assert starts_with_smith.session == "CharityDataViewSession"
+
+    def test_ends_with(self, fake_text_variable_surname):
+        ends_with_son = fake_text_variable_surname.endswith("son")
+        assert type(ends_with_son) == TextClause
+        assert ends_with_son.table_name == "Supporters"
+        assert ends_with_son.variable_name == "Surname"
+        assert ends_with_son.values == ["son"]
+        assert ends_with_son.match_type == "Ends"
+        assert ends_with_son.match_case is True
+        assert ends_with_son.include is True
+        assert ends_with_son.session == "CharityDataViewSession"
+
+    def test_before(self, fake_text_variable_surname):
+        first_half_alphabet = fake_text_variable_surname.before("n")
+        assert type(first_half_alphabet) == TextClause
+        assert first_half_alphabet.table_name == "Supporters"
+        assert first_half_alphabet.variable_name == "Surname"
+        assert first_half_alphabet.values == ['<="n"']
+        assert first_half_alphabet.match_type == "Ranges"
+        assert first_half_alphabet.match_case is True
+        assert first_half_alphabet.include is True
+        assert first_half_alphabet.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            earlier_than_letters = fake_text_variable_surname.before(list("abcedfgh"))
+        assert exc_info.value.args[0] == (
+            "Must specify a single string when using inequality operators."
+        )
+
+    def test_after(self, fake_text_variable_surname):
+        smith_or_later = fake_text_variable_surname.after("Smith")
+        assert type(smith_or_later) == TextClause
+        assert smith_or_later.table_name == "Supporters"
+        assert smith_or_later.variable_name == "Surname"
+        assert smith_or_later.values == ['>="Smith"']
+        assert smith_or_later.match_type == "Ranges"
+        assert smith_or_later.match_case is True
+        assert smith_or_later.include is True
+        assert smith_or_later.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            later_than_tuple = fake_text_variable_surname.after(("A", "e", "i", "O"))
+        assert exc_info.value.args[0] == (
+            "Must specify a single string when using inequality operators."
+        )
+
+    def test_between(self, fake_text_variable_surname):
+        rock_and_hardplace = fake_text_variable_surname.between("hardplace", "rock")
+        assert type(rock_and_hardplace) == TextClause
+        assert rock_and_hardplace.table_name == "Supporters"
+        assert rock_and_hardplace.variable_name == "Surname"
+        assert rock_and_hardplace.values == ['>="hardplace" - <="rock"']
+        assert rock_and_hardplace.match_type == "Ranges"
+        assert rock_and_hardplace.match_case is True
+        assert rock_and_hardplace.include is True
+        assert rock_and_hardplace.session == "CharityDataViewSession"
+
+    def test_matches(self, fake_text_variable_email):
+        gmail_donor = fake_text_variable_email.matches("*@gmail.com")
+        assert type(gmail_donor) == TextClause
+        assert gmail_donor.table_name == "Supporters"
+        assert gmail_donor.variable_name == "EmailAddress"
+        assert gmail_donor.values == ['="*@gmail.com"']
+        assert gmail_donor.match_type == "Ranges"
+        assert gmail_donor.match_case is True
+        assert gmail_donor.include is True
+        assert gmail_donor.session == "CharityDataViewSession"
+
+        multiple_domain_donors = fake_text_variable_email.matches(
+            ["*@gmail.com", "*@hotmail.com", "*@apteco.com"]
+        )
+        assert type(multiple_domain_donors) == TextClause
+        assert multiple_domain_donors.table_name == "Supporters"
+        assert multiple_domain_donors.variable_name == "EmailAddress"
+        assert multiple_domain_donors.values == [
+            '="*@gmail.com"',
+            '="*@hotmail.com"',
+            '="*@apteco.com"',
+        ]
+        assert multiple_domain_donors.match_type == "Ranges"
+        assert multiple_domain_donors.match_case is True
+        assert multiple_domain_donors.include is True
+        assert multiple_domain_donors.session == "CharityDataViewSession"
 
 
 class TestArrayVariable:
@@ -320,13 +503,25 @@ class TestArrayVariable:
         assert national_campaigns.session == "CharityDataViewSession"
 
         autumn_campaigns = fake_array_variable == {
-            "Autumn", "Fall", "Sep", "Oct", "Nov", "Halloween", "Back-to-School"
+            "Autumn",
+            "Fall",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Halloween",
+            "Back-to-School",
         }
         assert type(autumn_campaigns) == ArrayClause
         assert autumn_campaigns.table_name == "Campaigns"
         assert autumn_campaigns.variable_name == "Tags"
         assert sorted(autumn_campaigns.values) == [
-            "Autumn", "Back-to-School", "Fall", "Halloween", "Nov", "Oct", "Sep"
+            "Autumn",
+            "Back-to-School",
+            "Fall",
+            "Halloween",
+            "Nov",
+            "Oct",
+            "Sep",
         ]
         assert autumn_campaigns.logic == "OR"
         assert autumn_campaigns.include is True
@@ -350,13 +545,25 @@ class TestArrayVariable:
         assert not_christmas.session == "CharityDataViewSession"
 
         one_off_campaigns = fake_array_variable != [
-            "Recurrent", "Annual", "Regular", "Monthly", "Weekly", "Daily", "Seasonal"
+            "Recurrent",
+            "Annual",
+            "Regular",
+            "Monthly",
+            "Weekly",
+            "Daily",
+            "Seasonal",
         ]
         assert type(one_off_campaigns) == ArrayClause
         assert one_off_campaigns.table_name == "Campaigns"
         assert one_off_campaigns.variable_name == "Tags"
         assert one_off_campaigns.values == [
-            "Recurrent", "Annual", "Regular", "Monthly", "Weekly", "Daily", "Seasonal"
+            "Recurrent",
+            "Annual",
+            "Regular",
+            "Monthly",
+            "Weekly",
+            "Daily",
+            "Seasonal",
         ]
         assert one_off_campaigns.logic == "OR"
         assert one_off_campaigns.include is False
@@ -410,13 +617,17 @@ class TestFlagArrayVariable:
         assert cant_email.session == "CharityDataViewSession"
 
         not_business = fake_flag_array_variable != {
-            "BusinessPhone", "BusinessDirectMail", "BusinessEmail"
+            "BusinessPhone",
+            "BusinessDirectMail",
+            "BusinessEmail",
         }
         assert type(not_business) == FlagArrayClause
         assert not_business.table_name == "Supporters"
         assert not_business.variable_name == "ContactPreferences"
         assert sorted(not_business.values) == [
-            "BusinessDirectMail", "BusinessEmail", "BusinessPhone"
+            "BusinessDirectMail",
+            "BusinessEmail",
+            "BusinessPhone",
         ]
         assert not_business.logic == "OR"
         assert not_business.include is False
@@ -480,7 +691,6 @@ class TestDateVariable:
         assert not_easter_2050.include is False
         assert not_easter_2050.session == "CharityDataViewSession"
 
-
         exclude_solstices_and_equinoxes_2030 = fake_date_variable != [
             date(2030, 3, 20),
             datetime(2030, 6, 21, 7, 31),
@@ -491,14 +701,19 @@ class TestDateVariable:
         assert exclude_solstices_and_equinoxes_2030.table_name == "Donations"
         assert exclude_solstices_and_equinoxes_2030.variable_name == "DonationDate"
         assert exclude_solstices_and_equinoxes_2030.values == [
-            "20300320", "20300621", "20300922", "20301221"
+            "20300320",
+            "20300621",
+            "20300922",
+            "20301221",
         ]
         assert exclude_solstices_and_equinoxes_2030.include is False
         assert exclude_solstices_and_equinoxes_2030.session == "CharityDataViewSession"
 
         with pytest.raises(ValueError) as exc_info:
             trying_with_list_some_invalid = fake_date_variable == [
-                date(2012, 7, 27), "20221121", datetime(2018, 2, 9, 11, 0, 0)
+                date(2012, 7, 27),
+                "20221121",
+                datetime(2018, 2, 9, 11, 0, 0),
             ]
         assert exc_info.value.args[0] == (
             "Chosen value for a date variable"
