@@ -131,7 +131,7 @@ general_error_msg_text = (
     " must be given as a string or an iterable of strings."
 )
 single_value_error_msg_text = (
-    "Must specify a single string when using inequality operators."
+    "Must specify a single string for this type of operation."
 )
 general_error_msg_array = (
     "Chosen value(s) for an array variable"
@@ -164,7 +164,7 @@ general_error_msg_numeric = (
     " must be given as a number or an iterable of numbers."
 )
 single_value_error_msg_numeric = (
-    "Must specify a single number when using inequality operators."
+    "Must specify a single number for this type of operation."
 )
 
 
@@ -194,7 +194,7 @@ general_error_msg_date = (
     " must be a date object or an iterable of date objects."
 )
 single_value_error_msg_date = (
-    "Must specify a single date when using inequality operators."
+    "Must specify a single date for this type of operation."
 )
 
 
@@ -218,7 +218,7 @@ def normalize_date_input(input_value, error_msg, *, basic=False):
 
 
 single_value_error_msg_datetime = (
-    "Must specify a single datetime when using inequality operators."
+    "Must specify a single datetime for this type of operation."
 )
 
 

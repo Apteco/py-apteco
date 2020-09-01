@@ -162,7 +162,7 @@ class TestNumericVariable:
         with pytest.raises(ValueError) as exc_info:
             less_than_a_list = fake_numeric_variable < [512.64, 646.464646]
         assert exc_info.value.args[0] == (
-            "Must specify a single number when using inequality operators."
+            "Must specify a single number for this type of operation."
         )
 
     def test_le(self, fake_numeric_variable):
@@ -177,7 +177,7 @@ class TestNumericVariable:
         with pytest.raises(ValueError) as exc_info:
             less_than_equal_tuple = fake_numeric_variable <= (52, 27, 9.75)
         assert exc_info.value.args[0] == (
-            "Must specify a single number when using inequality operators."
+            "Must specify a single number for this type of operation."
         )
 
     def test_gt(self, fake_numeric_variable):
@@ -192,7 +192,7 @@ class TestNumericVariable:
         with pytest.raises(ValueError) as exc_info:
             more_than_a_set = fake_numeric_variable > {15, 30, 40, 40}
         assert exc_info.value.args[0] == (
-            "Must specify a single number when using inequality operators."
+            "Must specify a single number for this type of operation."
         )
 
     def test_ge(self, fake_numeric_variable):
@@ -208,7 +208,7 @@ class TestNumericVariable:
             number_gen = (n for n in "12.3 4.56 789".split())
             at_least_a_generator = fake_numeric_variable >= number_gen
         assert exc_info.value.args[0] == (
-            "Must specify a single number when using inequality operators."
+            "Must specify a single number for this type of operation."
         )
 
 
@@ -296,7 +296,7 @@ class TestTextVariable:
         with pytest.raises(ValueError) as exc_info:
             earlier_than_letters = fake_text_variable_surname <= list("abcedfgh")
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators."
+            "Must specify a single string for this type of operation."
         )
 
     def test_ge(self, fake_text_variable_surname):
@@ -313,7 +313,7 @@ class TestTextVariable:
         with pytest.raises(ValueError) as exc_info:
             later_than_tuple = fake_text_variable_surname >= ("A", "e", "i", "O")
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators."
+            "Must specify a single string for this type of operation."
         )
 
     def test_equals(self, fake_text_variable_email):
@@ -483,13 +483,13 @@ class TestTextVariable:
         with pytest.raises(ValueError) as exc_info:
             earlier_than_letters = fake_text_variable_surname.before(list("abcedfgh"))
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators."
+            "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
             before_int = fake_text_variable_surname.before(6)
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators."
+            "Must specify a single string for this type of operation."
         )
 
     def test_after(self, fake_text_variable_surname):
@@ -506,13 +506,13 @@ class TestTextVariable:
         with pytest.raises(ValueError) as exc_info:
             later_than_tuple = fake_text_variable_surname.after(("A", "e", "i", "O"))
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators."
+            "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
             after_boolean = fake_text_variable_surname.after(False)
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators."
+            "Must specify a single string for this type of operation."
         )
 
     def test_between(self, fake_text_variable_surname):
@@ -529,13 +529,13 @@ class TestTextVariable:
         with pytest.raises(ValueError) as exc_info:
             between_lists = fake_text_variable_surname.between(["a", "b"], ["y", "z"])
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators."
+            "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
             between_ints = fake_text_variable_surname.between(1, 100)
         assert exc_info.value.args[0] == (
-            "Must specify a single string when using inequality operators."
+            "Must specify a single string for this type of operation."
         )
 
     def test_matches(self, fake_text_variable_email):
@@ -816,7 +816,7 @@ class TestDateVariable:
             two_dates = (date(2019, 2, 14), date(2019, 6, 21))
             less_than_equal_a_pair = fake_date_variable <= two_dates
         assert exc_info.value.args[0] == (
-            "Must specify a single date when using inequality operators."
+            "Must specify a single date for this type of operation."
         )
 
     def test_ge(self, fake_date_variable):
@@ -832,7 +832,7 @@ class TestDateVariable:
         with pytest.raises(ValueError) as exc_info:
             trying_with_a_string = fake_date_variable >= "2011-11-20"
         assert exc_info.value.args[0] == (
-            "Must specify a single date when using inequality operators."
+            "Must specify a single date for this type of operation."
         )
 
 
@@ -851,7 +851,7 @@ class TestDateTimeVariable:
         with pytest.raises(ValueError) as exc_info:
             trying_with_date_only = fake_datetime_variable <= date(2019, 11, 25)
         assert exc_info.value.args[0] == (
-            "Must specify a single datetime when using inequality operators."
+            "Must specify a single datetime for this type of operation."
         )
 
     def test_ge(self, fake_datetime_variable):
@@ -868,7 +868,7 @@ class TestDateTimeVariable:
         with pytest.raises(ValueError) as exc_info:
             trying_with_number = fake_datetime_variable >= 2019122643210
         assert exc_info.value.args[0] == (
-            "Must specify a single datetime when using inequality operators."
+            "Must specify a single datetime for this type of operation."
         )
 
 
