@@ -396,6 +396,23 @@ class TestTextVariable:
         assert contains_nuts.include is True
         assert contains_nuts.session == "CharityDataViewSession"
 
+        contains_multiple = fake_text_variable_surname.contains(["a", "b"])
+        assert type(contains_multiple) == TextClause
+        assert contains_multiple.table_name == "Supporters"
+        assert contains_multiple.variable_name == "Surname"
+        assert contains_multiple.values == ["a", "b"]
+        assert contains_multiple.match_type == "Contains"
+        assert contains_multiple.match_case is True
+        assert contains_multiple.include is True
+        assert contains_multiple.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            contains_ints = fake_text_variable_surname.contains([1, 2, 3])
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
     def test_starts_with(self, fake_text_variable_surname):
         starts_with_smith = fake_text_variable_surname.startswith("Smith")
         assert type(starts_with_smith) == TextClause
@@ -407,6 +424,23 @@ class TestTextVariable:
         assert starts_with_smith.include is True
         assert starts_with_smith.session == "CharityDataViewSession"
 
+        starts_with_multiple = fake_text_variable_surname.startswith(["Tom", "James", "Dan", "Dav"])
+        assert type(starts_with_multiple) == TextClause
+        assert starts_with_multiple.table_name == "Supporters"
+        assert starts_with_multiple.variable_name == "Surname"
+        assert starts_with_multiple.values == ["Tom", "James", "Dan", "Dav"]
+        assert starts_with_multiple.match_type == "Begins"
+        assert starts_with_multiple.match_case is True
+        assert starts_with_multiple.include is True
+        assert starts_with_multiple.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            starts_with_boolean = fake_text_variable_surname.startswith(True)
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
     def test_ends_with(self, fake_text_variable_surname):
         ends_with_son = fake_text_variable_surname.endswith("son")
         assert type(ends_with_son) == TextClause
@@ -417,6 +451,23 @@ class TestTextVariable:
         assert ends_with_son.match_case is True
         assert ends_with_son.include is True
         assert ends_with_son.session == "CharityDataViewSession"
+
+        ends_with_multiple = fake_text_variable_surname.endswith(["son", "ez"])
+        assert type(ends_with_multiple) == TextClause
+        assert ends_with_multiple.table_name == "Supporters"
+        assert ends_with_multiple.variable_name == "Surname"
+        assert ends_with_multiple.values == ["son", "ez"]
+        assert ends_with_multiple.match_type == "Ends"
+        assert ends_with_multiple.match_case is True
+        assert ends_with_multiple.include is True
+        assert ends_with_multiple.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            ends_with_float = fake_text_variable_surname.endswith([2.8, 9.4])
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
 
     def test_before(self, fake_text_variable_surname):
         first_half_alphabet = fake_text_variable_surname.before("n")
@@ -431,6 +482,12 @@ class TestTextVariable:
 
         with pytest.raises(ValueError) as exc_info:
             earlier_than_letters = fake_text_variable_surname.before(list("abcedfgh"))
+        assert exc_info.value.args[0] == (
+            "Must specify a single string when using inequality operators."
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            before_int = fake_text_variable_surname.before(6)
         assert exc_info.value.args[0] == (
             "Must specify a single string when using inequality operators."
         )
@@ -452,6 +509,12 @@ class TestTextVariable:
             "Must specify a single string when using inequality operators."
         )
 
+        with pytest.raises(ValueError) as exc_info:
+            after_boolean = fake_text_variable_surname.after(False)
+        assert exc_info.value.args[0] == (
+            "Must specify a single string when using inequality operators."
+        )
+
     def test_between(self, fake_text_variable_surname):
         rock_and_hardplace = fake_text_variable_surname.between("hardplace", "rock")
         assert type(rock_and_hardplace) == TextClause
@@ -462,6 +525,18 @@ class TestTextVariable:
         assert rock_and_hardplace.match_case is True
         assert rock_and_hardplace.include is True
         assert rock_and_hardplace.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            between_lists = fake_text_variable_surname.between(["a", "b"], ["y", "z"])
+        assert exc_info.value.args[0] == (
+            "Must specify a single string when using inequality operators."
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            between_ints = fake_text_variable_surname.between(1, 100)
+        assert exc_info.value.args[0] == (
+            "Must specify a single string when using inequality operators."
+        )
 
     def test_matches(self, fake_text_variable_email):
         gmail_donor = fake_text_variable_email.matches("*@gmail.com")
@@ -489,6 +564,13 @@ class TestTextVariable:
         assert multiple_domain_donors.match_case is True
         assert multiple_domain_donors.include is True
         assert multiple_domain_donors.session == "CharityDataViewSession"
+
+        with pytest.raises(ValueError) as exc_info:
+            matches_int = fake_text_variable_email.matches(30)
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
 
 
 class TestArrayVariable:
