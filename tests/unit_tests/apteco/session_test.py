@@ -66,11 +66,20 @@ def patch_initialize_tables_algo(mocker):
 
 
 @pytest.fixture()
-def patch_initialize_variables_algo(mocker, fake_tables_with_master_table):
+def patch_initialize_variables_algo(mocker):
+    fake_tables_by_name = mocker.Mock()
+    fake_tables_by_name.values.return_value = "fake tables by name values"
     fake = mocker.Mock()
-    fake.run.return_value = ["fake variables", fake_tables_with_master_table]
+    fake.run.return_value = ["fake variables", fake_tables_by_name]
     return mocker.patch(
         "apteco.session.InitializeVariablesAlgorithm", return_value=fake
+    )
+
+
+@pytest.fixture()
+def patch_tables_accessor(mocker, fake_tables_with_master_table):
+    return mocker.patch(
+        "apteco.session.TablesAccessor", return_value=fake_tables_with_master_table
     )
 
 
@@ -221,6 +230,7 @@ def test_create_session_with_credentials(
     patch_fetch_system_info,
     patch_initialize_variables_algo,
     patch_initialize_tables_algo,
+    patch_tables_accessor,
     patch_variables_accessor,
 ):
     session_example = Session(fake_credentials_with_attrs, "solar system")
@@ -233,12 +243,17 @@ def test_create_session_with_credentials(
     patch_initialize_variables_algo.assert_called_once_with(
         session_example, "fake tables no vars"
     )
+    patch_tables_accessor.assert_called_once_with("fake tables by name values")
     patch_variables_accessor.assert_called_once_with("fake variables")
     assert session_example.base_url == "baseless assumptions"
     assert session_example.data_view == "a room with a view"
     assert session_example.session_id == "0246813579"
     assert session_example.access_token == "token of my gratitude"
     assert session_example.user == "use, er, something else"
+    assert session_example._config.host == "baseless assumptions"
+    assert session_example._config.api_key == {"Authorization": "token of my gratitude"}
+    assert session_example._config.api_key_prefix == {"Authorization": "Bearer"}
+    assert session_example.api_client.configuration is session_example._config
 
 
 class TestSession:
@@ -251,6 +266,7 @@ class TestSession:
         fake_tables_with_master_table,
         patch_initialize_tables_algo,
         patch_initialize_variables_algo,
+        patch_tables_accessor,
         patch_variables_accessor,
     ):
         session_example = Session(fake_credentials_with_attrs, "solar system")
@@ -262,6 +278,7 @@ class TestSession:
         patch_initialize_variables_algo.assert_called_once_with(
             session_example, "fake tables no vars"
         )
+        patch_tables_accessor.assert_called_once_with("fake tables by name values")
         patch_variables_accessor.assert_called_once_with("fake variables")
         assert session_example.variables == "fake variables accessor"
         assert session_example.tables is fake_tables_with_master_table

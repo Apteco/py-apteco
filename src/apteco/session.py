@@ -39,9 +39,10 @@ class Session:
         self.system = system
         self._fetch_system_info()
         tables_without_vars, master_table_name = InitializeTablesAlgorithm(self).run()
-        variables, self.tables = InitializeVariablesAlgorithm(
+        variables, tables_by_name = InitializeVariablesAlgorithm(
             self, tables_without_vars
         ).run()
+        self.tables = TablesAccessor(tables_by_name.values())
         self.variables = VariablesAccessor(variables)
         self.master_table = self.tables[master_table_name]
 
@@ -812,6 +813,28 @@ class InitializeVariablesAlgorithm:
             raise VariablesError(
                 f"{len(no_variables)} table(s) had no variables assigned."
             )
+
+
+class TablesAccessor:
+    """List- and dictionary-like access for tables."""
+
+    def __init__(self, tables: Iterable[Table]):
+        self._tables = list(tables)
+        self._tables_by_name = {table.name: table for table in self._tables}
+
+    def __len__(self):
+        return len(self._tables)
+
+    def __iter__(self):
+        return iter(self._tables)
+
+    def __getitem__(self, item):
+        try:
+            return self._tables_by_name[item]
+        except KeyError as exc:
+            raise KeyError(
+                f"Lookup key '{item}' did not match a table name."
+            ) from exc
 
 
 class VariablesAccessor:

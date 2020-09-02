@@ -135,6 +135,32 @@ class TestTableRelations:
         assert responses.is_related(responses, allow_same=True)
 
 
+class TestTablesAccessor:
+    def test_tables_getitem(self, holidays):
+        people = holidays.tables["People"]
+        assert people.singular_display_name == "Person"
+
+    def test_tables_getitem_bad_key(self, holidays):
+        with pytest.raises(KeyError) as exc_info:
+            not_a_table = holidays.tables["not a table"]
+        assert exc_info.value.args[0] == (
+            "Lookup key 'not a table' did not match a table name."
+        )
+
+    def test_tables_iter(self, holidays):
+        tables_with_children = [
+            table.name for table in holidays.tables if table.has_child_tables
+        ]
+        assert sorted(tables_with_children) == [
+            "Communications",
+            "Households",
+            "People",
+        ]
+
+    def test_tables_len(self, holidays):
+        assert len(holidays.tables) == 9
+
+
 class TestVariablesAccessor:
     def test_variables_getitem_by_name(self, bookings):
         destination = bookings.variables["boDest"]
