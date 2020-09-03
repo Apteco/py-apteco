@@ -280,8 +280,8 @@ class TestSession:
         )
         patch_tables_accessor.assert_called_once_with("fake tables by name values")
         patch_variables_accessor.assert_called_once_with("fake variables")
-        assert session_example.variables == "fake variables accessor"
         assert session_example.tables is fake_tables_with_master_table
+        assert session_example.variables == "fake variables accessor"
         assert session_example.master_table == "fake master table"
 
     def test_unpack_credentials(self, mocker, fake_credentials_with_attrs):

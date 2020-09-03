@@ -838,12 +838,12 @@ class TablesAccessor:
 
 
 class VariablesAccessor:
-    """Dictionary-like access for variables by name or description."""
+    """List- and dictionary-like access for variables."""
 
     def __init__(self, variables: Iterable[Variable]):
-        self._variables_by_name = {var.name: var for var in variables}
-        self._variables_by_desc = {var.description: var for var in variables}
         self._variables = list(variables)
+        self._variables_by_name = {var.name: var for var in self._variables}
+        self._variables_by_desc = {var.description: var for var in self._variables}
         self.names = VariableNamesAccessor(self._variables_by_name)
         self.descs = VariableDescsAccessor(self._variables_by_desc)
 
@@ -851,6 +851,12 @@ class VariablesAccessor:
     def descriptions(self):
         """Alias of ``descs``"""
         return self.descs
+
+    def __len__(self):
+        return len(self._variables)
+
+    def __iter__(self):
+        return iter(self._variables)
 
     def __getitem__(self, item):
         name_match = self._variables_by_name.get(item)
@@ -867,9 +873,6 @@ class VariablesAccessor:
                 f"Lookup key '{item}' did not match a variable name or description."
             )
 
-    def __iter__(self):
-        return iter(self._variables)
-
 
 class VariableNamesAccessor:
     """Dictionary-like access for variables by name."""
@@ -877,6 +880,9 @@ class VariableNamesAccessor:
     def __init__(self, variables_by_name: Mapping[str, Variable]):
         self._variables_by_name = dict(variables_by_name)
         self._variable_names = list(self._variables_by_name.keys())
+
+    def __iter__(self):
+        return iter(self._variable_names)
 
     def __getitem__(self, item):
         try:
@@ -886,9 +892,6 @@ class VariableNamesAccessor:
                 f"Lookup key '{item}' did not match a variable name."
             ) from exc
 
-    def __iter__(self):
-        return iter(self._variable_names)
-
 
 class VariableDescsAccessor:
     """Dictionary-like access for variables by description."""
@@ -897,6 +900,9 @@ class VariableDescsAccessor:
         self._variables_by_desc = dict(variables_by_desc)
         self._variable_descs = list(self._variables_by_desc.keys())
 
+    def __iter__(self):
+        return iter(self._variable_descs)
+
     def __getitem__(self, item):
         try:
             return self._variables_by_desc[item]
@@ -904,6 +910,3 @@ class VariableDescsAccessor:
             raise KeyError(
                 f"Lookup key '{item}' did not match a variable description."
             ) from exc
-
-    def __iter__(self):
-        return iter(self._variable_descs)

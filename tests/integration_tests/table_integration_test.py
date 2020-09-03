@@ -189,9 +189,7 @@ class TestVariablesAccessor:
         bookings.variables._variables_by_desc["boCost"] = product
         with pytest.raises(KeyError) as exc_info:
             ambiguous_var = bookings.variables["boCost"]
-        assert exc_info.value.args[0] == (
-            "Lookup key 'boCost' was ambiguous."
-        )
+        assert exc_info.value.args[0] == "Lookup key 'boCost' was ambiguous."
         del bookings.variables._variables_by_desc["boCost"]
 
     def test_variables_iter(self, bookings):
@@ -212,6 +210,9 @@ class TestVariablesAccessor:
             "deType",
         ]
 
+    def test_variables_len(self, web_visits):
+        assert len(web_visits.variables) == 6
+
 
 class TestVariableNamesAccessor:
     def test_variable_names_getitem(self, households):
@@ -227,7 +228,8 @@ class TestVariableNamesAccessor:
 
     def test_variable_names_iter(self, households):
         household_vars = [
-            name for name in households.variables.names
+            name
+            for name in households.variables.names
             if not households.variables.names[name].is_virtual
         ]
         assert sorted(household_vars) == [
@@ -258,7 +260,8 @@ class TestVariableDescsAccessor:
 
     def test_variable_descs_iter(self, people):
         people_vars = [
-            desc for desc in people.variables.descs
+            desc
+            for desc in people.variables.descs
             if not people.variables.descs[desc].is_virtual
         ]
         assert sorted(people_vars) == [
