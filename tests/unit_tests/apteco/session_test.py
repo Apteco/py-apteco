@@ -67,10 +67,8 @@ def patch_initialize_tables_algo(mocker):
 
 @pytest.fixture()
 def patch_initialize_variables_algo(mocker):
-    fake_tables_by_name = mocker.Mock()
-    fake_tables_by_name.values.return_value = "fake tables by name values"
     fake = mocker.Mock()
-    fake.run.return_value = ["fake variables", fake_tables_by_name]
+    fake.run.return_value = ["fake variables", "fake tables"]
     return mocker.patch(
         "apteco.session.InitializeVariablesAlgorithm", return_value=fake
     )
@@ -243,7 +241,7 @@ def test_create_session_with_credentials(
     patch_initialize_variables_algo.assert_called_once_with(
         session_example, "fake tables no vars"
     )
-    patch_tables_accessor.assert_called_once_with("fake tables by name values")
+    patch_tables_accessor.assert_called_once_with("fake tables")
     patch_variables_accessor.assert_called_once_with("fake variables")
     assert session_example.base_url == "baseless assumptions"
     assert session_example.data_view == "a room with a view"
@@ -278,7 +276,7 @@ class TestSession:
         patch_initialize_variables_algo.assert_called_once_with(
             session_example, "fake tables no vars"
         )
-        patch_tables_accessor.assert_called_once_with("fake tables by name values")
+        patch_tables_accessor.assert_called_once_with("fake tables")
         patch_variables_accessor.assert_called_once_with("fake variables")
         assert session_example.tables is fake_tables_with_master_table
         assert session_example.variables == "fake variables accessor"
@@ -1523,6 +1521,8 @@ class TestInitializeVariablesAlgorithm:
         assert initialize_vars_algo_example.tables_lookup is fake_tables_without_variables
 
     def test_initialize_variables_algo_run(self, mocker):
+        fake_tables_lookup = mocker.Mock()
+        fake_tables_lookup.values.return_value = ["table an amendment"]
         fake_get_raw_variables = mocker.Mock()
         fake_create_variables = mocker.Mock()
         fake_identify_variables = mocker.Mock()
@@ -1530,7 +1530,7 @@ class TestInitializeVariablesAlgorithm:
         fake_check_all_variables_assigned = mocker.Mock()
         fake_initialize_vars_algo = mocker.Mock(
             variables="Wind: Variable, mainly east to northeast",
-            tables_lookup="table an amendment",
+            tables_lookup=fake_tables_lookup,
             _get_raw_variables=fake_get_raw_variables,
             _create_variables=fake_create_variables,
             _identify_variables=fake_identify_variables,
@@ -1545,7 +1545,7 @@ class TestInitializeVariablesAlgorithm:
         fake_check_all_variables_assigned.assert_called_once_with()
         assert result == (
             "Wind: Variable, mainly east to northeast",
-            "table an amendment",
+            ["table an amendment"],
         )
 
     def test_get_raw_variables(self, mocker):

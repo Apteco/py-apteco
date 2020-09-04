@@ -39,10 +39,10 @@ class Session:
         self.system = system
         self._fetch_system_info()
         tables_without_vars, master_table_name = InitializeTablesAlgorithm(self).run()
-        variables, tables_by_name = InitializeVariablesAlgorithm(
+        variables, tables = InitializeVariablesAlgorithm(
             self, tables_without_vars
         ).run()
-        self.tables = TablesAccessor(tables_by_name.values())
+        self.tables = TablesAccessor(tables)
         self.variables = VariablesAccessor(variables)
         self.master_table = self.tables[master_table_name]
 
@@ -686,16 +686,16 @@ class InitializeVariablesAlgorithm:
         self.session = session
         self.tables_lookup = tables_without_variables
 
-    def run(self) -> Tuple[List[Variable], Dict[str, Table]]:
+    def run(self) -> Tuple[List[Variable], List[Table]]:
         """Run the algorithm.
 
         Returns:
             (tuple): tuple containing:
 
-                variables (List[Variable]): list of variables
-                    as py-apteco ``Variable`` objects
-                tables_lookup (Dict[str, Table]):
-                    mapping from table name to its ``Table`` object
+                variables (List[Variable]):
+                    list of variables as py-apteco ``Variable`` objects
+                tables (List[Table]):
+                    list of tables as py-apteco ``Table`` objects
 
         """
 
@@ -704,7 +704,7 @@ class InitializeVariablesAlgorithm:
         self._identify_variables()
         self._assign_variables()
         self._check_all_variables_assigned()
-        return self.variables, self.tables_lookup
+        return self.variables, list(self.tables_lookup.values())
 
     def _get_raw_variables(self, variables_per_page=VARIABLES_PER_PAGE):
         """Get list of all variables from API."""
@@ -833,9 +833,7 @@ class TablesAccessor:
         try:
             return self._tables_by_name[item]
         except KeyError as exc:
-            raise KeyError(
-                f"Lookup key '{item}' did not match a table name."
-            ) from exc
+            raise KeyError(f"Lookup key '{item}' did not match a table name.") from exc
 
 
 class VariablesAccessor:

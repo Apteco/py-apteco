@@ -104,9 +104,8 @@ class TestSession:
         patched_initialize_tables_algo.return_value = Mock(run=Mock(return_value=(
                 "fake_tables_without_variables", "fake_master_table_name"
         )))
-        fake_tables_by_name = Mock(values=Mock(return_value="fake_tables"))
         patched_initialize_variables_algo.return_value = Mock(run=Mock(return_value=(
-            "fake_variables", fake_tables_by_name
+            "fake_variables", "fake_tables"
         )))
         fake_tables_accessor = MagicMock()
         fake_tables_accessor.__getitem__.return_value = "fake_master_table"
