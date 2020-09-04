@@ -448,7 +448,7 @@ class InitializeTablesAlgorithm:
     The purpose of this algorithm is to
     retrieve the raw tables data for the given system,
     process it to infer parent and child table relationships,
-    convert the raw tables into py-apteco Table objects,
+    convert the raw tables into py-apteco ``Table`` objects,
     and assign to these tables their relationships to other tables.
 
     Attributes:
@@ -457,11 +457,11 @@ class InitializeTablesAlgorithm:
         api_client (aa.ApiClient): client to handle API calls
         session (Session): API session the tables data belongs to
         raw_tables (List[aa.Table]): list of raw tables
-        children_lookup (Dict[str, List[str]]): mapping from table name
-            to list of its child table names
+        children_lookup (Dict[str, List[str]]):
+            mapping from table name to list of its child table names
         master_table (Table): master table of the FastStats system
-        tables (Dict[str, Table]): mapping from table name
-            to its Table object
+        tables_lookup (Dict[str, Table]):
+            mapping from table name to its ``Table`` object
 
     Methods:
         run(): entry point to run the algorithm
@@ -486,8 +486,8 @@ class InitializeTablesAlgorithm:
         Returns:
             (tuple): tuple containing:
 
-                tables (Dict[str, Table]): mapping from table name
-                    to its Table object
+                tables_lookup (Dict[str, Table]):
+                    mapping from table name to its ``Table`` object
                 master_table_name (str):
                     name of the master table of the FastStats system
 
@@ -500,7 +500,7 @@ class InitializeTablesAlgorithm:
         _tree_tables = self._assign_ancestors_and_descendants(self.master_table, [])
         self._check_all_tables_in_tree(_tree_tables)
         self._check_all_relations_assigned()
-        return self.tables, self.master_table.name
+        return self.tables_lookup, self.master_table.name
 
     def _get_raw_tables(self):
         """Get list of all tables from API."""
@@ -530,8 +530,8 @@ class InitializeTablesAlgorithm:
         # don't freeze yet: will need to look up childless tables and return empty list
 
     def _create_tables(self):
-        """Create py-apteco tables from apteco_api ones."""
-        self.tables = {
+        """Create py-apteco tables from apteco-api ones."""
+        self.tables_lookup = {
             t.name: Table(
                 t.name,
                 t.singular_display_name,
@@ -555,20 +555,20 @@ class InitializeTablesAlgorithm:
 
     def _assign_parent_and_children(self):
         """Assign parent and children attributes for each table."""
-        for table in self.tables.values():
+        for table in self.tables_lookup.values():
             if table.parent_name == "":
                 table.parent = None
             else:
-                table.parent = self.tables[table.parent_name]
+                table.parent = self.tables_lookup[table.parent_name]
             table.children = [
-                self.tables[name] for name in self.children_lookup[table.name]
+                self.tables_lookup[name] for name in self.children_lookup[table.name]
             ]
             self._check_child_tables_consistency(table)
         self.children_lookup.default_factory = None  # 'freeze' as normal dict
 
     @staticmethod
     def _check_child_tables_consistency(table: Table):
-        """Check table's children matches ```has_child_tables```."""
+        """Check table's children matches ``has_child_tables``."""
         if table.has_child_tables and not table.children:
             raise TablesError(
                 f"API stated '{table.name}' table has child tables but none were found."
@@ -591,7 +591,7 @@ class InitializeTablesAlgorithm:
                 f" there should be 1."
             )
         try:
-            self.master_table = self.tables[master_table_name]
+            self.master_table = self.tables_lookup[master_table_name]
         except KeyError:
             raise TablesError(
                 f"The master table '{master_table_name}' could not be found."
@@ -628,7 +628,7 @@ class InitializeTablesAlgorithm:
         """Check tables have all relation attributes assigned."""
         relations = ["parent", "children", "ancestors", "descendants"]
         no_relation = defaultdict(list)
-        for table in self.tables.values():
+        for table in self.tables_lookup.values():
             for rel in relations:
                 if getattr(table, rel) is NOT_ASSIGNED:
                     no_relation[rel].append(table.name)
@@ -648,7 +648,7 @@ class InitializeVariablesAlgorithm:
 
     The purpose of this algorithm is to
     retrieve the raw variables for the given system,
-    convert them into py-apteco Variable objects,
+    convert them into py-apteco ``Variable`` objects,
     and assign these to their tables.
 
     Attributes:
@@ -656,12 +656,14 @@ class InitializeVariablesAlgorithm:
         system (str): FastStats system the session is connected to
         api_client (aa.ApiClient): client to handle API calls
         session (Session): API session the variables data belongs to
-        tables (Dict[str, Table]): mapping from table name
-            to its Table object
+        tables_lookup (Dict[str, Table]):
+            mapping from table name to its ``Table`` object,
+            initially with ``variables`` attribute as ``NOT_ASSIGNED``
         raw_variables (List[aa.Variable]): list of raw variables
-        variables (List[Variable]): list of variables as py-apteco Variable objects
-        variables_lookup (Dict[str, List[str]]): mapping from table name
-            to list of its variables
+        variables (List[Variable]): list of variables
+            as py-apteco ``Variable`` objects
+        variables_lookup (Dict[str, List[Variable]]):
+            mapping from table name to list of its variables
 
     Methods:
         run(): entry point to run the algorithm
@@ -673,8 +675,8 @@ class InitializeVariablesAlgorithm:
 
         Args:
             session (Session): API session the variables data belongs to
-            tables_without_variables (Dict[str, Table]): mapping from
-                table name to its Table object
+            tables_without_variables (Dict[str, Table]):
+                mapping from table name to its ``Table`` object,
                 with variables attribute as ``NOT_ASSIGNED``
 
         """
@@ -682,7 +684,7 @@ class InitializeVariablesAlgorithm:
         self.system = session.system
         self.api_client = session.api_client
         self.session = session
-        self.tables = tables_without_variables
+        self.tables_lookup = tables_without_variables
 
     def run(self) -> Tuple[List[Variable], Dict[str, Table]]:
         """Run the algorithm.
@@ -691,10 +693,9 @@ class InitializeVariablesAlgorithm:
             (tuple): tuple containing:
 
                 variables (List[Variable]): list of variables
-                    as py-apteco Variable objects
-                tables (Dict[str, Table]): mapping from table name
-                    to its Table object, initially with
-                    ``variables`` attribute as ``NOT_ASSIGNED``
+                    as py-apteco ``Variable`` objects
+                tables_lookup (Dict[str, Table]):
+                    mapping from table name to its ``Table`` object
 
         """
 
@@ -703,7 +704,7 @@ class InitializeVariablesAlgorithm:
         self._identify_variables()
         self._assign_variables()
         self._check_all_variables_assigned()
-        return self.variables, self.tables
+        return self.variables, self.tables_lookup
 
     def _get_raw_variables(self, variables_per_page=VARIABLES_PER_PAGE):
         """Get list of all variables from API."""
@@ -731,14 +732,14 @@ class InitializeVariablesAlgorithm:
             )
 
     def _create_variables(self):
-        """Create py-apteco variables from apteco_api ones."""
+        """Create py-apteco variables from apteco-api ones."""
         self.variables = [
             self._choose_variable(v)(
                 name=v.name,
                 description=v.description,
                 type=v.type,
                 folder_name=v.folder_name,
-                table=self.tables[v.table_name],
+                table=self.tables_lookup[v.table_name],
                 is_selectable=v.is_selectable,
                 is_browsable=v.is_browsable,
                 is_exportable=v.is_exportable,
@@ -797,7 +798,7 @@ class InitializeVariablesAlgorithm:
 
     def _assign_variables(self):
         """Assign variables to each table."""
-        for table in self.tables.values():
+        for table in self.tables_lookup.values():
             try:
                 table.variables = VariablesAccessor(self.variables_lookup[table.name])
             except KeyError:
@@ -806,7 +807,7 @@ class InitializeVariablesAlgorithm:
     def _check_all_variables_assigned(self):
         """Check all tables have variables attribute assigned."""
         no_variables = []
-        for table in self.tables.values():
+        for table in self.tables_lookup.values():
             if table.variables is NOT_ASSIGNED:
                 no_variables.append(table.name)
         if no_variables:

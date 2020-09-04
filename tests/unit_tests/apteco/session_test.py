@@ -2,7 +2,7 @@ import getpass
 import json
 from json import JSONDecodeError
 
-import apteco_api
+import apteco_api as aa
 import pytest
 
 import apteco.session
@@ -125,7 +125,7 @@ def fake_config(mocker):
 
 @pytest.fixture()
 def patch_config(mocker, fake_config):
-    return mocker.patch.object(apteco_api, "Configuration", return_value=fake_config)
+    return mocker.patch.object(aa, "Configuration", return_value=fake_config)
 
 
 @pytest.fixture()
@@ -1065,7 +1065,7 @@ class TestInitializeTablesAlgorithm:
         fake_master_table.configure_mock(name="jack of all tables master of none")
         fake_initialize_tables_algo = mocker.Mock(
             master_table=fake_master_table,
-            tables="the tables have turned",
+            tables_lookup="the tables have turned",
             _get_raw_tables=fake_get_raw_tables,
             _identify_children=fake_identify_children,
             _create_tables=fake_create_tables,
@@ -1195,7 +1195,7 @@ class TestInitializeTablesAlgorithm:
             mocker.call(*args2, session="jam session"),
             mocker.call(*args3, session="jam session"),
         ]
-        assert fake_initialize_tables_algo.tables == correct_tables
+        assert fake_initialize_tables_algo.tables_lookup == correct_tables
         patch_table.assert_has_calls(table_calls)
 
     def test_assign_parent_and_children(
@@ -1211,7 +1211,7 @@ class TestInitializeTablesAlgorithm:
 
         fake_children_lookup.__getitem__.side_effect = getitem_helper
         fake_initialize_tables_algo = mocker.Mock(
-            tables=fake_tables,
+            tables_lookup=fake_tables,
             children_lookup=fake_children_lookup,
             _check_child_tables_consistency=patch_cctc,
         )
@@ -1219,7 +1219,7 @@ class TestInitializeTablesAlgorithm:
             fake_initialize_tables_algo
         )
         patch_cctc.assert_has_calls([mocker.call(t) for t in correct_tables.values()])
-        assert fake_initialize_tables_algo.tables == correct_tables
+        assert fake_initialize_tables_algo.tables_lookup == correct_tables
         assert fake_children_lookup.default_factory is None
 
     def test_check_child_tables_consistency(self, mocker):
@@ -1258,7 +1258,7 @@ class TestInitializeTablesAlgorithm:
     def test_find_master_table(self, mocker):
         fake_initialize_tables_algo = mocker.Mock(
             children_lookup={"": ["Master of the Universe"]},
-            tables={"Master of the Universe": "My master table"},
+            tables_lookup={"Master of the Universe": "My master table"},
         )
         InitializeTablesAlgorithm._find_master_table(fake_initialize_tables_algo)
         assert fake_initialize_tables_algo.master_table == "My master table"
@@ -1298,14 +1298,14 @@ class TestInitializeTablesAlgorithm:
     ]
 
     @pytest.mark.parametrize(
-        "children_lookup, tables, expected_exc_msg",
+        "children_lookup, tables_lookup, expected_exc_msg",
         find_master_table_bad_cases_parameters,
     )
     def test_find_master_table_bad_cases(
-        self, children_lookup, tables, expected_exc_msg, mocker
+        self, children_lookup, tables_lookup, expected_exc_msg, mocker
     ):
         fake_initialize_tables_algo = mocker.Mock(
-            children_lookup=children_lookup, tables=tables
+            children_lookup=children_lookup, tables_lookup=tables_lookup
         )
         with pytest.raises(TablesError) as exc_info:
             InitializeTablesAlgorithm._find_master_table(fake_initialize_tables_algo)
@@ -1445,7 +1445,7 @@ class TestInitializeTablesAlgorithm:
             ancestors=["William", "Charles", "Elizabeth", "George", "George"],
             descendants=[],
         )
-        fake_initialize_tables_algo.tables.values.return_value = [
+        fake_initialize_tables_algo.tables_lookup.values.return_value = [
             fake_table1,
             fake_table2,
             fake_table3,
@@ -1488,7 +1488,7 @@ class TestInitializeTablesAlgorithm:
             ancestors=["Ignotus"],
             descendants=NOT_ASSIGNED,
         )
-        fake_initialize_tables_algo.tables.values.return_value = [
+        fake_initialize_tables_algo.tables_lookup.values.return_value = [
             fake_table1,
             fake_table2,
             fake_table3,
@@ -1520,7 +1520,7 @@ class TestInitializeVariablesAlgorithm:
         assert initialize_vars_algo_example.system == "system for the session"
         assert initialize_vars_algo_example.api_client == "API client for the session"
         assert initialize_vars_algo_example.session is fake_session_with_client
-        assert initialize_vars_algo_example.tables is fake_tables_without_variables
+        assert initialize_vars_algo_example.tables_lookup is fake_tables_without_variables
 
     def test_initialize_variables_algo_run(self, mocker):
         fake_get_raw_variables = mocker.Mock()
@@ -1530,7 +1530,7 @@ class TestInitializeVariablesAlgorithm:
         fake_check_all_variables_assigned = mocker.Mock()
         fake_initialize_vars_algo = mocker.Mock(
             variables="Wind: Variable, mainly east to northeast",
-            tables="table an amendment",
+            tables_lookup="table an amendment",
             _get_raw_variables=fake_get_raw_variables,
             _create_variables=fake_create_variables,
             _identify_variables=fake_identify_variables,
@@ -1676,7 +1676,7 @@ class TestInitializeVariablesAlgorithm:
         ]
         fake_initialize_vars_algo = mocker.Mock(
             _choose_variable=fake_choose_variable,
-            tables=fake_tables,
+            tables_lookup=fake_tables,
             session="session musician",
             raw_variables=fake_raw_variables,
         )
