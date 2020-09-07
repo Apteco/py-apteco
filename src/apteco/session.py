@@ -3,7 +3,7 @@ import json
 import warnings
 from collections import Counter, defaultdict, namedtuple
 from json import JSONDecodeError
-from typing import Any, Dict, Iterable, List, Mapping, Tuple
+from typing import Any, Dict, List, Tuple
 
 import apteco_api as aa
 import PySimpleGUI
@@ -26,6 +26,7 @@ from apteco.variables import (
     SelectorVariable,
     TextVariable,
     Variable,
+    VariablesAccessor,
 )
 
 NOT_ASSIGNED: Any = object()
@@ -655,78 +656,3 @@ class InitializeVariablesAlgorithm:
             raise VariablesError(
                 f"{len(no_variables)} table(s) had no variables assigned."
             )
-
-
-class VariablesAccessor:
-    """List- and dictionary-like access for variables."""
-
-    def __init__(self, variables: Iterable[Variable]):
-        self._variables = list(variables)
-        self._variables_by_name = {var.name: var for var in self._variables}
-        self._variables_by_desc = {var.description: var for var in self._variables}
-        self.names = VariableNamesAccessor(self._variables_by_name)
-        self.descs = VariableDescsAccessor(self._variables_by_desc)
-
-    @property
-    def descriptions(self):
-        """Alias of ``descs``"""
-        return self.descs
-
-    def __len__(self):
-        return len(self._variables)
-
-    def __iter__(self):
-        return iter(self._variables)
-
-    def __getitem__(self, item):
-        name_match = self._variables_by_name.get(item)
-        desc_match = self._variables_by_desc.get(item)
-        match_count = (name_match is not None) + (desc_match is not None)
-        if match_count == 1:
-            return name_match or desc_match
-        elif match_count == 2:
-            if name_match.name == desc_match.name:
-                return name_match
-            raise KeyError(f"Lookup key '{item}' was ambiguous.")
-        else:
-            raise KeyError(
-                f"Lookup key '{item}' did not match a variable name or description."
-            )
-
-
-class VariableNamesAccessor:
-    """Dictionary-like access for variables by name."""
-
-    def __init__(self, variables_by_name: Mapping[str, Variable]):
-        self._variables_by_name = dict(variables_by_name)
-        self._variable_names = list(self._variables_by_name.keys())
-
-    def __iter__(self):
-        return iter(self._variable_names)
-
-    def __getitem__(self, item):
-        try:
-            return self._variables_by_name[item]
-        except KeyError as exc:
-            raise KeyError(
-                f"Lookup key '{item}' did not match a variable name."
-            ) from exc
-
-
-class VariableDescsAccessor:
-    """Dictionary-like access for variables by description."""
-
-    def __init__(self, variables_by_desc: Mapping[str, Variable]):
-        self._variables_by_desc = dict(variables_by_desc)
-        self._variable_descs = list(self._variables_by_desc.keys())
-
-    def __iter__(self):
-        return iter(self._variable_descs)
-
-    def __getitem__(self, item):
-        try:
-            return self._variables_by_desc[item]
-        except KeyError as exc:
-            raise KeyError(
-                f"Lookup key '{item}' did not match a variable description."
-            ) from exc

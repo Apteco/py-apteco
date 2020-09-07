@@ -1,6 +1,7 @@
 from typing import Iterable, List, Optional
 
 from apteco.query import TableMixin
+from apteco.variables import VariablesAccessor
 
 
 class Table(TableMixin):
@@ -22,7 +23,7 @@ class Table(TableMixin):
         children: List["Table"],
         ancestors: List["Table"],
         descendants: List["Table"],
-        variables: "VariablesAccessor",
+        variables: VariablesAccessor,
         *,
         session: Optional["Session"] = None,
     ):

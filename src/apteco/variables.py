@@ -1,31 +1,31 @@
-from typing import Optional
+from typing import Iterable, Mapping, Optional
 
 from apteco.query import (
-    SelectorClause,
-    normalize_string_input,
+    ArrayClause,
+    DateListClause,
+    DateRangeClause,
+    DateTimeRangeClause,
+    FlagArrayClause,
     NumericClause,
+    SelectorClause,
+    TextClause,
+    general_error_msg_array,
+    general_error_msg_date,
+    general_error_msg_flag_array,
+    general_error_msg_numeric,
+    general_error_msg_selector,
+    general_error_msg_text,
+    normalize_date_input,
+    normalize_date_value,
+    normalize_datetime_value,
     normalize_number_input,
     normalize_number_value,
-    TextClause,
+    normalize_string_input,
     normalize_string_value,
-    ArrayClause,
-    FlagArrayClause,
-    DateListClause,
-    normalize_date_input,
-    DateRangeClause,
-    normalize_date_value,
-    DateTimeRangeClause,
-    normalize_datetime_value,
-    general_error_msg_selector,
-    general_error_msg_numeric,
-    single_value_error_msg_numeric,
-    general_error_msg_text,
-    single_value_error_msg_text,
-    general_error_msg_array,
-    general_error_msg_flag_array,
-    general_error_msg_date,
     single_value_error_msg_date,
     single_value_error_msg_datetime,
+    single_value_error_msg_numeric,
+    single_value_error_msg_text,
 )
 
 
@@ -415,3 +415,78 @@ class ReferenceVariable(Variable):
 
     def __ne__(self: "ReferenceVariable", other):
         raise NotImplementedError
+
+
+class VariablesAccessor:
+    """List- and dictionary-like access for variables."""
+
+    def __init__(self, variables: Iterable[Variable]):
+        self._variables = list(variables)
+        self._variables_by_name = {var.name: var for var in self._variables}
+        self._variables_by_desc = {var.description: var for var in self._variables}
+        self.names = VariableNamesAccessor(self._variables_by_name)
+        self.descs = VariableDescsAccessor(self._variables_by_desc)
+
+    @property
+    def descriptions(self):
+        """Alias of ``descs``"""
+        return self.descs
+
+    def __len__(self):
+        return len(self._variables)
+
+    def __iter__(self):
+        return iter(self._variables)
+
+    def __getitem__(self, item):
+        name_match = self._variables_by_name.get(item)
+        desc_match = self._variables_by_desc.get(item)
+        match_count = (name_match is not None) + (desc_match is not None)
+        if match_count == 1:
+            return name_match or desc_match
+        elif match_count == 2:
+            if name_match.name == desc_match.name:
+                return name_match
+            raise KeyError(f"Lookup key '{item}' was ambiguous.")
+        else:
+            raise KeyError(
+                f"Lookup key '{item}' did not match a variable name or description."
+            )
+
+
+class VariableNamesAccessor:
+    """Dictionary-like access for variables by name."""
+
+    def __init__(self, variables_by_name: Mapping[str, Variable]):
+        self._variables_by_name = dict(variables_by_name)
+        self._variable_names = list(self._variables_by_name.keys())
+
+    def __iter__(self):
+        return iter(self._variable_names)
+
+    def __getitem__(self, item):
+        try:
+            return self._variables_by_name[item]
+        except KeyError as exc:
+            raise KeyError(
+                f"Lookup key '{item}' did not match a variable name."
+            ) from exc
+
+
+class VariableDescsAccessor:
+    """Dictionary-like access for variables by description."""
+
+    def __init__(self, variables_by_desc: Mapping[str, Variable]):
+        self._variables_by_desc = dict(variables_by_desc)
+        self._variable_descs = list(self._variables_by_desc.keys())
+
+    def __iter__(self):
+        return iter(self._variable_descs)
+
+    def __getitem__(self, item):
+        try:
+            return self._variables_by_desc[item]
+        except KeyError as exc:
+            raise KeyError(
+                f"Lookup key '{item}' did not match a variable description."
+            ) from exc
