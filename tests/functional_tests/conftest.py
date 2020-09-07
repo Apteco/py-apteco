@@ -1,6 +1,6 @@
 import pytest
 
-from apteco.session import Table
+from apteco.tables import Table
 from apteco.variables import (
     ArrayVariable,
     CombinedCategoriesVariable,

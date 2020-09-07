@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from apteco.session import Table
+from apteco.tables import Table
 from apteco.variables import (
     SelectorVariable,
     TextVariable,
