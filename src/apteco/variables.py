@@ -1,5 +1,7 @@
 from typing import Iterable, Mapping, Optional
 
+import apteco_api as aa
+
 from apteco.query import (
     ArrayClause,
     DateListClause,
@@ -81,14 +83,14 @@ class SelectorVariable(BaseSelectorVariable):
         super().__init__(**kwargs)
         self.type = "Selector"
 
-    def __eq__(self: "SelectorVariable", other):
+    def __eq__(self, other):
         return SelectorClause(
             self,
             normalize_string_input(other, general_error_msg_selector),
             session=self.session,
         )
 
-    def __ne__(self: "SelectorVariable", other):
+    def __ne__(self, other):
         return SelectorClause(
             self,
             normalize_string_input(other, general_error_msg_selector),
@@ -106,10 +108,10 @@ class CombinedCategoriesVariable(BaseSelectorVariable):
         selector_info = kwargs["selector_info"]  # type: aa.SelectorVariableInfo
         self.combined_from = selector_info.combined_from_variable_name
 
-    def __eq__(self: "CombinedCategoriesVariable", other):
+    def __eq__(self, other):
         raise NotImplementedError
 
-    def __ne__(self: "CombinedCategoriesVariable", other):
+    def __ne__(self, other):
         raise NotImplementedError
 
 
@@ -126,14 +128,14 @@ class NumericVariable(Variable):
         self.currency_locale = numeric_info.currency_locale
         self.currency_symbol = numeric_info.currency_symbol
 
-    def __eq__(self: "NumericVariable", other):
+    def __eq__(self, other):
         return NumericClause(
             self,
             normalize_number_input(other, general_error_msg_numeric),
             session=self.session,
         )
 
-    def __ne__(self: "NumericVariable", other):
+    def __ne__(self, other):
         return NumericClause(
             self,
             normalize_number_input(other, general_error_msg_numeric),
@@ -141,28 +143,28 @@ class NumericVariable(Variable):
             session=self.session,
         )
 
-    def __lt__(self: "NumericVariable", other):
+    def __lt__(self, other):
         return NumericClause(
             self,
             [f"<{normalize_number_value(other, single_value_error_msg_numeric)}"],
             session=self.session,
         )
 
-    def __le__(self: "NumericVariable", other):
+    def __le__(self, other):
         return NumericClause(
             self,
             [f"<={normalize_number_value(other, single_value_error_msg_numeric)}"],
             session=self.session,
         )
 
-    def __gt__(self: "NumericVariable", other):
+    def __gt__(self, other):
         return NumericClause(
             self,
             [f">{normalize_number_value(other, single_value_error_msg_numeric)}"],
             session=self.session,
         )
 
-    def __ge__(self: "NumericVariable", other):
+    def __ge__(self, other):
         return NumericClause(
             self,
             [f">={normalize_number_value(other, single_value_error_msg_numeric)}"],
@@ -267,16 +269,16 @@ class TextVariable(Variable):
             session=self.session,
         )
 
-    def __eq__(self: "TextVariable", other):
+    def __eq__(self, other):
         return self.equals(other, include=True)
 
-    def __ne__(self: "TextVariable", other):
+    def __ne__(self, other):
         return self.equals(other, include=False)
 
-    def __le__(self: "TextVariable", other):
+    def __le__(self, other):
         return self.before(other)
 
-    def __ge__(self: "TextVariable", other):
+    def __ge__(self, other):
         return self.after(other)
 
 
@@ -287,14 +289,14 @@ class ArrayVariable(BaseSelectorVariable):
         super().__init__(**kwargs)
         self.type = "Array"
 
-    def __eq__(self: "ArrayVariable", other):
+    def __eq__(self, other):
         return ArrayClause(
             self,
             normalize_string_input(other, general_error_msg_array),
             session=self.session,
         )
 
-    def __ne__(self: "ArrayVariable", other):
+    def __ne__(self, other):
         return ArrayClause(
             self,
             normalize_string_input(other, general_error_msg_array),
@@ -310,14 +312,14 @@ class FlagArrayVariable(BaseSelectorVariable):
         super().__init__(**kwargs)
         self.type = "FlagArray"
 
-    def __eq__(self: "FlagArrayVariable", other):
+    def __eq__(self, other):
         return FlagArrayClause(
             self,
             normalize_string_input(other, general_error_msg_flag_array),
             session=self.session,
         )
 
-    def __ne__(self: "FlagArrayVariable", other):
+    def __ne__(self, other):
         return FlagArrayClause(
             self,
             normalize_string_input(other, general_error_msg_flag_array),
@@ -341,14 +343,14 @@ class DateVariable(BaseDateVariable):
         super().__init__(**kwargs)
         self.type = "Date"
 
-    def __eq__(self: "DateVariable", other):
+    def __eq__(self, other):
         return DateListClause(
             self,
             normalize_date_input(other, general_error_msg_date, basic=True),
             session=self.session,
         )
 
-    def __ne__(self: "DateVariable", other):
+    def __ne__(self, other):
         return DateListClause(
             self,
             normalize_date_input(other, general_error_msg_date, basic=True),
@@ -356,7 +358,7 @@ class DateVariable(BaseDateVariable):
             session=self.session,
         )
 
-    def __le__(self: "DateVariable", other):
+    def __le__(self, other):
         return DateRangeClause(
             self,
             "Earliest",
@@ -364,7 +366,7 @@ class DateVariable(BaseDateVariable):
             session=self.session,
         )
 
-    def __ge__(self: "DateVariable", other):
+    def __ge__(self, other):
         return DateRangeClause(
             self,
             normalize_date_value(other, single_value_error_msg_date),
@@ -386,7 +388,7 @@ class DateTimeVariable(BaseDateVariable):
     def __ne__(self, other):
         raise NotImplementedError
 
-    def __le__(self: "DateTimeVariable", other):
+    def __le__(self, other):
         return DateTimeRangeClause(
             self,
             "Earliest",
@@ -394,7 +396,7 @@ class DateTimeVariable(BaseDateVariable):
             session=self.session,
         )
 
-    def __ge__(self: "DateTimeVariable", other):
+    def __ge__(self, other):
         return DateTimeRangeClause(
             self,
             normalize_datetime_value(other, single_value_error_msg_datetime),
@@ -410,10 +412,10 @@ class ReferenceVariable(Variable):
         super().__init__(**kwargs)
         self.type = "Reference"
 
-    def __eq__(self: "ReferenceVariable", other):
+    def __eq__(self, other):
         raise NotImplementedError
 
-    def __ne__(self: "ReferenceVariable", other):
+    def __ne__(self, other):
         raise NotImplementedError
 
 
