@@ -1,4 +1,5 @@
 import pytest
+from apteco.query import LimitClause
 
 
 @pytest.fixture()
@@ -71,3 +72,10 @@ def test_n_per_table(france):
     assert france_bookings_1_per_person.count() == 796794
     assert france_bookings_highest_2_costs_per_person.count() == 926322
     assert france_bookings_lowest_3_profits_per_household.count() == 923771
+
+
+def test_limit_clause(men, holidays, people):
+    men_first_100 = LimitClause(100, men, session=holidays)
+    assert men_first_100.count() == 100
+    students_men_first_100 = men_first_100 & (people["Occupation"] == "4")
+    assert students_men_first_100.count() == 9
