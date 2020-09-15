@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 from apteco.query import (
@@ -399,3 +400,34 @@ class TestTableClause:
             session=holidays,
         )
         assert responses_by_vowels.count() == 216
+
+
+class TestClauseDataGrid:
+    def test_clause_datagrid_to_df_web_visits_mobile_social_media_1500_rows_all_columns(
+        self,
+        web_visits,
+        datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns
+    ):
+        web_visits_mobile_social_media = (web_visits["wvSource"] == "S") & (web_visits["wvDevice"] == "3")
+
+        web_visits_dg = web_visits_mobile_social_media.datagrid(
+            [
+                web_visits[var] for var in
+                (
+                    "Web URN",  # Reference (Numeric)
+                    "URL",  # Text
+                    "Web Visit Time",  # DateTime
+                    "Device Type",  # Selector
+                    "Duration",  # Numeric (0 dp, with missing)
+                    "Original Source",  # Selector
+                )
+            ],
+            max_rows=1500,
+        )
+        web_visits_df = web_visits_dg.to_df()
+
+        pd.testing.assert_frame_equal(
+            web_visits_df,
+            datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns,
+            check_dtype=False,
+        )

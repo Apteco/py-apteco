@@ -5,6 +5,7 @@ from typing import Iterable, List, Optional
 
 import apteco_api as aa
 
+from apteco.datagrid import DataGrid
 from apteco.exceptions import AptecoException
 
 DECIMAL_PLACES = 4
@@ -331,6 +332,15 @@ class Clause:
 
     def __rmul__(self, other):
         return self.__mul__(other)
+
+    def datagrid(self, columns, table=None, max_rows=1000):
+        return DataGrid(
+            columns,
+            selection=self,
+            table=table if table is not None else self.table,
+            max_rows=max_rows,
+            session=self.session,
+        )
 
 
 class SelectorClauseMixin:

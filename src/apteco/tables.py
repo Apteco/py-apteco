@@ -1,5 +1,6 @@
 from typing import Iterable, List, Optional
 
+from apteco.datagrid import DataGrid
 from apteco.query import TableMixin
 from apteco.variables import VariablesAccessor
 
@@ -161,6 +162,9 @@ class Table(TableMixin):
 
     def __getitem__(self, item):
         return self.variables[item]
+
+    def datagrid(self, columns, selection=None, max_rows=1000):
+        return DataGrid(columns, selection=selection, table=self, max_rows=max_rows, session=self.session)
 
 
 class TablesAccessor:

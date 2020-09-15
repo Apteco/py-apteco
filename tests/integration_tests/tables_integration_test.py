@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 
@@ -159,3 +160,27 @@ class TestTablesAccessor:
 
     def test_tables_len(self, holidays):
         assert len(holidays.tables) == 9
+
+
+class TestTablesDataGrid:
+    def test_tables_datagrid_bookings_various_columns(
+        self, bookings, datagrid_001_bookings_various_columns
+    ):
+
+        bookings_dg = bookings.datagrid(
+            [
+                bookings[var]
+                for var in (
+                    "Booking URN",
+                    "Destination",
+                    "Product",
+                    "Cost",
+                    "Booking Date",
+                )
+            ]
+        )
+        bookings_df = bookings_dg.to_df()
+
+        pd.testing.assert_frame_equal(
+            bookings_df, datagrid_001_bookings_various_columns, check_dtype=False
+        )
