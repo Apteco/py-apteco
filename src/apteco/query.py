@@ -327,6 +327,34 @@ class Clause:
 
     def __rmul__(self, other):
         return self.__mul__(other)
+    
+    def sample(self, n=None, frac=None, sample_type="First", skip_first=0, *, label=None):
+        if sum((i is not None) for i in (n, frac)) != 1:
+            raise ValueError("Must specify either n or frac")
+        percent = None
+        fraction = None
+        if n is not None:
+            if not isinstance(n, Integral) or n < 1:
+                raise ValueError("n must be an integer greater than 0")
+        else:
+            if frac >= 1 or frac <= 0:
+                raise ValueError("frac must be between 0 and 1")
+            if isinstance(frac, Rational):
+                fraction = frac
+            elif isinstance(frac, Real):
+                percent = frac * 100
+            else:
+                raise ValueError("frac must be either a float or a fraction")
+        return LimitClause(
+            total=n,
+            percent=percent,
+            fraction=(fraction.numerator, fraction.denominator) if fraction else None,
+            clause=self,
+            sample_type=sample_type,
+            skip_first=skip_first,
+            label=label,
+            session=self.session
+        )
 
 
 class SelectorClauseMixin:
@@ -863,9 +891,20 @@ class SubSelectionClause(Clause):
 
 
 class LimitClause(Clause):
-    def __init__(self, n, clause, *, label=None, session=None):
-        self.n = n
+    def __init__(self, total=None, percent=None, fraction=None, clause=None, sample_type="First", skip_first=0, *, label=None, session=None):
+        input_flag = tuple((i is not None) for i in (total, percent, fraction))
+        if sum(input_flag) != 1:
+            raise ValueError("Must specify one of total, percent or fraction")
+        self.type_ = {0: "Total", 1: "Percent", 2: "Fraction"}[input_flag.index(True)]
+        if sample_type not in ("First", "Stratified", "Random"):
+            raise ValueError(f"{sample_type} is not a valid sample type")
+
+        self.total = total
+        self.percent = percent
+        self.fraction = fraction
         self.clause = clause
+        self.sample_type = sample_type
+        self.skip_first = skip_first
         self.table = clause.table
 
         self.label = label
@@ -877,11 +916,15 @@ class LimitClause(Clause):
                 selection=aa.Selection(
                     rule=aa.Rule(clause=self.clause._to_model()),
                     limits=aa.Limits(
-                        sampling="First", total=self.n, type="Total", start_at=0
+                        sampling=self.sample_type,
+                        total=self.total,
+                        type=self.type_,
+                        start_at=self.skip_first,
+                        percent=self.percent,
+                        fraction=aa.Fraction(self.fraction[0], self.fraction[1]) if self.fraction else None,
                     ),
                     table_name=self.clause.table_name,
                     name=self.label,
                 )
             )
         )
-

@@ -13,16 +13,59 @@ def france(bookings):
     return bookings["boDest"] == "France"
 
 
-@pytest.mark.xfail(reason="Limits under development")
-def test_limit(men):
-    men_10 = men.sample(n=100)
+class UnrealFrac:
+    def __ge__(self, other):
+        return False
+    
+    def __le__(self, other):
+        return False
+
+
+def test_limit(men, people):
+    men_10 = men.sample(10)
     men_skip_5_first_10pct = men.sample(frac=0.1, skip_first=5)
-    men_regular_100 = men.sample(n=100, sample_type="regular")
-    men_random_two_thirds = men.sample(frac=Fraction(2, 3), sample_type="random")
+    men_regular_100 = men.sample(n=100, sample_type="Stratified")
+    men_random_two_thirds = men.sample(frac=Fraction(2, 3), sample_type="Random")
     assert men_10.count() == 10
     assert men_skip_5_first_10pct.count() == 37857
     assert men_regular_100.count() == 100
     assert men_random_two_thirds.count() == 252377
+
+    with pytest.raises(ValueError) as exc_info:
+        men_no_value = men.sample()
+    assert exc_info.value.args[0] == ("Must specify either n or frac")
+
+    with pytest.raises(ValueError) as exc_info:
+        men_n_and_frac = men.sample(10, 0.1)
+    assert exc_info.value.args[0] == ("Must specify either n or frac")
+
+    with pytest.raises(ValueError) as exc_info:
+        men_n_float = men.sample(2.5)
+    assert exc_info.value.args[0] == ("n must be an integer greater than 0")
+
+    with pytest.raises(ValueError) as exc_info:
+        men_n_small = men.sample(0)
+    assert exc_info.value.args[0] == ("n must be an integer greater than 0")
+
+    with pytest.raises(ValueError) as exc_info:
+        men_big_frac = men.sample(frac=Fraction(3, 2))
+    assert exc_info.value.args[0] == ("frac must be between 0 and 1")
+
+    with pytest.raises(ValueError) as exc_info:
+        men_negative_frac = men.sample(frac=-0.2)
+    assert exc_info.value.args[0] == ("frac must be between 0 and 1")
+
+    with pytest.raises(ValueError) as exc_info:
+        men_1_frac = men.sample(frac=1)
+    assert exc_info.value.args[0] == ("frac must be between 0 and 1")
+
+    with pytest.raises(ValueError) as exc_info:
+        men_0_frac = men.sample(frac=Fraction(0, 4))
+    assert exc_info.value.args[0] == ("frac must be between 0 and 1")
+
+    with pytest.raises(ValueError) as exc_info:
+        men_people_frac = men.sample(frac=UnrealFrac())
+    assert exc_info.value.args[0] == ("frac must be either a float or a fraction")
 
 
 @pytest.mark.xfail(reason="Top N under development")
@@ -68,7 +111,7 @@ def test_n_per_table(france, people, bookings, households):
 
 
 def test_limit_clause(men, holidays, people):
-    men_first_100 = LimitClause(100, men, session=holidays)
+    men_first_100 = LimitClause(100, clause=men, session=holidays)
     assert men_first_100.count() == 100
     students_men_first_100 = men_first_100 & (people["Occupation"] == "4")
     assert students_men_first_100.count() == 9
