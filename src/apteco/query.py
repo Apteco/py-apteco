@@ -327,8 +327,10 @@ class Clause:
 
     def __rmul__(self, other):
         return self.__mul__(other)
-    
-    def sample(self, n=None, frac=None, sample_type="First", skip_first=0, *, label=None):
+
+    def sample(
+        self, n=None, frac=None, sample_type="First", skip_first=0, *, label=None
+    ):
         if sum((i is not None) for i in (n, frac)) != 1:
             raise ValueError("Must specify either n or frac")
         percent = None
@@ -353,7 +355,7 @@ class Clause:
             sample_type=sample_type,
             skip_first=skip_first,
             label=label,
-            session=self.session
+            session=self.session,
         )
 
 
@@ -891,7 +893,18 @@ class SubSelectionClause(Clause):
 
 
 class LimitClause(Clause):
-    def __init__(self, total=None, percent=None, fraction=None, clause=None, sample_type="First", skip_first=0, *, label=None, session=None):
+    def __init__(
+        self,
+        total=None,
+        percent=None,
+        fraction=None,
+        clause=None,
+        sample_type="First",
+        skip_first=0,
+        *,
+        label=None,
+        session=None,
+    ):
         input_flag = tuple((i is not None) for i in (total, percent, fraction))
         if sum(input_flag) != 1:
             raise ValueError("Must specify one of total, percent or fraction")
@@ -921,7 +934,9 @@ class LimitClause(Clause):
                         type=self.type_,
                         start_at=self.skip_first,
                         percent=self.percent,
-                        fraction=aa.Fraction(self.fraction[0], self.fraction[1]) if self.fraction else None,
+                        fraction=aa.Fraction(self.fraction[0], self.fraction[1])
+                        if self.fraction
+                        else None,
                     ),
                     table_name=self.clause.table_name,
                     name=self.label,
