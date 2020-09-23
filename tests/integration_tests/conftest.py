@@ -111,3 +111,16 @@ def datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns(data_dir):
         format="%d/%m/%Y %H:%M:%S",
     )
     return df
+
+
+@pytest.fixture()
+def datagrid_004_bookings_with_households_selection(data_dir):
+    df = pd.read_csv(
+        data_dir / "datagrid_004_bookings_with_households_selection.csv"
+    )
+    df.loc[:, "Booking URN"] = df.loc[:, "Booking URN"].astype(str)
+    df.loc[:, "Travel Date"] = pd.to_datetime(
+        df.loc[:, "Travel Date"],
+        format="%d/%m/%Y",
+    ).dt.date
+    return df

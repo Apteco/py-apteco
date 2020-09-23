@@ -80,3 +80,33 @@ def test_datagrid_to_df_web_visits_mobile_social_media_1500_rows_all_columns(
         web_visits_df,
         datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns,
     )
+
+
+def test_datagrid_to_df_bookings_500_rows_households_selection(
+    holidays,
+    households,
+    bookings,
+    datagrid_004_bookings_with_households_selection,
+):
+
+    bookings_dg = DataGrid(
+        [
+            bookings[var]
+            for var in (
+                "Booking URN",  # Reference (Numeric)
+                "Destination",  # Selector
+                "Travel Date",  # Date
+                "Type",  # Selector
+                "Profit",  # Currency (2 dp)
+            )
+        ],
+        selection=((households["Region"] == "02") & households["Address"].contains("street", match_case=False)),
+        table=bookings,
+        session=holidays,
+    )
+    bookings_df = bookings_dg.to_df()
+
+    pd.testing.assert_frame_equal(
+        bookings_df,
+        datagrid_004_bookings_with_households_selection,
+    )

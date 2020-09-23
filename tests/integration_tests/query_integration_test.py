@@ -429,5 +429,33 @@ class TestClauseDataGrid:
         pd.testing.assert_frame_equal(
             web_visits_df,
             datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns,
+        )
+
+    def test_clause_datagrid_to_df_bookings_500_rows_households_selection(
+            self,
+            households,
+            bookings,
+            datagrid_004_bookings_with_households_selection,
+    ):
+        north_west_streets = (households["Region"] == "02") & households["Address"].contains("street", match_case=False)
+
+        bookings_dg = north_west_streets.datagrid(
+            [
+                bookings[var] for var in
+                (
+                    "Booking URN",  # Reference (Numeric)
+                    "Destination",  # Selector
+                    "Travel Date",  # Date
+                    "Type",  # Selector
+                    "Profit",  # Currency (2 dp)
+                )
+            ],
+            table=bookings,
+        )
+        bookings_df = bookings_dg.to_df()
+
+        pd.testing.assert_frame_equal(
+            bookings_df,
+            datagrid_004_bookings_with_households_selection,
             check_dtype=False,
         )
