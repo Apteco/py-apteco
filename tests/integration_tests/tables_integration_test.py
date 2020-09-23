@@ -182,5 +182,5 @@ class TestTablesDataGrid:
         bookings_df = bookings_dg.to_df()
 
         pd.testing.assert_frame_equal(
-            bookings_df, datagrid_001_bookings_various_columns, check_dtype=False
+            bookings_df, datagrid_001_bookings_various_columns
         )

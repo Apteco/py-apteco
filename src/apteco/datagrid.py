@@ -34,13 +34,7 @@ class DataGrid:
         if column_type in ("Selector", "Text", "Reference"):
             return data.astype(str)
         elif column_type == "Numeric":
-            if "." in data.iloc[0]:
-                return data.astype(float)
-            else:
-                try:
-                    return data.astype(int)
-                except ValueError:
-                    return data.replace("", np.NaN).astype(float)
+            return pd.to_numeric(data)
         elif column_type == "Date":
             return pd.to_datetime(data, format="%d-%m-%Y").dt.date
         elif column_type == "DateTime":

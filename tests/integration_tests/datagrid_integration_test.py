@@ -23,9 +23,7 @@ def test_datagrid_to_df_bookings_various_columns(
     )
     bookings_df = bookings_dg.to_df()
 
-    pd.testing.assert_frame_equal(
-        bookings_df, datagrid_001_bookings_various_columns, check_dtype=False
-    )
+    pd.testing.assert_frame_equal(bookings_df, datagrid_001_bookings_various_columns)
 
 
 def test_datagrid_to_df_policies_2000_rows_various_columns(
@@ -50,7 +48,7 @@ def test_datagrid_to_df_policies_2000_rows_various_columns(
     pol_df = policies_dg.to_df()
 
     pd.testing.assert_frame_equal(
-        pol_df, datagrid_002_policies_2000_rows_various_columns, check_dtype=False
+        pol_df, datagrid_002_policies_2000_rows_various_columns
     )
 
 
@@ -81,5 +79,4 @@ def test_datagrid_to_df_web_visits_mobile_social_media_1500_rows_all_columns(
     pd.testing.assert_frame_equal(
         web_visits_df,
         datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns,
-        check_dtype=False,
     )
