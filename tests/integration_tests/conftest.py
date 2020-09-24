@@ -76,51 +76,102 @@ def responses(holidays):
     return holidays.tables["Responses Attributed"]
 
 
+def load_reference_dataframe(path, str_cols=None, date_cols=None, datetime_cols=None):
+    """Load reference DataFrame, optionally converting column types.
+
+    Args:
+        path (path-like): path to CSV with reference data
+        str_cols (list): column names to covert to string
+        date_cols (dict): mapping from column name to date format
+            for columns to convert to date
+        datetime_cols (dict): mapping from column name to datetime format
+            for columns to convert to datetime
+
+    Returns:
+        pd.DataFrame: DataFrame with loaded reference data
+
+    """
+    str_cols = str_cols or []
+    date_cols = date_cols or {}
+    datetime_cols = datetime_cols or {}
+
+    df = pd.read_csv(path)
+
+    for col in str_cols:
+        df.loc[:, col] = df.loc[:, col].astype(str)
+
+    for col, fmt in date_cols.items():
+        df.loc[:, col] = pd.to_datetime(df.loc[:, col], format=fmt).dt.date
+
+    for col, fmt in datetime_cols.items():
+        df.loc[:, col] = pd.to_datetime(df.loc[:, col], format=fmt)
+
+    return df
+
+
 @pytest.fixture()
 def datagrid_001_bookings_various_columns(data_dir):
-    df = pd.read_csv(data_dir / "datagrid_001_bookings_various_columns.csv")
-    df.loc[:, "Booking URN"] = df.loc[:, "Booking URN"].astype(str)
-    df.loc[:, "Booking Date"] = pd.to_datetime(
-        df.loc[:, "Booking Date"],
-        format="%d/%m/%Y",
-    ).dt.date
-    return df
+    """DataGrid with columns from same table.
+
+    Table: Bookings
+    Columns: Bookings
+    Selection: [none]
+    Rows limit: [none]
+
+    """
+    return load_reference_dataframe(
+        data_dir / "datagrid_001_bookings_various_columns.csv",
+        str_cols=["Booking URN"],
+        date_cols={"Booking Date": "%d/%m/%Y"},
+    )
 
 
 @pytest.fixture()
 def datagrid_002_policies_2000_rows_various_columns(data_dir):
-    df = pd.read_csv(
+    """DataGrid with columns from same table and rows limit.
+
+    Table: Policies
+    Columns: Policies
+    Selection: [none]
+    Rows limit: 2000
+
+    """
+    return load_reference_dataframe(
         data_dir / "datagrid_002_policies_2000_rows_various_columns.csv",
+        str_cols=["Policy Number"],
+        date_cols={"Policy Date": "%d/%m/%Y"},
     )
-    df.loc[:, "Policy Number"] = df.loc[:, "Policy Number"].astype(str)
-    df.loc[:, "Policy Date"] = pd.to_datetime(
-        df.loc[:, "Policy Date"],
-        format="%d/%m/%Y",
-    ).dt.date
-    return df
 
 
 @pytest.fixture()
 def datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns(data_dir):
-    df = pd.read_csv(
+    """DataGrid with columns from same table, selection from same table and rows limit.
+
+    Table: WebVisits
+    Columns: WebVisits
+    Selection: WebVisits (social media source & mobile device)
+    Rows limit: 1500
+
+    """
+    return load_reference_dataframe(
         data_dir / "datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns.csv",
+        str_cols=["Web URN"],
+        datetime_cols={"Web Visit Time": "%d/%m/%Y %H:%M:%S"},
     )
-    df.loc[:, "Web URN"] = df.loc[:, "Web URN"].astype(str)
-    df.loc[:, "Web Visit Time"] = pd.to_datetime(
-        df.loc[:, "Web Visit Time"],
-        format="%d/%m/%Y %H:%M:%S",
-    )
-    return df
 
 
 @pytest.fixture()
 def datagrid_004_bookings_with_households_selection(data_dir):
-    df = pd.read_csv(
-        data_dir / "datagrid_004_bookings_with_households_selection.csv"
+    """DataGrid with columns from same table, selection from different table.
+
+    Table: Bookings
+    Columns: Bookings
+    Selection: Households
+    Rows limit: [none]
+
+    """
+    return load_reference_dataframe(
+        data_dir / "datagrid_004_bookings_with_households_selection.csv",
+        str_cols=["Booking URN"],
+        date_cols={"Travel Date": "%d/%m/%Y"},
     )
-    df.loc[:, "Booking URN"] = df.loc[:, "Booking URN"].astype(str)
-    df.loc[:, "Travel Date"] = pd.to_datetime(
-        df.loc[:, "Travel Date"],
-        format="%d/%m/%Y",
-    ).dt.date
-    return df
