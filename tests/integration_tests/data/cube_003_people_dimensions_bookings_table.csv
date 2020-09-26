@@ -1,0 +1,170 @@
+﻿Source,Occupation,Bookings
+Unclassified,Unclassified,44
+Unclassified,Manual Worker,3722
+Unclassified,Director,475
+Unclassified,Manager,1800
+Unclassified,Professional,724
+Unclassified,Student,4183
+Unclassified,Sales Executive,24959
+Unclassified,Retail Worker,5298
+Unclassified,Public Sector,8899
+Unclassified,Unemployed,7930
+Unclassified,Retired,11498
+Unclassified,TOTAL,69532
+DRTV,Unclassified,12
+DRTV,Manual Worker,43
+DRTV,Director,116
+DRTV,Manager,450
+DRTV,Professional,153
+DRTV,Student,464
+DRTV,Sales Executive,1171
+DRTV,Retail Worker,509
+DRTV,Public Sector,1491
+DRTV,Unemployed,153
+DRTV,Retired,473
+DRTV,TOTAL,5035
+MyOffers.com,Unclassified,0
+MyOffers.com,Manual Worker,14
+MyOffers.com,Director,11
+MyOffers.com,Manager,55
+MyOffers.com,Professional,39
+MyOffers.com,Student,21
+MyOffers.com,Sales Executive,228
+MyOffers.com,Retail Worker,353
+MyOffers.com,Public Sector,221
+MyOffers.com,Unemployed,120
+MyOffers.com,Retired,2076
+MyOffers.com,TOTAL,3138
+Website,Unclassified,165
+Website,Manual Worker,34849
+Website,Director,4876
+Website,Manager,17529
+Website,Professional,7191
+Website,Student,73873
+Website,Sales Executive,211631
+Website,Retail Worker,24502
+Website,Public Sector,66793
+Website,Unemployed,33730
+Website,Retired,54334
+Website,TOTAL,529473
+Telephone Enquiry,Unclassified,159
+Telephone Enquiry,Manual Worker,70466
+Telephone Enquiry,Director,5226
+Telephone Enquiry,Manager,20500
+Telephone Enquiry,Professional,6406
+Telephone Enquiry,Student,35201
+Telephone Enquiry,Sales Executive,193099
+Telephone Enquiry,Retail Worker,20321
+Telephone Enquiry,Public Sector,63211
+Telephone Enquiry,Unemployed,26961
+Telephone Enquiry,Retired,23528
+Telephone Enquiry,TOTAL,465078
+Travel Agent,Unclassified,769
+Travel Agent,Manual Worker,4614
+Travel Agent,Director,12207
+Travel Agent,Manager,54864
+Travel Agent,Professional,19729
+Travel Agent,Student,36799
+Travel Agent,Sales Executive,96018
+Travel Agent,Retail Worker,42536
+Travel Agent,Public Sector,67103
+Travel Agent,Unemployed,4078
+Travel Agent,Retired,9261
+Travel Agent,TOTAL,347978
+Times Promotion,Unclassified,6
+Times Promotion,Manual Worker,83
+Times Promotion,Director,12
+Times Promotion,Manager,70
+Times Promotion,Professional,8
+Times Promotion,Student,46
+Times Promotion,Sales Executive,417
+Times Promotion,Retail Worker,788
+Times Promotion,Public Sector,1480
+Times Promotion,Unemployed,2248
+Times Promotion,Retired,4805
+Times Promotion,TOTAL,9963
+Virgin Trains Offer,Unclassified,2
+Virgin Trains Offer,Manual Worker,0
+Virgin Trains Offer,Director,0
+Virgin Trains Offer,Manager,9
+Virgin Trains Offer,Professional,6
+Virgin Trains Offer,Student,0
+Virgin Trains Offer,Sales Executive,7
+Virgin Trains Offer,Retail Worker,37
+Virgin Trains Offer,Public Sector,29
+Virgin Trains Offer,Unemployed,12
+Virgin Trains Offer,Retired,37
+Virgin Trains Offer,TOTAL,139
+Lastminute.com,Unclassified,41
+Lastminute.com,Manual Worker,185
+Lastminute.com,Director,957
+Lastminute.com,Manager,3268
+Lastminute.com,Professional,1314
+Lastminute.com,Student,1325
+Lastminute.com,Sales Executive,3796
+Lastminute.com,Retail Worker,4522
+Lastminute.com,Public Sector,4821
+Lastminute.com,Unemployed,1055
+Lastminute.com,Retired,1128
+Lastminute.com,TOTAL,22412
+Google,Unclassified,0
+Google,Manual Worker,0
+Google,Director,77
+Google,Manager,355
+Google,Professional,155
+Google,Student,33
+Google,Sales Executive,443
+Google,Retail Worker,109
+Google,Public Sector,108
+Google,Unemployed,1
+Google,Retired,26
+Google,TOTAL,1307
+Website Referral,Unclassified,74
+Website Referral,Manual Worker,555
+Website Referral,Director,1009
+Website Referral,Manager,2875
+Website Referral,Professional,1021
+Website Referral,Student,1274
+Website Referral,Sales Executive,5305
+Website Referral,Retail Worker,10290
+Website Referral,Public Sector,10208
+Website Referral,Unemployed,4914
+Website Referral,Retired,14616
+Website Referral,TOTAL,52141
+Yell.com Referral,Unclassified,26
+Yell.com Referral,Manual Worker,217
+Yell.com Referral,Director,893
+Yell.com Referral,Manager,3257
+Yell.com Referral,Professional,1239
+Yell.com Referral,Student,1631
+Yell.com Referral,Sales Executive,5391
+Yell.com Referral,Retail Worker,3019
+Yell.com Referral,Public Sector,2642
+Yell.com Referral,Unemployed,83
+Yell.com Referral,Retired,230
+Yell.com Referral,TOTAL,18628
+Telemarketing,Unclassified,115
+Telemarketing,Manual Worker,879
+Telemarketing,Director,2162
+Telemarketing,Manager,9302
+Telemarketing,Professional,3188
+Telemarketing,Student,6463
+Telemarketing,Sales Executive,18934
+Telemarketing,Retail Worker,6036
+Telemarketing,Public Sector,10911
+Telemarketing,Unemployed,999
+Telemarketing,Retired,1927
+Telemarketing,TOTAL,60916
+Expedia,Unclassified,1433
+Expedia,Manual Worker,8656
+Expedia,Director,11255
+Expedia,Manager,47310
+Expedia,Professional,17438
+Expedia,Student,41827
+Expedia,Sales Executive,112957
+Expedia,Retail Worker,72339
+Expedia,Public Sector,161014
+Expedia,Unemployed,27563
+Expedia,Retired,42549
+Expedia,TOTAL,544341
+TOTAL,TOTAL,2130081

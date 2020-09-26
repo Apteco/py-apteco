@@ -189,3 +189,31 @@ def cube_001_people_various_dimensions(data_dir):
     """
     df = pd.read_csv(data_dir / "cube_001_people_various_dimensions.csv")
     return df.set_index(["Income", "Occupation", "Source"])
+
+
+@pytest.fixture()
+def cube_002_bookings_before_2020_cost_less_than_500(data_dir):
+    """Cube with dimensions and selection from same table.
+
+    Table: Bookings
+    Dimensions: Bookings
+    Measures: [none]
+    Selection: Bookings (cost less than £500, booking date up to 31/12/2019)
+
+    """
+    df = pd.read_csv(data_dir / "cube_002_bookings_before_2020_cost_less_than_500.csv")
+    return df.set_index(["Destination", "Product", "Response Code"])
+
+
+@pytest.fixture()
+def cube_003_people_dimensions_bookings_table(data_dir):
+    """Cube with dimensions from different table.
+
+    Table: Bookings
+    Dimensions: People
+    Measures: [none]
+    Selection: [none]
+
+    """
+    df = pd.read_csv(data_dir / "cube_003_people_dimensions_bookings_table.csv")
+    return df.set_index(["Source", "Occupation"])
