@@ -114,7 +114,7 @@ def load_reference_dataframe(path, str_cols=None, date_cols=None, datetime_cols=
     return df
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def datagrid_001_bookings_various_columns(data_dir):
     """DataGrid with columns from same table.
 
@@ -131,7 +131,7 @@ def datagrid_001_bookings_various_columns(data_dir):
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def datagrid_002_policies_2000_rows_various_columns(data_dir):
     """DataGrid with columns from same table and rows limit.
 
@@ -148,7 +148,7 @@ def datagrid_002_policies_2000_rows_various_columns(data_dir):
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns(data_dir):
     """DataGrid with columns from same table, selection from same table and rows limit.
 
@@ -165,7 +165,7 @@ def datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns(data_dir):
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def datagrid_004_bookings_with_households_selection(data_dir):
     """DataGrid with columns from same table, selection from different table.
 
@@ -182,7 +182,7 @@ def datagrid_004_bookings_with_households_selection(data_dir):
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def cube_001_people_various_dimensions(data_dir):
     """Cube with dimensions from same table.
 
@@ -196,7 +196,7 @@ def cube_001_people_various_dimensions(data_dir):
     return df.set_index(["Income", "Occupation", "Source"])
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def cube_002_bookings_before_2020_cost_less_than_500(data_dir):
     """Cube with dimensions and selection from same table.
 
@@ -210,7 +210,7 @@ def cube_002_bookings_before_2020_cost_less_than_500(data_dir):
     return df.set_index(["Destination", "Product", "Response Code"])
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def cube_003_people_dimensions_bookings_table(data_dir):
     """Cube with dimensions from different table.
 
@@ -224,7 +224,7 @@ def cube_003_people_dimensions_bookings_table(data_dir):
     return df.set_index(["Source", "Occupation"])
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def cube_004_bookings_dimensions_households_selection_people_table(data_dir):
     """Cube with dimensions and selection from different tables.
 
@@ -240,7 +240,7 @@ def cube_004_bookings_dimensions_households_selection_people_table(data_dir):
     return df.set_index(["Product", "Continent"])
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def cube_005_mixed_households_people_dimensions_households_table(data_dir):
     """Cube with dimensions from mixed tables.
 
@@ -256,7 +256,7 @@ def cube_005_mixed_households_people_dimensions_households_table(data_dir):
     return df.set_index(["Income", "Gender", "Region"])
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table(data_dir):
     """Cube with dimensions from mixed tables, selection and table are different.
 

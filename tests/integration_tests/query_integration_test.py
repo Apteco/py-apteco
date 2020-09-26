@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pandas as pd
 import pytest
 
@@ -13,6 +15,7 @@ from apteco.query import (
     TableClause,
     TextClause,
 )
+from tests.integration_tests.cube_integration_test import assert_cube_dataframes_match
 
 
 class TestSelectorClause:
@@ -458,4 +461,69 @@ class TestClauseDataGrid:
             bookings_df,
             datagrid_004_bookings_with_households_selection,
             check_dtype=False,
+        )
+
+
+class TestClauseCube:
+    def test_cube_to_df_bookings_before_2020_cost_less_than_500(
+        self, bookings, cube_002_bookings_before_2020_cost_less_than_500
+    ):
+        before_2020_cost_less_than_500 = (
+            (bookings["Cost"] < 500) & (bookings["boDate"] <= datetime(2019, 12, 31))
+        )
+
+        cube = before_2020_cost_less_than_500.cube(
+            [bookings[var] for var in ("Destination", "Product", "Response Code")]
+        )
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(
+            df, cube_002_bookings_before_2020_cost_less_than_500
+        )
+
+    def test_cube_to_df_bookings_dimensions_households_selection_people_table(
+        self,
+        households,
+        people,
+        bookings,
+        cube_004_bookings_dimensions_households_selection_people_table,
+    ):
+        north_west_or_f_car = (
+            (households["Region"] == ("02", "13"))
+            | (households["HHCarmak"] == ("FER", "FIA", "FOR"))
+        )
+
+        cube = north_west_or_f_car.cube(
+            [bookings[var] for var in ("Product", "Continent")],
+            table=people,
+        )
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(
+            df, cube_004_bookings_dimensions_households_selection_people_table
+        )
+
+    def test_cube_to_df_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table(
+        self,
+        households,
+        people,
+        bookings,
+        journeys,
+        cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table,
+    ):
+
+        surname_contains_python_type_or_distant_trip = (
+            (people["Surname"].contains(["int", "str", "bool"], match_case=False))
+            | (bookings["Continent"] == ("AM", "AU"))
+        )
+
+        cube = surname_contains_python_type_or_distant_trip.cube(
+            [households["Region"], journeys["Pool"], people["Gender"]],
+            table=journeys,
+        )
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(
+            df,
+            cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table,
         )

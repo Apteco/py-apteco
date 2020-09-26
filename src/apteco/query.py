@@ -5,6 +5,7 @@ from typing import Iterable, List, Optional
 
 import apteco_api as aa
 
+from apteco.cube import Cube
 from apteco.datagrid import DataGrid
 from apteco.exceptions import AptecoException
 
@@ -339,6 +340,15 @@ class Clause:
             selection=self,
             table=table if table is not None else self.table,
             max_rows=max_rows,
+            session=self.session,
+        )
+
+    def cube(self, dimensions, measures=None, table=None):
+        return Cube(
+            dimensions,
+            measures=measures,
+            selection=self,
+            table=table if table is not None else self.table,
             session=self.session,
         )
 

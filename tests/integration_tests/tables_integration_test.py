@@ -1,5 +1,9 @@
+from datetime import datetime
+
 import pandas as pd
 import pytest
+
+from tests.integration_tests.cube_integration_test import assert_cube_dataframes_match
 
 
 class TestTableRelations:
@@ -211,4 +215,94 @@ class TestTablesDataGrid:
             bookings_df,
             datagrid_004_bookings_with_households_selection,
             check_dtype=False,
+        )
+
+
+class TestTablesCube:
+    def test_cube_to_df_people_various_dimensions(
+        self, people, cube_001_people_various_dimensions
+    ):
+        cube = people.cube([people[var] for var in ("Income", "Occupation", "Source")])
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(df, cube_001_people_various_dimensions)
+
+    def test_cube_to_df_bookings_before_2020_cost_less_than_500(
+        self, bookings, cube_002_bookings_before_2020_cost_less_than_500
+    ):
+        cube = bookings.cube(
+            [bookings[var] for var in ("Destination", "Product", "Response Code")],
+            selection=(
+                (bookings["Cost"] < 500)
+                & (bookings["boDate"] <= datetime(2019, 12, 31))
+            ),
+        )
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(
+            df, cube_002_bookings_before_2020_cost_less_than_500
+        )
+
+    def test_cube_to_df_people_dimensions_bookings_table(
+        self, people, bookings, cube_003_people_dimensions_bookings_table
+    ):
+        cube = bookings.cube([people[var] for var in ("Source", "Occupation")])
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(df, cube_003_people_dimensions_bookings_table)
+
+    def test_cube_to_df_bookings_dimensions_households_selection_people_table(
+        self,
+        households,
+        people,
+        bookings,
+        cube_004_bookings_dimensions_households_selection_people_table,
+    ):
+        cube = people.cube(
+            [bookings[var] for var in ("Product", "Continent")],
+            selection=(
+                (households["Region"] == ("02", "13"))
+                | (households["HHCarmak"] == ("FER", "FIA", "FOR"))
+            ),
+        )
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(
+            df, cube_004_bookings_dimensions_households_selection_people_table
+        )
+
+    def test_cube_to_df_mixed_households_people_dimensions_households_table(
+        self,
+        households,
+        people,
+        cube_005_mixed_households_people_dimensions_households_table,
+    ):
+        cube = households.cube(
+            [people[var] for var in ("Income", "Gender")] + [households["Region"]],
+        )
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(
+            df, cube_005_mixed_households_people_dimensions_households_table
+        )
+
+    def test_cube_to_df_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table(
+        self,
+        households,
+        people,
+        bookings,
+        journeys,
+        cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table,
+    ):
+        cube = journeys.cube(
+            [households["Region"], journeys["Pool"], people["Gender"]],
+            selection=(
+                (people["Surname"].contains(["int", "str", "bool"], match_case=False))
+                | (bookings["Continent"] == ("AM", "AU"))
+            ),
+        )
+        df = cube.to_df()
+
+        assert_cube_dataframes_match(
+            df, cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table
         )
