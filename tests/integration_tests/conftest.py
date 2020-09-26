@@ -76,6 +76,11 @@ def responses(holidays):
     return holidays.tables["Responses Attributed"]
 
 
+@pytest.fixture(scope="session")
+def journeys(holidays):
+    return holidays.tables["Journey History"]
+
+
 def load_reference_dataframe(path, str_cols=None, date_cols=None, datetime_cols=None):
     """Load reference DataFrame, optionally converting column types.
 
@@ -233,3 +238,36 @@ def cube_004_bookings_dimensions_households_selection_people_table(data_dir):
         data_dir / "cube_004_bookings_dimensions_households_selection_people_table.csv"
     )
     return df.set_index(["Product", "Continent"])
+
+
+@pytest.fixture()
+def cube_005_mixed_households_people_dimensions_households_table(data_dir):
+    """Cube with dimensions from mixed tables.
+
+    Table: Households
+    Dimensions: Households, People
+    Measures: [none]
+    Selection: [none]
+
+    """
+    df = pd.read_csv(
+        data_dir / "cube_005_mixed_households_people_dimensions_households_table.csv"
+    )
+    return df.set_index(["Income", "Gender", "Region"])
+
+
+@pytest.fixture()
+def cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table(data_dir):
+    """Cube with dimensions from mixed tables, selection and table are different.
+
+    Table: Journeys
+    Dimensions: Households, Journeys, People
+    Measures: [none]
+    Selection: People (surname contains int/str/bool or been to Americas/Australasia)
+
+    """
+    df = pd.read_csv(
+        data_dir
+        / "cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table.csv"
+    )
+    return df.set_index(["Region", "Pool", "Gender"])

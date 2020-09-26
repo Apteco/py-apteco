@@ -1,0 +1,1202 @@
+﻿Region,Pool,Gender,Journeys
+Unclassified,Unclassified,Unclassified,0
+Unclassified,Unclassified,Female,0
+Unclassified,Unclassified,Male,0
+Unclassified,Unclassified,Unknown,0
+Unclassified,Unclassified,TOTAL,0
+Unclassified,Await TM Pool,Unclassified,0
+Unclassified,Await TM Pool,Female,5
+Unclassified,Await TM Pool,Male,13
+Unclassified,Await TM Pool,Unknown,3
+Unclassified,Await TM Pool,TOTAL,21
+Unclassified,Received Introduction,Unclassified,0
+Unclassified,Received Introduction,Female,2
+Unclassified,Received Introduction,Male,7
+Unclassified,Received Introduction,Unknown,0
+Unclassified,Received Introduction,TOTAL,9
+Unclassified,Await Response Pool,Unclassified,0
+Unclassified,Await Response Pool,Female,13
+Unclassified,Await Response Pool,Male,34
+Unclassified,Await Response Pool,Unknown,4
+Unclassified,Await Response Pool,TOTAL,51
+Unclassified,Responders Pool,Unclassified,0
+Unclassified,Responders Pool,Female,0
+Unclassified,Responders Pool,Male,0
+Unclassified,Responders Pool,Unknown,0
+Unclassified,Responders Pool,TOTAL,0
+Unclassified,Await Further Response,Unclassified,0
+Unclassified,Await Further Response,Female,8
+Unclassified,Await Further Response,Male,21
+Unclassified,Await Further Response,Unknown,1
+Unclassified,Await Further Response,TOTAL,30
+Unclassified,Await TM,Unclassified,0
+Unclassified,Await TM,Female,0
+Unclassified,Await TM,Male,0
+Unclassified,Await TM,Unknown,0
+Unclassified,Await TM,TOTAL,0
+Unclassified,Pool,Unclassified,0
+Unclassified,Pool,Female,0
+Unclassified,Pool,Male,4
+Unclassified,Pool,Unknown,0
+Unclassified,Pool,TOTAL,4
+Unclassified,Keycoded Responders,Unclassified,0
+Unclassified,Keycoded Responders,Female,0
+Unclassified,Keycoded Responders,Male,0
+Unclassified,Keycoded Responders,Unknown,0
+Unclassified,Keycoded Responders,TOTAL,0
+Unclassified,Non Keycoded Responses,Unclassified,0
+Unclassified,Non Keycoded Responses,Female,0
+Unclassified,Non Keycoded Responses,Male,0
+Unclassified,Non Keycoded Responses,Unknown,0
+Unclassified,Non Keycoded Responses,TOTAL,0
+Unclassified,Follow Up,Unclassified,0
+Unclassified,Follow Up,Female,1
+Unclassified,Follow Up,Male,6
+Unclassified,Follow Up,Unknown,0
+Unclassified,Follow Up,TOTAL,7
+Unclassified,Await Response 1 Pool,Unclassified,0
+Unclassified,Await Response 1 Pool,Female,24
+Unclassified,Await Response 1 Pool,Male,28
+Unclassified,Await Response 1 Pool,Unknown,17
+Unclassified,Await Response 1 Pool,TOTAL,69
+Unclassified,Shown Interest,Unclassified,0
+Unclassified,Shown Interest,Female,1
+Unclassified,Shown Interest,Male,1
+Unclassified,Shown Interest,Unknown,0
+Unclassified,Shown Interest,TOTAL,2
+Unclassified,Await Response 2 Pool,Unclassified,0
+Unclassified,Await Response 2 Pool,Female,23
+Unclassified,Await Response 2 Pool,Male,28
+Unclassified,Await Response 2 Pool,Unknown,16
+Unclassified,Await Response 2 Pool,TOTAL,67
+Unclassified,Await Response 3 Pool,Unclassified,0
+Unclassified,Await Response 3 Pool,Female,22
+Unclassified,Await Response 3 Pool,Male,28
+Unclassified,Await Response 3 Pool,Unknown,16
+Unclassified,Await Response 3 Pool,TOTAL,66
+Unclassified,Objective Achieved Pool,Unclassified,0
+Unclassified,Objective Achieved Pool,Female,1
+Unclassified,Objective Achieved Pool,Male,0
+Unclassified,Objective Achieved Pool,Unknown,1
+Unclassified,Objective Achieved Pool,TOTAL,2
+North,Unclassified,Unclassified,0
+North,Unclassified,Female,0
+North,Unclassified,Male,0
+North,Unclassified,Unknown,0
+North,Unclassified,TOTAL,0
+North,Await TM Pool,Unclassified,0
+North,Await TM Pool,Female,21
+North,Await TM Pool,Male,28
+North,Await TM Pool,Unknown,6
+North,Await TM Pool,TOTAL,55
+North,Received Introduction,Unclassified,0
+North,Received Introduction,Female,1
+North,Received Introduction,Male,0
+North,Received Introduction,Unknown,0
+North,Received Introduction,TOTAL,1
+North,Await Response Pool,Unclassified,0
+North,Await Response Pool,Female,58
+North,Await Response Pool,Male,129
+North,Await Response Pool,Unknown,22
+North,Await Response Pool,TOTAL,209
+North,Responders Pool,Unclassified,0
+North,Responders Pool,Female,0
+North,Responders Pool,Male,1
+North,Responders Pool,Unknown,0
+North,Responders Pool,TOTAL,1
+North,Await Further Response,Unclassified,0
+North,Await Further Response,Female,37
+North,Await Further Response,Male,100
+North,Await Further Response,Unknown,16
+North,Await Further Response,TOTAL,153
+North,Await TM,Unclassified,0
+North,Await TM,Female,0
+North,Await TM,Male,0
+North,Await TM,Unknown,0
+North,Await TM,TOTAL,0
+North,Pool,Unclassified,0
+North,Pool,Female,13
+North,Pool,Male,12
+North,Pool,Unknown,0
+North,Pool,TOTAL,25
+North,Keycoded Responders,Unclassified,0
+North,Keycoded Responders,Female,0
+North,Keycoded Responders,Male,0
+North,Keycoded Responders,Unknown,0
+North,Keycoded Responders,TOTAL,0
+North,Non Keycoded Responses,Unclassified,0
+North,Non Keycoded Responses,Female,0
+North,Non Keycoded Responses,Male,0
+North,Non Keycoded Responses,Unknown,0
+North,Non Keycoded Responses,TOTAL,0
+North,Follow Up,Unclassified,0
+North,Follow Up,Female,1
+North,Follow Up,Male,0
+North,Follow Up,Unknown,0
+North,Follow Up,TOTAL,1
+North,Await Response 1 Pool,Unclassified,0
+North,Await Response 1 Pool,Female,61
+North,Await Response 1 Pool,Male,104
+North,Await Response 1 Pool,Unknown,31
+North,Await Response 1 Pool,TOTAL,196
+North,Shown Interest,Unclassified,0
+North,Shown Interest,Female,0
+North,Shown Interest,Male,0
+North,Shown Interest,Unknown,0
+North,Shown Interest,TOTAL,0
+North,Await Response 2 Pool,Unclassified,0
+North,Await Response 2 Pool,Female,60
+North,Await Response 2 Pool,Male,103
+North,Await Response 2 Pool,Unknown,31
+North,Await Response 2 Pool,TOTAL,194
+North,Await Response 3 Pool,Unclassified,0
+North,Await Response 3 Pool,Female,58
+North,Await Response 3 Pool,Male,101
+North,Await Response 3 Pool,Unknown,31
+North,Await Response 3 Pool,TOTAL,190
+North,Objective Achieved Pool,Unclassified,0
+North,Objective Achieved Pool,Female,2
+North,Objective Achieved Pool,Male,3
+North,Objective Achieved Pool,Unknown,0
+North,Objective Achieved Pool,TOTAL,5
+North West (Excluding Gtr Manchester),Unclassified,Unclassified,0
+North West (Excluding Gtr Manchester),Unclassified,Female,0
+North West (Excluding Gtr Manchester),Unclassified,Male,0
+North West (Excluding Gtr Manchester),Unclassified,Unknown,0
+North West (Excluding Gtr Manchester),Unclassified,TOTAL,0
+North West (Excluding Gtr Manchester),Await TM Pool,Unclassified,0
+North West (Excluding Gtr Manchester),Await TM Pool,Female,12
+North West (Excluding Gtr Manchester),Await TM Pool,Male,35
+North West (Excluding Gtr Manchester),Await TM Pool,Unknown,14
+North West (Excluding Gtr Manchester),Await TM Pool,TOTAL,61
+North West (Excluding Gtr Manchester),Received Introduction,Unclassified,0
+North West (Excluding Gtr Manchester),Received Introduction,Female,22
+North West (Excluding Gtr Manchester),Received Introduction,Male,37
+North West (Excluding Gtr Manchester),Received Introduction,Unknown,2
+North West (Excluding Gtr Manchester),Received Introduction,TOTAL,61
+North West (Excluding Gtr Manchester),Await Response Pool,Unclassified,0
+North West (Excluding Gtr Manchester),Await Response Pool,Female,52
+North West (Excluding Gtr Manchester),Await Response Pool,Male,129
+North West (Excluding Gtr Manchester),Await Response Pool,Unknown,32
+North West (Excluding Gtr Manchester),Await Response Pool,TOTAL,213
+North West (Excluding Gtr Manchester),Responders Pool,Unclassified,0
+North West (Excluding Gtr Manchester),Responders Pool,Female,0
+North West (Excluding Gtr Manchester),Responders Pool,Male,0
+North West (Excluding Gtr Manchester),Responders Pool,Unknown,2
+North West (Excluding Gtr Manchester),Responders Pool,TOTAL,2
+North West (Excluding Gtr Manchester),Await Further Response,Unclassified,0
+North West (Excluding Gtr Manchester),Await Further Response,Female,40
+North West (Excluding Gtr Manchester),Await Further Response,Male,94
+North West (Excluding Gtr Manchester),Await Further Response,Unknown,16
+North West (Excluding Gtr Manchester),Await Further Response,TOTAL,150
+North West (Excluding Gtr Manchester),Await TM,Unclassified,0
+North West (Excluding Gtr Manchester),Await TM,Female,0
+North West (Excluding Gtr Manchester),Await TM,Male,0
+North West (Excluding Gtr Manchester),Await TM,Unknown,0
+North West (Excluding Gtr Manchester),Await TM,TOTAL,0
+North West (Excluding Gtr Manchester),Pool,Unclassified,0
+North West (Excluding Gtr Manchester),Pool,Female,11
+North West (Excluding Gtr Manchester),Pool,Male,16
+North West (Excluding Gtr Manchester),Pool,Unknown,1
+North West (Excluding Gtr Manchester),Pool,TOTAL,28
+North West (Excluding Gtr Manchester),Keycoded Responders,Unclassified,0
+North West (Excluding Gtr Manchester),Keycoded Responders,Female,0
+North West (Excluding Gtr Manchester),Keycoded Responders,Male,0
+North West (Excluding Gtr Manchester),Keycoded Responders,Unknown,0
+North West (Excluding Gtr Manchester),Keycoded Responders,TOTAL,0
+North West (Excluding Gtr Manchester),Non Keycoded Responses,Unclassified,0
+North West (Excluding Gtr Manchester),Non Keycoded Responses,Female,0
+North West (Excluding Gtr Manchester),Non Keycoded Responses,Male,0
+North West (Excluding Gtr Manchester),Non Keycoded Responses,Unknown,0
+North West (Excluding Gtr Manchester),Non Keycoded Responses,TOTAL,0
+North West (Excluding Gtr Manchester),Follow Up,Unclassified,0
+North West (Excluding Gtr Manchester),Follow Up,Female,21
+North West (Excluding Gtr Manchester),Follow Up,Male,33
+North West (Excluding Gtr Manchester),Follow Up,Unknown,2
+North West (Excluding Gtr Manchester),Follow Up,TOTAL,56
+North West (Excluding Gtr Manchester),Await Response 1 Pool,Unclassified,0
+North West (Excluding Gtr Manchester),Await Response 1 Pool,Female,64
+North West (Excluding Gtr Manchester),Await Response 1 Pool,Male,112
+North West (Excluding Gtr Manchester),Await Response 1 Pool,Unknown,56
+North West (Excluding Gtr Manchester),Await Response 1 Pool,TOTAL,232
+North West (Excluding Gtr Manchester),Shown Interest,Unclassified,0
+North West (Excluding Gtr Manchester),Shown Interest,Female,1
+North West (Excluding Gtr Manchester),Shown Interest,Male,4
+North West (Excluding Gtr Manchester),Shown Interest,Unknown,0
+North West (Excluding Gtr Manchester),Shown Interest,TOTAL,5
+North West (Excluding Gtr Manchester),Await Response 2 Pool,Unclassified,0
+North West (Excluding Gtr Manchester),Await Response 2 Pool,Female,61
+North West (Excluding Gtr Manchester),Await Response 2 Pool,Male,108
+North West (Excluding Gtr Manchester),Await Response 2 Pool,Unknown,53
+North West (Excluding Gtr Manchester),Await Response 2 Pool,TOTAL,222
+North West (Excluding Gtr Manchester),Await Response 3 Pool,Unclassified,0
+North West (Excluding Gtr Manchester),Await Response 3 Pool,Female,61
+North West (Excluding Gtr Manchester),Await Response 3 Pool,Male,105
+North West (Excluding Gtr Manchester),Await Response 3 Pool,Unknown,53
+North West (Excluding Gtr Manchester),Await Response 3 Pool,TOTAL,219
+North West (Excluding Gtr Manchester),Objective Achieved Pool,Unclassified,0
+North West (Excluding Gtr Manchester),Objective Achieved Pool,Female,3
+North West (Excluding Gtr Manchester),Objective Achieved Pool,Male,5
+North West (Excluding Gtr Manchester),Objective Achieved Pool,Unknown,3
+North West (Excluding Gtr Manchester),Objective Achieved Pool,TOTAL,11
+South East (Outside M25 ),Unclassified,Unclassified,0
+South East (Outside M25 ),Unclassified,Female,0
+South East (Outside M25 ),Unclassified,Male,0
+South East (Outside M25 ),Unclassified,Unknown,0
+South East (Outside M25 ),Unclassified,TOTAL,0
+South East (Outside M25 ),Await TM Pool,Unclassified,0
+South East (Outside M25 ),Await TM Pool,Female,117
+South East (Outside M25 ),Await TM Pool,Male,161
+South East (Outside M25 ),Await TM Pool,Unknown,43
+South East (Outside M25 ),Await TM Pool,TOTAL,321
+South East (Outside M25 ),Received Introduction,Unclassified,0
+South East (Outside M25 ),Received Introduction,Female,71
+South East (Outside M25 ),Received Introduction,Male,130
+South East (Outside M25 ),Received Introduction,Unknown,5
+South East (Outside M25 ),Received Introduction,TOTAL,206
+South East (Outside M25 ),Await Response Pool,Unclassified,0
+South East (Outside M25 ),Await Response Pool,Female,361
+South East (Outside M25 ),Await Response Pool,Male,625
+South East (Outside M25 ),Await Response Pool,Unknown,103
+South East (Outside M25 ),Await Response Pool,TOTAL,1089
+South East (Outside M25 ),Responders Pool,Unclassified,0
+South East (Outside M25 ),Responders Pool,Female,1
+South East (Outside M25 ),Responders Pool,Male,5
+South East (Outside M25 ),Responders Pool,Unknown,1
+South East (Outside M25 ),Responders Pool,TOTAL,7
+South East (Outside M25 ),Await Further Response,Unclassified,0
+South East (Outside M25 ),Await Further Response,Female,243
+South East (Outside M25 ),Await Further Response,Male,459
+South East (Outside M25 ),Await Further Response,Unknown,59
+South East (Outside M25 ),Await Further Response,TOTAL,761
+South East (Outside M25 ),Await TM,Unclassified,0
+South East (Outside M25 ),Await TM,Female,0
+South East (Outside M25 ),Await TM,Male,0
+South East (Outside M25 ),Await TM,Unknown,0
+South East (Outside M25 ),Await TM,TOTAL,0
+South East (Outside M25 ),Pool,Unclassified,0
+South East (Outside M25 ),Pool,Female,52
+South East (Outside M25 ),Pool,Male,77
+South East (Outside M25 ),Pool,Unknown,6
+South East (Outside M25 ),Pool,TOTAL,135
+South East (Outside M25 ),Keycoded Responders,Unclassified,0
+South East (Outside M25 ),Keycoded Responders,Female,0
+South East (Outside M25 ),Keycoded Responders,Male,0
+South East (Outside M25 ),Keycoded Responders,Unknown,0
+South East (Outside M25 ),Keycoded Responders,TOTAL,0
+South East (Outside M25 ),Non Keycoded Responses,Unclassified,0
+South East (Outside M25 ),Non Keycoded Responses,Female,0
+South East (Outside M25 ),Non Keycoded Responses,Male,0
+South East (Outside M25 ),Non Keycoded Responses,Unknown,0
+South East (Outside M25 ),Non Keycoded Responses,TOTAL,0
+South East (Outside M25 ),Follow Up,Unclassified,0
+South East (Outside M25 ),Follow Up,Female,66
+South East (Outside M25 ),Follow Up,Male,113
+South East (Outside M25 ),Follow Up,Unknown,4
+South East (Outside M25 ),Follow Up,TOTAL,183
+South East (Outside M25 ),Await Response 1 Pool,Unclassified,0
+South East (Outside M25 ),Await Response 1 Pool,Female,321
+South East (Outside M25 ),Await Response 1 Pool,Male,538
+South East (Outside M25 ),Await Response 1 Pool,Unknown,190
+South East (Outside M25 ),Await Response 1 Pool,TOTAL,1049
+South East (Outside M25 ),Shown Interest,Unclassified,0
+South East (Outside M25 ),Shown Interest,Female,5
+South East (Outside M25 ),Shown Interest,Male,17
+South East (Outside M25 ),Shown Interest,Unknown,1
+South East (Outside M25 ),Shown Interest,TOTAL,23
+South East (Outside M25 ),Await Response 2 Pool,Unclassified,0
+South East (Outside M25 ),Await Response 2 Pool,Female,312
+South East (Outside M25 ),Await Response 2 Pool,Male,526
+South East (Outside M25 ),Await Response 2 Pool,Unknown,176
+South East (Outside M25 ),Await Response 2 Pool,TOTAL,1014
+South East (Outside M25 ),Await Response 3 Pool,Unclassified,0
+South East (Outside M25 ),Await Response 3 Pool,Female,306
+South East (Outside M25 ),Await Response 3 Pool,Male,519
+South East (Outside M25 ),Await Response 3 Pool,Unknown,171
+South East (Outside M25 ),Await Response 3 Pool,TOTAL,996
+South East (Outside M25 ),Objective Achieved Pool,Unclassified,0
+South East (Outside M25 ),Objective Achieved Pool,Female,12
+South East (Outside M25 ),Objective Achieved Pool,Male,16
+South East (Outside M25 ),Objective Achieved Pool,Unknown,16
+South East (Outside M25 ),Objective Achieved Pool,TOTAL,44
+South West,Unclassified,Unclassified,0
+South West,Unclassified,Female,0
+South West,Unclassified,Male,0
+South West,Unclassified,Unknown,0
+South West,Unclassified,TOTAL,0
+South West,Await TM Pool,Unclassified,0
+South West,Await TM Pool,Female,25
+South West,Await TM Pool,Male,74
+South West,Await TM Pool,Unknown,9
+South West,Await TM Pool,TOTAL,108
+South West,Received Introduction,Unclassified,0
+South West,Received Introduction,Female,29
+South West,Received Introduction,Male,70
+South West,Received Introduction,Unknown,0
+South West,Received Introduction,TOTAL,99
+South West,Await Response Pool,Unclassified,0
+South West,Await Response Pool,Female,101
+South West,Await Response Pool,Male,228
+South West,Await Response Pool,Unknown,33
+South West,Await Response Pool,TOTAL,362
+South West,Responders Pool,Unclassified,0
+South West,Responders Pool,Female,1
+South West,Responders Pool,Male,2
+South West,Responders Pool,Unknown,0
+South West,Responders Pool,TOTAL,3
+South West,Await Further Response,Unclassified,0
+South West,Await Further Response,Female,75
+South West,Await Further Response,Male,151
+South West,Await Further Response,Unknown,24
+South West,Await Further Response,TOTAL,250
+South West,Await TM,Unclassified,0
+South West,Await TM,Female,0
+South West,Await TM,Male,0
+South West,Await TM,Unknown,0
+South West,Await TM,TOTAL,0
+South West,Pool,Unclassified,0
+South West,Pool,Female,30
+South West,Pool,Male,44
+South West,Pool,Unknown,2
+South West,Pool,TOTAL,76
+South West,Keycoded Responders,Unclassified,0
+South West,Keycoded Responders,Female,0
+South West,Keycoded Responders,Male,0
+South West,Keycoded Responders,Unknown,0
+South West,Keycoded Responders,TOTAL,0
+South West,Non Keycoded Responses,Unclassified,0
+South West,Non Keycoded Responses,Female,0
+South West,Non Keycoded Responses,Male,0
+South West,Non Keycoded Responses,Unknown,0
+South West,Non Keycoded Responses,TOTAL,0
+South West,Follow Up,Unclassified,0
+South West,Follow Up,Female,26
+South West,Follow Up,Male,62
+South West,Follow Up,Unknown,0
+South West,Follow Up,TOTAL,88
+South West,Await Response 1 Pool,Unclassified,0
+South West,Await Response 1 Pool,Female,132
+South West,Await Response 1 Pool,Male,211
+South West,Await Response 1 Pool,Unknown,74
+South West,Await Response 1 Pool,TOTAL,417
+South West,Shown Interest,Unclassified,0
+South West,Shown Interest,Female,3
+South West,Shown Interest,Male,8
+South West,Shown Interest,Unknown,0
+South West,Shown Interest,TOTAL,11
+South West,Await Response 2 Pool,Unclassified,0
+South West,Await Response 2 Pool,Female,132
+South West,Await Response 2 Pool,Male,206
+South West,Await Response 2 Pool,Unknown,71
+South West,Await Response 2 Pool,TOTAL,409
+South West,Await Response 3 Pool,Unclassified,0
+South West,Await Response 3 Pool,Female,128
+South West,Await Response 3 Pool,Male,204
+South West,Await Response 3 Pool,Unknown,68
+South West,Await Response 3 Pool,TOTAL,400
+South West,Objective Achieved Pool,Unclassified,0
+South West,Objective Achieved Pool,Female,3
+South West,Objective Achieved Pool,Male,6
+South West,Objective Achieved Pool,Unknown,4
+South West,Objective Achieved Pool,TOTAL,13
+East Midlands,Unclassified,Unclassified,0
+East Midlands,Unclassified,Female,0
+East Midlands,Unclassified,Male,0
+East Midlands,Unclassified,Unknown,0
+East Midlands,Unclassified,TOTAL,0
+East Midlands,Await TM Pool,Unclassified,0
+East Midlands,Await TM Pool,Female,27
+East Midlands,Await TM Pool,Male,47
+East Midlands,Await TM Pool,Unknown,7
+East Midlands,Await TM Pool,TOTAL,81
+East Midlands,Received Introduction,Unclassified,0
+East Midlands,Received Introduction,Female,32
+East Midlands,Received Introduction,Male,54
+East Midlands,Received Introduction,Unknown,0
+East Midlands,Received Introduction,TOTAL,86
+East Midlands,Await Response Pool,Unclassified,0
+East Midlands,Await Response Pool,Female,96
+East Midlands,Await Response Pool,Male,156
+East Midlands,Await Response Pool,Unknown,33
+East Midlands,Await Response Pool,TOTAL,285
+East Midlands,Responders Pool,Unclassified,0
+East Midlands,Responders Pool,Female,0
+East Midlands,Responders Pool,Male,0
+East Midlands,Responders Pool,Unknown,1
+East Midlands,Responders Pool,TOTAL,1
+East Midlands,Await Further Response,Unclassified,0
+East Midlands,Await Further Response,Female,69
+East Midlands,Await Further Response,Male,109
+East Midlands,Await Further Response,Unknown,25
+East Midlands,Await Further Response,TOTAL,203
+East Midlands,Await TM,Unclassified,0
+East Midlands,Await TM,Female,0
+East Midlands,Await TM,Male,0
+East Midlands,Await TM,Unknown,0
+East Midlands,Await TM,TOTAL,0
+East Midlands,Pool,Unclassified,0
+East Midlands,Pool,Female,13
+East Midlands,Pool,Male,27
+East Midlands,Pool,Unknown,1
+East Midlands,Pool,TOTAL,41
+East Midlands,Keycoded Responders,Unclassified,0
+East Midlands,Keycoded Responders,Female,0
+East Midlands,Keycoded Responders,Male,0
+East Midlands,Keycoded Responders,Unknown,0
+East Midlands,Keycoded Responders,TOTAL,0
+East Midlands,Non Keycoded Responses,Unclassified,0
+East Midlands,Non Keycoded Responses,Female,0
+East Midlands,Non Keycoded Responses,Male,0
+East Midlands,Non Keycoded Responses,Unknown,0
+East Midlands,Non Keycoded Responses,TOTAL,0
+East Midlands,Follow Up,Unclassified,0
+East Midlands,Follow Up,Female,29
+East Midlands,Follow Up,Male,50
+East Midlands,Follow Up,Unknown,0
+East Midlands,Follow Up,TOTAL,79
+East Midlands,Await Response 1 Pool,Unclassified,0
+East Midlands,Await Response 1 Pool,Female,94
+East Midlands,Await Response 1 Pool,Male,176
+East Midlands,Await Response 1 Pool,Unknown,57
+East Midlands,Await Response 1 Pool,TOTAL,327
+East Midlands,Shown Interest,Unclassified,0
+East Midlands,Shown Interest,Female,3
+East Midlands,Shown Interest,Male,4
+East Midlands,Shown Interest,Unknown,0
+East Midlands,Shown Interest,TOTAL,7
+East Midlands,Await Response 2 Pool,Unclassified,0
+East Midlands,Await Response 2 Pool,Female,92
+East Midlands,Await Response 2 Pool,Male,168
+East Midlands,Await Response 2 Pool,Unknown,53
+East Midlands,Await Response 2 Pool,TOTAL,313
+East Midlands,Await Response 3 Pool,Unclassified,0
+East Midlands,Await Response 3 Pool,Female,88
+East Midlands,Await Response 3 Pool,Male,165
+East Midlands,Await Response 3 Pool,Unknown,52
+East Midlands,Await Response 3 Pool,TOTAL,305
+East Midlands,Objective Achieved Pool,Unclassified,0
+East Midlands,Objective Achieved Pool,Female,6
+East Midlands,Objective Achieved Pool,Male,9
+East Midlands,Objective Achieved Pool,Unknown,5
+East Midlands,Objective Achieved Pool,TOTAL,20
+West Midlands,Unclassified,Unclassified,0
+West Midlands,Unclassified,Female,0
+West Midlands,Unclassified,Male,0
+West Midlands,Unclassified,Unknown,0
+West Midlands,Unclassified,TOTAL,0
+West Midlands,Await TM Pool,Unclassified,0
+West Midlands,Await TM Pool,Female,36
+West Midlands,Await TM Pool,Male,66
+West Midlands,Await TM Pool,Unknown,17
+West Midlands,Await TM Pool,TOTAL,119
+West Midlands,Received Introduction,Unclassified,0
+West Midlands,Received Introduction,Female,32
+West Midlands,Received Introduction,Male,73
+West Midlands,Received Introduction,Unknown,2
+West Midlands,Received Introduction,TOTAL,107
+West Midlands,Await Response Pool,Unclassified,0
+West Midlands,Await Response Pool,Female,112
+West Midlands,Await Response Pool,Male,204
+West Midlands,Await Response Pool,Unknown,41
+West Midlands,Await Response Pool,TOTAL,357
+West Midlands,Responders Pool,Unclassified,0
+West Midlands,Responders Pool,Female,2
+West Midlands,Responders Pool,Male,2
+West Midlands,Responders Pool,Unknown,2
+West Midlands,Responders Pool,TOTAL,6
+West Midlands,Await Further Response,Unclassified,0
+West Midlands,Await Further Response,Female,74
+West Midlands,Await Further Response,Male,136
+West Midlands,Await Further Response,Unknown,22
+West Midlands,Await Further Response,TOTAL,232
+West Midlands,Await TM,Unclassified,0
+West Midlands,Await TM,Female,0
+West Midlands,Await TM,Male,0
+West Midlands,Await TM,Unknown,0
+West Midlands,Await TM,TOTAL,0
+West Midlands,Pool,Unclassified,0
+West Midlands,Pool,Female,16
+West Midlands,Pool,Male,34
+West Midlands,Pool,Unknown,1
+West Midlands,Pool,TOTAL,51
+West Midlands,Keycoded Responders,Unclassified,0
+West Midlands,Keycoded Responders,Female,0
+West Midlands,Keycoded Responders,Male,0
+West Midlands,Keycoded Responders,Unknown,0
+West Midlands,Keycoded Responders,TOTAL,0
+West Midlands,Non Keycoded Responses,Unclassified,0
+West Midlands,Non Keycoded Responses,Female,0
+West Midlands,Non Keycoded Responses,Male,0
+West Midlands,Non Keycoded Responses,Unknown,0
+West Midlands,Non Keycoded Responses,TOTAL,0
+West Midlands,Follow Up,Unclassified,0
+West Midlands,Follow Up,Female,28
+West Midlands,Follow Up,Male,63
+West Midlands,Follow Up,Unknown,2
+West Midlands,Follow Up,TOTAL,93
+West Midlands,Await Response 1 Pool,Unclassified,0
+West Midlands,Await Response 1 Pool,Female,97
+West Midlands,Await Response 1 Pool,Male,201
+West Midlands,Await Response 1 Pool,Unknown,77
+West Midlands,Await Response 1 Pool,TOTAL,375
+West Midlands,Shown Interest,Unclassified,0
+West Midlands,Shown Interest,Female,4
+West Midlands,Shown Interest,Male,10
+West Midlands,Shown Interest,Unknown,0
+West Midlands,Shown Interest,TOTAL,14
+West Midlands,Await Response 2 Pool,Unclassified,0
+West Midlands,Await Response 2 Pool,Female,96
+West Midlands,Await Response 2 Pool,Male,198
+West Midlands,Await Response 2 Pool,Unknown,73
+West Midlands,Await Response 2 Pool,TOTAL,367
+West Midlands,Await Response 3 Pool,Unclassified,0
+West Midlands,Await Response 3 Pool,Female,94
+West Midlands,Await Response 3 Pool,Male,193
+West Midlands,Await Response 3 Pool,Unknown,73
+West Midlands,Await Response 3 Pool,TOTAL,360
+West Midlands,Objective Achieved Pool,Unclassified,0
+West Midlands,Objective Achieved Pool,Female,1
+West Midlands,Objective Achieved Pool,Male,6
+West Midlands,Objective Achieved Pool,Unknown,4
+West Midlands,Objective Achieved Pool,TOTAL,11
+East Anglia,Unclassified,Unclassified,0
+East Anglia,Unclassified,Female,0
+East Anglia,Unclassified,Male,0
+East Anglia,Unclassified,Unknown,0
+East Anglia,Unclassified,TOTAL,0
+East Anglia,Await TM Pool,Unclassified,0
+East Anglia,Await TM Pool,Female,21
+East Anglia,Await TM Pool,Male,54
+East Anglia,Await TM Pool,Unknown,15
+East Anglia,Await TM Pool,TOTAL,90
+East Anglia,Received Introduction,Unclassified,0
+East Anglia,Received Introduction,Female,5
+East Anglia,Received Introduction,Male,6
+East Anglia,Received Introduction,Unknown,0
+East Anglia,Received Introduction,TOTAL,11
+East Anglia,Await Response Pool,Unclassified,0
+East Anglia,Await Response Pool,Female,90
+East Anglia,Await Response Pool,Male,163
+East Anglia,Await Response Pool,Unknown,39
+East Anglia,Await Response Pool,TOTAL,292
+East Anglia,Responders Pool,Unclassified,0
+East Anglia,Responders Pool,Female,2
+East Anglia,Responders Pool,Male,1
+East Anglia,Responders Pool,Unknown,0
+East Anglia,Responders Pool,TOTAL,3
+East Anglia,Await Further Response,Unclassified,0
+East Anglia,Await Further Response,Female,67
+East Anglia,Await Further Response,Male,108
+East Anglia,Await Further Response,Unknown,24
+East Anglia,Await Further Response,TOTAL,199
+East Anglia,Await TM,Unclassified,0
+East Anglia,Await TM,Female,0
+East Anglia,Await TM,Male,0
+East Anglia,Await TM,Unknown,0
+East Anglia,Await TM,TOTAL,0
+East Anglia,Pool,Unclassified,0
+East Anglia,Pool,Female,12
+East Anglia,Pool,Male,19
+East Anglia,Pool,Unknown,1
+East Anglia,Pool,TOTAL,32
+East Anglia,Keycoded Responders,Unclassified,0
+East Anglia,Keycoded Responders,Female,0
+East Anglia,Keycoded Responders,Male,0
+East Anglia,Keycoded Responders,Unknown,0
+East Anglia,Keycoded Responders,TOTAL,0
+East Anglia,Non Keycoded Responses,Unclassified,0
+East Anglia,Non Keycoded Responses,Female,0
+East Anglia,Non Keycoded Responses,Male,0
+East Anglia,Non Keycoded Responses,Unknown,0
+East Anglia,Non Keycoded Responses,TOTAL,0
+East Anglia,Follow Up,Unclassified,0
+East Anglia,Follow Up,Female,3
+East Anglia,Follow Up,Male,5
+East Anglia,Follow Up,Unknown,0
+East Anglia,Follow Up,TOTAL,8
+East Anglia,Await Response 1 Pool,Unclassified,0
+East Anglia,Await Response 1 Pool,Female,111
+East Anglia,Await Response 1 Pool,Male,187
+East Anglia,Await Response 1 Pool,Unknown,65
+East Anglia,Await Response 1 Pool,TOTAL,363
+East Anglia,Shown Interest,Unclassified,0
+East Anglia,Shown Interest,Female,2
+East Anglia,Shown Interest,Male,1
+East Anglia,Shown Interest,Unknown,0
+East Anglia,Shown Interest,TOTAL,3
+East Anglia,Await Response 2 Pool,Unclassified,0
+East Anglia,Await Response 2 Pool,Female,111
+East Anglia,Await Response 2 Pool,Male,186
+East Anglia,Await Response 2 Pool,Unknown,63
+East Anglia,Await Response 2 Pool,TOTAL,360
+East Anglia,Await Response 3 Pool,Unclassified,0
+East Anglia,Await Response 3 Pool,Female,111
+East Anglia,Await Response 3 Pool,Male,185
+East Anglia,Await Response 3 Pool,Unknown,60
+East Anglia,Await Response 3 Pool,TOTAL,356
+East Anglia,Objective Achieved Pool,Unclassified,0
+East Anglia,Objective Achieved Pool,Female,0
+East Anglia,Objective Achieved Pool,Male,2
+East Anglia,Objective Achieved Pool,Unknown,5
+East Anglia,Objective Achieved Pool,TOTAL,7
+Yorkshire and Humber,Unclassified,Unclassified,0
+Yorkshire and Humber,Unclassified,Female,0
+Yorkshire and Humber,Unclassified,Male,0
+Yorkshire and Humber,Unclassified,Unknown,0
+Yorkshire and Humber,Unclassified,TOTAL,0
+Yorkshire and Humber,Await TM Pool,Unclassified,0
+Yorkshire and Humber,Await TM Pool,Female,53
+Yorkshire and Humber,Await TM Pool,Male,96
+Yorkshire and Humber,Await TM Pool,Unknown,31
+Yorkshire and Humber,Await TM Pool,TOTAL,180
+Yorkshire and Humber,Received Introduction,Unclassified,0
+Yorkshire and Humber,Received Introduction,Female,40
+Yorkshire and Humber,Received Introduction,Male,76
+Yorkshire and Humber,Received Introduction,Unknown,2
+Yorkshire and Humber,Received Introduction,TOTAL,118
+Yorkshire and Humber,Await Response Pool,Unclassified,0
+Yorkshire and Humber,Await Response Pool,Female,136
+Yorkshire and Humber,Await Response Pool,Male,239
+Yorkshire and Humber,Await Response Pool,Unknown,70
+Yorkshire and Humber,Await Response Pool,TOTAL,445
+Yorkshire and Humber,Responders Pool,Unclassified,0
+Yorkshire and Humber,Responders Pool,Female,1
+Yorkshire and Humber,Responders Pool,Male,0
+Yorkshire and Humber,Responders Pool,Unknown,2
+Yorkshire and Humber,Responders Pool,TOTAL,3
+Yorkshire and Humber,Await Further Response,Unclassified,0
+Yorkshire and Humber,Await Further Response,Female,82
+Yorkshire and Humber,Await Further Response,Male,143
+Yorkshire and Humber,Await Further Response,Unknown,37
+Yorkshire and Humber,Await Further Response,TOTAL,262
+Yorkshire and Humber,Await TM,Unclassified,0
+Yorkshire and Humber,Await TM,Female,0
+Yorkshire and Humber,Await TM,Male,0
+Yorkshire and Humber,Await TM,Unknown,0
+Yorkshire and Humber,Await TM,TOTAL,0
+Yorkshire and Humber,Pool,Unclassified,0
+Yorkshire and Humber,Pool,Female,10
+Yorkshire and Humber,Pool,Male,27
+Yorkshire and Humber,Pool,Unknown,3
+Yorkshire and Humber,Pool,TOTAL,40
+Yorkshire and Humber,Keycoded Responders,Unclassified,0
+Yorkshire and Humber,Keycoded Responders,Female,0
+Yorkshire and Humber,Keycoded Responders,Male,0
+Yorkshire and Humber,Keycoded Responders,Unknown,0
+Yorkshire and Humber,Keycoded Responders,TOTAL,0
+Yorkshire and Humber,Non Keycoded Responses,Unclassified,0
+Yorkshire and Humber,Non Keycoded Responses,Female,0
+Yorkshire and Humber,Non Keycoded Responses,Male,0
+Yorkshire and Humber,Non Keycoded Responses,Unknown,0
+Yorkshire and Humber,Non Keycoded Responses,TOTAL,0
+Yorkshire and Humber,Follow Up,Unclassified,0
+Yorkshire and Humber,Follow Up,Female,37
+Yorkshire and Humber,Follow Up,Male,73
+Yorkshire and Humber,Follow Up,Unknown,2
+Yorkshire and Humber,Follow Up,TOTAL,112
+Yorkshire and Humber,Await Response 1 Pool,Unclassified,0
+Yorkshire and Humber,Await Response 1 Pool,Female,161
+Yorkshire and Humber,Await Response 1 Pool,Male,316
+Yorkshire and Humber,Await Response 1 Pool,Unknown,99
+Yorkshire and Humber,Await Response 1 Pool,TOTAL,576
+Yorkshire and Humber,Shown Interest,Unclassified,0
+Yorkshire and Humber,Shown Interest,Female,3
+Yorkshire and Humber,Shown Interest,Male,3
+Yorkshire and Humber,Shown Interest,Unknown,0
+Yorkshire and Humber,Shown Interest,TOTAL,6
+Yorkshire and Humber,Await Response 2 Pool,Unclassified,0
+Yorkshire and Humber,Await Response 2 Pool,Female,155
+Yorkshire and Humber,Await Response 2 Pool,Male,302
+Yorkshire and Humber,Await Response 2 Pool,Unknown,95
+Yorkshire and Humber,Await Response 2 Pool,TOTAL,552
+Yorkshire and Humber,Await Response 3 Pool,Unclassified,0
+Yorkshire and Humber,Await Response 3 Pool,Female,152
+Yorkshire and Humber,Await Response 3 Pool,Male,297
+Yorkshire and Humber,Await Response 3 Pool,Unknown,92
+Yorkshire and Humber,Await Response 3 Pool,TOTAL,541
+Yorkshire and Humber,Objective Achieved Pool,Unclassified,0
+Yorkshire and Humber,Objective Achieved Pool,Female,8
+Yorkshire and Humber,Objective Achieved Pool,Male,17
+Yorkshire and Humber,Objective Achieved Pool,Unknown,7
+Yorkshire and Humber,Objective Achieved Pool,TOTAL,32
+South East (Inside M25 ),Unclassified,Unclassified,0
+South East (Inside M25 ),Unclassified,Female,0
+South East (Inside M25 ),Unclassified,Male,0
+South East (Inside M25 ),Unclassified,Unknown,0
+South East (Inside M25 ),Unclassified,TOTAL,0
+South East (Inside M25 ),Await TM Pool,Unclassified,0
+South East (Inside M25 ),Await TM Pool,Female,99
+South East (Inside M25 ),Await TM Pool,Male,190
+South East (Inside M25 ),Await TM Pool,Unknown,81
+South East (Inside M25 ),Await TM Pool,TOTAL,370
+South East (Inside M25 ),Received Introduction,Unclassified,0
+South East (Inside M25 ),Received Introduction,Female,105
+South East (Inside M25 ),Received Introduction,Male,155
+South East (Inside M25 ),Received Introduction,Unknown,6
+South East (Inside M25 ),Received Introduction,TOTAL,266
+South East (Inside M25 ),Await Response Pool,Unclassified,0
+South East (Inside M25 ),Await Response Pool,Female,397
+South East (Inside M25 ),Await Response Pool,Male,597
+South East (Inside M25 ),Await Response Pool,Unknown,207
+South East (Inside M25 ),Await Response Pool,TOTAL,1201
+South East (Inside M25 ),Responders Pool,Unclassified,0
+South East (Inside M25 ),Responders Pool,Female,4
+South East (Inside M25 ),Responders Pool,Male,3
+South East (Inside M25 ),Responders Pool,Unknown,4
+South East (Inside M25 ),Responders Pool,TOTAL,11
+South East (Inside M25 ),Await Further Response,Unclassified,0
+South East (Inside M25 ),Await Further Response,Female,294
+South East (Inside M25 ),Await Further Response,Male,404
+South East (Inside M25 ),Await Further Response,Unknown,122
+South East (Inside M25 ),Await Further Response,TOTAL,820
+South East (Inside M25 ),Await TM,Unclassified,0
+South East (Inside M25 ),Await TM,Female,0
+South East (Inside M25 ),Await TM,Male,0
+South East (Inside M25 ),Await TM,Unknown,0
+South East (Inside M25 ),Await TM,TOTAL,0
+South East (Inside M25 ),Pool,Unclassified,0
+South East (Inside M25 ),Pool,Female,42
+South East (Inside M25 ),Pool,Male,76
+South East (Inside M25 ),Pool,Unknown,8
+South East (Inside M25 ),Pool,TOTAL,126
+South East (Inside M25 ),Keycoded Responders,Unclassified,0
+South East (Inside M25 ),Keycoded Responders,Female,0
+South East (Inside M25 ),Keycoded Responders,Male,0
+South East (Inside M25 ),Keycoded Responders,Unknown,0
+South East (Inside M25 ),Keycoded Responders,TOTAL,0
+South East (Inside M25 ),Non Keycoded Responses,Unclassified,0
+South East (Inside M25 ),Non Keycoded Responses,Female,0
+South East (Inside M25 ),Non Keycoded Responses,Male,0
+South East (Inside M25 ),Non Keycoded Responses,Unknown,0
+South East (Inside M25 ),Non Keycoded Responses,TOTAL,0
+South East (Inside M25 ),Follow Up,Unclassified,0
+South East (Inside M25 ),Follow Up,Female,94
+South East (Inside M25 ),Follow Up,Male,137
+South East (Inside M25 ),Follow Up,Unknown,5
+South East (Inside M25 ),Follow Up,TOTAL,236
+South East (Inside M25 ),Await Response 1 Pool,Unclassified,0
+South East (Inside M25 ),Await Response 1 Pool,Female,434
+South East (Inside M25 ),Await Response 1 Pool,Male,699
+South East (Inside M25 ),Await Response 1 Pool,Unknown,378
+South East (Inside M25 ),Await Response 1 Pool,TOTAL,1511
+South East (Inside M25 ),Shown Interest,Unclassified,0
+South East (Inside M25 ),Shown Interest,Female,11
+South East (Inside M25 ),Shown Interest,Male,18
+South East (Inside M25 ),Shown Interest,Unknown,1
+South East (Inside M25 ),Shown Interest,TOTAL,30
+South East (Inside M25 ),Await Response 2 Pool,Unclassified,0
+South East (Inside M25 ),Await Response 2 Pool,Female,418
+South East (Inside M25 ),Await Response 2 Pool,Male,677
+South East (Inside M25 ),Await Response 2 Pool,Unknown,362
+South East (Inside M25 ),Await Response 2 Pool,TOTAL,1457
+South East (Inside M25 ),Await Response 3 Pool,Unclassified,0
+South East (Inside M25 ),Await Response 3 Pool,Female,408
+South East (Inside M25 ),Await Response 3 Pool,Male,655
+South East (Inside M25 ),Await Response 3 Pool,Unknown,352
+South East (Inside M25 ),Await Response 3 Pool,TOTAL,1415
+South East (Inside M25 ),Objective Achieved Pool,Unclassified,0
+South East (Inside M25 ),Objective Achieved Pool,Female,20
+South East (Inside M25 ),Objective Achieved Pool,Male,35
+South East (Inside M25 ),Objective Achieved Pool,Unknown,19
+South East (Inside M25 ),Objective Achieved Pool,TOTAL,74
+Scotland,Unclassified,Unclassified,0
+Scotland,Unclassified,Female,0
+Scotland,Unclassified,Male,0
+Scotland,Unclassified,Unknown,0
+Scotland,Unclassified,TOTAL,0
+Scotland,Await TM Pool,Unclassified,0
+Scotland,Await TM Pool,Female,44
+Scotland,Await TM Pool,Male,80
+Scotland,Await TM Pool,Unknown,24
+Scotland,Await TM Pool,TOTAL,148
+Scotland,Received Introduction,Unclassified,0
+Scotland,Received Introduction,Female,33
+Scotland,Received Introduction,Male,73
+Scotland,Received Introduction,Unknown,6
+Scotland,Received Introduction,TOTAL,112
+Scotland,Await Response Pool,Unclassified,0
+Scotland,Await Response Pool,Female,131
+Scotland,Await Response Pool,Male,212
+Scotland,Await Response Pool,Unknown,60
+Scotland,Await Response Pool,TOTAL,403
+Scotland,Responders Pool,Unclassified,0
+Scotland,Responders Pool,Female,0
+Scotland,Responders Pool,Male,2
+Scotland,Responders Pool,Unknown,1
+Scotland,Responders Pool,TOTAL,3
+Scotland,Await Further Response,Unclassified,0
+Scotland,Await Further Response,Female,87
+Scotland,Await Further Response,Male,130
+Scotland,Await Further Response,Unknown,35
+Scotland,Await Further Response,TOTAL,252
+Scotland,Await TM,Unclassified,0
+Scotland,Await TM,Female,0
+Scotland,Await TM,Male,0
+Scotland,Await TM,Unknown,0
+Scotland,Await TM,TOTAL,0
+Scotland,Pool,Unclassified,0
+Scotland,Pool,Female,6
+Scotland,Pool,Male,24
+Scotland,Pool,Unknown,1
+Scotland,Pool,TOTAL,31
+Scotland,Keycoded Responders,Unclassified,0
+Scotland,Keycoded Responders,Female,0
+Scotland,Keycoded Responders,Male,0
+Scotland,Keycoded Responders,Unknown,0
+Scotland,Keycoded Responders,TOTAL,0
+Scotland,Non Keycoded Responses,Unclassified,0
+Scotland,Non Keycoded Responses,Female,0
+Scotland,Non Keycoded Responses,Male,0
+Scotland,Non Keycoded Responses,Unknown,0
+Scotland,Non Keycoded Responses,TOTAL,0
+Scotland,Follow Up,Unclassified,0
+Scotland,Follow Up,Female,28
+Scotland,Follow Up,Male,69
+Scotland,Follow Up,Unknown,6
+Scotland,Follow Up,TOTAL,103
+Scotland,Await Response 1 Pool,Unclassified,0
+Scotland,Await Response 1 Pool,Female,147
+Scotland,Await Response 1 Pool,Male,327
+Scotland,Await Response 1 Pool,Unknown,147
+Scotland,Await Response 1 Pool,TOTAL,621
+Scotland,Shown Interest,Unclassified,0
+Scotland,Shown Interest,Female,5
+Scotland,Shown Interest,Male,4
+Scotland,Shown Interest,Unknown,0
+Scotland,Shown Interest,TOTAL,9
+Scotland,Await Response 2 Pool,Unclassified,0
+Scotland,Await Response 2 Pool,Female,139
+Scotland,Await Response 2 Pool,Male,314
+Scotland,Await Response 2 Pool,Unknown,138
+Scotland,Await Response 2 Pool,TOTAL,591
+Scotland,Await Response 3 Pool,Unclassified,0
+Scotland,Await Response 3 Pool,Female,138
+Scotland,Await Response 3 Pool,Male,307
+Scotland,Await Response 3 Pool,Unknown,135
+Scotland,Await Response 3 Pool,TOTAL,580
+Scotland,Objective Achieved Pool,Unclassified,0
+Scotland,Objective Achieved Pool,Female,9
+Scotland,Objective Achieved Pool,Male,17
+Scotland,Objective Achieved Pool,Unknown,10
+Scotland,Objective Achieved Pool,TOTAL,36
+Wales,Unclassified,Unclassified,0
+Wales,Unclassified,Female,0
+Wales,Unclassified,Male,0
+Wales,Unclassified,Unknown,0
+Wales,Unclassified,TOTAL,0
+Wales,Await TM Pool,Unclassified,0
+Wales,Await TM Pool,Female,4
+Wales,Await TM Pool,Male,14
+Wales,Await TM Pool,Unknown,2
+Wales,Await TM Pool,TOTAL,20
+Wales,Received Introduction,Unclassified,0
+Wales,Received Introduction,Female,8
+Wales,Received Introduction,Male,16
+Wales,Received Introduction,Unknown,1
+Wales,Received Introduction,TOTAL,25
+Wales,Await Response Pool,Unclassified,0
+Wales,Await Response Pool,Female,26
+Wales,Await Response Pool,Male,77
+Wales,Await Response Pool,Unknown,6
+Wales,Await Response Pool,TOTAL,109
+Wales,Responders Pool,Unclassified,0
+Wales,Responders Pool,Female,0
+Wales,Responders Pool,Male,0
+Wales,Responders Pool,Unknown,0
+Wales,Responders Pool,TOTAL,0
+Wales,Await Further Response,Unclassified,0
+Wales,Await Further Response,Female,22
+Wales,Await Further Response,Male,63
+Wales,Await Further Response,Unknown,4
+Wales,Await Further Response,TOTAL,89
+Wales,Await TM,Unclassified,0
+Wales,Await TM,Female,0
+Wales,Await TM,Male,0
+Wales,Await TM,Unknown,0
+Wales,Await TM,TOTAL,0
+Wales,Pool,Unclassified,0
+Wales,Pool,Female,4
+Wales,Pool,Male,10
+Wales,Pool,Unknown,0
+Wales,Pool,TOTAL,14
+Wales,Keycoded Responders,Unclassified,0
+Wales,Keycoded Responders,Female,0
+Wales,Keycoded Responders,Male,0
+Wales,Keycoded Responders,Unknown,0
+Wales,Keycoded Responders,TOTAL,0
+Wales,Non Keycoded Responses,Unclassified,0
+Wales,Non Keycoded Responses,Female,0
+Wales,Non Keycoded Responses,Male,0
+Wales,Non Keycoded Responses,Unknown,0
+Wales,Non Keycoded Responses,TOTAL,0
+Wales,Follow Up,Unclassified,0
+Wales,Follow Up,Female,7
+Wales,Follow Up,Male,15
+Wales,Follow Up,Unknown,1
+Wales,Follow Up,TOTAL,23
+Wales,Await Response 1 Pool,Unclassified,0
+Wales,Await Response 1 Pool,Female,21
+Wales,Await Response 1 Pool,Male,48
+Wales,Await Response 1 Pool,Unknown,11
+Wales,Await Response 1 Pool,TOTAL,80
+Wales,Shown Interest,Unclassified,0
+Wales,Shown Interest,Female,1
+Wales,Shown Interest,Male,1
+Wales,Shown Interest,Unknown,0
+Wales,Shown Interest,TOTAL,2
+Wales,Await Response 2 Pool,Unclassified,0
+Wales,Await Response 2 Pool,Female,19
+Wales,Await Response 2 Pool,Male,45
+Wales,Await Response 2 Pool,Unknown,11
+Wales,Await Response 2 Pool,TOTAL,75
+Wales,Await Response 3 Pool,Unclassified,0
+Wales,Await Response 3 Pool,Female,19
+Wales,Await Response 3 Pool,Male,43
+Wales,Await Response 3 Pool,Unknown,11
+Wales,Await Response 3 Pool,TOTAL,73
+Wales,Objective Achieved Pool,Unclassified,0
+Wales,Objective Achieved Pool,Female,2
+Wales,Objective Achieved Pool,Male,4
+Wales,Objective Achieved Pool,Unknown,0
+Wales,Objective Achieved Pool,TOTAL,6
+Northern Ireland,Unclassified,Unclassified,0
+Northern Ireland,Unclassified,Female,0
+Northern Ireland,Unclassified,Male,0
+Northern Ireland,Unclassified,Unknown,0
+Northern Ireland,Unclassified,TOTAL,0
+Northern Ireland,Await TM Pool,Unclassified,0
+Northern Ireland,Await TM Pool,Female,8
+Northern Ireland,Await TM Pool,Male,13
+Northern Ireland,Await TM Pool,Unknown,2
+Northern Ireland,Await TM Pool,TOTAL,23
+Northern Ireland,Received Introduction,Unclassified,0
+Northern Ireland,Received Introduction,Female,6
+Northern Ireland,Received Introduction,Male,19
+Northern Ireland,Received Introduction,Unknown,0
+Northern Ireland,Received Introduction,TOTAL,25
+Northern Ireland,Await Response Pool,Unclassified,0
+Northern Ireland,Await Response Pool,Female,22
+Northern Ireland,Await Response Pool,Male,61
+Northern Ireland,Await Response Pool,Unknown,17
+Northern Ireland,Await Response Pool,TOTAL,100
+Northern Ireland,Responders Pool,Unclassified,0
+Northern Ireland,Responders Pool,Female,0
+Northern Ireland,Responders Pool,Male,0
+Northern Ireland,Responders Pool,Unknown,0
+Northern Ireland,Responders Pool,TOTAL,0
+Northern Ireland,Await Further Response,Unclassified,0
+Northern Ireland,Await Further Response,Female,14
+Northern Ireland,Await Further Response,Male,48
+Northern Ireland,Await Further Response,Unknown,15
+Northern Ireland,Await Further Response,TOTAL,77
+Northern Ireland,Await TM,Unclassified,0
+Northern Ireland,Await TM,Female,0
+Northern Ireland,Await TM,Male,0
+Northern Ireland,Await TM,Unknown,0
+Northern Ireland,Await TM,TOTAL,0
+Northern Ireland,Pool,Unclassified,0
+Northern Ireland,Pool,Female,6
+Northern Ireland,Pool,Male,9
+Northern Ireland,Pool,Unknown,1
+Northern Ireland,Pool,TOTAL,16
+Northern Ireland,Keycoded Responders,Unclassified,0
+Northern Ireland,Keycoded Responders,Female,0
+Northern Ireland,Keycoded Responders,Male,0
+Northern Ireland,Keycoded Responders,Unknown,0
+Northern Ireland,Keycoded Responders,TOTAL,0
+Northern Ireland,Non Keycoded Responses,Unclassified,0
+Northern Ireland,Non Keycoded Responses,Female,0
+Northern Ireland,Non Keycoded Responses,Male,0
+Northern Ireland,Non Keycoded Responses,Unknown,0
+Northern Ireland,Non Keycoded Responses,TOTAL,0
+Northern Ireland,Follow Up,Unclassified,0
+Northern Ireland,Follow Up,Female,6
+Northern Ireland,Follow Up,Male,17
+Northern Ireland,Follow Up,Unknown,0
+Northern Ireland,Follow Up,TOTAL,23
+Northern Ireland,Await Response 1 Pool,Unclassified,0
+Northern Ireland,Await Response 1 Pool,Female,34
+Northern Ireland,Await Response 1 Pool,Male,111
+Northern Ireland,Await Response 1 Pool,Unknown,47
+Northern Ireland,Await Response 1 Pool,TOTAL,192
+Northern Ireland,Shown Interest,Unclassified,0
+Northern Ireland,Shown Interest,Female,0
+Northern Ireland,Shown Interest,Male,2
+Northern Ireland,Shown Interest,Unknown,0
+Northern Ireland,Shown Interest,TOTAL,2
+Northern Ireland,Await Response 2 Pool,Unclassified,0
+Northern Ireland,Await Response 2 Pool,Female,34
+Northern Ireland,Await Response 2 Pool,Male,110
+Northern Ireland,Await Response 2 Pool,Unknown,45
+Northern Ireland,Await Response 2 Pool,TOTAL,189
+Northern Ireland,Await Response 3 Pool,Unclassified,0
+Northern Ireland,Await Response 3 Pool,Female,34
+Northern Ireland,Await Response 3 Pool,Male,108
+Northern Ireland,Await Response 3 Pool,Unknown,42
+Northern Ireland,Await Response 3 Pool,TOTAL,184
+Northern Ireland,Objective Achieved Pool,Unclassified,0
+Northern Ireland,Objective Achieved Pool,Female,0
+Northern Ireland,Objective Achieved Pool,Male,1
+Northern Ireland,Objective Achieved Pool,Unknown,4
+Northern Ireland,Objective Achieved Pool,TOTAL,5
+Greater Manchester,Unclassified,Unclassified,0
+Greater Manchester,Unclassified,Female,0
+Greater Manchester,Unclassified,Male,0
+Greater Manchester,Unclassified,Unknown,0
+Greater Manchester,Unclassified,TOTAL,0
+Greater Manchester,Await TM Pool,Unclassified,0
+Greater Manchester,Await TM Pool,Female,23
+Greater Manchester,Await TM Pool,Male,46
+Greater Manchester,Await TM Pool,Unknown,10
+Greater Manchester,Await TM Pool,TOTAL,79
+Greater Manchester,Received Introduction,Unclassified,0
+Greater Manchester,Received Introduction,Female,40
+Greater Manchester,Received Introduction,Male,60
+Greater Manchester,Received Introduction,Unknown,1
+Greater Manchester,Received Introduction,TOTAL,101
+Greater Manchester,Await Response Pool,Unclassified,0
+Greater Manchester,Await Response Pool,Female,71
+Greater Manchester,Await Response Pool,Male,126
+Greater Manchester,Await Response Pool,Unknown,24
+Greater Manchester,Await Response Pool,TOTAL,221
+Greater Manchester,Responders Pool,Unclassified,0
+Greater Manchester,Responders Pool,Female,2
+Greater Manchester,Responders Pool,Male,1
+Greater Manchester,Responders Pool,Unknown,0
+Greater Manchester,Responders Pool,TOTAL,3
+Greater Manchester,Await Further Response,Unclassified,0
+Greater Manchester,Await Further Response,Female,46
+Greater Manchester,Await Further Response,Male,79
+Greater Manchester,Await Further Response,Unknown,14
+Greater Manchester,Await Further Response,TOTAL,139
+Greater Manchester,Await TM,Unclassified,0
+Greater Manchester,Await TM,Female,0
+Greater Manchester,Await TM,Male,0
+Greater Manchester,Await TM,Unknown,0
+Greater Manchester,Await TM,TOTAL,0
+Greater Manchester,Pool,Unclassified,0
+Greater Manchester,Pool,Female,9
+Greater Manchester,Pool,Male,24
+Greater Manchester,Pool,Unknown,1
+Greater Manchester,Pool,TOTAL,34
+Greater Manchester,Keycoded Responders,Unclassified,0
+Greater Manchester,Keycoded Responders,Female,0
+Greater Manchester,Keycoded Responders,Male,0
+Greater Manchester,Keycoded Responders,Unknown,0
+Greater Manchester,Keycoded Responders,TOTAL,0
+Greater Manchester,Non Keycoded Responses,Unclassified,0
+Greater Manchester,Non Keycoded Responses,Female,0
+Greater Manchester,Non Keycoded Responses,Male,0
+Greater Manchester,Non Keycoded Responses,Unknown,0
+Greater Manchester,Non Keycoded Responses,TOTAL,0
+Greater Manchester,Follow Up,Unclassified,0
+Greater Manchester,Follow Up,Female,37
+Greater Manchester,Follow Up,Male,55
+Greater Manchester,Follow Up,Unknown,1
+Greater Manchester,Follow Up,TOTAL,93
+Greater Manchester,Await Response 1 Pool,Unclassified,0
+Greater Manchester,Await Response 1 Pool,Female,65
+Greater Manchester,Await Response 1 Pool,Male,106
+Greater Manchester,Await Response 1 Pool,Unknown,31
+Greater Manchester,Await Response 1 Pool,TOTAL,202
+Greater Manchester,Shown Interest,Unclassified,0
+Greater Manchester,Shown Interest,Female,3
+Greater Manchester,Shown Interest,Male,5
+Greater Manchester,Shown Interest,Unknown,0
+Greater Manchester,Shown Interest,TOTAL,8
+Greater Manchester,Await Response 2 Pool,Unclassified,0
+Greater Manchester,Await Response 2 Pool,Female,63
+Greater Manchester,Await Response 2 Pool,Male,105
+Greater Manchester,Await Response 2 Pool,Unknown,28
+Greater Manchester,Await Response 2 Pool,TOTAL,196
+Greater Manchester,Await Response 3 Pool,Unclassified,0
+Greater Manchester,Await Response 3 Pool,Female,62
+Greater Manchester,Await Response 3 Pool,Male,101
+Greater Manchester,Await Response 3 Pool,Unknown,26
+Greater Manchester,Await Response 3 Pool,TOTAL,189
+Greater Manchester,Objective Achieved Pool,Unclassified,0
+Greater Manchester,Objective Achieved Pool,Female,2
+Greater Manchester,Objective Achieved Pool,Male,2
+Greater Manchester,Objective Achieved Pool,Unknown,3
+Greater Manchester,Objective Achieved Pool,TOTAL,7
+Channel Islands,Unclassified,Unclassified,0
+Channel Islands,Unclassified,Female,0
+Channel Islands,Unclassified,Male,0
+Channel Islands,Unclassified,Unknown,0
+Channel Islands,Unclassified,TOTAL,0
+Channel Islands,Await TM Pool,Unclassified,0
+Channel Islands,Await TM Pool,Female,1
+Channel Islands,Await TM Pool,Male,11
+Channel Islands,Await TM Pool,Unknown,0
+Channel Islands,Await TM Pool,TOTAL,12
+Channel Islands,Received Introduction,Unclassified,0
+Channel Islands,Received Introduction,Female,1
+Channel Islands,Received Introduction,Male,0
+Channel Islands,Received Introduction,Unknown,0
+Channel Islands,Received Introduction,TOTAL,1
+Channel Islands,Await Response Pool,Unclassified,0
+Channel Islands,Await Response Pool,Female,19
+Channel Islands,Await Response Pool,Male,29
+Channel Islands,Await Response Pool,Unknown,0
+Channel Islands,Await Response Pool,TOTAL,48
+Channel Islands,Responders Pool,Unclassified,0
+Channel Islands,Responders Pool,Female,0
+Channel Islands,Responders Pool,Male,1
+Channel Islands,Responders Pool,Unknown,0
+Channel Islands,Responders Pool,TOTAL,1
+Channel Islands,Await Further Response,Unclassified,0
+Channel Islands,Await Further Response,Female,18
+Channel Islands,Await Further Response,Male,17
+Channel Islands,Await Further Response,Unknown,0
+Channel Islands,Await Further Response,TOTAL,35
+Channel Islands,Await TM,Unclassified,0
+Channel Islands,Await TM,Female,0
+Channel Islands,Await TM,Male,0
+Channel Islands,Await TM,Unknown,0
+Channel Islands,Await TM,TOTAL,0
+Channel Islands,Pool,Unclassified,0
+Channel Islands,Pool,Female,0
+Channel Islands,Pool,Male,0
+Channel Islands,Pool,Unknown,0
+Channel Islands,Pool,TOTAL,0
+Channel Islands,Keycoded Responders,Unclassified,0
+Channel Islands,Keycoded Responders,Female,0
+Channel Islands,Keycoded Responders,Male,0
+Channel Islands,Keycoded Responders,Unknown,0
+Channel Islands,Keycoded Responders,TOTAL,0
+Channel Islands,Non Keycoded Responses,Unclassified,0
+Channel Islands,Non Keycoded Responses,Female,0
+Channel Islands,Non Keycoded Responses,Male,0
+Channel Islands,Non Keycoded Responses,Unknown,0
+Channel Islands,Non Keycoded Responses,TOTAL,0
+Channel Islands,Follow Up,Unclassified,0
+Channel Islands,Follow Up,Female,1
+Channel Islands,Follow Up,Male,0
+Channel Islands,Follow Up,Unknown,0
+Channel Islands,Follow Up,TOTAL,1
+Channel Islands,Await Response 1 Pool,Unclassified,0
+Channel Islands,Await Response 1 Pool,Female,39
+Channel Islands,Await Response 1 Pool,Male,60
+Channel Islands,Await Response 1 Pool,Unknown,0
+Channel Islands,Await Response 1 Pool,TOTAL,99
+Channel Islands,Shown Interest,Unclassified,0
+Channel Islands,Shown Interest,Female,0
+Channel Islands,Shown Interest,Male,0
+Channel Islands,Shown Interest,Unknown,0
+Channel Islands,Shown Interest,TOTAL,0
+Channel Islands,Await Response 2 Pool,Unclassified,0
+Channel Islands,Await Response 2 Pool,Female,39
+Channel Islands,Await Response 2 Pool,Male,58
+Channel Islands,Await Response 2 Pool,Unknown,0
+Channel Islands,Await Response 2 Pool,TOTAL,97
+Channel Islands,Await Response 3 Pool,Unclassified,0
+Channel Islands,Await Response 3 Pool,Female,39
+Channel Islands,Await Response 3 Pool,Male,57
+Channel Islands,Await Response 3 Pool,Unknown,0
+Channel Islands,Await Response 3 Pool,TOTAL,96
+Channel Islands,Objective Achieved Pool,Unclassified,0
+Channel Islands,Objective Achieved Pool,Female,0
+Channel Islands,Objective Achieved Pool,Male,3
+Channel Islands,Objective Achieved Pool,Unknown,0
+Channel Islands,Objective Achieved Pool,TOTAL,3
+TOTAL,TOTAL,TOTAL,32536

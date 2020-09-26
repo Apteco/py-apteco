@@ -5,9 +5,7 @@ import pandas as pd
 from apteco import Cube
 
 
-def assert_cube_dataframes_match(
-        test_df, expected_df, missing_subtotals=True, missing_recordless=False
-):
+def assert_cube_dataframes_match(test_df, expected_df, missing_subtotals=True):
     """Check that two cube DataFrames match.
 
     Compare test data with reference data, ignoring dtype,
@@ -18,13 +16,10 @@ def assert_cube_dataframes_match(
         expected_df (pd.DataFrame): expected correct data
         missing_subtotals (bool):
             allow for expected data to be missing some subtotals
-        missing_recordless (bool):
-            allow for test data to be missing "NO RECORDS" rows
-            (applicable when resolve table is ancestor of dimensions table)
 
     Raises:
         AssertionError: if DataFrame entries aren't equal,
-            or if rows are missing other than subtotal or "NO RECORDS" rows
+            or if rows are missing other than subtotal rows
 
     """
 
@@ -35,16 +30,9 @@ def assert_cube_dataframes_match(
     else:
         test_df_reduced = test_df
 
-    if missing_recordless:
-        missing_test_indices = expected_df.index.difference(test_df.index)
-        assert all(any("NO " in i for i in idx) for idx in missing_test_indices)
-        expected_df_reduced = expected_df.reindex(test_df.index.intersection(expected_df.index))
-    else:
-        expected_df_reduced = expected_df
-
     pd.testing.assert_frame_equal(
         test_df_reduced,
-        expected_df_reduced,
+        expected_df,
         check_dtype=False,
     )
 
@@ -113,7 +101,50 @@ def test_cube_to_df_bookings_dimensions_households_selection_people_table(
     df = cube.to_df()
 
     assert_cube_dataframes_match(
+        df, cube_004_bookings_dimensions_households_selection_people_table
+    )
+
+
+def test_cube_to_df_mixed_households_people_dimensions_households_table(
+    holidays,
+    households,
+    people,
+    cube_005_mixed_households_people_dimensions_households_table,
+):
+
+    cube = Cube(
+        [people[var] for var in ("Income", "Gender")] + [households["Region"]],
+        table=households,
+        session=holidays,
+    )
+    df = cube.to_df()
+
+    assert_cube_dataframes_match(
+        df, cube_005_mixed_households_people_dimensions_households_table
+    )
+
+
+def test_cube_to_df_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table(
+    holidays,
+    households,
+    people,
+    bookings,
+    journeys,
+    cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table,
+):
+
+    cube = Cube(
+        [households["Region"], journeys["Pool"], people["Gender"]],
+        selection=(
+            (people["Surname"].contains(["int", "str", "bool"], match_case=False))
+            | (bookings["Continent"] == ("AM", "AU"))
+        ),
+        table=journeys,
+        session=holidays,
+    )
+    df = cube.to_df()
+
+    assert_cube_dataframes_match(
         df,
-        cube_004_bookings_dimensions_households_selection_people_table,
-        missing_recordless=True,
+        cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table,
     )

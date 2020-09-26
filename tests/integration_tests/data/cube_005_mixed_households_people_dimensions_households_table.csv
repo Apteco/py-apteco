@@ -1,0 +1,770 @@
+﻿Income,Gender,Region,Households
+Unclassified,Unclassified,Unclassified,0
+Unclassified,Unclassified,North,0
+Unclassified,Unclassified,North West (Excluding Gtr Manchester),0
+Unclassified,Unclassified,South East (Outside M25 ),0
+Unclassified,Unclassified,South West,0
+Unclassified,Unclassified,East Midlands,0
+Unclassified,Unclassified,West Midlands,0
+Unclassified,Unclassified,East Anglia,0
+Unclassified,Unclassified,Yorkshire and Humber,0
+Unclassified,Unclassified,South East (Inside M25 ),0
+Unclassified,Unclassified,Scotland,0
+Unclassified,Unclassified,Wales,0
+Unclassified,Unclassified,Northern Ireland,0
+Unclassified,Unclassified,Greater Manchester,0
+Unclassified,Unclassified,Channel Islands,0
+Unclassified,Unclassified,TOTAL,0
+Unclassified,Female,Unclassified,0
+Unclassified,Female,North,111
+Unclassified,Female,North West (Excluding Gtr Manchester),236
+Unclassified,Female,South East (Outside M25 ),822
+Unclassified,Female,South West,380
+Unclassified,Female,East Midlands,250
+Unclassified,Female,West Midlands,361
+Unclassified,Female,East Anglia,109
+Unclassified,Female,Yorkshire and Humber,283
+Unclassified,Female,South East (Inside M25 ),1012
+Unclassified,Female,Scotland,265
+Unclassified,Female,Wales,151
+Unclassified,Female,Northern Ireland,125
+Unclassified,Female,Greater Manchester,171
+Unclassified,Female,Channel Islands,52
+Unclassified,Female,TOTAL,4328
+Unclassified,Male,Unclassified,0
+Unclassified,Male,North,80
+Unclassified,Male,North West (Excluding Gtr Manchester),164
+Unclassified,Male,South East (Outside M25 ),569
+Unclassified,Male,South West,253
+Unclassified,Male,East Midlands,131
+Unclassified,Male,West Midlands,221
+Unclassified,Male,East Anglia,85
+Unclassified,Male,Yorkshire and Humber,173
+Unclassified,Male,South East (Inside M25 ),1019
+Unclassified,Male,Scotland,201
+Unclassified,Male,Wales,87
+Unclassified,Male,Northern Ireland,49
+Unclassified,Male,Greater Manchester,120
+Unclassified,Male,Channel Islands,66
+Unclassified,Male,TOTAL,3218
+Unclassified,Unknown,Unclassified,0
+Unclassified,Unknown,North,12
+Unclassified,Unknown,North West (Excluding Gtr Manchester),15
+Unclassified,Unknown,South East (Outside M25 ),47
+Unclassified,Unknown,South West,22
+Unclassified,Unknown,East Midlands,18
+Unclassified,Unknown,West Midlands,35
+Unclassified,Unknown,East Anglia,7
+Unclassified,Unknown,Yorkshire and Humber,13
+Unclassified,Unknown,South East (Inside M25 ),149
+Unclassified,Unknown,Scotland,17
+Unclassified,Unknown,Wales,4
+Unclassified,Unknown,Northern Ireland,4
+Unclassified,Unknown,Greater Manchester,12
+Unclassified,Unknown,Channel Islands,0
+Unclassified,Unknown,TOTAL,355
+<£10k,Unclassified,Unclassified,0
+<£10k,Unclassified,North,0
+<£10k,Unclassified,North West (Excluding Gtr Manchester),0
+<£10k,Unclassified,South East (Outside M25 ),0
+<£10k,Unclassified,South West,0
+<£10k,Unclassified,East Midlands,0
+<£10k,Unclassified,West Midlands,0
+<£10k,Unclassified,East Anglia,0
+<£10k,Unclassified,Yorkshire and Humber,0
+<£10k,Unclassified,South East (Inside M25 ),0
+<£10k,Unclassified,Scotland,0
+<£10k,Unclassified,Wales,0
+<£10k,Unclassified,Northern Ireland,0
+<£10k,Unclassified,Greater Manchester,0
+<£10k,Unclassified,Channel Islands,0
+<£10k,Unclassified,TOTAL,0
+<£10k,Female,Unclassified,0
+<£10k,Female,North,9070
+<£10k,Female,North West (Excluding Gtr Manchester),13663
+<£10k,Female,South East (Outside M25 ),39879
+<£10k,Female,South West,23608
+<£10k,Female,East Midlands,13588
+<£10k,Female,West Midlands,16781
+<£10k,Female,East Anglia,8504
+<£10k,Female,Yorkshire and Humber,17344
+<£10k,Female,South East (Inside M25 ),26614
+<£10k,Female,Scotland,15718
+<£10k,Female,Wales,11725
+<£10k,Female,Northern Ireland,4558
+<£10k,Female,Greater Manchester,7913
+<£10k,Female,Channel Islands,50
+<£10k,Female,TOTAL,209015
+<£10k,Male,Unclassified,0
+<£10k,Male,North,3761
+<£10k,Male,North West (Excluding Gtr Manchester),5829
+<£10k,Male,South East (Outside M25 ),20517
+<£10k,Male,South West,10495
+<£10k,Male,East Midlands,6074
+<£10k,Male,West Midlands,7888
+<£10k,Male,East Anglia,3732
+<£10k,Male,Yorkshire and Humber,7641
+<£10k,Male,South East (Inside M25 ),14549
+<£10k,Male,Scotland,6586
+<£10k,Male,Wales,4699
+<£10k,Male,Northern Ireland,1788
+<£10k,Male,Greater Manchester,3789
+<£10k,Male,Channel Islands,24
+<£10k,Male,TOTAL,97372
+<£10k,Unknown,Unclassified,0
+<£10k,Unknown,North,24
+<£10k,Unknown,North West (Excluding Gtr Manchester),48
+<£10k,Unknown,South East (Outside M25 ),157
+<£10k,Unknown,South West,86
+<£10k,Unknown,East Midlands,40
+<£10k,Unknown,West Midlands,66
+<£10k,Unknown,East Anglia,31
+<£10k,Unknown,Yorkshire and Humber,48
+<£10k,Unknown,South East (Inside M25 ),222
+<£10k,Unknown,Scotland,73
+<£10k,Unknown,Wales,23
+<£10k,Unknown,Northern Ireland,36
+<£10k,Unknown,Greater Manchester,31
+<£10k,Unknown,Channel Islands,0
+<£10k,Unknown,TOTAL,885
+£10-20k,Unclassified,Unclassified,0
+£10-20k,Unclassified,North,0
+£10-20k,Unclassified,North West (Excluding Gtr Manchester),0
+£10-20k,Unclassified,South East (Outside M25 ),0
+£10-20k,Unclassified,South West,0
+£10-20k,Unclassified,East Midlands,0
+£10-20k,Unclassified,West Midlands,0
+£10-20k,Unclassified,East Anglia,0
+£10-20k,Unclassified,Yorkshire and Humber,0
+£10-20k,Unclassified,South East (Inside M25 ),0
+£10-20k,Unclassified,Scotland,0
+£10-20k,Unclassified,Wales,0
+£10-20k,Unclassified,Northern Ireland,0
+£10-20k,Unclassified,Greater Manchester,0
+£10-20k,Unclassified,Channel Islands,0
+£10-20k,Unclassified,TOTAL,0
+£10-20k,Female,Unclassified,0
+£10-20k,Female,North,16248
+£10-20k,Female,North West (Excluding Gtr Manchester),21975
+£10-20k,Female,South East (Outside M25 ),62947
+£10-20k,Female,South West,39155
+£10-20k,Female,East Midlands,24500
+£10-20k,Female,West Midlands,31061
+£10-20k,Female,East Anglia,14640
+£10-20k,Female,Yorkshire and Humber,29284
+£10-20k,Female,South East (Inside M25 ),41876
+£10-20k,Female,Scotland,29334
+£10-20k,Female,Wales,20516
+£10-20k,Female,Northern Ireland,8664
+£10-20k,Female,Greater Manchester,12736
+£10-20k,Female,Channel Islands,301
+£10-20k,Female,TOTAL,353237
+£10-20k,Male,Unclassified,0
+£10-20k,Male,North,5422
+£10-20k,Male,North West (Excluding Gtr Manchester),8609
+£10-20k,Male,South East (Outside M25 ),29364
+£10-20k,Male,South West,13571
+£10-20k,Male,East Midlands,9752
+£10-20k,Male,West Midlands,12920
+£10-20k,Male,East Anglia,5627
+£10-20k,Male,Yorkshire and Humber,11155
+£10-20k,Male,South East (Inside M25 ),22626
+£10-20k,Male,Scotland,10598
+£10-20k,Male,Wales,6141
+£10-20k,Male,Northern Ireland,3169
+£10-20k,Male,Greater Manchester,5820
+£10-20k,Male,Channel Islands,272
+£10-20k,Male,TOTAL,145046
+£10-20k,Unknown,Unclassified,0
+£10-20k,Unknown,North,123
+£10-20k,Unknown,North West (Excluding Gtr Manchester),124
+£10-20k,Unknown,South East (Outside M25 ),405
+£10-20k,Unknown,South West,188
+£10-20k,Unknown,East Midlands,138
+£10-20k,Unknown,West Midlands,183
+£10-20k,Unknown,East Anglia,86
+£10-20k,Unknown,Yorkshire and Humber,154
+£10-20k,Unknown,South East (Inside M25 ),716
+£10-20k,Unknown,Scotland,179
+£10-20k,Unknown,Wales,113
+£10-20k,Unknown,Northern Ireland,113
+£10-20k,Unknown,Greater Manchester,98
+£10-20k,Unknown,Channel Islands,1
+£10-20k,Unknown,TOTAL,2621
+£20-30k,Unclassified,Unclassified,0
+£20-30k,Unclassified,North,0
+£20-30k,Unclassified,North West (Excluding Gtr Manchester),0
+£20-30k,Unclassified,South East (Outside M25 ),0
+£20-30k,Unclassified,South West,0
+£20-30k,Unclassified,East Midlands,0
+£20-30k,Unclassified,West Midlands,0
+£20-30k,Unclassified,East Anglia,0
+£20-30k,Unclassified,Yorkshire and Humber,0
+£20-30k,Unclassified,South East (Inside M25 ),0
+£20-30k,Unclassified,Scotland,0
+£20-30k,Unclassified,Wales,0
+£20-30k,Unclassified,Northern Ireland,0
+£20-30k,Unclassified,Greater Manchester,0
+£20-30k,Unclassified,Channel Islands,0
+£20-30k,Unclassified,TOTAL,0
+£20-30k,Female,Unclassified,0
+£20-30k,Female,North,3298
+£20-30k,Female,North West (Excluding Gtr Manchester),4882
+£20-30k,Female,South East (Outside M25 ),14492
+£20-30k,Female,South West,7767
+£20-30k,Female,East Midlands,5641
+£20-30k,Female,West Midlands,7046
+£20-30k,Female,East Anglia,3181
+£20-30k,Female,Yorkshire and Humber,6345
+£20-30k,Female,South East (Inside M25 ),10058
+£20-30k,Female,Scotland,5945
+£20-30k,Female,Wales,3598
+£20-30k,Female,Northern Ireland,2141
+£20-30k,Female,Greater Manchester,3149
+£20-30k,Female,Channel Islands,148
+£20-30k,Female,TOTAL,77691
+£20-30k,Male,Unclassified,0
+£20-30k,Male,North,1567
+£20-30k,Male,North West (Excluding Gtr Manchester),2566
+£20-30k,Male,South East (Outside M25 ),8910
+£20-30k,Male,South West,3605
+£20-30k,Male,East Midlands,3081
+£20-30k,Male,West Midlands,4208
+£20-30k,Male,East Anglia,1621
+£20-30k,Male,Yorkshire and Humber,3636
+£20-30k,Male,South East (Inside M25 ),7437
+£20-30k,Male,Scotland,2954
+£20-30k,Male,Wales,1572
+£20-30k,Male,Northern Ireland,1039
+£20-30k,Male,Greater Manchester,2067
+£20-30k,Male,Channel Islands,153
+£20-30k,Male,TOTAL,44416
+£20-30k,Unknown,Unclassified,0
+£20-30k,Unknown,North,81
+£20-30k,Unknown,North West (Excluding Gtr Manchester),94
+£20-30k,Unknown,South East (Outside M25 ),291
+£20-30k,Unknown,South West,99
+£20-30k,Unknown,East Midlands,79
+£20-30k,Unknown,West Midlands,129
+£20-30k,Unknown,East Anglia,51
+£20-30k,Unknown,Yorkshire and Humber,108
+£20-30k,Unknown,South East (Inside M25 ),487
+£20-30k,Unknown,Scotland,116
+£20-30k,Unknown,Wales,66
+£20-30k,Unknown,Northern Ireland,48
+£20-30k,Unknown,Greater Manchester,58
+£20-30k,Unknown,Channel Islands,0
+£20-30k,Unknown,TOTAL,1707
+£30-40k,Unclassified,Unclassified,0
+£30-40k,Unclassified,North,0
+£30-40k,Unclassified,North West (Excluding Gtr Manchester),0
+£30-40k,Unclassified,South East (Outside M25 ),0
+£30-40k,Unclassified,South West,0
+£30-40k,Unclassified,East Midlands,0
+£30-40k,Unclassified,West Midlands,0
+£30-40k,Unclassified,East Anglia,0
+£30-40k,Unclassified,Yorkshire and Humber,0
+£30-40k,Unclassified,South East (Inside M25 ),0
+£30-40k,Unclassified,Scotland,0
+£30-40k,Unclassified,Wales,0
+£30-40k,Unclassified,Northern Ireland,0
+£30-40k,Unclassified,Greater Manchester,0
+£30-40k,Unclassified,Channel Islands,0
+£30-40k,Unclassified,TOTAL,0
+£30-40k,Female,Unclassified,0
+£30-40k,Female,North,2473
+£30-40k,Female,North West (Excluding Gtr Manchester),3850
+£30-40k,Female,South East (Outside M25 ),11701
+£30-40k,Female,South West,5430
+£30-40k,Female,East Midlands,4691
+£30-40k,Female,West Midlands,6258
+£30-40k,Female,East Anglia,2561
+£30-40k,Female,Yorkshire and Humber,5064
+£30-40k,Female,South East (Inside M25 ),9017
+£30-40k,Female,Scotland,4729
+£30-40k,Female,Wales,2453
+£30-40k,Female,Northern Ireland,1986
+£30-40k,Female,Greater Manchester,2783
+£30-40k,Female,Channel Islands,200
+£30-40k,Female,TOTAL,63196
+£30-40k,Male,Unclassified,0
+£30-40k,Male,North,2113
+£30-40k,Male,North West (Excluding Gtr Manchester),3524
+£30-40k,Male,South East (Outside M25 ),11170
+£30-40k,Male,South West,4296
+£30-40k,Male,East Midlands,4249
+£30-40k,Male,West Midlands,6151
+£30-40k,Male,East Anglia,2266
+£30-40k,Male,Yorkshire and Humber,4912
+£30-40k,Male,South East (Inside M25 ),9469
+£30-40k,Male,Scotland,4035
+£30-40k,Male,Wales,2024
+£30-40k,Male,Northern Ireland,1676
+£30-40k,Male,Greater Manchester,2775
+£30-40k,Male,Channel Islands,233
+£30-40k,Male,TOTAL,58893
+£30-40k,Unknown,Unclassified,0
+£30-40k,Unknown,North,157
+£30-40k,Unknown,North West (Excluding Gtr Manchester),134
+£30-40k,Unknown,South East (Outside M25 ),685
+£30-40k,Unknown,South West,210
+£30-40k,Unknown,East Midlands,162
+£30-40k,Unknown,West Midlands,266
+£30-40k,Unknown,East Anglia,99
+£30-40k,Unknown,Yorkshire and Humber,196
+£30-40k,Unknown,South East (Inside M25 ),997
+£30-40k,Unknown,Scotland,245
+£30-40k,Unknown,Wales,121
+£30-40k,Unknown,Northern Ireland,77
+£30-40k,Unknown,Greater Manchester,101
+£30-40k,Unknown,Channel Islands,0
+£30-40k,Unknown,TOTAL,3450
+£40-50k,Unclassified,Unclassified,0
+£40-50k,Unclassified,North,0
+£40-50k,Unclassified,North West (Excluding Gtr Manchester),0
+£40-50k,Unclassified,South East (Outside M25 ),0
+£40-50k,Unclassified,South West,0
+£40-50k,Unclassified,East Midlands,0
+£40-50k,Unclassified,West Midlands,0
+£40-50k,Unclassified,East Anglia,0
+£40-50k,Unclassified,Yorkshire and Humber,0
+£40-50k,Unclassified,South East (Inside M25 ),0
+£40-50k,Unclassified,Scotland,0
+£40-50k,Unclassified,Wales,0
+£40-50k,Unclassified,Northern Ireland,0
+£40-50k,Unclassified,Greater Manchester,0
+£40-50k,Unclassified,Channel Islands,0
+£40-50k,Unclassified,TOTAL,0
+£40-50k,Female,Unclassified,0
+£40-50k,Female,North,267
+£40-50k,Female,North West (Excluding Gtr Manchester),409
+£40-50k,Female,South East (Outside M25 ),1493
+£40-50k,Female,South West,577
+£40-50k,Female,East Midlands,533
+£40-50k,Female,West Midlands,775
+£40-50k,Female,East Anglia,315
+£40-50k,Female,Yorkshire and Humber,614
+£40-50k,Female,South East (Inside M25 ),1316
+£40-50k,Female,Scotland,536
+£40-50k,Female,Wales,231
+£40-50k,Female,Northern Ireland,202
+£40-50k,Female,Greater Manchester,291
+£40-50k,Female,Channel Islands,41
+£40-50k,Female,TOTAL,7600
+£40-50k,Male,Unclassified,0
+£40-50k,Male,North,432
+£40-50k,Male,North West (Excluding Gtr Manchester),719
+£40-50k,Male,South East (Outside M25 ),2092
+£40-50k,Male,South West,756
+£40-50k,Male,East Midlands,795
+£40-50k,Male,West Midlands,1068
+£40-50k,Male,East Anglia,436
+£40-50k,Male,Yorkshire and Humber,999
+£40-50k,Male,South East (Inside M25 ),1921
+£40-50k,Male,Scotland,809
+£40-50k,Male,Wales,363
+£40-50k,Male,Northern Ireland,316
+£40-50k,Male,Greater Manchester,530
+£40-50k,Male,Channel Islands,49
+£40-50k,Male,TOTAL,11285
+£40-50k,Unknown,Unclassified,0
+£40-50k,Unknown,North,28
+£40-50k,Unknown,North West (Excluding Gtr Manchester),53
+£40-50k,Unknown,South East (Outside M25 ),232
+£40-50k,Unknown,South West,66
+£40-50k,Unknown,East Midlands,43
+£40-50k,Unknown,West Midlands,85
+£40-50k,Unknown,East Anglia,33
+£40-50k,Unknown,Yorkshire and Humber,55
+£40-50k,Unknown,South East (Inside M25 ),348
+£40-50k,Unknown,Scotland,52
+£40-50k,Unknown,Wales,22
+£40-50k,Unknown,Northern Ireland,11
+£40-50k,Unknown,Greater Manchester,49
+£40-50k,Unknown,Channel Islands,0
+£40-50k,Unknown,TOTAL,1077
+£50-60k,Unclassified,Unclassified,0
+£50-60k,Unclassified,North,0
+£50-60k,Unclassified,North West (Excluding Gtr Manchester),0
+£50-60k,Unclassified,South East (Outside M25 ),0
+£50-60k,Unclassified,South West,0
+£50-60k,Unclassified,East Midlands,0
+£50-60k,Unclassified,West Midlands,0
+£50-60k,Unclassified,East Anglia,0
+£50-60k,Unclassified,Yorkshire and Humber,0
+£50-60k,Unclassified,South East (Inside M25 ),0
+£50-60k,Unclassified,Scotland,0
+£50-60k,Unclassified,Wales,0
+£50-60k,Unclassified,Northern Ireland,0
+£50-60k,Unclassified,Greater Manchester,0
+£50-60k,Unclassified,Channel Islands,0
+£50-60k,Unclassified,TOTAL,0
+£50-60k,Female,Unclassified,0
+£50-60k,Female,North,223
+£50-60k,Female,North West (Excluding Gtr Manchester),387
+£50-60k,Female,South East (Outside M25 ),1412
+£50-60k,Female,South West,434
+£50-60k,Female,East Midlands,508
+£50-60k,Female,West Midlands,643
+£50-60k,Female,East Anglia,256
+£50-60k,Female,Yorkshire and Humber,516
+£50-60k,Female,South East (Inside M25 ),1442
+£50-60k,Female,Scotland,504
+£50-60k,Female,Wales,207
+£50-60k,Female,Northern Ireland,141
+£50-60k,Female,Greater Manchester,305
+£50-60k,Female,Channel Islands,30
+£50-60k,Female,TOTAL,7008
+£50-60k,Male,Unclassified,0
+£50-60k,Male,North,400
+£50-60k,Male,North West (Excluding Gtr Manchester),665
+£50-60k,Male,South East (Outside M25 ),2101
+£50-60k,Male,South West,679
+£50-60k,Male,East Midlands,797
+£50-60k,Male,West Midlands,1008
+£50-60k,Male,East Anglia,368
+£50-60k,Male,Yorkshire and Humber,917
+£50-60k,Male,South East (Inside M25 ),2123
+£50-60k,Male,Scotland,830
+£50-60k,Male,Wales,328
+£50-60k,Male,Northern Ireland,231
+£50-60k,Male,Greater Manchester,523
+£50-60k,Male,Channel Islands,39
+£50-60k,Male,TOTAL,11009
+£50-60k,Unknown,Unclassified,0
+£50-60k,Unknown,North,33
+£50-60k,Unknown,North West (Excluding Gtr Manchester),80
+£50-60k,Unknown,South East (Outside M25 ),345
+£50-60k,Unknown,South West,104
+£50-60k,Unknown,East Midlands,80
+£50-60k,Unknown,West Midlands,136
+£50-60k,Unknown,East Anglia,54
+£50-60k,Unknown,Yorkshire and Humber,106
+£50-60k,Unknown,South East (Inside M25 ),528
+£50-60k,Unknown,Scotland,95
+£50-60k,Unknown,Wales,44
+£50-60k,Unknown,Northern Ireland,18
+£50-60k,Unknown,Greater Manchester,70
+£50-60k,Unknown,Channel Islands,0
+£50-60k,Unknown,TOTAL,1693
+£60-70k,Unclassified,Unclassified,0
+£60-70k,Unclassified,North,0
+£60-70k,Unclassified,North West (Excluding Gtr Manchester),0
+£60-70k,Unclassified,South East (Outside M25 ),0
+£60-70k,Unclassified,South West,0
+£60-70k,Unclassified,East Midlands,0
+£60-70k,Unclassified,West Midlands,0
+£60-70k,Unclassified,East Anglia,0
+£60-70k,Unclassified,Yorkshire and Humber,0
+£60-70k,Unclassified,South East (Inside M25 ),0
+£60-70k,Unclassified,Scotland,0
+£60-70k,Unclassified,Wales,0
+£60-70k,Unclassified,Northern Ireland,0
+£60-70k,Unclassified,Greater Manchester,0
+£60-70k,Unclassified,Channel Islands,0
+£60-70k,Unclassified,TOTAL,0
+£60-70k,Female,Unclassified,0
+£60-70k,Female,North,28
+£60-70k,Female,North West (Excluding Gtr Manchester),64
+£60-70k,Female,South East (Outside M25 ),230
+£60-70k,Female,South West,63
+£60-70k,Female,East Midlands,71
+£60-70k,Female,West Midlands,99
+£60-70k,Female,East Anglia,42
+£60-70k,Female,Yorkshire and Humber,63
+£60-70k,Female,South East (Inside M25 ),258
+£60-70k,Female,Scotland,70
+£60-70k,Female,Wales,28
+£60-70k,Female,Northern Ireland,28
+£60-70k,Female,Greater Manchester,26
+£60-70k,Female,Channel Islands,5
+£60-70k,Female,TOTAL,1075
+£60-70k,Male,Unclassified,0
+£60-70k,Male,North,54
+£60-70k,Male,North West (Excluding Gtr Manchester),87
+£60-70k,Male,South East (Outside M25 ),339
+£60-70k,Male,South West,88
+£60-70k,Male,East Midlands,105
+£60-70k,Male,West Midlands,131
+£60-70k,Male,East Anglia,65
+£60-70k,Male,Yorkshire and Humber,145
+£60-70k,Male,South East (Inside M25 ),392
+£60-70k,Male,Scotland,99
+£60-70k,Male,Wales,42
+£60-70k,Male,Northern Ireland,38
+£60-70k,Male,Greater Manchester,69
+£60-70k,Male,Channel Islands,8
+£60-70k,Male,TOTAL,1662
+£60-70k,Unknown,Unclassified,0
+£60-70k,Unknown,North,10
+£60-70k,Unknown,North West (Excluding Gtr Manchester),16
+£60-70k,Unknown,South East (Outside M25 ),83
+£60-70k,Unknown,South West,29
+£60-70k,Unknown,East Midlands,21
+£60-70k,Unknown,West Midlands,27
+£60-70k,Unknown,East Anglia,12
+£60-70k,Unknown,Yorkshire and Humber,34
+£60-70k,Unknown,South East (Inside M25 ),119
+£60-70k,Unknown,Scotland,27
+£60-70k,Unknown,Wales,6
+£60-70k,Unknown,Northern Ireland,5
+£60-70k,Unknown,Greater Manchester,14
+£60-70k,Unknown,Channel Islands,1
+£60-70k,Unknown,TOTAL,404
+£70-80k,Unclassified,Unclassified,0
+£70-80k,Unclassified,North,0
+£70-80k,Unclassified,North West (Excluding Gtr Manchester),0
+£70-80k,Unclassified,South East (Outside M25 ),0
+£70-80k,Unclassified,South West,0
+£70-80k,Unclassified,East Midlands,0
+£70-80k,Unclassified,West Midlands,0
+£70-80k,Unclassified,East Anglia,0
+£70-80k,Unclassified,Yorkshire and Humber,0
+£70-80k,Unclassified,South East (Inside M25 ),0
+£70-80k,Unclassified,Scotland,0
+£70-80k,Unclassified,Wales,0
+£70-80k,Unclassified,Northern Ireland,0
+£70-80k,Unclassified,Greater Manchester,0
+£70-80k,Unclassified,Channel Islands,0
+£70-80k,Unclassified,TOTAL,0
+£70-80k,Female,Unclassified,0
+£70-80k,Female,North,25
+£70-80k,Female,North West (Excluding Gtr Manchester),50
+£70-80k,Female,South East (Outside M25 ),199
+£70-80k,Female,South West,53
+£70-80k,Female,East Midlands,37
+£70-80k,Female,West Midlands,90
+£70-80k,Female,East Anglia,28
+£70-80k,Female,Yorkshire and Humber,50
+£70-80k,Female,South East (Inside M25 ),272
+£70-80k,Female,Scotland,52
+£70-80k,Female,Wales,24
+£70-80k,Female,Northern Ireland,15
+£70-80k,Female,Greater Manchester,45
+£70-80k,Female,Channel Islands,2
+£70-80k,Female,TOTAL,942
+£70-80k,Male,Unclassified,0
+£70-80k,Male,North,37
+£70-80k,Male,North West (Excluding Gtr Manchester),78
+£70-80k,Male,South East (Outside M25 ),339
+£70-80k,Male,South West,75
+£70-80k,Male,East Midlands,88
+£70-80k,Male,West Midlands,115
+£70-80k,Male,East Anglia,45
+£70-80k,Male,Yorkshire and Humber,112
+£70-80k,Male,South East (Inside M25 ),409
+£70-80k,Male,Scotland,95
+£70-80k,Male,Wales,33
+£70-80k,Male,Northern Ireland,17
+£70-80k,Male,Greater Manchester,67
+£70-80k,Male,Channel Islands,4
+£70-80k,Male,TOTAL,1514
+£70-80k,Unknown,Unclassified,0
+£70-80k,Unknown,North,7
+£70-80k,Unknown,North West (Excluding Gtr Manchester),28
+£70-80k,Unknown,South East (Outside M25 ),113
+£70-80k,Unknown,South West,33
+£70-80k,Unknown,East Midlands,22
+£70-80k,Unknown,West Midlands,35
+£70-80k,Unknown,East Anglia,16
+£70-80k,Unknown,Yorkshire and Humber,43
+£70-80k,Unknown,South East (Inside M25 ),178
+£70-80k,Unknown,Scotland,27
+£70-80k,Unknown,Wales,7
+£70-80k,Unknown,Northern Ireland,6
+£70-80k,Unknown,Greater Manchester,19
+£70-80k,Unknown,Channel Islands,0
+£70-80k,Unknown,TOTAL,534
+£80-90k,Unclassified,Unclassified,0
+£80-90k,Unclassified,North,0
+£80-90k,Unclassified,North West (Excluding Gtr Manchester),0
+£80-90k,Unclassified,South East (Outside M25 ),0
+£80-90k,Unclassified,South West,0
+£80-90k,Unclassified,East Midlands,0
+£80-90k,Unclassified,West Midlands,0
+£80-90k,Unclassified,East Anglia,0
+£80-90k,Unclassified,Yorkshire and Humber,0
+£80-90k,Unclassified,South East (Inside M25 ),0
+£80-90k,Unclassified,Scotland,0
+£80-90k,Unclassified,Wales,0
+£80-90k,Unclassified,Northern Ireland,0
+£80-90k,Unclassified,Greater Manchester,0
+£80-90k,Unclassified,Channel Islands,0
+£80-90k,Unclassified,TOTAL,0
+£80-90k,Female,Unclassified,0
+£80-90k,Female,North,2
+£80-90k,Female,North West (Excluding Gtr Manchester),3
+£80-90k,Female,South East (Outside M25 ),27
+£80-90k,Female,South West,10
+£80-90k,Female,East Midlands,4
+£80-90k,Female,West Midlands,14
+£80-90k,Female,East Anglia,5
+£80-90k,Female,Yorkshire and Humber,8
+£80-90k,Female,South East (Inside M25 ),46
+£80-90k,Female,Scotland,5
+£80-90k,Female,Wales,0
+£80-90k,Female,Northern Ireland,0
+£80-90k,Female,Greater Manchester,5
+£80-90k,Female,Channel Islands,0
+£80-90k,Female,TOTAL,129
+£80-90k,Male,Unclassified,0
+£80-90k,Male,North,4
+£80-90k,Male,North West (Excluding Gtr Manchester),9
+£80-90k,Male,South East (Outside M25 ),52
+£80-90k,Male,South West,12
+£80-90k,Male,East Midlands,8
+£80-90k,Male,West Midlands,19
+£80-90k,Male,East Anglia,5
+£80-90k,Male,Yorkshire and Humber,4
+£80-90k,Male,South East (Inside M25 ),79
+£80-90k,Male,Scotland,7
+£80-90k,Male,Wales,1
+£80-90k,Male,Northern Ireland,0
+£80-90k,Male,Greater Manchester,3
+£80-90k,Male,Channel Islands,0
+£80-90k,Male,TOTAL,203
+£80-90k,Unknown,Unclassified,0
+£80-90k,Unknown,North,3
+£80-90k,Unknown,North West (Excluding Gtr Manchester),7
+£80-90k,Unknown,South East (Outside M25 ),22
+£80-90k,Unknown,South West,3
+£80-90k,Unknown,East Midlands,8
+£80-90k,Unknown,West Midlands,13
+£80-90k,Unknown,East Anglia,2
+£80-90k,Unknown,Yorkshire and Humber,14
+£80-90k,Unknown,South East (Inside M25 ),38
+£80-90k,Unknown,Scotland,4
+£80-90k,Unknown,Wales,0
+£80-90k,Unknown,Northern Ireland,2
+£80-90k,Unknown,Greater Manchester,8
+£80-90k,Unknown,Channel Islands,0
+£80-90k,Unknown,TOTAL,124
+£90-100k,Unclassified,Unclassified,0
+£90-100k,Unclassified,North,0
+£90-100k,Unclassified,North West (Excluding Gtr Manchester),0
+£90-100k,Unclassified,South East (Outside M25 ),0
+£90-100k,Unclassified,South West,0
+£90-100k,Unclassified,East Midlands,0
+£90-100k,Unclassified,West Midlands,0
+£90-100k,Unclassified,East Anglia,0
+£90-100k,Unclassified,Yorkshire and Humber,0
+£90-100k,Unclassified,South East (Inside M25 ),0
+£90-100k,Unclassified,Scotland,0
+£90-100k,Unclassified,Wales,0
+£90-100k,Unclassified,Northern Ireland,0
+£90-100k,Unclassified,Greater Manchester,0
+£90-100k,Unclassified,Channel Islands,0
+£90-100k,Unclassified,TOTAL,0
+£90-100k,Female,Unclassified,0
+£90-100k,Female,North,0
+£90-100k,Female,North West (Excluding Gtr Manchester),1
+£90-100k,Female,South East (Outside M25 ),17
+£90-100k,Female,South West,1
+£90-100k,Female,East Midlands,3
+£90-100k,Female,West Midlands,9
+£90-100k,Female,East Anglia,2
+£90-100k,Female,Yorkshire and Humber,5
+£90-100k,Female,South East (Inside M25 ),33
+£90-100k,Female,Scotland,2
+£90-100k,Female,Wales,1
+£90-100k,Female,Northern Ireland,0
+£90-100k,Female,Greater Manchester,1
+£90-100k,Female,Channel Islands,0
+£90-100k,Female,TOTAL,75
+£90-100k,Male,Unclassified,0
+£90-100k,Male,North,2
+£90-100k,Male,North West (Excluding Gtr Manchester),6
+£90-100k,Male,South East (Outside M25 ),36
+£90-100k,Male,South West,13
+£90-100k,Male,East Midlands,5
+£90-100k,Male,West Midlands,8
+£90-100k,Male,East Anglia,2
+£90-100k,Male,Yorkshire and Humber,6
+£90-100k,Male,South East (Inside M25 ),58
+£90-100k,Male,Scotland,8
+£90-100k,Male,Wales,0
+£90-100k,Male,Northern Ireland,0
+£90-100k,Male,Greater Manchester,1
+£90-100k,Male,Channel Islands,0
+£90-100k,Male,TOTAL,145
+£90-100k,Unknown,Unclassified,0
+£90-100k,Unknown,North,4
+£90-100k,Unknown,North West (Excluding Gtr Manchester),3
+£90-100k,Unknown,South East (Outside M25 ),27
+£90-100k,Unknown,South West,7
+£90-100k,Unknown,East Midlands,8
+£90-100k,Unknown,West Midlands,13
+£90-100k,Unknown,East Anglia,6
+£90-100k,Unknown,Yorkshire and Humber,1
+£90-100k,Unknown,South East (Inside M25 ),106
+£90-100k,Unknown,Scotland,12
+£90-100k,Unknown,Wales,1
+£90-100k,Unknown,Northern Ireland,0
+£90-100k,Unknown,Greater Manchester,5
+£90-100k,Unknown,Channel Islands,0
+£90-100k,Unknown,TOTAL,193
+£100k+,Unclassified,Unclassified,0
+£100k+,Unclassified,North,0
+£100k+,Unclassified,North West (Excluding Gtr Manchester),0
+£100k+,Unclassified,South East (Outside M25 ),0
+£100k+,Unclassified,South West,0
+£100k+,Unclassified,East Midlands,0
+£100k+,Unclassified,West Midlands,0
+£100k+,Unclassified,East Anglia,0
+£100k+,Unclassified,Yorkshire and Humber,0
+£100k+,Unclassified,South East (Inside M25 ),0
+£100k+,Unclassified,Scotland,0
+£100k+,Unclassified,Wales,0
+£100k+,Unclassified,Northern Ireland,0
+£100k+,Unclassified,Greater Manchester,0
+£100k+,Unclassified,Channel Islands,0
+£100k+,Unclassified,TOTAL,0
+£100k+,Female,Unclassified,0
+£100k+,Female,North,1
+£100k+,Female,North West (Excluding Gtr Manchester),1
+£100k+,Female,South East (Outside M25 ),4
+£100k+,Female,South West,0
+£100k+,Female,East Midlands,0
+£100k+,Female,West Midlands,0
+£100k+,Female,East Anglia,0
+£100k+,Female,Yorkshire and Humber,0
+£100k+,Female,South East (Inside M25 ),5
+£100k+,Female,Scotland,0
+£100k+,Female,Wales,0
+£100k+,Female,Northern Ireland,0
+£100k+,Female,Greater Manchester,0
+£100k+,Female,Channel Islands,0
+£100k+,Female,TOTAL,11
+£100k+,Male,Unclassified,0
+£100k+,Male,North,0
+£100k+,Male,North West (Excluding Gtr Manchester),0
+£100k+,Male,South East (Outside M25 ),5
+£100k+,Male,South West,1
+£100k+,Male,East Midlands,1
+£100k+,Male,West Midlands,1
+£100k+,Male,East Anglia,2
+£100k+,Male,Yorkshire and Humber,0
+£100k+,Male,South East (Inside M25 ),10
+£100k+,Male,Scotland,2
+£100k+,Male,Wales,1
+£100k+,Male,Northern Ireland,0
+£100k+,Male,Greater Manchester,1
+£100k+,Male,Channel Islands,0
+£100k+,Male,TOTAL,24
+£100k+,Unknown,Unclassified,0
+£100k+,Unknown,North,0
+£100k+,Unknown,North West (Excluding Gtr Manchester),1
+£100k+,Unknown,South East (Outside M25 ),3
+£100k+,Unknown,South West,1
+£100k+,Unknown,East Midlands,0
+£100k+,Unknown,West Midlands,0
+£100k+,Unknown,East Anglia,0
+£100k+,Unknown,Yorkshire and Humber,1
+£100k+,Unknown,South East (Inside M25 ),9
+£100k+,Unknown,Scotland,0
+£100k+,Unknown,Wales,1
+£100k+,Unknown,Northern Ireland,0
+£100k+,Unknown,Greater Manchester,1
+£100k+,Unknown,Channel Islands,0
+£100k+,Unknown,TOTAL,17
+TOTAL,TOTAL,TOTAL,735140

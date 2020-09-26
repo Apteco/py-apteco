@@ -5,7 +5,6 @@ Unclassified,Europe,0
 Unclassified,Americas,0
 Unclassified,Asia,0
 Unclassified,Africa,0
-Unclassified,NO BOOKINGS,0
 Unclassified,TOTAL,0
 Accommodation Only,Unclassified,18550
 Accommodation Only,Australasia,2944
@@ -13,7 +12,6 @@ Accommodation Only,Europe,4054
 Accommodation Only,Americas,4127
 Accommodation Only,Asia,80
 Accommodation Only,Africa,43
-Accommodation Only,NO BOOKINGS,0
 Accommodation Only,TOTAL,28734
 Package Holiday,Unclassified,0
 Package Holiday,Australasia,38154
@@ -21,7 +19,6 @@ Package Holiday,Europe,232217
 Package Holiday,Americas,67864
 Package Holiday,Asia,4802
 Package Holiday,Africa,2388
-Package Holiday,NO BOOKINGS,0
 Package Holiday,TOTAL,288740
 Flight Only,Unclassified,0
 Flight Only,Australasia,40636
@@ -29,14 +26,5 @@ Flight Only,Europe,74743
 Flight Only,Americas,22019
 Flight Only,Asia,1371
 Flight Only,Africa,159
-Flight Only,NO BOOKINGS,0
 Flight Only,TOTAL,131946
-NO BOOKINGS,Unclassified,0
-NO BOOKINGS,Australasia,0
-NO BOOKINGS,Europe,0
-NO BOOKINGS,Americas,0
-NO BOOKINGS,Asia,0
-NO BOOKINGS,Africa,0
-NO BOOKINGS,NO BOOKINGS,0
-NO BOOKINGS,TOTAL,0
 TOTAL,TOTAL,347748
