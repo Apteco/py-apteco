@@ -175,3 +175,17 @@ def datagrid_004_bookings_with_households_selection(data_dir):
         str_cols=["Booking URN"],
         date_cols={"Travel Date": "%d/%m/%Y"},
     )
+
+
+@pytest.fixture()
+def cube_001_people_various_dimensions(data_dir):
+    """Cube with dimensions from same table.
+
+    Table: People
+    Dimensions: People
+    Measures: [none]
+    Selection: [none]
+
+    """
+    df = pd.read_csv(data_dir / "cube_001_people_various_dimensions.csv")
+    return df.set_index(["Income", "Occupation", "Source"])
