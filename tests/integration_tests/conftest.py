@@ -217,3 +217,19 @@ def cube_003_people_dimensions_bookings_table(data_dir):
     """
     df = pd.read_csv(data_dir / "cube_003_people_dimensions_bookings_table.csv")
     return df.set_index(["Source", "Occupation"])
+
+
+@pytest.fixture()
+def cube_004_bookings_dimensions_households_selection_people_table(data_dir):
+    """Cube with dimensions and selection from different tables.
+
+    Table: People
+    Dimensions: Bookings
+    Measures: [none]
+    Selection: Households (North West incl. Manchester or has Ferrari, Fiat or Ford)
+
+    """
+    df = pd.read_csv(
+        data_dir / "cube_004_bookings_dimensions_households_selection_people_table.csv"
+    )
+    return df.set_index(["Product", "Continent"])
