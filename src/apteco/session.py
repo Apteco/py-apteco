@@ -1,5 +1,6 @@
 import getpass
 import json
+import logging
 import warnings
 from collections import Counter, defaultdict, namedtuple
 from json import JSONDecodeError
@@ -575,32 +576,38 @@ class InitializeVariablesAlgorithm:
 
     def _create_variables(self):
         """Create py-apteco variables from apteco-api ones."""
-        self.variables = [
-            self._choose_variable(v)(
-                name=v.name,
-                description=v.description,
-                type=v.type,
-                folder_name=v.folder_name,
-                table=self.tables_lookup[v.table_name],
-                is_selectable=v.is_selectable,
-                is_browsable=v.is_browsable,
-                is_exportable=v.is_exportable,
-                is_virtual=v.is_virtual,
-                selector_info=v.selector_info,
-                numeric_info=v.numeric_info,
-                text_info=v.text_info,
-                reference_info=v.reference_info,
-                session=self.session,
-            )
-            for v in self.raw_variables
-        ]
+        self.variables = []
+        for v in self.raw_variables:
+            try:
+                variable_class = self._choose_variable(v)
+            except VariablesError as exc:
+                exc_msg = exc.args[0]
+                logging.warning(exc_msg)
+            else:
+                variable = variable_class(
+                    name=v.name,
+                    description=v.description,
+                    type=v.type,
+                    folder_name=v.folder_name,
+                    table=self.tables_lookup[v.table_name],
+                    is_selectable=v.is_selectable,
+                    is_browsable=v.is_browsable,
+                    is_exportable=v.is_exportable,
+                    is_virtual=v.is_virtual,
+                    selector_info=v.selector_info,
+                    numeric_info=v.numeric_info,
+                    text_info=v.text_info,
+                    reference_info=v.reference_info,
+                    session=self.session,
+                )
+                self.variables.append(variable)
 
     @staticmethod
     def _choose_variable(raw_variable: aa.Variable):
         """Get class to create given variable according to its type."""
         variable_type_lookup = {
             ("Selector", "Categorical", "SingleValue", False): SelectorVariable,
-            ("Selector", "Categorical", "SingleValue", True,): SelectorVariable,  # should be Combined Categories type
+            ("Selector", "Categorical", "SingleValue", True): SelectorVariable,  # should be Combined Categories type
             ("Numeric", None, None, False): NumericVariable,
             ("Text", None, None, False): TextVariable,
             ("Selector", "Categorical", "OrArray", False): ArrayVariable,
