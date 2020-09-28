@@ -160,13 +160,13 @@ class TestNumericVariable:
         assert small_donations.session == "CharityDataViewSession"
 
         with pytest.raises(ValueError) as exc_info:
-            less_than_a_list = fake_numeric_variable < [512.64, 646.464646]
+            less_than_a_list = fake_numeric_variable < [512.64, 646.464_646]
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )
 
     def test_le(self, fake_numeric_variable):
-        up_to_including_10k = fake_numeric_variable <= 10_000
+        up_to_including_10k = fake_numeric_variable <= 10000
         assert type(up_to_including_10k) == NumericClause
         assert up_to_including_10k.table_name == "Donations"
         assert up_to_including_10k.variable_name == "Amount"
@@ -181,7 +181,7 @@ class TestNumericVariable:
         )
 
     def test_gt(self, fake_numeric_variable):
-        big_donations = fake_numeric_variable > 0.01 * 26_000
+        big_donations = fake_numeric_variable > 0.01 * 26000
         assert type(big_donations) == NumericClause
         assert big_donations.table_name == "Donations"
         assert big_donations.variable_name == "Amount"
@@ -364,7 +364,7 @@ class TestTextVariable:
         assert dont_want_this_person.session == "CharityDataViewSession"
 
         not_these_people = fake_text_variable_email.equals(
-            {"dont_email_me@domain.com", "unsubscribed@domain.org",}, include=False
+            {"dont_email_me@domain.com", "unsubscribed@domain.org"}, include=False
         )
         assert type(not_these_people) == TextClause
         assert not_these_people.table_name == "Supporters"
@@ -424,7 +424,9 @@ class TestTextVariable:
         assert starts_with_smith.include is True
         assert starts_with_smith.session == "CharityDataViewSession"
 
-        starts_with_multiple = fake_text_variable_surname.startswith(["Tom", "James", "Dan", "Dav"])
+        starts_with_multiple = fake_text_variable_surname.startswith(
+            ["Tom", "James", "Dan", "Dav"]
+        )
         assert type(starts_with_multiple) == TextClause
         assert starts_with_multiple.table_name == "Supporters"
         assert starts_with_multiple.variable_name == "Surname"
@@ -866,7 +868,7 @@ class TestDateTimeVariable:
         assert after_boxing_day_sale_start.session == "CharityDataViewSession"
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_number = fake_datetime_variable >= 2019122643210
+            trying_with_number = fake_datetime_variable >= 2_019_122_643_210
         assert exc_info.value.args[0] == (
             "Must specify a single datetime for this type of operation."
         )

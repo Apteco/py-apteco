@@ -5,13 +5,7 @@ import pandas as pd
 
 class DataGrid:
     def __init__(
-        self,
-        columns,
-        selection=None,
-        table=None,
-        max_rows=1000,
-        *,
-        session=None,
+        self, columns, selection=None, table=None, max_rows=1000, *, session=None
     ):
         self.columns = columns
         self.selection = selection
@@ -22,9 +16,7 @@ class DataGrid:
         self._data = self._get_data()
 
     def to_df(self):
-        df = pd.DataFrame(
-            self._data, columns=[v.description for v in self.columns]
-        )
+        df = pd.DataFrame(self._data, columns=[v.description for v in self.columns])
         for i, v in enumerate(self.columns):
             df.iloc[:, i] = self._convert_column(df.iloc[:, i], v.type)
         return df
@@ -94,9 +86,9 @@ class DataGrid:
                 selection=aa.Selection(
                     table_name=self.selection.table.name,
                     rule=aa.Rule(clause=self.selection._to_model()),
-                ) if self.selection is not None else aa.Selection(
-                    table_name=self.table.name,
                 )
+                if self.selection is not None
+                else aa.Selection(table_name=self.table.name)
             ),
             resolve_table_name=self.table.name,
             maximum_number_of_rows_to_browse=self.max_rows,

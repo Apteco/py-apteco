@@ -178,8 +178,7 @@ def rtl_var_purchase_payment_method(rtl_table_purchases):
 @pytest.fixture()
 def rtl_sel_last_week_customers(rtl_table_customers):
     return Mock(
-        table=rtl_table_customers,
-        _to_model=Mock(return_value="selection_model"),
+        table=rtl_table_customers, _to_model=Mock(return_value="selection_model")
     )
 
 

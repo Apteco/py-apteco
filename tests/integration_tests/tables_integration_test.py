@@ -190,16 +190,13 @@ class TestTablesDataGrid:
         )
 
     def test_tables_datagrid_bookings_500_rows_households_selection(
-            self,
-            households,
-            bookings,
-            datagrid_004_bookings_with_households_selection,
+        self, households, bookings, datagrid_004_bookings_with_households_selection
     ):
 
         bookings_dg = bookings.datagrid(
             [
-                bookings[var] for var in
-                (
+                bookings[var]
+                for var in (
                     "Booking URN",  # Reference (Numeric)
                     "Destination",  # Selector
                     "Travel Date",  # Date
@@ -207,7 +204,10 @@ class TestTablesDataGrid:
                     "Profit",  # Currency (2 dp)
                 )
             ],
-            selection=((households["Region"] == "02") & households["Address"].contains("street", match_case=False)),
+            selection=(
+                (households["Region"] == "02")
+                & households["Address"].contains("street", match_case=False)
+            ),
         )
         bookings_df = bookings_dg.to_df()
 
@@ -278,7 +278,7 @@ class TestTablesCube:
         cube_005_mixed_households_people_dimensions_households_table,
     ):
         cube = households.cube(
-            [people[var] for var in ("Income", "Gender")] + [households["Region"]],
+            [people[var] for var in ("Income", "Gender")] + [households["Region"]]
         )
         df = cube.to_df()
 

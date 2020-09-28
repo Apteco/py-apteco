@@ -38,7 +38,7 @@ class TestDataGrid:
             ["variables", "for", "my", "columns"],
             "my_selection",
             "my_table",
-            session="my_session"
+            session="my_session",
         )
         assert datagrid_example.columns == ["variables", "for", "my", "columns"]
         assert datagrid_example.selection == "my_selection"
@@ -49,30 +49,23 @@ class TestDataGrid:
         patch__check_inputs.assert_called_once_with()
 
     @patch("pandas.DataFrame")
-    def test_to_df(
-        self,
-        patch_pd_dataframe,
-        fake_datagrid,
-    ):
+    def test_to_df(self, patch_pd_dataframe, fake_datagrid):
         fake_getitem = MagicMock(side_effect=["column1", "column2", "column3"])
         fake_setitem = MagicMock()
-        fake_dataframe = Mock(iloc=MagicMock(
-            __getitem__=fake_getitem,
-            __setitem__=fake_setitem,
-        ))
+        fake_dataframe = Mock(
+            iloc=MagicMock(__getitem__=fake_getitem, __setitem__=fake_setitem)
+        )
         patch_pd_dataframe.return_value = fake_dataframe
-        fake_datagrid._convert_column = Mock(side_effect=[
-            "converted_column1",
-            "converted_column2",
-            "converted_column3",
-        ])
+        fake_datagrid._convert_column = Mock(
+            side_effect=["converted_column1", "converted_column2", "converted_column3"]
+        )
 
         df = fake_datagrid.to_df()
 
         assert df is fake_dataframe
         patch_pd_dataframe.assert_called_once_with(
             "my_datagrid_data",
-            columns=["Customer ID", "Customer First Name", "Customer Surname"]
+            columns=["Customer ID", "Customer First Name", "Customer Surname"],
         )
         convert_column_calls = [
             call("column1", "Reference"),
@@ -117,9 +110,7 @@ class TestDataGrid:
 
     @patch("apteco.datagrid.DataGrid._check_columns")
     def test__check_inputs_max_rows_is_int_as_str(
-        self,
-        patch__check_columns,
-        fake_datagrid
+        self, patch__check_columns, fake_datagrid
     ):
         fake_datagrid.max_rows = "456"
         fake_datagrid._check_inputs()
@@ -128,9 +119,7 @@ class TestDataGrid:
 
     @patch("apteco.datagrid.DataGrid._check_columns")
     def test__check_inputs_max_rows_is_negative(
-        self,
-        patch__check_columns,
-        fake_datagrid
+        self, patch__check_columns, fake_datagrid
     ):
         fake_datagrid.max_rows = -2468
         with pytest.raises(ValueError) as exc_info:
@@ -140,9 +129,7 @@ class TestDataGrid:
 
     @patch("apteco.datagrid.DataGrid._check_columns")
     def test__check_inputs_max_rows_is_not_number(
-        self,
-        patch__check_columns,
-        fake_datagrid
+        self, patch__check_columns, fake_datagrid
     ):
         fake_datagrid.max_rows = "all"
         with pytest.raises(ValueError) as exc_info:
@@ -171,10 +158,7 @@ class TestDataGrid:
 
     @patch("apteco.datagrid.DataGrid._check_columns")
     def test__check_inputs_no_table_with_sel(
-        self,
-        patch__check_columns,
-        fake_datagrid,
-        rtl_table_customers
+        self, patch__check_columns, fake_datagrid, rtl_table_customers
     ):
         fake_datagrid.table = None
         fake_datagrid._check_inputs()
@@ -220,9 +204,7 @@ class TestDataGrid:
         )
 
     def test__check_columns_bad_variable(
-        self,
-        fake_datagrid,
-        rtl_var_customer_contact_pref,
+        self, fake_datagrid, rtl_var_customer_contact_pref
     ):
         fake_datagrid.columns.append(rtl_var_customer_contact_pref)
         with pytest.raises(ValueError) as exc_info:
@@ -247,7 +229,9 @@ class TestDataGrid:
 
     @patch("apteco_api.ExportsApi")
     @patch("apteco.datagrid.DataGrid._create_columns")
-    def test__get_export(self, patch__create_columns, patch_aa_exports_api, fake_datagrid):
+    def test__get_export(
+        self, patch__create_columns, patch_aa_exports_api, fake_datagrid
+    ):
         patch__create_columns.return_value = ["a", "list", "of", "columns"]
         fake_exports_perform_export_sync = Mock(return_value="your_export_result")
         patch_aa_exports_api.return_value = Mock(
@@ -256,14 +240,13 @@ class TestDataGrid:
         expected_export = aa.Export(
             base_query=aa.Query(
                 selection=aa.Selection(
-                    table_name="Customers",
-                    rule=aa.Rule(clause="selection_model")
+                    table_name="Customers", rule=aa.Rule(clause="selection_model")
                 )
             ),
             resolve_table_name="Customers",
             maximum_number_of_rows_to_browse=1234,
             return_browse_rows=True,
-            columns=["a", "list", "of", "columns"]
+            columns=["a", "list", "of", "columns"],
         )
         export_result = fake_datagrid._get_export()
         assert export_result == "your_export_result"
@@ -274,11 +257,13 @@ class TestDataGrid:
 
     @patch("apteco.datagrid.DataGrid._get_export")
     def test__get_data(self, patch__get_export, fake_datagrid):
-        fake_export_result = Mock(rows=[
-            Mock(descriptions="Sweden\tMale\tMidlands\t87.65"),
-            Mock(descriptions="France\tFemale\tLondon\t0.00"),
-            Mock(descriptions="Germany\tMale\tSouth East\t345.67"),
-        ])
+        fake_export_result = Mock(
+            rows=[
+                Mock(descriptions="Sweden\tMale\tMidlands\t87.65"),
+                Mock(descriptions="France\tFemale\tLondon\t0.00"),
+                Mock(descriptions="Germany\tMale\tSouth East\t345.67"),
+            ]
+        )
         patch__get_export.return_value = fake_export_result
         export_result = fake_datagrid._get_data()
         patch__get_export.assert_called_once_with()

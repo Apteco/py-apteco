@@ -1361,7 +1361,9 @@ class TestInitializeVariablesAlgorithm:
         assert initialize_vars_algo_example.system == "system for the session"
         assert initialize_vars_algo_example.api_client == "API client for the session"
         assert initialize_vars_algo_example.session is fake_session_with_client
-        assert initialize_vars_algo_example.tables_lookup is fake_tables_without_variables
+        assert (
+            initialize_vars_algo_example.tables_lookup is fake_tables_without_variables
+        )
 
     def test_initialize_variables_algo_run(self, mocker):
         fake_tables_lookup = mocker.Mock()
@@ -1734,17 +1736,7 @@ class TestInitializeVariablesAlgorithm:
         var7.configure_mock(name="wvOrigin")
         var8.configure_mock(name="pvURL")
         var9.configure_mock(name="pvTime")
-        fake_variables = [
-            var1,
-            var2,
-            var3,
-            var4,
-            var5,
-            var6,
-            var7,
-            var8,
-            var9,
-        ]
+        fake_variables = [var1, var2, var3, var4, var5, var6, var7, var8, var9]
         correct_results = {
             "Customers": [var1, var2, var3],
             "Purchases": [var4, var5],

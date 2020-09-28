@@ -116,10 +116,10 @@ class APIController:
 
 
 class TableMixin:
-
     def count(self):
         query_final = aa.Query(
-            selection=aa.Selection(table_name=self.name, ancestor_counts=True))
+            selection=aa.Selection(table_name=self.name, ancestor_counts=True)
+        )
         session = self.session
         return Selection(query_final, session).count
 
@@ -132,9 +132,7 @@ general_error_msg_text = (
     "Chosen value(s) for a text variable"
     " must be given as a string or an iterable of strings."
 )
-single_value_error_msg_text = (
-    "Must specify a single string for this type of operation."
-)
+single_value_error_msg_text = "Must specify a single string for this type of operation."
 general_error_msg_array = (
     "Chosen value(s) for an array variable"
     " must be given as a string or an iterable of strings."
@@ -195,9 +193,7 @@ general_error_msg_date = (
     "Chosen value for a date variable"
     " must be a date object or an iterable of date objects."
 )
-single_value_error_msg_date = (
-    "Must specify a single date for this type of operation."
-)
+single_value_error_msg_date = "Must specify a single date for this type of operation."
 
 
 def normalize_date_value(value, error_msg, *, basic=False):
@@ -250,7 +246,7 @@ class Clause:
             selection=aa.Selection(
                 table_name=self.table_name,
                 ancestor_counts=True,
-                rule=aa.Rule(clause=self._to_model())
+                rule=aa.Rule(clause=self._to_model()),
             )
         )
         session = self.session

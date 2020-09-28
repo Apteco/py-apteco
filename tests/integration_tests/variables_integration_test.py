@@ -6,9 +6,9 @@ import pytest
 
 def test_selector_operators(bookings, people, households):
     sweden = bookings["boDest"] == "29"
-    assert sweden.count() == 25_207
+    assert sweden.count() == 25207
     high_earners = people["peIncome"] == (f"{i:02}" for i in range(7, 12))
-    assert high_earners.count() == 7_114
+    assert high_earners.count() == 7114
     not_student = people["peOccu"] != "4"
     assert not_student.count() == 1_029_708
     england = households["hoRegion"] != ["10", "11", "12", "14"]
@@ -22,9 +22,9 @@ def test_combined_categories_operators():
 
 def test_array_operators(households):
     mazda = households["HHCarmak"] == "MAZ"
-    assert mazda.count() == 3_587
+    assert mazda.count() == 3587
     any_v = households["HHCarmak"] == ["VAU", "VLK", "VOL"]
-    assert any_v.count() == 12_418
+    assert any_v.count() == 12418
     anything_but_ford = households["HHCarmak"] != "FOR"
     assert anything_but_ford.count() == 690_951
     exclude_top_6 = households["HHCarmak"] != ["FIA", "KIA", "  !", "CHE", "SUZ", "DAI"]
@@ -33,7 +33,7 @@ def test_array_operators(households):
 
 def test_flag_array_operators(people, bookings):
     ft_readers = people["peNews"] == "Financial Times"
-    assert ft_readers.count() == 11_470
+    assert ft_readers.count() == 11470
     broadsheet_readers = people["peNews"] == [
         "Financial Times",
         "The Times",
@@ -45,14 +45,14 @@ def test_flag_array_operators(people, bookings):
     cant_email = people["peContac"] != "EPS"
     assert cant_email.count() == 1_062_397
     no_activities = bookings["deFacil"] != ["Entertainment", "Kidsclub", "Trips"]
-    assert no_activities.count() == 75_774
+    assert no_activities.count() == 75774
 
 
 def test_numeric_operator(policies, bookings, web_visits):
     thirty_days_to_travel = policies["PoDaysUn"] == 30
-    assert thirty_days_to_travel.count() == 2_647
+    assert thirty_days_to_travel.count() == 2647
     multiple_of_100 = bookings["boCost"] == (i * 100 for i in range(285))
-    assert multiple_of_100.count() == 3_123
+    assert multiple_of_100.count() == 3123
     profit_not_33_33 = bookings["boProfit"] != decimal.Decimal("33.33")
     assert profit_not_33_33.count() == 2_129_833
     more_than_5_days_until_travel = policies["PoDaysUn"] != [0, 1, 2, 3, 4, 5]
@@ -60,26 +60,32 @@ def test_numeric_operator(policies, bookings, web_visits):
     low_profit = bookings["boProfit"] <= 25
     assert low_profit.count() == 211_328
     cost_at_least_2k = bookings["boCost"] >= 2000
-    assert cost_at_least_2k.count() == 53_267
+    assert cost_at_least_2k.count() == 53267
     less_than_minute = web_visits["wvDuratn"] < 60
-    assert less_than_minute.count() == 44_399
+    assert less_than_minute.count() == 44399
     more_than_8_weeks = policies["PoDaysSi"] > 56
-    assert more_than_8_weeks.count() == 23_950
+    assert more_than_8_weeks.count() == 23950
 
 
 def test_text_operator(people, households):
     smith = people["peSName"] == "Smith"
-    assert smith.count() == 13_302
+    assert smith.count() == 13302
     vowel_initial = people["peInit"] == list("AEIOU")
     assert vowel_initial.count() == 168_548
     not_t_initial = people["peInit"] != "T"
     assert not_t_initial.count() == 1_051_815
-    outside_top_5_surnames = people["peSName"] != ["Smith", "Brown", "Jones", "Taylor", "Patel"]
+    outside_top_5_surnames = people["peSName"] != [
+        "Smith",
+        "Brown",
+        "Jones",
+        "Taylor",
+        "Patel",
+    ]
     assert outside_top_5_surnames.count() == 1_113_731
     early_postcode = households["hoPCode"] <= "E"
     assert early_postcode.count() == 208_569
     further_down_street = households["hoAddr"] >= "9"
-    assert further_down_street.count() == 31_197
+    assert further_down_street.count() == 31197
 
 
 def test_date_operator(bookings, policies):
@@ -95,7 +101,7 @@ def test_date_operator(bookings, policies):
         date(2020, 12, 25),
         date(2020, 12, 26),
     ]
-    assert bank_holidays_2020.count() == 7_847
+    assert bank_holidays_2020.count() == 7847
     not_easter_2017 = policies["PoTrave1"] != date(2017, 4, 16)
     assert not_easter_2017.count() == 213_442  # all - 125
     exclude_solstices_and_equinoxes_2021 = policies["PoPolic1"] != [
@@ -112,10 +118,12 @@ def test_date_operator(bookings, policies):
 
 
 def test_datetime_operator(web_visits, communications):
-    before_4pm_halloween_2019 = web_visits["wvTime"] <= datetime(2019, 10, 31, 15, 59, 59)
+    before_4pm_halloween_2019 = web_visits["wvTime"] <= datetime(
+        2019, 10, 31, 15, 59, 59
+    )
     assert before_4pm_halloween_2019.count() == 169_019
     after_juy_2016 = communications["cmCommDt"] >= datetime(2016, 8, 1, 0, 0, 0)
-    assert after_juy_2016.count() == 3_926
+    assert after_juy_2016.count() == 3926
 
 
 @pytest.mark.xfail(reason="Not yet implemented.")

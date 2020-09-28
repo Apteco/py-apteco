@@ -165,10 +165,18 @@ class Table(TableMixin):
         return self.variables[item]
 
     def datagrid(self, columns, selection=None, max_rows=1000):
-        return DataGrid(columns, selection=selection, table=self, max_rows=max_rows, session=self.session)
+        return DataGrid(
+            columns,
+            selection=selection,
+            table=self,
+            max_rows=max_rows,
+            session=self.session,
+        )
 
     def cube(self, dimensions, measures=None, selection=None):
-        return Cube(dimensions, measures, selection=selection, table=self, session=self.session)
+        return Cube(
+            dimensions, measures, selection=selection, table=self, session=self.session
+        )
 
 
 class TablesAccessor:

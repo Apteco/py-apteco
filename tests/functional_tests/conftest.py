@@ -72,7 +72,9 @@ def chy_tables():
 
     supporters_table.children = [campaigns_table]
     supporters_table.descendants = [
-        campaigns_table, donations_table, website_visits_table
+        campaigns_table,
+        donations_table,
+        website_visits_table,
     ]
 
     campaigns_table.children = [donations_table]

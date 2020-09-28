@@ -18,7 +18,7 @@ def sel_nonempty(rtl_sel_high_value_purchases):
         rtl_sel_high_value_purchases,
         aa.Selection(
             table_name="Purchases",
-            rule=aa.Rule(clause="selection_high_value_purchases_model")
+            rule=aa.Rule(clause="selection_high_value_purchases_model"),
         ),
     )
 
@@ -92,7 +92,14 @@ class TestCube:
 
     @patch("pandas.MultiIndex.from_product")
     @patch("pandas.DataFrame")
-    def test_to_df(self, patch_pd_dataframe, patch_pd_mi_fp, fake_cube, fake_cube_data, fake_cube_headers):
+    def test_to_df(
+        self,
+        patch_pd_dataframe,
+        patch_pd_mi_fp,
+        fake_cube,
+        fake_cube_data,
+        fake_cube_headers,
+    ):
         patch_pd_dataframe.return_value = "my_cube_df"
         patch_pd_mi_fp.return_value = "multi_index_for_cube_df"
         df = fake_cube.to_df()
@@ -103,11 +110,10 @@ class TestCube:
             columns=["Purchases"],
         )
         fake_cube_data.ravel.assert_called_once_with()
-        patch_pd_mi_fp.assert_called_once_with("cube_header_descriptions", names=[
-            "Store Type",
-            "Payment Method",
-            "Department",
-        ])
+        patch_pd_mi_fp.assert_called_once_with(
+            "cube_header_descriptions",
+            names=["Store Type", "Payment Method", "Department"],
+        )
         fake_cube_headers.__getitem__.assert_called_once_with("descs")
 
     @patch("apteco.cube.Cube._check_dimensions")
@@ -137,7 +143,9 @@ class TestCube:
         patch__check_dimensions.assert_not_called()
 
     @patch("apteco.cube.Cube._check_dimensions")
-    def test__check_inputs_measures_is_bad(self, patch__check_dimensions, fake_cube, rtl_var_purchase_department):
+    def test__check_inputs_measures_is_bad(
+        self, patch__check_dimensions, fake_cube, rtl_var_purchase_department
+    ):
         fake_cube.measures = [rtl_var_purchase_department]
         with pytest.raises(ValueError) as exc_info:
             fake_cube._check_inputs()
@@ -150,7 +158,9 @@ class TestCube:
         patch__check_dimensions.assert_not_called()
 
     @patch("apteco.cube.Cube._check_dimensions")
-    def test__check_inputs_no_table_with_sel(self, patch__check_dimensions, fake_cube, rtl_table_purchases):
+    def test__check_inputs_no_table_with_sel(
+        self, patch__check_dimensions, fake_cube, rtl_table_purchases
+    ):
         fake_cube.table = None
         fake_cube._check_inputs()
         assert fake_cube.table == rtl_table_purchases
@@ -289,7 +299,7 @@ class TestCube:
                     header_codes="HO\tGA\tEL\tDI",
                     header_descriptions="Home\tGarden\tElectronics\tDIY",
                 ),
-            ]
+            ],
         )
         patch__get_cube.return_value = fake_cube_result
         fake_reshape = Mock(return_value="my_reshaped_data")
@@ -306,7 +316,7 @@ class TestCube:
                 ["Shop", "Franchise", "Online"],
                 ["Cash", "Card", "Cheque", "Voucher", "Gift Card"],
                 ["Home", "Garden", "Electronics", "DIY"],
-            ]
+            ],
         }
         expected_sizes = (3, 5, 4)
 

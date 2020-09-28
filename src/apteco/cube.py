@@ -4,7 +4,9 @@ import pandas as pd
 
 
 class Cube:
-    def __init__(self, dimensions, measures=None, selection=None, table=None, *, session=None):
+    def __init__(
+        self, dimensions, measures=None, selection=None, table=None, *, session=None
+    ):
         self.dimensions = dimensions
         self.measures = measures
         self.selection = selection
@@ -86,9 +88,9 @@ class Cube:
                 selection=aa.Selection(
                     table_name=self.selection.table.name,
                     rule=aa.Rule(clause=self.selection._to_model()),
-                ) if self.selection is not None else aa.Selection(
-                    table_name=self.table.name,
                 )
+                if self.selection is not None
+                else aa.Selection(table_name=self.table.name)
             ),
             resolve_table_name=self.table.name,
             storage="Full",

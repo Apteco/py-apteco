@@ -215,11 +215,14 @@ def test_normalize_datetime_value():
     assert exc_info.value.args[0] == "Can't have date-only objects."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_datetime_value([
-            datetime(2012, 12, 20, 1, 2, 3),
-            datetime(2012, 12, 21, 4, 5, 6),
-            datetime(2012, 12, 22, 7, 8, 9),
-        ], "Can't have lists here.")
+        normalize_datetime_value(
+            [
+                datetime(2012, 12, 20, 1, 2, 3),
+                datetime(2012, 12, 21, 4, 5, 6),
+                datetime(2012, 12, 22, 7, 8, 9),
+            ],
+            "Can't have lists here.",
+        )
     assert exc_info.value.args[0] == "Can't have lists here."
 
     with pytest.raises(ValueError) as exc_info:
@@ -234,25 +237,31 @@ def test_normalize_datetime_input():
     assert normalize_datetime_input(
         datetime(2026, 4, 21, 4, 20, 59), "Shouldn't see this error"
     ) == ["2026-04-21T04:20:59"]
-    assert normalize_datetime_input([
-        datetime(2000, 4, 24, 1, 23, 45),
-        datetime(2000, 5, 1, 6, 7),
-        datetime(2000, 5, 29, 8),
-        datetime(2000, 8, 28),
-    ], "Shouldn't see this error") == [
+    assert normalize_datetime_input(
+        [
+            datetime(2000, 4, 24, 1, 23, 45),
+            datetime(2000, 5, 1, 6, 7),
+            datetime(2000, 5, 29, 8),
+            datetime(2000, 8, 28),
+        ],
+        "Shouldn't see this error",
+    ) == [
         "2000-04-24T01:23:45",
         "2000-05-01T06:07:00",
         "2000-05-29T08:00:00",
         "2000-08-28T00:00:00",
     ]
-    assert normalize_datetime_input((
-        datetime(2020 + i, i, i + 23, i ** 2 % (i + 5), i ** 2, i * 8)
-        for i in range(4, 8)
-    ), "Shouldn't see this error") == [
+    assert normalize_datetime_input(
+        (
+            datetime(2020 + i, i, i + 23, i ** 2 % (i + 5), i ** 2, i * 8)
+            for i in range(4, 8)
+        ),
+        "Shouldn't see this error",
+    ) == [
         "2024-04-27T07:16:32",
         "2025-05-28T05:25:40",
         "2026-06-29T03:36:48",
-        "2027-07-30T01:49:56"
+        "2027-07-30T01:49:56",
     ]
 
     with pytest.raises(ValueError) as exc_info:
@@ -260,15 +269,20 @@ def test_normalize_datetime_input():
     assert exc_info.value.args[0] == "A bool isn't a datetime."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_datetime_input(946684800, "A number isn't a datetime.")
+        normalize_datetime_input(946_684_800, "A number isn't a datetime.")
     assert exc_info.value.args[0] == "A number isn't a datetime."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_datetime_input("2008-12-03T03:33:30", "A datetime-y string doesn't count as a number.")
+        normalize_datetime_input(
+            "2008-12-03T03:33:30", "A datetime-y string doesn't count as a number."
+        )
     assert exc_info.value.args[0] == "A datetime-y string doesn't count as a number."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_datetime_input([20001016220220, 20081203033330], "Can't sneak numbers through inside a list")
+        normalize_datetime_input(
+            [20_001_016_220_220, 20_081_203_033_330],
+            "Can't sneak numbers through inside a list",
+        )
     assert exc_info.value.args[0] == "Can't sneak numbers through inside a list"
 
 
@@ -310,9 +324,7 @@ class TestSelectorClause:
     @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
     def test_selector_clause_init_var_as_str(self):
         bookings_fr_de_us = SelectorClause(
-            "boDest",
-            ["06", "07", "38"],
-            label="Bookings to France, Germany or USA",
+            "boDest", ["06", "07", "38"], label="Bookings to France, Germany or USA"
         )
         assert bookings_fr_de_us.table_name == "Bookings"
         assert bookings_fr_de_us.variable_name == "boDest"
@@ -570,7 +582,9 @@ class TestTextClause:
 class TestArrayClause:
     def test_array_clause_init(self, fake_households_table):
         fake_car_make_code_var = Mock()
-        fake_car_make_code_var.configure_mock(name="HHCarmak", table=fake_households_table)
+        fake_car_make_code_var.configure_mock(
+            name="HHCarmak", table=fake_households_table
+        )
         example_array_clause = ArrayClause(
             fake_car_make_code_var,
             ["FOR", "PEU", "VOL"],
@@ -790,8 +804,7 @@ class TestDateListClause:
                 value_rules=[
                     aa.ValueRule(
                         list_rule=aa.ListRule(
-                            list="20161225\t20161226\t20170101",
-                            variable_name="boTrav"
+                            list="20161225\t20161226\t20170101", variable_name="boTrav"
                         ),
                         predefined_rule="AdhocDates",
                     )
@@ -809,9 +822,8 @@ class TestDateListClause:
 class TestDateRangeClause:
     def test_create_range_parameters(self):
         assert DateRangeClause._create_range_parameters(
-            Mock(start="earliest", end="latest")) == {
-            "start_range_limit": "Earliest", "end_range_limit": "Latest"
-        }
+            Mock(start="earliest", end="latest")
+        ) == {"start_range_limit": "Earliest", "end_range_limit": "Latest"}
         assert DateRangeClause._create_range_parameters(
             Mock(start="2007-06-27", end="LATEST")
         ) == {
@@ -936,9 +948,8 @@ class TestTimeRangeClause:
 class TestDateTimeRangeClause:
     def test_create_range_parameters(self):
         assert DateTimeRangeClause._create_range_parameters(
-            Mock(start="earliest", end="latest")) == {
-            "start_range_limit": "Earliest", "end_range_limit": "Latest"
-        }
+            Mock(start="earliest", end="latest")
+        ) == {"start_range_limit": "Earliest", "end_range_limit": "Latest"}
         assert DateTimeRangeClause._create_range_parameters(
             Mock(start="2007-06-27T12:34:56", end="laTesT")
         ) == {

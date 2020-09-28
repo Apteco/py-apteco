@@ -159,7 +159,8 @@ def datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns(data_dir):
 
     """
     return load_reference_dataframe(
-        data_dir / "datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns.csv",
+        data_dir
+        / "datagrid_003_web_visits_mobile_social_media_1500_rows_all_columns.csv",
         str_cols=["Web URN"],
         datetime_cols={"Web Visit Time": "%d/%m/%Y %H:%M:%S"},
     )

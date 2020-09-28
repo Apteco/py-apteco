@@ -49,9 +49,7 @@ def fake_session_with_client():
 class TestSession:
     @patch("apteco.session.aa.FastStatsSystemsApi")
     def test_fetch_system_info(
-            self,
-            patch_aa_faststats_systems_api,
-            fake_session_with_client
+        self, patch_aa_faststats_systems_api, fake_session_with_client
     ):
         fake_faststats_system_response = Mock()
         fake_faststats_system_response.configure_mock(
@@ -115,8 +113,7 @@ class TestSession:
             "my_user_object",
         )
         patched_session.assert_called_once_with(
-            "my_credentials_object",
-            "fake_system_name",
+            "my_credentials_object", "fake_system_name"
         )
 
     def test_deserialize_session_with_bad_credentials_dict(

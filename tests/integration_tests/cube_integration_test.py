@@ -145,6 +145,5 @@ def test_cube_to_df_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_tab
     df = cube.to_df()
 
     assert_cube_dataframes_match(
-        df,
-        cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table,
+        df, cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table
     )
