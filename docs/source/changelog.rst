@@ -1,6 +1,91 @@
-**********
-Change Log
-**********
+**************
+  Change Log
+**************
+
+Version 0.6.0
+=============
+
+*release date TBC*
+
+Added
+-----
+
+* Added ability to pick variables by description.
+* Added ``table_name`` property to ``Variable`` classes (alias of ``table.name``).
+* Added ``is_related()`` method to ``Table``.
+* Added ``allow_same`` keyword to ``is_ancestor()``, ``is_descendant()``
+  & ``is_related()`` methods on ``Table``.
+* Added ``<=`` and ``>=`` operators to ``Table``
+  corresponding to these ``is_ancestor(allow_same=True)``
+  and ``is_descendant(allow_same=True)``.
+* Added methods to ``TextVariable``
+  to enable querying text variables with different text match types:
+
+  - ``equals()``
+  - ``contains()``
+  - ``startswith()``
+  - ``endswith()``
+  - ``before()``
+  - ``after()``
+  - ``between()``
+  - ``matches()``
+
+* Added ``datagrid()`` and ``cube()`` methods to tables and selections
+  to enable building Data Grids and Cubes directly from these.
+* Added ``AptecoDeprecationWarning`` for warning about deprecated features.
+
+Changed
+-------
+
+* Simplified some ``Table`` attribute names
+  (the old names still work but issue an ``AptecoDeprecationWarning``):
+
+  - ``singular_display_name`` -> ``singular``
+  - ``plural_display_name`` -> ``plural``
+  - ``is_default_table`` -> ``is_default``
+  - ``is_people_table`` -> ``is_people``
+  - ``child_relationship_name`` -> ``child_relationship``
+  - ``parent_relationship_name`` -> ``parent_relationship``
+  - ``has_child_tables`` -> ``has_children``
+
+* ``Session.tables`` is now a ``TablesAccessor`` object instead of ``dict``:
+
+  - can pick tables by name using ``[]`` (as before)
+  - can use ``for ... in`` to loop over tables
+  - can use ``len()`` to get the number of tables
+
+* ``Session.variables`` and ``Table.variables``
+  is now a ``VariablesAccessor`` object instead of ``dict``:
+
+  - can pick variables by name or description using ``[]``
+    (as before for names; support for descriptions is new)
+  - can use ``for ... in`` to loop over variables
+  - can use ``len()`` to get the number of variables (in the system or on the table)
+  - has ``names`` attribute for picking by name-only (using ``[]``)
+    and looping over variable names (using ``for ... in``)
+  - has ``descs`` attribute for picking by description-only (using ``[]``)
+    and looping over variable descriptions (using ``for ... in``)
+  - has ``descriptions`` attribute, which is alias of ``descs``
+
+* The columns on the ``DataFrame`` returned by ``DataGrid.to_df()``
+  now have the data type that matches the FastStats variable for that column.
+* Variables from ancestor tables can now be used as columns on a ``DataGrid``.
+* Variables from related tables can now be used as dimensions on a ``Cube``.
+
+Removed
+-------
+
+* Removed ``isin()`` and ``contains()`` method from ``Variable`` base class completely
+  (had been previously deprecated to raise ``NotImplementedError``).
+  ``contains()`` has been implemented on``TextVariable``
+  and it is planned to implement these methods for applicable variable types in future.
+
+Fixed
+-----
+
+* During variables initialisation process
+  variables with unrecognised type now log a warning rather than raising exception
+  (this means program execution can continue rather than stopping completely).
 
 Version 0.5.0
 =============
