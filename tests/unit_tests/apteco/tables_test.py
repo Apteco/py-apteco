@@ -112,14 +112,14 @@ class TestTable:
             session="court of session",
         )
         assert table_example.name == "what's in a name"
-        assert table_example.singular_display_name == "the singularity"
-        assert table_example.plural_display_name == "first person plural"
-        assert table_example.is_default_table is False
-        assert table_example.is_people_table is True
+        assert table_example.singular == "the singularity"
+        assert table_example.plural == "first person plural"
+        assert table_example.is_default is False
+        assert table_example.is_people is True
         assert table_example.total_records == 123_456_789
-        assert table_example.child_relationship_name == "sweet child of mine"
-        assert table_example.parent_relationship_name == "the parent trap"
-        assert table_example.has_child_tables is True
+        assert table_example.child_relationship == "sweet child of mine"
+        assert table_example.parent_relationship == "the parent trap"
+        assert table_example.has_children is True
         assert table_example.parent_name == "mother nature"
         assert table_example.parent is fake_parent_table
         assert table_example.children is fake_child_tables

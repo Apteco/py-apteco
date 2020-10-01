@@ -51,7 +51,7 @@ def rtl_table_customers():
 @pytest.fixture()
 def rtl_table_purchases():
     table = Mock(spec=Table)
-    table.configure_mock(name="Purchases", plural_display_name="purchases")
+    table.configure_mock(name="Purchases", plural="purchases")
     return table
 
 

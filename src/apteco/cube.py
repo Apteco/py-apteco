@@ -21,7 +21,7 @@ class Cube:
             index=pd.MultiIndex.from_product(
                 self._headers["descs"], names=[d.description for d in self.dimensions]
             ),
-            columns=[f"{self.table.plural_display_name.title()}"],
+            columns=[f"{self.table.plural.title()}"],
         )
 
     def _check_inputs(self):

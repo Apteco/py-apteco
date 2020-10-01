@@ -411,12 +411,12 @@ class InitializeTablesAlgorithm:
 
     @staticmethod
     def _check_child_tables_consistency(table: Table):
-        """Check table's children matches ``has_child_tables``."""
-        if table.has_child_tables and not table.children:
+        """Check table's children matches ``has_children``."""
+        if table.has_children and not table.children:
             raise TablesError(
                 f"API stated '{table.name}' table has child tables but none were found."
             )
-        if not table.has_child_tables and table.children:
+        if not table.has_children and table.children:
             raise TablesError(
                 f"API stated '{table.name}' table has no child tables"
                 f" but {len(table.children)} were found."

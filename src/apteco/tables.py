@@ -2,6 +2,7 @@ from typing import Iterable, List, Optional
 
 from apteco.cube import Cube
 from apteco.datagrid import DataGrid
+from apteco.exceptions import get_deprecated_attr
 from apteco.query import TableMixin
 from apteco.variables import VariablesAccessor
 
@@ -12,14 +13,14 @@ class Table(TableMixin):
     def __init__(
         self,
         name: str,
-        singular_display_name: str,
-        plural_display_name: str,
-        is_default_table: bool,
-        is_people_table: bool,
+        singular: str,
+        plural: str,
+        is_default: bool,
+        is_people: bool,
         total_records: int,
-        child_relationship_name: str,
-        parent_relationship_name: str,
-        has_child_tables: bool,
+        child_relationship: str,
+        parent_relationship: str,
+        has_children: bool,
         parent_name: str,
         parent: Optional["Table"],
         children: List["Table"],
@@ -33,23 +34,20 @@ class Table(TableMixin):
 
         Args:
             name (str): table reference name
-            singular_display_name (str): noun for a single item
-                from this table
-            plural_display_name (str): noun for multiple items
-                from this table
-            is_default_table (bool): flag if this is the default table
+            singular (str): noun for a single item from this table
+            plural (str): noun for multiple items from this table
+            is_default (bool): whether this is the default table
                 for this FastStats system
-            is_people_table (bool): flag if this is the table
+            is_people (bool): whether this is the table
                 representing people in this FastStats system
             total_records (int): total number of records on this table
-            child_relationship_name (str): phrase to relate
+            child_relationship (str): phrase to relate
                 to this table from its parent,
                 e.g. 'customer <purchased the> product'
-            parent_relationship_name (str): phrase to relate this table
+            parent_relationship (str): phrase to relate this table
                 to its parent,
                 e.g. 'product <was purchased by the> customer'
-            has_child_tables (bool): flag if this table
-                has any child tables
+            has_children (bool): whether this table has any child tables
             parent_name (str): name of this table's parent table
                 (an empty string for the master table)
             parent (Table): the parent table of this table
@@ -65,14 +63,14 @@ class Table(TableMixin):
 
         """
         self.name = name
-        self.singular_display_name = singular_display_name
-        self.plural_display_name = plural_display_name
-        self.is_default_table = is_default_table
-        self.is_people_table = is_people_table
+        self.singular = singular
+        self.plural = plural
+        self.is_default = is_default
+        self.is_people = is_people
         self.total_records = total_records
-        self.child_relationship_name = child_relationship_name
-        self.parent_relationship_name = parent_relationship_name
-        self.has_child_tables = has_child_tables
+        self.child_relationship = child_relationship
+        self.parent_relationship = parent_relationship
+        self.has_children = has_children
         self.parent_name = parent_name
         self.parent = parent
         self.children = children
@@ -177,6 +175,22 @@ class Table(TableMixin):
         return Cube(
             dimensions, measures, selection=selection, table=self, session=self.session
         )
+
+    def __getattr__(self, item):
+        DEPRECATED_ATTRS = {
+            "singular_display_name": ("singular", "0.6.0"),
+            "plural_display_name": ("plural", "0.6.0"),
+            "is_default_table": ("is_default", "0.6.0"),
+            "is_people_table": ("is_people", "0.6.0"),
+            "child_relationship_name": ("child_relationship", "0.6.0"),
+            "parent_relationship_name": ("parent_relationship", "0.6.0"),
+            "has_child_tables": ("has_children", "0.6.0"),
+        }
+
+        if item in DEPRECATED_ATTRS:
+            return get_deprecated_attr(self, item, *DEPRECATED_ATTRS[item])
+        else:
+            raise AttributeError(f"'{self.__class__.__name__}' has no attribute '{item}'")
 
 
 class TablesAccessor:

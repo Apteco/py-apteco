@@ -974,7 +974,7 @@ class TestInitializeTablesAlgorithm:
         assert fake_initialize_tables_algo.children_lookup.default_factory is list
 
     def test_create_tables(self, mocker, fake_raw_tables):
-        args_list = [
+        raw_table_attrs = [
             "singular_display_name",
             "plural_display_name",
             "is_default_table",
@@ -1005,9 +1005,9 @@ class TestInitializeTablesAlgorithm:
             "including",
             False,
         ]
-        attrs1 = dict(zip(args_list, attrs_list1))
-        attrs2 = dict(zip(args_list, attrs_list2))
-        attrs3 = dict(zip(args_list, attrs_list3))
+        attrs1 = dict(zip(raw_table_attrs, attrs_list1))
+        attrs2 = dict(zip(raw_table_attrs, attrs_list2))
+        attrs3 = dict(zip(raw_table_attrs, attrs_list3))
         fake_raw_tables_with_all_attrs = [
             fake_raw_tables[0],
             fake_raw_tables[1],
@@ -1065,15 +1065,15 @@ class TestInitializeTablesAlgorithm:
 
     def test_check_child_tables_consistency(self, mocker):
         table_has_children = mocker.Mock(
-            has_child_tables=True, children=["Ben", "Emma"]
+            has_children=True, children=["Ben", "Emma"]
         )
         table_has_children.name = "Ross"
-        table_has_no_children = mocker.Mock(has_child_tables=False, children=[])
+        table_has_no_children = mocker.Mock(has_children=False, children=[])
         table_has_no_children.name = "Joey"
-        table_should_have_children = mocker.Mock(has_child_tables=True, children=[])
+        table_should_have_children = mocker.Mock(has_children=True, children=[])
         table_should_have_children.name = "Monica"
         table_shouldnt_have_children = mocker.Mock(
-            has_child_tables=False, children=["Frank Jr. Jr.", "Leslie Jr.", "Chandler"]
+            has_children=False, children=["Frank Jr. Jr.", "Leslie Jr.", "Chandler"]
         )
         table_shouldnt_have_children.name = "Phoebe"
 

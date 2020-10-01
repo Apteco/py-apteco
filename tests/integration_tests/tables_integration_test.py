@@ -143,7 +143,7 @@ class TestTableRelations:
 class TestTablesAccessor:
     def test_tables_getitem(self, holidays):
         people = holidays.tables["People"]
-        assert people.singular_display_name == "Person"
+        assert people.singular == "Person"
 
     def test_tables_getitem_bad_key(self, holidays):
         with pytest.raises(KeyError) as exc_info:
@@ -154,7 +154,7 @@ class TestTablesAccessor:
 
     def test_tables_iter(self, holidays):
         tables_with_children = [
-            table.name for table in holidays.tables if table.has_child_tables
+            table.name for table in holidays.tables if table.has_children
         ]
         assert sorted(tables_with_children) == [
             "Communications",
