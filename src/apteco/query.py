@@ -281,8 +281,8 @@ class Clause:
                 common_ancestor_names = set(t.name for t in self.table.ancestors) & set(
                     t.name for t in new_table.ancestors
                 )
-                nearest_common_ancestor = min(
-                    self.table.system_session.tables[name]
+                nearest_common_ancestor = max(
+                    self.session.tables[name]
                     for name in common_ancestor_names
                 )
             except:

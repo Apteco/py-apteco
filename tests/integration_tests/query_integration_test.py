@@ -687,6 +687,7 @@ class TestClause:
         self,
         households,
         people,
+        content,
         responses,
         sweden,
         suggested_booking,
@@ -704,6 +705,9 @@ class TestClause:
 
         responses_by_vowels = responses * vowel_initial
         assert responses_by_vowels.count() == 216
+
+        sweden_content = content * sweden
+        assert sweden_content.count() == 3857
 
 
 class TestBooleanClause:
@@ -754,21 +758,11 @@ class TestBooleanClause:
 
 
 class TestTableClause:
-    def test_table_clause(
-        self,
-        holidays,
-        people,
-        responses,
-        households,
-        communications,
-        sweden,
-        suggested_booking,
-        mazda,
-        vowel_initial,
-    ):
+    def test_table_clause_single_any(self, holidays, people, sweden):
         been_to_sweden = TableClause(people, "ANY", sweden, session=holidays)
         assert been_to_sweden.count() == 25175
 
+    def test_table_clause_multi_any(self, holidays, households, people, communications, suggested_booking):
         house_suggested_booking = TableClause(
             households,
             "ANY",
@@ -782,9 +776,11 @@ class TestTableClause:
         )
         assert house_suggested_booking.count() == 695
 
+    def test_table_clause_single_the(self, holidays, people, mazda):
         mazda_drivers = TableClause(people, "THE", mazda, session=holidays)
         assert mazda_drivers.count() == 6959
 
+    def test_table_clause_multi_the(self, holidays, responses, communications, vowel_initial):
         responses_by_vowels = TableClause(
             responses,
             "THE",
@@ -792,6 +788,32 @@ class TestTableClause:
             session=holidays,
         )
         assert responses_by_vowels.count() == 216
+
+    def test_table_clause_mixed(
+        self,
+        holidays,
+        people,
+        communications,
+        content,
+        sweden,
+    ):
+        sweden_content = TableClause(
+            content,
+            "THE",
+            TableClause(
+                communications,
+                "THE",
+                TableClause(
+                    people,
+                    "ANY",
+                    sweden,
+                    session=holidays
+                ),
+                session=holidays,
+            ),
+            session=holidays,
+        )
+        assert sweden_content.count() == 3857
 
 
 class TestClauseDataGrid:

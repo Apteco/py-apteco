@@ -1,3 +1,8 @@
+from datetime import datetime
+
+import pytest
+
+
 class TestTableRelations:
     def test_eq(
         self,
@@ -144,39 +149,29 @@ class TestTableRelations:
         assert chy_campaigns_table != chy_donations_table
         assert not chy_campaigns_table != chy_campaigns_table
 
-    """def test_is_related(self, chy_supporters_table, chy_campaigns_table, chy_donations_table, chy_website_visits_table):
-        assert not chy_supporters_table.is_related(chy_supporters_table)
-        assert chy_supporters_table.is_related(chy_campaigns_table)
-        assert chy_supporters_table.is_related(chy_donations_table)
-        assert chy_supporters_table.is_related(chy_website_visits_table)
-        assert chy_supporters_table.is_related(chy_supporters_table, allow_same=True)
-        assert chy_supporters_table.is_related(chy_campaigns_table, allow_same=True)
-        assert chy_supporters_table.is_related(chy_donations_table, allow_same=True)
-        assert chy_supporters_table.is_related(chy_website_visits_table, allow_same=True)
 
-        assert chy_campaigns_table.is_related(chy_supporters_table)
-        assert not chy_campaigns_table.is_related(chy_campaigns_table)
-        assert chy_campaigns_table.is_related(chy_donations_table)
-        assert chy_campaigns_table.is_related(chy_website_visits_table)
-        assert chy_campaigns_table.is_related(chy_supporters_table, allow_same=True)
-        assert chy_campaigns_table.is_related(chy_campaigns_table, allow_same=True)
-        assert chy_campaigns_table.is_related(chy_donations_table, allow_same=True)
-        assert chy_campaigns_table.is_related(chy_website_visits_table, allow_same=True)
+@pytest.fixture
+def web_visits_after_lockdown(fake_datetime_variable):
+    lockdown_announcement = datetime(2020, 3, 23, 20, 6, 17)
+    web_visits_after_lockdown = fake_datetime_variable >= lockdown_announcement
+    return web_visits_after_lockdown
 
-        assert chy_donations_table.is_related(chy_supporters_table)
-        assert chy_donations_table.is_related(chy_campaigns_table)
-        assert not chy_donations_table.is_related(chy_donations_table)
-        assert not chy_donations_table.is_related(chy_website_visits_table)
-        assert chy_donations_table.is_related(chy_supporters_table, allow_same=True)
-        assert chy_donations_table.is_related(chy_campaigns_table, allow_same=True)
-        assert chy_donations_table.is_related(chy_donations_table, allow_same=True)
-        assert not chy_donations_table.is_related(chy_website_visits_table, allow_same=True)
 
-        assert chy_website_visits_table.is_related(chy_supporters_table)
-        assert chy_website_visits_table.is_related(chy_campaigns_table)
-        assert not chy_website_visits_table.is_related(chy_donations_table)
-        assert not chy_website_visits_table.is_related(chy_website_visits_table)
-        assert chy_website_visits_table.is_related(chy_supporters_table, allow_same=True)
-        assert chy_website_visits_table.is_related(chy_campaigns_table, allow_same=True)
-        assert not chy_website_visits_table.is_related(chy_donations_table, allow_same=True)
-        assert chy_website_visits_table.is_related(chy_website_visits_table, allow_same=True)"""
+class TestTableOperators:
+    def test_mul(
+        self,
+        web_visits_after_lockdown,
+        chy_supporters_table,
+        chy_campaigns_table,
+        chy_donations_table,
+    ):
+        assert web_visits_after_lockdown.table_name == "WebVisits"
+
+        supporters_web_visits = chy_supporters_table * web_visits_after_lockdown
+        assert supporters_web_visits.table_name == "Supporters"
+
+        campaigns_web_visits = chy_campaigns_table * web_visits_after_lockdown
+        assert campaigns_web_visits.table_name == "Campaigns"
+
+        donations_web_visits = chy_donations_table * web_visits_after_lockdown
+        assert donations_web_visits.table_name == "Donations"

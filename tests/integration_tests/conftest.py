@@ -72,6 +72,11 @@ def communications(holidays):
 
 
 @pytest.fixture(scope="session")
+def content(holidays):
+    return holidays.tables["Content"]
+
+
+@pytest.fixture(scope="session")
 def responses(holidays):
     return holidays.tables["Responses Attributed"]
 

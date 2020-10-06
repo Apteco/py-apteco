@@ -83,9 +83,12 @@ Removed
 Fixed
 -----
 
-* During variables initialisation process
+* During variables initialisation process,
   variables with unrecognised type now log a warning rather than raising exception
   (this means program execution can continue rather than stopping completely).
+* It is now possible to change the table of a selection
+  to a table that is not a direct ancestor or descendant
+  (this previously raised an ``OperationError``).
 
 Version 0.5.0
 =============
