@@ -1,3 +1,5 @@
+.. _cube_reference:
+
 *********
   Cubes
 *********

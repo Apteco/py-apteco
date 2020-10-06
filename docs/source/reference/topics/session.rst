@@ -220,6 +220,11 @@ for the FastStats system the object is connected to.
         >>> people = my_session.tables["People"]
         >>> bookings = my_session.tables["Bookings"]
 
+    .. seealso::
+
+        Refer to the :ref:`tables_reference` documentation for more details
+        on using table objects.
+
 .. py:data:: master_table
 
     :class:`Table` object of the master (root) table

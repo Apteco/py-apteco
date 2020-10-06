@@ -1,3 +1,5 @@
+.. _datagrid_reference:
+
 **************
   Data Grids
 **************
