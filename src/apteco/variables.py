@@ -420,7 +420,7 @@ class ReferenceVariable(Variable):
 
 
 class VariablesAccessor:
-    """List- and dictionary-like access for variables."""
+    """List-like and dictionary-like access for variables."""
 
     def __init__(self, variables: Iterable[Variable]):
         self._variables = list(variables)
@@ -449,11 +449,11 @@ class VariablesAccessor:
         elif match_count == 2:
             if name_match.name == desc_match.name:
                 return name_match
-            raise KeyError(f"Lookup key '{item}' was ambiguous.")
+            raise KeyError(f"Lookup key '{item}' was ambiguous.") from None
         else:
             raise KeyError(
                 f"Lookup key '{item}' did not match a variable name or description."
-            )
+            ) from None
 
 
 class VariableNamesAccessor:
@@ -469,10 +469,10 @@ class VariableNamesAccessor:
     def __getitem__(self, item):
         try:
             return self._variables_by_name[item]
-        except KeyError as exc:
+        except KeyError:
             raise KeyError(
                 f"Lookup key '{item}' did not match a variable name."
-            ) from exc
+            ) from None
 
 
 class VariableDescsAccessor:
@@ -491,4 +491,4 @@ class VariableDescsAccessor:
         except KeyError as exc:
             raise KeyError(
                 f"Lookup key '{item}' did not match a variable description."
-            ) from exc
+            ) from None
