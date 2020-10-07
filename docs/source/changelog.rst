@@ -25,8 +25,6 @@ Added
   - ``contains()``
   - ``startswith()``
   - ``endswith()``
-  - ``before()``
-  - ``after()``
   - ``between()``
   - ``matches()``
 

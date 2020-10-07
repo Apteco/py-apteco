@@ -147,6 +147,38 @@ Text variable
     * :attr:`max_length` (:class:`int`): maximum length (per record) of text data
       (in bytes) for this variable
 
+.. .. py:method:: before(self, value, allow_equal=False, *, include=True, label=None)
+..
+..     Select records where this text variable is alphabetically before
+..     the given value. Set `allow_equal=True` to include the value itself.
+..     This method is *not* case-sensitive.
+..
+..     Can also use the ``<`` operator or ``<=`` for `allow_equal=True`.
+..
+..     :type label: str or None
+..     :param str value: value to use in the selection
+..     :param bool allow_equal: set to `True` to include the value itself
+..         (default is `False`)
+..     :param bool include: set to `False` to specify these as values
+..         to *exclude* from the selection (default is `True`)
+..     :param label: textual label for this selection clause
+..
+.. .. py:method:: after(self, value, allow_equal=False, *, include=True, label=None)
+..
+..     Select records where this text variable is alphabetically after
+..     the given value. Set `allow_equal=True` to include the value itself.
+..     This method is *not* case-sensitive.
+..
+..     Can also use the ``>`` operator or ``>=`` for `allow_equal=True`.
+..
+..     :type label: str or None
+..     :param str value: value to use in the selection
+..     :param bool allow_equal: set to `True` to include the value itself
+..         (default is `False`)
+..     :param bool include: set to `False` to specify these as values
+..         to *exclude* from the selection (default is `True`)
+..     :param label: textual label for this selection clause
+
 Array variable
 --------------
 

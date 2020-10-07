@@ -67,6 +67,7 @@ def test_numeric_operator(policies, bookings, web_visits):
     assert more_than_8_weeks.count() == 23950
 
 
+@pytest.mark.xfail(reason="Feature-switched off before/after TextVariable methods", raises=TypeError)
 def test_text_operator(people, households):
     smith = people["peSName"] == "Smith"
     assert smith.count() == 13302

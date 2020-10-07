@@ -225,25 +225,25 @@ class TextVariable(Variable):
             session=self.session,
         )
 
-    def before(self, value, *, include=True, label=None):
-        return TextClause(
-            self,
-            [f'<="{normalize_string_value(value, single_value_error_msg_text)}"'],
-            match_type="Ranges",
-            include=include,
-            label=label,
-            session=self.session,
-        )
-
-    def after(self, value, *, include=True, label=None):
-        return TextClause(
-            self,
-            [f'>="{normalize_string_value(value, single_value_error_msg_text)}"'],
-            match_type="Ranges",
-            include=include,
-            label=label,
-            session=self.session,
-        )
+    # def before(self, value, *, include=True, label=None):
+    #     return TextClause(
+    #         self,
+    #         [f'<="{normalize_string_value(value, single_value_error_msg_text)}"'],
+    #         match_type="Ranges",
+    #         include=include,
+    #         label=label,
+    #         session=self.session,
+    #     )
+    #
+    # def after(self, value, *, include=True, label=None):
+    #     return TextClause(
+    #         self,
+    #         [f'>="{normalize_string_value(value, single_value_error_msg_text)}"'],
+    #         match_type="Ranges",
+    #         include=include,
+    #         label=label,
+    #         session=self.session,
+    #     )
 
     def between(self, start, end, *, include=True, label=None):
         normalized_start = normalize_string_value(start, single_value_error_msg_text)
@@ -275,11 +275,11 @@ class TextVariable(Variable):
     def __ne__(self, other):
         return self.equals(other, include=False)
 
-    def __le__(self, other):
-        return self.before(other)
-
-    def __ge__(self, other):
-        return self.after(other)
+    # def __le__(self, other):
+    #     return self.before(other)
+    #
+    # def __ge__(self, other):
+    #     return self.after(other)
 
 
 class ArrayVariable(BaseSelectorVariable):
