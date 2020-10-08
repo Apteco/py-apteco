@@ -75,7 +75,7 @@ Removed
 
 * Removed ``isin()`` and ``contains()`` method from ``Variable`` base class completely
   (had been previously deprecated to raise ``NotImplementedError``).
-  ``contains()`` has been implemented on``TextVariable``
+  ``contains()`` has been implemented on ``TextVariable``
   and it is planned to implement these methods for applicable variable types in future.
 
 Fixed
