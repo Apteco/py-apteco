@@ -9,9 +9,9 @@ about accessing some of the core objects from your FastStats system
 Tables
 ======
 
-The FastStats system tables are accessible via the ``tables`` attribute
-on the ``Session``, which returns a Python dictionary,
-with the table names as keys which map to a ``Table`` object representing the table.
+The FastStats system tables are accessible via the :attr:`tables` attribute
+on the :class:`Session`, which returns a Python dictionary,
+with the table names as keys which map to a :class:`Table` object representing the table.
 
 This example loops through the tables and prints each one's name:
 
@@ -36,7 +36,7 @@ You can retrieve a specific table from the dictionary using its name:
 
     >>> bookings = my_session.tables["Bookings"]
 
-The ``Table`` objects have several attributes with information about the table:
+The :class:`Table` objects have various attributes for the table's metadata:
 
 .. code-block:: python
 
@@ -52,9 +52,9 @@ Variables
 =========
 
 The FastStats system variables are similarly stored in a dictionary
-at the ``variables`` attribute on the ``Session``.
+at the :attr:`variables` attribute on the :class:`Session`.
 The keys of the dictionary are variable names
-and the values are ``Variable`` objects which represent the variable.
+and the values are :class:`Variable` objects which represent the variable.
 
 You can retrieve a variable from the dictionary using its name:
 
@@ -62,7 +62,7 @@ You can retrieve a variable from the dictionary using its name:
 
     >>> cost = my_session.variables["boCost"]
 
-The ``Variable`` object has attributes providing information about the variable:
+The :class:`Variable` object has attributes providing information about the variable:
 
 .. code-block:: python
 
@@ -71,7 +71,7 @@ The ``Variable`` object has attributes providing information about the variable:
     >>> cost.type
     'Numeric'
 
-Each table also has a ``variables`` attribute,
+Each table also has a :attr:`variables` attribute,
 which returns a dictionary containing just the variables on that table:
 
 .. code-block:: python
@@ -100,9 +100,9 @@ A variable's attributes differ according to its type:
     >>> destination.num_codes
     20
 
-Here, ``cost`` is a Numeric variable
+Here, ``cost`` is a **Numeric** variable
 representing an amount of British Pounds Sterling (£),
-and ``destination`` is a selector variable with 20 different selector codes.
+and ``destination`` is a **Selector** variable with 20 different selector codes.
 
 At the moment we've only seen how to access our variables and their attributes,
 but in the next part we'll learn how to use them to build selections.

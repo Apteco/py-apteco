@@ -77,7 +77,7 @@ Numeric ranges
     Unlike the ``==`` and ``!=`` operators,
     the inequality operators only accept a single value.
 
-    If necessary, you can use the Python built-in ``max()`` or ``min()`` function
+    If necessary, you can use the Python built-in :func:`max` or :func:`min` function
     to pick out the appropriate value to use for your selection.
 
 Date & DateTime ranges
@@ -98,9 +98,9 @@ We can use inequality operators to create a selection with a range of dates or t
     133564
 
 Because **Date** and **DateTime** variables use
-``datetime.date`` and ``datetime.datetime`` objects,
+:class:`datetime.date` and :class:`datetime.datetime` objects,
 we can take advantage of functionality available for working with these.
-For example, using the popular ``dateutil`` package:
+For example, using the popular :mod:`dateutil` package:
 
 .. code-block:: python
 

@@ -9,7 +9,7 @@ involving one variable and a chosen value or set of values.
 Making a simple selection
 =========================
 
-Selections can be built using ``Variable`` objects
+Selections can be built using :class:`Variable` objects
 with the Python equality operator ``==`` to specify chosen values:
 
 .. code-block:: python
@@ -18,7 +18,7 @@ with the Python equality operator ``==`` to specify chosen values:
 
 Normally, the ``==`` operator would `test for equality
 <https://docs.python.org/3/library/stdtypes.html#comparisons>`_
-and return either ``True`` or ``False``.
+and return either :const:`True` or :const:`False`.
 However, in **py-apteco** it is a shortcut for creating a selection:
 
 .. code-block:: python
@@ -26,7 +26,7 @@ However, in **py-apteco** it is a shortcut for creating a selection:
     >>> type(sweden)
     <class 'apteco.query.SelectorClause'>
 
-You can then get a count of the selection by calling the ``count()`` method on it:
+You can then get a count of the selection by calling the :meth:`count` method on it:
 
 .. code-block:: python
 
@@ -72,6 +72,6 @@ The format string ``f"{i:02}"`` left-pads the number ``i`` with ``0``\ s to a wi
 which matches the format of the **Income** selector codes.
 
 As shown in these examples, when specifying values for **Selector** variables
-you need to use selector codes given as strings (Python ``str`` type variables).
+you need to use selector codes given as strings (Python :class:`str` type variables).
 In the next part, we'll learn about the different values we can give
 for other FastStats variable types.

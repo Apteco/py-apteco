@@ -170,10 +170,10 @@ API reference
 
     .. note::
 
-        The only measure currently supported is the default *count*.
+        The only measure currently supported is the default `count`.
         The :attr:`measures` parameter is primarily included now
         for forward-compatibility,
-        and must be set to ``None`` (which is its default value).
+        and must be set to :const:`None` (which is its default value).
 
     At least one of :attr:`selection` or :attr:`table` must be given:
 

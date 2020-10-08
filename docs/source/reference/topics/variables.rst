@@ -4,18 +4,16 @@
   Variables
 *************
 
-.. py:currentmodule:: session
-
 Introduction
 ============
 
-The ``Variable`` object represents a FastStats system variable.
+The :class:`Variable` object represents a FastStats system variable.
 It holds metadata about the FastStats variable,
 and has a reference to the :class:`Table` object
-corresponding to FastStats table the variable belongs to.
+corresponding to the FastStats table the variable belongs to.
 But its main use is in enabling you to build selections
 in a quick and intuitive way.
-Variable objects for a FastStats system are automatically created
+:class:`Variable` objects for a FastStats system are automatically created
 when you initialize a :class:`Session` connected to that system.
 
 Basic use
@@ -50,15 +48,11 @@ Variable-related tasks
 Retrieving a variable
 ---------------------
 
-.. py:currentmodule:: apteco.session.Session
-
 Variables can be accessed through the :attr:`variables` attribute
 on a :class:`Session` object.
 This is a :class:`dict` where variables can be looked up by their description::
 
     >>> income = my_session.variables["Income"]
-
-.. py:currentmodule:: apteco.session.Table
 
 Similarly, there is a :attr:`variables` attribute on each :class:`Table` object
 with just the variables for that table::
@@ -89,38 +83,80 @@ see the variables :ref:`variable_api_reference` section below.
 API reference
 =============
 
-Common variable properties
---------------------------
+General variable properties
+---------------------------
 
-The following attributes are common to all variable types:
+.. class:: Variable
 
-    * :attr:`name` (:class:`str`): variable short reference (e.g. `boDest`)
-    * :attr:`description` (:class:`str`): variable descriptive name (e.g. `Destination`)
-    * :attr:`type` (:class:`str`): variable type
-    * :attr:`folder_name` (:class:`str`): folder in FastStats system
-      this variable belongs to
-    * :attr:`table` (:class:`Table`): table this variable is from
-    * :attr:`is_selectable` (:class:`bool`): whether the variable is allowed
-      to be used in selections
-    * :attr:`is_browsable` (:class:`bool`): whether the variable is allowed
-      to be viewed with a client application (but not exported)
-    * :attr:`is_exportable` (:class:`bool`): whether the variable is allowed
-      to be exported by a client application
-    * :attr:`is_virtual` (:class:`bool`): whether the variable is a virtual variable
+    The base class for all variables.
+    It has various attributes for variable metadata common to all variable types.
 
-Common selector-type variable properties
-----------------------------------------
+    .. py:attribute:: name
 
-    * :attr:`code_length` (:class:`int`): the length (in bytes) of the var codes
-      for this variable
-    * :attr:`num_codes` (:class:`int`): the number of difference var codes
-      this variable has
-    * :attr:`var_code_min_count` (:class:`int`): number of records that have
-      the var code with the smallest count
-    * :attr:`var_code_max_count` (:class:`int`): number of records that have
-      the var code with the largest count
-    * :attr:`var_code_order` (:class:`str`): how the var codes are ordered
-      for this variable, out of: **Nominal**, **Ascending**, **Descending**
+        The variable's short reference name (e.g. `boDest`).
+
+    .. py:attribute:: description
+
+        The variable's descriptive name (e.g. `Destination`).
+
+    .. py:attribute:: type
+
+        A string of the variable's type.
+
+    .. py:attribute:: folder_name
+
+        The FastStats system folder this variable belongs to.
+
+    .. py:attribute:: table
+
+        The table this variable is from (a :class:`Table` object).
+
+    .. py:attribute:: is_selectable
+
+        Whether the variable is allowed to be used in selections.
+
+    .. py:attribute:: is_browsable
+
+        Whether the variable is allowed
+        to be viewed with a client application (but not exported).
+
+    .. py:attribute:: is_exportable
+
+        Whether the variable is allowed
+        to be exported by a client application.
+
+    .. py:attribute:: is_virtual
+
+        Whether the variable is a virtual variable.
+
+Selector-type variables
+-----------------------
+
+.. class:: BaseSelectorVariable
+
+    The base class for selector-type variables
+    with attributes common to all of them.
+
+    .. py:attribute:: code_length
+
+        The length (in bytes) of the var codes for this variable.
+
+    .. py:attribute:: num_codes
+
+        The number of different var codes this variable has.
+
+    .. py:attribute:: var_code_min_count
+
+        The number of records that have the var code with the smallest count.
+
+    .. py:attribute:: var_code_max_count
+
+        The number of records that have the var code with the largest count.
+
+    .. py:attribute:: var_code_order
+
+        How the var codes are ordered for this variable, out of:
+        **Nominal**, **Ascending**, **Descending**.
 
 Selector variable
 -----------------
@@ -144,8 +180,10 @@ Numeric variable
 Text variable
 -------------
 
-    * :attr:`max_length` (:class:`int`): maximum length (per record) of text data
-      (in bytes) for this variable
+.. py:attribute:: TextVariable.max_length
+
+    An integer giving the maximum length (in bytes) of text data per record
+    for this variable.
 
 .. py:method:: TextVariable.equals(value, match_case=True, *, include=True, label=None)
 

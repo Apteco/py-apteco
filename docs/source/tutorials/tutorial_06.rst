@@ -12,7 +12,7 @@ Joining two selections together
 So far we've only looked at selections with one condition based on a single variable,
 but we can combine these to create selections with multiple conditions.
 
-We simply use the Python 'bitwise and' operator ``&``
+We simply use the Python `bitwise and` operator ``&``
 to combine two parts into one selection:
 
 .. code-block:: python
@@ -27,7 +27,7 @@ This works just like the **AND** logic in a selection tree
 in the FastStats application:
 a record (in this case, a booking) must match both conditions to be selected.
 
-In a similar way, you can use the 'bitwise or' operator ``|``
+In a similar way, you can use the `bitwise or` operator ``|``
 to combine selections using **OR** logic:
 
 .. code-block:: python
@@ -58,7 +58,7 @@ Negating a clause
 =================
 
 To exclude a selection from the final count,
-you can use the 'bitwise not' operator ``~`` to apply **NOT** logic to it:
+you can use the `bitwise not` operator ``~`` to apply **NOT** logic to it:
 
 .. code-block:: python
 

@@ -11,7 +11,7 @@ Make sure you have **py-apteco** installed before you start
 Logging in
 ==========
 
-To get started, import the ``login`` function from the ``apteco`` package.
+To get started, import the :func:`login` function from the :mod:`apteco` package.
 You can then connect to your FastStats system by calling the function
 with the following credentials as arguments:
 
@@ -38,7 +38,7 @@ This might appear in the background,
 so check your taskbar for a new window if nothing seems to be happening.
 
 If you don't want to enter your password every time,
-there is also a ``login_with_password()`` function which takes your password
+there is also a :func:`login_with_password` function which takes your password
 as a fifth argument:
 
 .. code-block:: python
@@ -70,5 +70,6 @@ the session is connected to:
     ...
     Connected to Holidays Demo Database, built on 27 November 2019 at 15:57:24.
 
-The ``Session`` object holds more than just this metadata about the FastStats system,
+The :class:`Session` object holds more than just this metadata
+about the FastStats system,
 and in the next part we'll learn how to access the system Tables and Variables.

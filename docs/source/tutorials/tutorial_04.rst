@@ -10,7 +10,7 @@ Selector, Array & Flag Array
 ============================
 
 As mentioned in the previous part, FastStats **Selector** variables
-require selector codes given as strings (Python ``str`` type).
+require selector codes given as strings (Python :class:`str` type).
 
 This is also true for **Array** and **Flag Array** variables:
 
@@ -51,8 +51,8 @@ Numeric
     >>> premium_87_65.count()
     8
 
-As well as ``int`` and ``float`` types, you can use other numerical types
-like ``Decimal`` from the built-in ``decimal`` module:
+As well as :class:`int` and :class:`float` types, you can use other numerical types
+like :class:`Decimal` from the built-in :mod:`decimal` module:
 
     >>> from decimal import Decimal
     >>> cost12345 = bookings["boCost"] == Decimal("123.45")
@@ -78,8 +78,8 @@ Text
 Date & DateTime
 ===============
 
-**Date** and **DateTime** variables use the built-in Python ``datetime.date``
-and ``datetime.datetime`` types.
+**Date** and **DateTime** variables use the built-in Python :class:`datetime.date`
+and :class:`datetime.datetime` types.
 
 .. code-block:: python
 

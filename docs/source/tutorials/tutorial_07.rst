@@ -32,7 +32,7 @@ mean this would be calculated as:
 
 .. code-block:: python
 
-    >>> not_what_we_meant = student | (under_21 & ~high_earners)  # since `&` takes precedence over `|`
+    >>> not_what_we_meant = student | (under_21 & ~high_earners)  # since & takes precedence over |
 
 Even if operator precedence means that your selection would resolve as intended
 without parentheses,
@@ -95,7 +95,7 @@ using the multiplication operator ``*`` with the table:
 
 .. note::
 
-    The table that we 'multiply by' needs to be a ``Table`` object.
+    The table that we 'multiply by' needs to be a :class:`Table` object.
     Using the string of the table name will **not** work.
 
 Again, we can use parentheses to group different parts of the selection

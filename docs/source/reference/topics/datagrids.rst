@@ -118,7 +118,7 @@ API reference
     :param list[Variable] columns: variables to use as columns in the data grid
     :param Clause selection: base selection to apply to the data grid
     :param Table table: resolve table of the data grid
-    :param max_rows int: maximum number of records to return *(default is 1000)*
+    :param int max_rows: maximum number of records to return *(default is 1000)*
     :param Session session: current Apteco API session
 
     At least one of :attr:`selection` or :attr:`table` must be given:

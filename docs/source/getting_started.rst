@@ -41,7 +41,7 @@ This might appear in the background,
 so check your taskbar for a new window if nothing seems to be happening.
 
 If you don't want to enter your password every time,
-there's also a ``login_with_password()`` function which takes your password
+there's also a :func:`login_with_password` function which takes your password
 as a fifth argument:
 
 .. code-block:: python
@@ -56,7 +56,7 @@ as a fifth argument:
 Tables
 ------
 
-Tables are stored in a dictionary at the :attr:`tables` attribute on the session object.
+Tables are accessed through the :attr:`tables` attribute on the :class:`Session` object.
 You can retrieve a table using its name:
 
 .. code-block:: python

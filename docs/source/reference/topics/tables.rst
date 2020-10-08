@@ -4,12 +4,10 @@
   Tables
 **********
 
-.. py:currentmodule:: Table
-
 Introduction
 ============
 
-The ``Table`` object represents a FastStats system table.
+The :class:`Table` object represents a FastStats system table.
 It holds metadata about the FastStats table,
 and provides access to all its variables.
 It can also be used to help specify what records are included
@@ -103,68 +101,128 @@ API Reference
 General table properties & metadata
 -----------------------------------
 
-    * :attr:`name` (``str``): table reference name
-    * :attr:`singular` (``str``): noun for a single item from this table
-    * :attr:`plural` (``str``): noun for multiple items from this table
-    * :attr:`is_default` (``bool``): whether this is the default table
-      for this FastStats system
-    * :attr:`is_people` (``bool``): whether this is the table
-      representing people in this FastStats system
-    * :attr:`total_records` (``int``): total number of records on this table
+These attributes on the :class:`Table` object
+
+.. py:attribute:: Table.name
+    :type: str
+
+    table reference name
+
+.. py:attribute:: Table.singular
+    :type: str
+
+    noun for a single item from this table
+
+.. py:attribute:: Table.plural
+    :type: str
+
+    noun for multiple items from this table
+
+.. py:attribute:: Table.is_default
+    :type: bool
+
+    whether this is the default table for this FastStats system
+
+.. py:attribute:: Table.is_people
+    :type: bool
+
+    whether this is the table representing people in this FastStats system
+
+.. py:attribute:: Table.total_records
+    :type: int
+
+    total number of records on this table
+
 
 Relationships with other tables
 -------------------------------
 
-    * :attr:`child_relationship` (``str``): phrase to relate
-      to this table from its parent,
-      e.g. 'customer *<purchased the>* product'
-    * :attr:`parent_relationship` (``str``): phrase to relate this table
-      to its parent,
-      e.g. 'product *<was purchased by the>* customer'
-    * :attr:`has_children` (``bool``): whether this table has any child tables
-    * :attr:`parent_name` (``str``): name of this table's parent table
-      (an empty string for the master table)
-    * :attr:`parent` (``Table``): the parent table of this table
-      (``None`` for the master table)
-    * :attr:`children` (``List[Table]``): list of child tables of this table
-      (an empty list if table has no children)
-    * :attr:`ancestors` (``List[Table]``): list of ancestor tables
-      of this table (an empty list for the master table)
-    * :attr:`descendants` (``List[Table]``): list of descendant tables
-      of this table (an empty list if table has no children)
+These attributes on the :class:`Table` object hold data
+about this table's related tables.
+'Related' tables in this context covers:
+**parent**, **children**, **ancestors** (this includes the parent),
+**descendants** (this includes children).
 
-.. py:method:: is_same(other)
+.. py:attribute:: Table.child_relationship
+    :type: str
 
-    Return whether this table is the same as ``other``.
+    phrase to relate to this table from its parent,
+    e.g. 'customer *<purchased the>* product'
+
+.. py:attribute:: Table.parent_relationship
+    :type: str
+
+    phrase to relate this table to its parent,
+    e.g. 'product *<was purchased by the>* customer'
+
+.. py:attribute:: Table.has_children
+    :type: bool
+
+    whether this table has any child tables
+
+.. py:attribute:: Table.parent_name
+    :type: str
+
+    name of this table's parent table (an empty string for the master table)
+
+.. py:attribute:: Table.parent
+    :type: Table
+
+    the parent table of this table (:const:`None` for the master table)
+
+.. py:attribute:: Table.children
+    :type: list[Table]
+
+    list of child tables of this table (an empty list if table has no children)
+
+.. py:attribute:: Table.ancestors
+    :type: list[Table]
+
+    list of ancestor tables of this table (an empty list for the master table)
+
+.. py:attribute:: Table.descendants
+    :type: list[Table]
+
+    list of descendant tables of this table (an empty list if table has no children)
+
+Table comparison methods
+------------------------
+
+These methods on the :class:`Table` object enable you to compare it
+with another table to check how they are related, if at all.
+
+.. py:method:: Table.is_same(other)
+
+    Return whether this table is the same as `other`.
 
     This comparison can also be performed using the ``==`` operator.
 
-.. py:method:: is_ancestor(other, allow_same=False)
+.. py:method:: Table.is_ancestor(other, allow_same=False)
 
-    Return whether this table is an ancestor of ``other``
+    Return whether this table is an ancestor of `other`
     (the direct parent table also counts as an ancestor).
-    If ``allow_same`` is set to ``True``,
-    this will also return ``True`` if the tables are the same.
+    If `allow_same` is set to `True`,
+    this will also return `True` if the tables are the same.
 
     This comparison can also be performed using the ``<`` operator,
-    or ``<=`` for ``allow_same=True``.
+    or ``<=`` for `allow_same=True`.
 
-.. py:method:: is_descendant(other, allow_same=False)
+.. py:method:: Table.is_descendant(other, allow_same=False)
 
-    Return whether this table is a descendant of ``other``
+    Return whether this table is a descendant of `other`
     (direct child tables also count as descendants).
-    If ``allow_same`` is set to ``True``,
-    this will also return ``True`` if the tables are the same.
+    If `allow_same` is set to `True`,
+    this will also return `True` if the tables are the same.
 
     This comparison can also be performed using the ``>`` operator,
-    or ``>=`` for ``allow_same=True``.
+    or ``>=`` for `allow_same=True`.
 
-.. py:method:: is_related(other, allow_same=False)
+.. py:method:: Table.is_related(other, allow_same=False)
 
     Return whether this table is either an ancestor or descendant
-    of ``other``.
-    If ``allow_same`` is set to ``True``,
-    this will also return ``True`` if the tables are the same.
+    of `other`.
+    If `allow_same` is set to `True`,
+    this will also return `True` if the tables are the same.
 
     .. note::
 
@@ -190,7 +248,7 @@ with either the variable name or description::
     >>> cost = bookings.variables["Cost"]
     >>> destination = bookings.variables["boDest"]
 
-This will raise a ``KeyError`` if the string you pass in
+This will raise a :exc:`KeyError` if the string you pass in
 doesn't match a variable name or description.
 
 There is also a shortcut for this by using the ``[]`` operator
@@ -206,10 +264,10 @@ on :attr:`variables`::
     >>> travel_date = bookings.variables.names["boTrav"]
     >>> profit = bookings.variables.descs["Profit"]
 
-This will similarly raise a ``KeyError``
+This will similarly raise a :exc:`KeyError`
 if the lookup string is not recognised.
 This includes if you pass a valid variable description
-to ``variables.names`` and vice-versa.
+to :attr:`variables.names` and vice-versa.
 
 The built-in :func:`len` function will give
 the number of variables on the table::
@@ -243,8 +301,8 @@ You can also iterate over the variable names or descriptions::
     Refer to the :ref:`variables_reference` documentation for more details
     on using variable objects.
 
-FastStats analysis objects
---------------------------
+Data Grids and Cubes
+--------------------
 
 .. py:method:: datagrid(columns, selection=None, max_rows=1000)
 
