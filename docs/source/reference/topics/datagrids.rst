@@ -24,7 +24,6 @@ There are also other parameters that determine things such as
 how many rows of data to return.
 
 .. note::
-
     The data grid functionality is still under active development,
     and so is currently subject to several limitations:
 
@@ -64,11 +63,11 @@ Converting to a Pandas :class:`DataFrame`::
 Specifying the number of rows to return::
 
     >>> dg = DataGrid(
-            [urn, dest, trav, cost],
-            table=bookings,
-            max_rows=100,
-            session=my_session,
-        )
+    ...     [urn, dest, trav, cost],
+    ...     table=bookings,
+    ...     max_rows=100,
+    ...     session=my_session,
+    ... )
     >>> df = dg.to_df()
     >>> len(df)
     100
@@ -91,11 +90,11 @@ Using a base selection from a different table::
     >>> households = my_session.tables["Households"]
     >>> manchester = households["hoRegion"] == "13"
     >>> dg = DataGrid(
-            [urn, dest, trav, cost],
-            selection=manchester,
-            table=bookings,
-            session=my_session,
-        )
+    ...     [urn, dest, trav, cost],
+    ...     selection=manchester,
+    ...     table=bookings,
+    ...     session=my_session,
+    ... )
     >>> df = dg.to_df()
     >>> df.head()
       Booking URN    Destination Travel Date          Cost
@@ -136,26 +135,24 @@ API reference
           and does not change the :attr:`selection` on the :class:`DataGrid`.
 
 .. tip::
-
     The following two data grids are equivalent::
 
         >>> dg1 = DataGrid(
-                columns,
-                selection=manchester,
-                table=bookings,
-                session=my_session,
-            )
+        ...     columns,
+        ...     selection=manchester,
+        ...     table=bookings,
+        ...     session=my_session,
+        ... )
         >>> dg2 = DataGrid(
-                columns,
-                selection=(bookings * manchester),
-                session=my_session,
-            )
+        ...     columns,
+        ...     selection=(bookings * manchester),
+        ...     session=my_session,
+        ... )
 
     They both return a data grid of *bookings* made by people
     from households in the Greater Manchester region.
 
 .. note::
-
     The raw data is fetched from the Apteco API
     when the :class:`DataGrid` object is initialised.
     It is held on the object in the :attr:`_data` attribute as a list of tuples

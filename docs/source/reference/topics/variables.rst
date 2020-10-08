@@ -30,11 +30,12 @@ Retrieving a variable from its :class:`Table` object::
 Examining variable metadata::
 
     >>> print(
-            f"'{cost.description}' is a",
-            f"{'virtual' if cost.is_virtual else ''}",
-            f"{cost.type} variable on the '{cost.table.name}' table.",
-        )
-    'Cost' is a  Numeric variable on the 'Bookings' table.
+    ...     f"'{cost.description}' is a"
+    ...     f"{' virtual' if cost.is_virtual else ''}"
+    ...     f" {cost.type} variable on the '{cost.table_name}' table."
+    ... )
+    ...
+    'Cost' is a Numeric variable on the 'Bookings' table.
 
 Building a selection::
 

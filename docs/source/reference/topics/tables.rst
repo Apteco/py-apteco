@@ -25,9 +25,10 @@ Retrieving a table from a :class:`Session` object::
 Examining table metadata::
 
     >>> print(
-            f"There are {bookings.total_records:,} {bookings.plural.lower()}"
-            f" in this system."
-        )
+    ...     f"There are {bookings.total_records:,} {bookings.plural.lower()}"
+    ...     f" in this system."
+    ... )
+    ...
     There are 2,130,081 bookings in this system.
 
 Accessing variables::
@@ -225,7 +226,6 @@ with another table to check how they are related, if at all.
     this will also return `True` if the tables are the same.
 
     .. note::
-
         In one sense, all the tables in a FastStats system are related,
         since they are all descended from a single master table.
         However, 'related' here is referring to direct ancestor
@@ -278,26 +278,25 @@ the number of variables on the table::
 You can iterate over the variables::
 
     >>> for var in bookings.variables:
-            if var.type == "Numeric":
-                print(var.description)
+    ...     if var.type == "Numeric":
+    ...         print(var.description)
+    ...
     Cost
     Profit
 
 You can also iterate over the variable names or descriptions::
 
     >>> [n for n in bookings.variables.names if not n.startswith("bo")]
-        ['deType', 'deGrade', 'deMgr', 'deFacil']
+    ['deType', 'deGrade', 'deMgr', 'deFacil']
     >>> [d for d in bookings.variables.descs if "date" in d.lower()]
-        ['Booking Date', 'Travel Date', 'Busy dates']
+    ['Booking Date', 'Travel Date', 'Busy dates']
 
 .. note::
-
     Iterating over :attr:`variables` returns the :class:`Variable`
     objects, whereas iterating over :attr:`names` or :attr:`descs`
-    returns the names or descriptions (respectively) as strings.
+    returns the names or descriptions as strings.
 
 .. seealso::
-
     Refer to the :ref:`variables_reference` documentation for more details
     on using variable objects.
 
@@ -323,7 +322,6 @@ Data Grids and Cubes
     4       O  Robinson   2021-08-22   455.60  United States
 
     .. seealso::
-
         This method is a wrapper around the :class:`DataGrid` class.
         Refer to the :ref:`datagrid_reference` documentation for more details.
 
@@ -359,6 +357,5 @@ Data Grids and Cubes
     Unemployed               8999    57211   30648    96858
 
     .. seealso::
-
         This method is a wrapper around the :class:`Cube` class.
         Refer to the :ref:`cube_reference` documentation for more details.

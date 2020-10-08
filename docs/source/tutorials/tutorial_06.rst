@@ -71,7 +71,7 @@ Of course, we could have made the same selection
 by just selecting the low-mid income codes directly
 or by swapping the ``==`` operator for ``!=``.
 But the ``~`` is particularly useful to apply to a selection made of more than one part,
-rather than trying to reverse the overall logic by changing the invidivual parts:
+rather than trying to reverse the overall logic by changing the individual parts:
 
 .. code-block:: python
 
@@ -110,10 +110,10 @@ which is on the **People** table.
 **py-apteco** automatically adapts other parts of the selection to match this,
 by inserting the required table changes
 using the **ANY** or **THE** operations familiar from FastStats selection trees.
-So the selection in this example comprises either:
+So the selection in this example comprises 56,096 *people* who:
 
-    * *people* who have income of £60k+, or
-    * *people* who have made ANY *booking* costing at least £2k
+    * either have income of £60k+
+    * or have made ANY *booking* costing at least £2k
 
 Although the automatic table changes are often what we want,
 we are also able to manually change the resolve table of a selection,

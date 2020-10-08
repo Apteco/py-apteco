@@ -31,7 +31,6 @@ This is also true for **Array** and **Flag Array** variables:
     531936
 
 .. note::
-
     Even selector codes that are numerical in form must be given
     as their string equivalents with appropriate 0-padding,
     as in the *high earners* example in the previous part.

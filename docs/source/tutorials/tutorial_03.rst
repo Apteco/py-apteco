@@ -35,12 +35,11 @@ You can then get a count of the selection by calling the :meth:`count` method on
 
 Because the **Destination** variable is on the **Bookings** table,
 this is a count of bookings.
-We'll learn how to control which table we're counting later on.
+We'll learn later on how to control which table we count.
 
 .. tip::
-
     Make sure you use the different ``=`` symbols correctly:
-    use the ``==`` comparison operator with the FastStats variable and chosen value
+    use the ``==`` comparison operator with the FastStats variable and chosen value(s)
     to create the selection,
     and the single ``=`` to assign the result of this to a Python variable.
 
@@ -55,7 +54,7 @@ You can specify multiple values by using a list:
     >>> fr_or_de_bookings.count()
     985734
 
-In fact, you can use any Python *Iterable*, except for a string
+In fact, you can use any Python `iterable`, except for a string
 (which will be treated as a single value).
 Here is an example using a generator expression:
 

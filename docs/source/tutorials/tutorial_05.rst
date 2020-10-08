@@ -27,7 +27,7 @@ so this a selection of all households in the UK 'proper')
     Just as with the ``==`` operator seen in previous examples,
     instead of performing a comparison,
     the ``!=`` operator has been 'overloaded' to create a selection
-    but with the ``include`` flag set to ``False``
+    but with the :attr:`include` flag set to :const:`False`
     — to *exclude* the given value.
 
     .. code-block:: python

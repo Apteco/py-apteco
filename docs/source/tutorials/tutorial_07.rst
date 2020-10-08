@@ -43,9 +43,9 @@ it's probably sensible to include them to be explicit and improve readability:
     >>> either_of_two_pairs = (student & smiths) | (high_earner & under_21)
 
 The ``&`` operator 'binds' more tightly than the ``|`` operator,
-so this selection would resolve in the same way even if the parentheses were omitted,
-but including them makes the logic easier to read
-and enables the programmer to communicate their intent.
+so this selection would resolve in the same way even if the parentheses were omitted.
+But including them makes the logic easier to read
+and enables you to communicate your intent to anyone else reading your code.
 
 Determining the resolve table
 =============================

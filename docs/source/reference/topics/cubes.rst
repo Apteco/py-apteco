@@ -25,7 +25,6 @@ The cube is specified by:
       to only include in the summary ones that match the given criteria
 
 .. note::
-
     The cube functionality is still under active development,
     and so is currently subject to several limitations:
 
@@ -71,7 +70,7 @@ Converting to a Pandas :class:`DataFrame`::
 
 Pivoting the ``Destination`` dimension to make it easier to read::
 
-    >>>df.unstack(level=0)
+    >>> df.unstack(level=0)
                                      Bookings          ...
     Destination                     Australia Denmark  ... Unclassified United States
     Product            Grade                           ...
@@ -134,11 +133,11 @@ Using a base selection from a different table::
     >>> households = my_session.tables["Households"]
     >>> manchester = households["hoRegion"] == "13"
     >>> cube_manc = Cube(
-            [dest, product, grade],
-            selection=manchester,
-            table=bookings,
-            session=my_session,
-        )
+    ...     [dest, product, grade],
+    ...     selection=manchester,
+    ...     table=bookings,
+    ...     session=my_session,
+    ... )
     >>> df_manc = cube_manc.to_df()
     >>> df_manc.loc["Germany"].unstack(level=1)
                        Bookings
@@ -169,7 +168,6 @@ API reference
     :param Session session: current Apteco API session
 
     .. note::
-
         The only measure currently supported is the default `count`.
         The :attr:`measures` parameter is primarily included now
         for forward-compatibility,
@@ -190,26 +188,24 @@ API reference
           and does not change the :attr:`selection` on the :class:`Cube`.
 
     .. tip::
-
         The following two cubes are equivalent::
 
             >>> cube1 = Cube(
-                    dimensions,
-                    selection=manchester,
-                    table=bookings,
-                    session=my_session,
-                )
+            ...     dimensions,
+            ...     selection=manchester,
+            ...     table=bookings,
+            ...     session=my_session,
+            ... )
             >>> cube2 = Cube(
-                    dimensions,
-                    selection=(bookings * manchester),
-                    session=my_session,
-                )
+            ...     dimensions,
+            ...     selection=(bookings * manchester),
+            ...     session=my_session,
+            ... )
 
         They both return a cube summarising *bookings* made by people
         from households in the Greater Manchester region.
 
     .. note::
-
         The raw cube data is fetched from the Apteco API
         when the :class:`Cube` object is initialised.
         It is held on the object in the :attr:`_data` attribute as a Numpy :class:`array`
@@ -233,12 +229,10 @@ API reference
             * all data values are integers, since they represent a count
 
         .. tip::
-
             The structure of the DataFrame returned by the :meth:`to_df()` method
             is very similar to a *Tree* in the FastStats application.
 
         .. note::
-
             The Cube returns pre-calculated totals,
             which can be found under the *TOTAL* label on each dimension.
             You may need to filter these out if you are doing further analysis.

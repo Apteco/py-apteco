@@ -37,12 +37,12 @@ Logging in by giving your password in the function call::
 
     >>> from apteco import login_with_password
     >>> my_session = login_with_password(
-            "https://orbit.my-site.com/OrbitAPI",
-            "my_data_view",
-            "my_system",
-            "jdoe",
-            "P@ssw0rd123!",  # Beware - password is visible in the code!
-        )
+    ...     "https://orbit.my-site.com/OrbitAPI",
+    ...     "my_data_view",
+    ...     "my_system",
+    ...     "jdoe",
+    ...     "P@ssw0rd123!",  # Beware - password is visible in the code!
+    ... )
 
 Accessing tables and variables::
 
@@ -53,7 +53,7 @@ Serializing and deserializing the session::
 
     >>> s = my_session.serialize()
     >>> from apteco import Session
-    >>> my_restoed_session = Session.deserialize(s)
+    >>> my_restored_session = Session.deserialize(s)
 
 .. Ending a session::
 ..
@@ -230,7 +230,6 @@ for the FastStats system the object is connected to.
         >>> bookings = my_session.tables["Bookings"]
 
     .. seealso::
-
         Refer to the :ref:`tables_reference` documentation for more details
         on using table objects.
 

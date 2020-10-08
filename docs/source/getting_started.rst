@@ -30,9 +30,8 @@ you would use to log in to Apteco Orbit™:
 
 .. code-block:: python
 
-   from apteco import login
-
-   my_session = login("https://my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe")
+    >>> from apteco import login
+    >>> my_session = login("https://my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe")
 
 You will be asked to enter your password in the terminal, which won't be echoed.
 If Python is unable to ask for your password in this way,
@@ -46,12 +45,14 @@ as a fifth argument:
 
 .. code-block:: python
 
-   from apteco import login_with_password
-
-   # password is in plain sight in the code!
-   my_session = login_with_password(
-       "https://my-site.com/OrbitAPI", "my_data_view", "my_system", "jdoe", "password"
-   )
+    >>> from apteco import login_with_password
+    >>> my_session = login_with_password(
+    ...     "https://my-site.com/OrbitAPI",
+    ...     "my_data_view",
+    ...     "my_system",
+    ...     "jdoe",
+    ...     "password",  # password is in plain sight in the code!
+    ... )
 
 Tables
 ------
@@ -72,7 +73,6 @@ You can retrieve a table using its name:
     ...     f" {bookings.plural_display_name.lower()}"
     ...     f" in the system."
     ... )
-    ...
     There are 2,130,081 bookings in the system.
 
 Variables
@@ -114,7 +114,7 @@ based on criteria and return a count:
     >>> sweden.count()
     25207
 
-You can specific multiple values using any *Iterable*:
+You can specify multiple values using any *iterable*:
 
 .. code-block:: python
 
