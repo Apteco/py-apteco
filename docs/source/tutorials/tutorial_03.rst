@@ -54,6 +54,8 @@ You can specify multiple values by using a list:
     >>> france_or_germany_bookings.count()
     985734
 
+.. _high_earners_example:
+
 In fact, you can use any Python `iterable`, except for a string
 (which will be treated as a single value).
 Here is an example using a generator expression:

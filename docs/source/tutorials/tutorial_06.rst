@@ -44,7 +44,7 @@ to combine selections using **OR** logic:
     i.e. the *ampersand* and *vertical bar* symbols.
     Using the ``and`` or ``or`` keywords will **not** work.
 
-Returning to the example from the previous part,
+Returning to the :ref:`example from the previous part <operator_chaining_warning>`,
 here's how we can create a selection with values in a range bounded on both sides:
 
 .. code-block:: python

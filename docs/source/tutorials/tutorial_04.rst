@@ -33,7 +33,7 @@ This is also true for **Array** and **Flag Array** variables:
 .. note::
     Even selector codes that are numerical in form must be given
     as their string equivalents with appropriate 0-padding,
-    as in the *high earners* example in the previous part.
+    as in the :ref:`high earners example <high_earners_example>` in the previous part.
 
 Numeric
 =======
