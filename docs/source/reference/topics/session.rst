@@ -215,10 +215,30 @@ for the FastStats system the object is connected to.
 
 .. py:attribute:: Session.tables
 
-    A :class:`dict` mapping table names their corresponding :class:`Table` object
+    An object providing both list-like and dict-like access to tables.
+    Tables can be looked up by name to retrieve their corresponding
+    :class:`Table` object::
 
-    >>> my_session.tables["Communications"]
-    <apteco.session.Table object at 0x0000020FC2E5A240>
+        >>> my_session.tables["Communications"]
+        <apteco.tables.Table object at 0x0000020FC2E5A240>
+
+    You can also count the tables using the built-in :func:`len` function
+    and iterate over them::
+
+        >>> len(my_session.tables)
+        9
+        >>> for table in holidays.tables:
+        ...     print(f"{table.total_records:>9,} {table.plural}")
+        ...
+          742,565 Households
+        1,156,553 People
+        2,130,081 Bookings
+          213,567 Policies
+          279,538 WebVisits
+           70,705 Communications
+           55,653 Journeys
+          153,041 Content
+            1,549 Responses
 
     .. tip::
         You may find it helpful to allocate commonly-used tables to Python variables
@@ -245,15 +265,36 @@ for the FastStats system the object is connected to.
 
 .. py:attribute:: Session.variables
 
-    A :class:`dict` mapping table names their corresponding :class:`Variable` object
+    An object providing both list-like and dict-like access to variables.
+    Variables can be looked up by name or description to retrieve their
+    corresponding :class:`Variable` object::
 
-    >>> my_session.variables["Cost"]
-    <apteco.session.SelectorVariable object at 0x0000020FC2E83DD8>
-    >>> my_session.variables["Occupation"].name
-    'peOccu'
+        >>> my_session.variables["peOccu"]
+        <apteco.variables.SelectorVariable object at 0x0000020FC2E83DD8>
+        >>> my_session.variables["Destination"].name
+        'boDest'
+
+    Variables can be counted using the built-in :func:`len` function
+    and you can also iterate over them::
+
+        >>> len(my_session.variables)
+        94
+        >>> for var in my_session.variables:
+        ...     if "date" in var.description.lower():
+        ...         print(f"{var.name:>8}: {var.description}")
+        ...
+          boDate: Booking Date
+          boTrav: Travel Date
+        bo1O9ZTR: Busy dates
+        PoPolic1: Policy Date
+        PoTrave1: Policy Travel Date
+        PoBooki1: Policy Booking Date
+        cmCommDt: Date of Communication
+        raRspDat: Response Date
+        ReCommun: Communication Date
 
     .. note::
-        You can also retrieve variables from their respective :class:`Table` object.
+        Variables are also accessible on their respective :class:`Table` object.
 
     .. tip::
         You may find it helpful to allocate commonly-used FastStats variables
@@ -263,3 +304,7 @@ for the FastStats system the object is connected to.
         >>> dest = my_session.variables["Destination"]
         >>> dest.name, dest.type, dest.is_virtual
         ('boDest', 'Selector', False)
+
+    .. seealso::
+        Refer to the :ref:`variables_reference` documentation for more details
+        on using variable objects.

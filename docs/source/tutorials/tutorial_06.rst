@@ -17,8 +17,8 @@ to combine two parts into one selection:
 
 .. code-block:: python
 
-    >>> sweden = bookings["boDest"] == "29"
-    >>> at_least_2k = bookings["boCost"] >= 2000
+    >>> sweden = bookings["Destination"] == "29"
+    >>> at_least_2k = bookings["Cost"] >= 2000
     >>> expensive_sweden = sweden & at_least_2k
     >>> expensive_sweden.count()
     632
@@ -32,8 +32,8 @@ to combine selections using **OR** logic:
 
 .. code-block:: python
 
-    >>> student = people["peOccu"] == "4"
-    >>> under_21 = people["peDOB"] >= date.today() - relativedelta(years=21)
+    >>> student = people["Occupation"] == "4"
+    >>> under_21 = people["DOB"] >= date.today() - relativedelta(years=21)
     >>> eligible_for_discount = student | under_21
     >>> eligible_for_discount.count()
     188364
@@ -50,8 +50,8 @@ here's how we can create a selection with values in a range bounded on both side
 .. code-block:: python
 
     >>> born_in_1990 = (
-    ...     (people["peDOB"] >= date(1990, 1, 1))
-    ...     & (people["peDOB"] <= date(1990, 12, 31))
+    ...     (people["DOB"] >= date(1990, 1, 1))
+    ...     & (people["DOB"] <= date(1990, 12, 31))
     ... )
 
 Negating a clause
@@ -62,7 +62,7 @@ you can use the `bitwise not` operator ``~`` to apply **NOT** logic to it:
 
 .. code-block:: python
 
-    >>> high_earners = people["peIncome"] == (f"{i:02}" for i in range(7, 12))
+    >>> high_earners = people["Income"] == (f"{i:02}" for i in range(7, 12))
     >>> low_mid_earners = ~high_earners
     >>> low_mid_earners.count()
     1149439
@@ -94,8 +94,8 @@ but you can also combine clauses from *different* tables:
 
 .. code-block:: python
 
-    >>> high_earners = people["peIncome"] == (f"{i:02}" for i in range(7, 12))  # people selection
-    >>> at_least_2k = bookings["boCost"] >= 2000  # bookings selection
+    >>> high_earners = people["Income"] == (f"{i:02}" for i in range(7, 12))  # people selection
+    >>> at_least_2k = bookings["Cost"] >= 2000  # bookings selection
     >>> high_affordability = high_earners | at_least_2k  # will resolve to people
     >>> high_affordability.count()
     56096

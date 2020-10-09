@@ -14,7 +14,7 @@ with the Python equality operator ``==`` to specify chosen values:
 
 .. code-block:: python
 
-    >>> sweden = bookings["boDest"] == "29"
+    >>> sweden = bookings["Destination"] == "29"
 
 Normally, the ``==`` operator would `test for equality
 <https://docs.python.org/3/library/stdtypes.html#comparisons>`_
@@ -50,8 +50,8 @@ You can specify multiple values by using a list:
 
 .. code-block:: python
 
-    >>> fr_or_de_bookings = bookings["boDest"] == ["06", "07"]
-    >>> fr_or_de_bookings.count()
+    >>> france_or_germany_bookings = bookings["Destination"] == ["06", "07"]
+    >>> france_or_germany_bookings.count()
     985734
 
 In fact, you can use any Python `iterable`, except for a string
@@ -61,7 +61,7 @@ Here is an example using a generator expression:
 .. code-block:: python
 
     >>> people = my_session.tables["People"]
-    >>> high_earners = people["peIncome"] == (f"{i:02}" for i in range(7, 12))
+    >>> high_earners = people["Income"] == (f"{i:02}" for i in range(7, 12))
     >>> high_earners.values
     ['07', '08', '09', '10', '11']
     >>> high_earners.count()

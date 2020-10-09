@@ -238,7 +238,7 @@ Table variables
 
 The variables on the table can be accessed through the
 :attr:`variables` attribute.
-This single object provides both a list-like and dictionary-like
+This single object provides both a list-like and dict-like
 interface for accessing variables.
 
 Variables can be retrieved by indexing into this object

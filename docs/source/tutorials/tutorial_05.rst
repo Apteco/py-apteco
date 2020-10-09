@@ -15,7 +15,7 @@ We do this using the Python 'not equal' operator ``!=`` :
 
 .. code-block:: python
 
-    >>> uk_only = households["hoRegion"] != "14"
+    >>> uk_only = households["Region"] != "14"
     >>> uk_only.count()
     741572
 
@@ -41,7 +41,7 @@ so this a selection of all households in the UK 'proper')
 
 We can also specify multiple values to exclude:
 
-    >>> england = households["hoRegion"] != ["10", "11", "12", "14"]
+    >>> england = households["Region"] != ["10", "11", "12", "14"]
     >>> england.count()
     627550
 
@@ -62,10 +62,10 @@ Numeric ranges
 
 .. code-block:: python
 
-    >>> at_least_2k = bookings["boCost"] >= 2000
+    >>> at_least_2k = bookings["Cost"] >= 2000
     >>> at_least_2k.count()
     53267
-    >>> low_profit = bookings["boProfit"] <= 25
+    >>> low_profit = bookings["Profit"] <= 25
     >>> low_profit.count()
     211328
 
@@ -88,12 +88,12 @@ We can use inequality operators to create a selection with a range of dates or t
 .. code-block:: python
 
     >>> from datetime import date, datetime
-    >>> bookings_before_2019 = bookings["boDate"] <= date(2018, 12, 31)
+    >>> bookings_before_2019 = bookings["Booking Date"] <= date(2018, 12, 31)
     >>> bookings_before_2019.count()
     972439
     >>> web_visits = my_session.tables["WebVisits"]
     >>> website_launch = datetime(2019, 5, 11, 15, 12, 36)
-    >>> visits_to_new_site = web_visits["wvTime"] >= website_launch
+    >>> visits_to_new_site = web_visits["Web Visit Time"] >= website_launch
     >>> visits_to_new_site.count()
     133564
 
@@ -105,7 +105,7 @@ For example, using the popular :mod:`dateutil` package:
 .. code-block:: python
 
     >>> from dateutil.relativedelta import relativedelta
-    >>> under_30 = people["peDOB"] >= date.today() - relativedelta(years=30)
+    >>> under_30 = people["DOB"] >= date.today() - relativedelta(years=30)
     >>> under_30.count()
     207737
 
@@ -117,7 +117,7 @@ allows you to select values that are alphabetically earlier or later than a give
 
 .. code-block:: python
 
-    >>> second_half_of_alphabet = people["peSName"] >= "N"
+    >>> second_half_of_alphabet = people["Surname"] >= "N"
     >>> second_half_of_alphabet.count()
     410954
 
@@ -136,7 +136,7 @@ and allows all values above or below this (depending on the operator used).
 
     .. code-block:: python
 
-        >>> born_in_1990 = date(1990, 1, 1) <= people["peDOB"] <= date(1990, 12, 31)
+        >>> born_in_1990 = date(1990, 1, 1) <= people["DOB"] <= date(1990, 12, 31)
 
     Python *does* normally support this 'operator chaining' syntax
     when `using the inequality operators for standard comparison
@@ -153,7 +153,7 @@ and allows all values above or below this (depending on the operator used).
 
     .. code-block:: python
 
-        >>> born_in_1990 = people["peDOB"] <= date(1990, 12, 31)
+        >>> born_in_1990 = people["DOB"] <= date(1990, 12, 31)
 
 We will learn in the next part how to achieve the desired result
 by joining more than one selection together instead.

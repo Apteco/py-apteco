@@ -51,13 +51,15 @@ Retrieving a variable
 
 Variables can be accessed through the :attr:`variables` attribute
 on a :class:`Session` object.
-This is a :class:`dict` where variables can be looked up by their description::
+You can look up variables by their name or description::
 
+    >>> surname = my_session.variables["peSName"]
     >>> income = my_session.variables["Income"]
 
 Similarly, there is a :attr:`variables` attribute on each :class:`Table` object
 with just the variables for that table::
 
+    >>> car_make_code = households.variables["HHCarmak"]
     >>> region = households.variables["Region"]
 
 Building a selection

@@ -10,14 +10,21 @@ Tables
 ======
 
 The FastStats system tables are accessible via the :attr:`tables` attribute
-on the :class:`Session`, which returns a Python dictionary,
-with the table names as keys which map to a :class:`Table` object representing the table.
+on the :class:`Session`.
+This is a single object which provides both list-like and dict-like
+access to the :class:`Table` objects representing the tables.
 
-This example loops through the tables and prints each one's name:
+You can retrieve a specific table using its name:
 
 .. code-block:: python
 
-    >>> for table in my_session.tables.values():
+    >>> bookings = my_session.tables["Bookings"]
+
+You can loop through the tables:
+
+.. code-block:: python
+
+    >>> for table in my_session.tables:
     ...     print(table.name)
     ...
     Households
@@ -30,11 +37,12 @@ This example loops through the tables and prints each one's name:
     Content
     Responses Attributed
 
-You can retrieve a specific table from the dictionary using its name:
+You can use the built-in :func:`len` function to count them:
 
 .. code-block:: python
 
-    >>> bookings = my_session.tables["Bookings"]
+    >>> len(my_session.tables)
+    9
 
 The :class:`Table` objects have various attributes for the table's metadata:
 
@@ -48,61 +56,67 @@ The :class:`Table` objects have various attributes for the table's metadata:
     ...
     There are 2,130,081 bookings in the system.
 
+.. seealso::
+    See the :ref:`tables_reference` reference guide for full details
+    of the :class:`Table` metadata attributes.
+
 Variables
 =========
 
-The FastStats system variables are similarly stored in a dictionary
-at the :attr:`variables` attribute on the :class:`Session`.
-The keys of the dictionary are variable names
-and the values are :class:`Variable` objects which represent the variable.
-
-You can retrieve a variable from the dictionary using its name:
+The FastStats system variables are similarly accessible
+through the :attr:`variables` attribute on the :class:`Session`.
+You can retrieve a variable using its name or description:
 
 .. code-block:: python
 
-    >>> cost = my_session.variables["boCost"]
+    >>> surname = my_session.variables["peSName"]
+    >>> cost = my_session.variables["Cost"]
 
-The :class:`Variable` object has attributes providing information about the variable:
+Each :class:`Table` also has a :attr:`variables` attribute which works in the same way,
+providing access to the variables on that table:
 
 .. code-block:: python
 
-    >>> cost.description
-    'Cost'
+    >>> booking_date = bookings.variables["boDate"]
+    >>> destination = bookings.variables["Destination"]
+
+As with :attr:`tables` above,
+:attr:`variables` also supports counting using :func:`len`, and looping:
+
+.. code-block:: python
+
+    >>> len(my_session.variables)
+    94
+    >>> len(bookings.variables)
+    14
+    >>> for var in bookings.variables:
+    ...     if var.type == "Numeric":
+    ...         print(var.description)
+    ...
+    Cost
+    Profit
+
+The :class:`Variable` objects have attributes with metadata for the variable.
+
+.. code-block:: python
+
     >>> cost.type
     'Numeric'
-
-Each table also has a :attr:`variables` attribute,
-which returns a dictionary containing just the variables on that table:
-
-.. code-block:: python
-
-    >>> all_vars = my_session.variables
-    >>> len(all_vars)
-    94
-    >>> bookings_vars = bookings.variables
-    >>> len(bookings_vars)
-    14
-
-The variables on the table can be accessed by name in the same way:
-
-.. code-block:: python
-
-    >>> destination = bookings.variables["boDest"]
-    >>> destination.type
-    'Selector'
-
-A variable's attributes differ according to its type:
-
-.. code-block:: python
-
     >>> cost.currency_symbol
     '£'
+    >>> destination.type
+    'Selector'
     >>> destination.num_codes
     20
 
 Here, ``cost`` is a **Numeric** variable
 representing an amount of British Pounds Sterling (£),
 and ``destination`` is a **Selector** variable with 20 different selector codes.
+
+.. note::
+    Some attributes are common to all variables,
+    while others vary according to the variables type.
+    For full details see the :ref:`variables_reference` reference guide.
 
 At the moment we've only seen how to access our variables and their attributes,
 but in the next part we'll learn how to use them to build selections.

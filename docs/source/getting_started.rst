@@ -78,20 +78,21 @@ You can retrieve a table using its name:
 Variables
 ---------
 
-Variables are stored in a dictionary at the :attr:`variables` attribute
-on the session object.
-You can retrieve a variable using its name:
+Variables are accessed through the :attr:`variables` attribute
+on the :class:`Session` object.
+You can retrieve a variable using its name or description:
 
 .. code-block:: python
 
-    >>> cost = my_session.variables["boCost"]
+    >>> surname = my_session.variables["peSName"]  # name
+    >>> cost = my_session.variables["Cost"]  # description
 
-Each table also has a :attr:`variables` dictionary containing just the variables
-on that table:
+Each table also has a :attr:`variables` attribute
+for accessing the variables on that table:
 
 .. code-block:: python
 
-    >>> destination = bookings.variables["boDest"]
+    >>> destination = bookings.variables["Destination"]
 
 :class:`Variable` objects have attributes with various metadata:
 
@@ -110,7 +111,7 @@ based on criteria and return a count:
 
 .. code-block:: python
 
-    >>> sweden = bookings["boDest"] == "29"
+    >>> sweden = bookings["Destination"] == "29"
     >>> sweden.count()
     25207
 
@@ -119,7 +120,7 @@ You can specify multiple values using any *iterable*:
 .. code-block:: python
 
     >>> people = my_session.tables["People"]
-    >>> high_earners = people["peIncome"] == (f"{i:02}" for i in range(7, 12))
+    >>> high_earners = people["Income"] == (f"{i:02}" for i in range(7, 12))
     >>> high_earners.count()
     7114
 
@@ -127,7 +128,7 @@ You can use other operators as well; for example, to exclude values:
 
 .. code-block:: python
 
-    >>> uk_only = households["hoRegion"] != "14"  # 14 is Channel Islands
+    >>> uk_only = households["Region"] != "14"  # 14 is Channel Islands
     >>> uk_only.count()
     741572
 
@@ -135,13 +136,13 @@ Or to allow a range of values:
 
 .. code-block:: python
 
-    >>> low_profit = bookings["boProfit"] <= 25
+    >>> low_profit = bookings["Profit"] <= 25
     >>> low_profit.count()
     211328
 
 .. code-block:: python
 
-    >>> second_half_of_alphabet = people["peSName"] >= "N"
+    >>> second_half_of_alphabet = people["Surname"] >= "N"
     >>> second_half_of_alphabet.count()
     410954
 
@@ -150,7 +151,7 @@ Date and DateTime variables use the built-in :mod:`datetime` module:
 .. code-block:: python
 
     >>> from datetime import date, datetime
-    >>> bookings_before_2019 = bookings["boDate"] <= date(2018, 12, 31)
+    >>> bookings_before_2019 = bookings["Booking Date"] <= date(2018, 12, 31)
     >>> bookings_before_2019.count()
     972439
 
@@ -159,7 +160,7 @@ You can take advantage of functionality available in other Python packages:
 .. code-block:: python
 
     >>> from dateutil.relativedelta import relativedelta
-    >>> under_30 = people["peDOB"] >= date.today() - relativedelta(years=30)
+    >>> under_30 = people["DOB"] >= date.today() - relativedelta(years=30)
     >>> under_30.count()
     207737
 
@@ -170,13 +171,13 @@ You can use the ``&`` ``|`` operators to combine selection criteria:
 
 .. code-block:: python
 
-    >>> sweden = bookings["boDest"] == "29"
-    >>> cost_at_least_2k = bookings["boCost"] >= 2000
+    >>> sweden = bookings["Destination"] == "29"
+    >>> cost_at_least_2k = bookings["Cost"] >= 2000
     >>> expensive_sweden = sweden & cost_at_least_2k
     >>> expensive_sweden.count()
     632
-    >>> student = people["peOccu"] == "4"
-    >>> under_21 = people["peDOB"] >= date.today() - relativedelta(years=21)
+    >>> student = people["Occupation"] == "4"
+    >>> under_21 = people["DOB"] >= date.today() - relativedelta(years=21)
     >>> eligible_for_discount = student | under_21
     >>> eligible_for_discount.count()
     188364
@@ -204,8 +205,8 @@ The left-most clause determines the resolve table:
 
 .. code-block:: python
 
-    >>> female = people["peGender"] == "F"
-    >>> usa = bookings["boDest"] == "38"
+    >>> female = people["Gender"] == "F"
+    >>> usa = bookings["Destination"] == "38"
     >>> female.table_name
     'People'
     >>> usa.table_name
