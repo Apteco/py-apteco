@@ -50,10 +50,9 @@ The :class:`Table` objects have various attributes for the table's metadata:
 
     >>> print(
     ...     f"There are {bookings.total_records:,}"
-    ...     f" {bookings.plural_display_name.lower()}"
+    ...     f" {bookings.plural.lower()}"
     ...     f" in the system."
     ... )
-    ...
     There are 2,130,081 bookings in the system.
 
 .. seealso::
