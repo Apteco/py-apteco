@@ -94,6 +94,12 @@ for accessing the variables on that table:
 
     >>> destination = bookings.variables["Destination"]
 
+For convenience you can access variables by indexing into the :class:`Table` itself:
+
+.. code-block:: python
+
+    >>> destination = bookings["Destination"]
+
 :class:`Variable` objects have attributes with various metadata:
 
 .. code-block:: python

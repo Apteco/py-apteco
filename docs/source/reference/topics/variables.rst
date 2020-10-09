@@ -25,7 +25,7 @@ Retrieving a variable from a :class:`Session` object::
 
 Retrieving a variable from its :class:`Table` object::
 
-    >>> gender = people.variables["Gender"]
+    >>> gender = people["Gender"]
 
 Examining variable metadata::
 
@@ -57,10 +57,12 @@ You can look up variables by their name or description::
     >>> income = my_session.variables["Income"]
 
 Similarly, there is a :attr:`variables` attribute on each :class:`Table` object
-with just the variables for that table::
+for accessing the variables from that table.
+However, for convenience it's possible to just index directly into
+the :class:`Table` itself::
 
-    >>> car_make_code = households.variables["HHCarmak"]
-    >>> region = households.variables["Region"]
+    >>> car_make_code = households["HHCarmak"]
+    >>> profit = bookings["Profit"]
 
 Building a selection
 --------------------

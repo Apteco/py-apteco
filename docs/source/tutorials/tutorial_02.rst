@@ -80,6 +80,13 @@ providing access to the variables on that table:
     >>> booking_date = bookings.variables["boDate"]
     >>> destination = bookings.variables["Destination"]
 
+For convenience you can also just index into the :class:`Table` object itself:
+
+.. code-block:: python
+
+    >>> booking_date = bookings["boDate"]
+    >>> destination = bookings["Destination"]
+
 As with :attr:`tables` above,
 :attr:`variables` also supports counting using :func:`len`, and looping:
 
