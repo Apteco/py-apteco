@@ -116,6 +116,11 @@ General variable properties
 
         The table this variable is from (a :class:`Table` object).
 
+    .. py:attribute:: table_name
+
+        The name of the table this variable is from
+        (alias of :attr:`table.name`).
+
     .. py:attribute:: is_selectable
 
         Whether the variable is allowed to be used in selections.
