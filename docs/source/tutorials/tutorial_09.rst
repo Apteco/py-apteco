@@ -232,6 +232,10 @@ different from the one used in your cube::
 Here, ``scotland`` is a selection on the `Households` table,
 but we are applying it to a `People` cube.
 
+.. note::
+    The selection's table must be a 'related' table
+    – either an ancestor or descendant.
+
 Again, you can build the cube from the selection itself,
 but this time you will need to use the `table` parameter
 to set the cube to the desired table::

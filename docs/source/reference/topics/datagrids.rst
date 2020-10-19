@@ -134,6 +134,10 @@ API reference
           The mapping described here happens in the FastStats data engine
           and does not change the :attr:`selection` on the :class:`DataGrid`.
 
+    .. note::
+        The resolve table of `selection` must be a 'related' table
+        – either an ancestor or descendant.
+
 .. tip::
     The following two data grids are equivalent::
 
