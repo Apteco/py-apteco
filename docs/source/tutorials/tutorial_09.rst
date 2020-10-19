@@ -265,3 +265,10 @@ to set the cube to the desired table::
     see the `user guide
     <https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html>`_
     in the official Pandas documentation.
+
+That's the end of the tutorial!
+Hopefully you're now equipped with the knowledge you need
+to get started on building your own selections, data grids and cubes.
+Check out the rest of the documentation for more guidance,
+and if you have any questions
+don't hesitate to `get in touch <mailto:support@apteco.com>`_.

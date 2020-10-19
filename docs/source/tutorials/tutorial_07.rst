@@ -169,9 +169,6 @@ If we 'unzip' ``people_to_usa`` to its original form, we get:
 
 which mirrors the structure of the equivalent selection in FastStats shown above.
 
-That's the end of the tutorial!
-Hopefully you're now equipped with the knowledge you need
-to build and count your own selections.
-Check out the rest of the documentation for more guidance,
-and if you have any questions,
-don't hesitate to `get in touch <mailto:support@apteco.com>`_.
+So far we've only interacted with our data by counting selections,
+but in the next part we'll learn how we can use data grids
+to create an export of our data, which we can analyse further.
