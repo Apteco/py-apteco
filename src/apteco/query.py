@@ -285,11 +285,11 @@ class Clause:
                     self.session.tables[name]
                     for name in common_ancestor_names
                 )
-            except:
+            except ValueError:  # empty list passed to max() -> no common ancestors
                 raise OperationError(
-                    "Could not establish relationship between "
-                    "new table and current one."
-                )
+                    f"Could not establish relationship between tables "
+                    f"'{new_table.name}' and '{self.table_name}'."
+                ) from None
             return self._change_table_main(nearest_common_ancestor)._change_table_main(
                 new_table
             )
