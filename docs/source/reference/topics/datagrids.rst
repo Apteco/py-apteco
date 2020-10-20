@@ -36,18 +36,17 @@ how many rows of data to return.
 Basic use
 =========
 
-Importing :class:`DataGrid` and setting up other variables::
+Setting up variables::
 
-    >>> from apteco import DataGrid
     >>> bookings = my_session.tables["Bookings"]
-    >>> urn = bookings["boURN"]
-    >>> dest = bookings["boDest"]
-    >>> trav = bookings["boTrav"]
-    >>> cost = bookings["boCost"]
+    >>> urn = bookings["Booking URN"]
+    >>> dest = bookings["Destination"]
+    >>> trav = bookings["Travel Date"]
+    >>> cost = bookings["Cost"]
 
 Creating a data grid::
 
-    >>> dg = DataGrid([urn, dest, trav, cost], table=bookings, session=my_session)
+    >>> dg = bookings.datagrid([urn, dest, trav, cost])
 
 Converting to a Pandas :class:`DataFrame`::
 
@@ -62,12 +61,7 @@ Converting to a Pandas :class:`DataFrame`::
 
 Specifying the number of rows to return::
 
-    >>> dg = DataGrid(
-    ...     [urn, dest, trav, cost],
-    ...     table=bookings,
-    ...     max_rows=100,
-    ...     session=my_session,
-    ... )
+    >>> dg = bookings.datagrid([urn, dest, trav, cost], max_rows=100)
     >>> df = dg.to_df()
     >>> len(df)
     100
@@ -75,9 +69,9 @@ Specifying the number of rows to return::
 Using a base selection to filter the records::
 
     >>> sweden = dest == "29"
-    >>> dg = DataGrid([urn, dest, trav, cost], selection=sweden, session=my_session)
-    >>> df = dg.to_df()
-    >>> df.head()
+    >>> sweden_dg = sweden.datagrid([urn, dest, trav, cost])
+    >>> sweden_df = sweden_dg.to_df()
+    >>> sweden_df.head()
       Booking URN Destination Travel Date          Cost
     0    10172319      Sweden  15-05-2020       1201.81
     1    10384970      Sweden  05-04-2018        344.30
@@ -88,15 +82,10 @@ Using a base selection to filter the records::
 Using a base selection from a different table::
 
     >>> households = my_session.tables["Households"]
-    >>> manchester = households["hoRegion"] == "13"
-    >>> dg = DataGrid(
-    ...     [urn, dest, trav, cost],
-    ...     selection=manchester,
-    ...     table=bookings,
-    ...     session=my_session,
-    ... )
-    >>> df = dg.to_df()
-    >>> df.head()
+    >>> manchester = households["Region"] == "13"
+    >>> manc_dg = bookings.datagrid([urn, dest, trav, cost], selection=manchester)
+    >>> manc_df = manc_dg.to_df()
+    >>> manc_df.head()
       Booking URN    Destination Travel Date          Cost
     0    10172319         Sweden  15-05-2020       1201.81
     1    10172320  United States  14-04-2020       1616.80
@@ -113,6 +102,12 @@ API reference
 .. class:: DataGrid(columns, selection=None, table=None, *, session=None)
 
     Create a data grid.
+
+    .. note::
+        The :meth:`datagrid` methods on tables and selections are wrappers
+        around this class.
+        It is recommended to prefer those over instantiating this class directly,
+        as they generally provide a simpler interface.
 
     :param list[Variable] columns: variables to use as columns in the data grid
     :param Clause selection: base selection to apply to the data grid

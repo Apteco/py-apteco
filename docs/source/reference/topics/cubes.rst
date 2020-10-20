@@ -39,17 +39,16 @@ The cube is specified by:
 Basic use
 =========
 
-Importing :class:`Cube` and setting up other variables::
+Setting up variables::
 
-    >>> from apteco import Cube
     >>> bookings = my_session.tables["Bookings"]
-    >>> dest = bookings["boDest"]
-    >>> product = bookings["boProd"]
-    >>> grade = bookings["deGrade"]
+    >>> dest = bookings["Destination"]
+    >>> product = bookings["Product"]
+    >>> grade = bookings["Grade"]
 
 Creating a cube::
 
-    >>> cube = Cube([dest, product, grade], table=bookings, session=my_session)
+    >>> cube = bookings.cube([dest, product, grade])
 
 Converting to a Pandas :class:`DataFrame`::
 
@@ -104,9 +103,9 @@ Pivoting the ``Destination`` dimension to make it easier to read::
 Using a base selection to filter the records::
 
     >>> sweden = dest == "29"
-    >>> cube_sweden = Cube([dest, product, grade], selection=sweden, session=my_session)
-    >>> df_sweden = cube_sweden.to_df()
-    >>> df_sweden.head()
+    >>> sweden_cube = sweden.cube([dest, product, grade])
+    >>> sweden_df = sweden_cube.to_df()
+    >>> sweden_df.head()
                                             Bookings
     Destination  Product      Grade
     Unclassified Unclassified Unclassified         0
@@ -118,7 +117,7 @@ Using a base selection to filter the records::
 Selecting only cells where ``Destination`` is *Sweden*,
 and pivoting ``Product`` dimension::
 
-    >>> df_sweden.loc["Sweden"].unstack(level=0)
+    >>> sweden_df.loc["Sweden"].unstack(level=0)
                                Bookings
     Product      Accommodation Only Flight Only Package Holiday  TOTAL Unclassified
     Grade
@@ -132,14 +131,9 @@ Using a base selection from a different table::
 
     >>> households = my_session.tables["Households"]
     >>> manchester = households["hoRegion"] == "13"
-    >>> cube_manc = Cube(
-    ...     [dest, product, grade],
-    ...     selection=manchester,
-    ...     table=bookings,
-    ...     session=my_session,
-    ... )
-    >>> df_manc = cube_manc.to_df()
-    >>> df_manc.loc["Germany"].unstack(level=1)
+    >>> manc_cube = bookings.cube([dest, product, grade], selection=manchester)
+    >>> manc_df = manc_cube.to_df()
+    >>> manc_df.loc["Germany"].unstack(level=1)
                        Bookings
     Grade                Bronze Gold Silver  TOTAL Unclassified
     Product
@@ -158,6 +152,12 @@ API reference
 .. class:: Cube(dimensions, measures=None, selection=None, table=None, *, session=None)
 
     Create a cube.
+
+    .. note::
+        The :meth:`cube` methods on tables and selections are wrappers
+        around this class.
+        It is recommended to prefer those over instantiating this class directly,
+        as they generally provide a simpler interface.
 
     :param list[Variable] dimensions: variables to use as dimensions in the cube
     :param measures: measures to display in the cube
