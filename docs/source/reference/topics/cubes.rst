@@ -163,7 +163,9 @@ API reference
     :param measures: measures to display in the cube
         (default is *None*, which will return the default *count* measure
         – this is the only option currently supported)
-    :param Clause selection: base selection to apply to the cube
+    :param Clause selection: base selection to apply to the cube.
+        The table of this selection must be a 'related' table
+        – either an ancestor or descendant.
     :param Table table: resolve table of the cube
     :param Session session: current Apteco API session
 
@@ -186,10 +188,6 @@ API reference
           to a cube in the FastStats application.
           The mapping described here happens in the FastStats data engine
           and does not change the :attr:`selection` on the :class:`Cube`.
-
-    .. note::
-        The resolve table of `selection` must be a 'related' table
-        – either an ancestor or descendant.
 
     .. tip::
         The following two cubes are equivalent::

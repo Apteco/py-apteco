@@ -107,7 +107,9 @@ API reference
         It is recommended to prefer those over instantiating this class directly,
         as they generally provide a simpler interface.
 
-    :param Clause selection: base selection to apply to the data grid
+    :param Clause selection: base selection to apply to the data grid.
+        The table of this selection must be a 'related' table
+        – either an ancestor or descendant.
     :param Table table: resolve table of the data grid
     :param int max_rows: maximum number of records to return *(default is 1000)*
     :param Session session: current Apteco API session
@@ -127,10 +129,6 @@ API reference
           to a data grid in the FastStats application.
           The mapping described here happens in the FastStats data engine
           and does not change the :attr:`selection` on the :class:`DataGrid`.
-
-    .. note::
-        The resolve table of `selection` must be a 'related' table
-        – either an ancestor or descendant.
 
 .. tip::
     The following two data grids are equivalent::
