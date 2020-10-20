@@ -50,12 +50,12 @@ Converting to a Pandas :class:`DataFrame`::
 
     >>> df = dg.to_df()
     >>> df.head()
-      Booking URN   Destination Travel Date          Cost
-    0    10001265        France  15-05-2019       1392.35
-    1    10001266        France  05-06-2019        780.34
-    2    10011532       Germany  29-08-2021        181.68
-    3    10011533       Germany  21-08-2021        300.67
-    4    10015830  Unclassified  02-05-2016        228.70
+      Booking URN   Destination Travel Date     Cost
+    0    10001265        France  2019-05-15  1392.35
+    1    10001266        France  2019-06-05   780.34
+    2    10011532       Germany  2021-08-29   181.68
+    3    10011533       Germany  2021-08-21   300.67
+    4    10015830  Unclassified  2016-05-02   228.70
 
 Specifying the number of rows to return::
 
@@ -70,12 +70,12 @@ Using a base selection to filter the records::
     >>> sweden_dg = sweden.datagrid([urn, dest, trav, cost])
     >>> sweden_df = sweden_dg.to_df()
     >>> sweden_df.head()
-      Booking URN Destination Travel Date          Cost
-    0    10172319      Sweden  15-05-2020       1201.81
-    1    10384970      Sweden  05-04-2018        344.30
-    2    10421011      Sweden  11-07-2019        322.89
-    3    10425298      Sweden  10-10-2020        880.02
-    4    10479109      Sweden  21-09-2020        172.91
+      Booking URN Destination Travel Date     Cost
+    0    10172319      Sweden  2020-05-15  1201.81
+    1    10384970      Sweden  2018-04-05   344.30
+    2    10421011      Sweden  2019-07-11   322.89
+    3    10425298      Sweden  2020-10-10   880.02
+    4    10479109      Sweden  2020-09-21   172.91
 
 Using a base selection from a different table::
 
@@ -84,12 +84,12 @@ Using a base selection from a different table::
     >>> manc_dg = bookings.datagrid([urn, dest, trav, cost], selection=manchester)
     >>> manc_df = manc_dg.to_df()
     >>> manc_df.head()
-      Booking URN    Destination Travel Date          Cost
-    0    10172319         Sweden  15-05-2020       1201.81
-    1    10172320  United States  14-04-2020       1616.80
-    2    10173729         France  19-08-2020        581.71
-    3    10173730         France  09-08-2020       2224.70
-    4    10177047         France  07-05-2021        686.53
+      Booking URN    Destination Travel Date     Cost
+    0    10172319         Sweden  2020-05-15  1201.81
+    1    10172320  United States  2020-04-14  1616.80
+    2    10173729         France  2020-08-19   581.71
+    3    10173730         France  2020-08-09  2224.70
+    4    10177047         France  2021-05-07   686.53
 
 .. Data Grid-related tasks
 .. =======================
@@ -169,4 +169,5 @@ API reference
         * the *columns* are the variable descriptions
         * Selector, Date and DateTime variable columns display descriptions,
           rather than codes
-        * all data is returned as raw strings
+        * data is returned as its corresponding Pandas column type
+          or native Python type
