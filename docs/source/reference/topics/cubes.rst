@@ -26,15 +26,13 @@ The cube is specified by:
 
 .. note::
     The cube functionality is still under active development,
-    and so is currently subject to several limitations:
+    and so is currently subject to a couple of limitations:
 
     * The cube dimensions must be FastStats **Selector** variables
       (other variable types and more complex types like expressions
       are not currently supported).
     * Only the default *count* is supported as a measure,
       and this is set automatically.
-    * The variables for the dimensions must be from the same table
-      as the resolve table of the cube.
 
 Basic use
 =========
@@ -159,7 +157,9 @@ API reference
         It is recommended to prefer those over instantiating this class directly,
         as they generally provide a simpler interface.
 
-    :param list[Variable] dimensions: variables to use as dimensions in the cube
+    :param list[Variable] dimensions: variables to use as dimensions in the cube.
+        These must be from `table` or from a 'related' table
+        – either an ancestor or descendant.
     :param measures: measures to display in the cube
         (default is *None*, which will return the default *count* measure
         – this is the only option currently supported)
