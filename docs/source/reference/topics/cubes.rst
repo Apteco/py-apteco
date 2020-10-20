@@ -11,7 +11,7 @@ Introduction
 ============
 
 The :class:`Cube` object corresponds to a FastStats Cube
-and is a summary of FastStats data.
+and is a multi-dimensional numeric analysis of FastStats data.
 
 The cube is specified by:
 
@@ -161,33 +161,35 @@ API reference
         These must be from `table` or from a 'related' table
         – either an ancestor or descendant.
     :param measures: measures to display in the cube
-        (default is *None*, which will return the default *count* measure
+        (default is :const:`None`, which will return the default `count` measure
         – this is the only option currently supported)
     :param Clause selection: base selection to apply to the cube.
         The table of this selection must be a 'related' table
         – either an ancestor or descendant.
-    :param Table table: resolve table of the cube
-    :param Session session: current Apteco API session
+    :param Table table: resolve table of the cube.
+        This table's records used in the analysis for the cube,
+        e.g. the `count` measure is counting records from this table.
+    :param Session session: current Apteco API session.
 
     .. note::
-        The only measure currently supported is the default `count`.
-        The :attr:`measures` parameter is primarily included now
+        The only measure currently supported is the default count.
+        The `measures` parameter is primarily included now
         for forward-compatibility,
         and must be set to :const:`None` (which is its default value).
 
-    At least one of :attr:`selection` or :attr:`table` must be given:
+    At least one of `selection` or `table` must be given:
 
-        * If only :attr:`selection` is given,
-          then :attr:`table` will be set to the resolve table of the selection.
-        * If both are given and the resolve table of :attr:`selection`
-          isn't :attr:`table`,
+        * If only `selection` is given,
+          then `table` will be set to the resolve table of the selection.
+        * If both are given and the resolve table of `selection`
+          isn't `table`,
           then the records used in the cube
           are determined by mapping the selection to the required table by applying
           **ANY**/**THE** logic as necessary.
           This matches the behaviour when applying an underlying selection
           to a cube in the FastStats application.
           The mapping described here happens in the FastStats data engine
-          and does not change the :attr:`selection` on the :class:`Cube`.
+          and does not change the `selection` on the :class:`Cube`.
 
     .. tip::
         The following two cubes are equivalent::
@@ -213,18 +215,17 @@ API reference
         It is held on the object in the :attr:`_data` attribute as a Numpy :class:`array`
         but this is not considered public, and so to work with the data
         you should convert it to your desired output format.
-        The only format currently supported is a Pandas :class:`DataFrame`
-        but other formats will be added in future.
+        The only format currently supported is a Pandas :class:`DataFrame`.
 
     .. method:: to_df()
 
         Return the cube as a Pandas :class:`DataFrame`.
 
-        Currently, the :class:`DataFrame` is configured such that:
+        The :class:`DataFrame` is configured such that:
 
             * the *index* is a :class:`MultiIndex`,
               with each level corresponding to a dimension
-            * there is one *column* which is the single (default) count measure,
+            * there is one *column* which is the single (default) `count` measure,
               named after resolve table of the cube
             * the index labels are the dimension category descriptions,
               rather than codes
@@ -239,8 +240,9 @@ API reference
             which can be found under the *TOTAL* label on each dimension.
             You may need to filter these out if you are doing further analysis.
 
-        For more details on working with a Pandas DataFrame
-        with a MultiIndex,
-        see the `user guide
-        <https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html>`_
-        in the official Pandas documentation.
+        .. seealso::
+            For more details on working with a Pandas DataFrame
+            with a MultiIndex,
+            see the `user guide
+            <https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html>`_
+            in the official Pandas documentation.

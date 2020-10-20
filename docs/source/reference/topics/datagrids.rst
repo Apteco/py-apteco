@@ -107,28 +107,30 @@ API reference
         It is recommended to prefer those over instantiating this class directly,
         as they generally provide a simpler interface.
 
+    :param list[Variable] columns: variables to use as columns in the data grid.
+        These must be from `table` or from one of its ancestor tables.
     :param Clause selection: base selection to apply to the data grid.
         The table of this selection must be a 'related' table
         – either an ancestor or descendant.
-    :param Table table: resolve table of the data grid
-    :param int max_rows: maximum number of records to return *(default is 1000)*
-    :param Session session: current Apteco API session
+    :param Table table: resolve table of the data grid.
+        Each row of the data grid will correspond to a record
+        from this table.
+    :param int max_rows: maximum number of records to return *(default is 1000)*.
+    :param Session session: current Apteco API session.
 
-    At least one of :attr:`selection` or :attr:`table` must be given:
+    At least one of `selection` or `table` must be given:
 
-        * If only :attr:`selection` is given,
-          then :attr:`table` will be set to the resolve table of the selection.
-        * If both are given and the resolve table of :attr:`selection`
-          isn't :attr:`table`,
-    :param list[Variable] columns: variables to use as columns in the data grid.
-        These must be from `table` or from one of its ancestor tables.
+        * If only `selection` is given,
+          then `table` will be set to the resolve table of the selection.
+        * If both are given and the resolve table of `selection`
+          isn't `table`,
           then the records returned in the data grid
           are determined by mapping the selection to the required table by applying
           **ANY**/**THE** logic as necessary.
           This matches the behaviour when applying an underlying selection
           to a data grid in the FastStats application.
           The mapping described here happens in the FastStats data engine
-          and does not change the :attr:`selection` on the :class:`DataGrid`.
+          and does not change the `selection` on the :class:`DataGrid`.
 
 .. tip::
     The following two data grids are equivalent::
@@ -154,14 +156,13 @@ API reference
     It is held on the object in the :attr:`_data` attribute as a list of tuples
     but this is not considered public, and so to work with the data
     you should convert it to your desired output format.
-    The only format currently supported is a Pandas :class:`DataFrame`
-    but other formats will be added in future.
+    The only format currently supported is a Pandas :class:`DataFrame`.
 
 .. method:: to_df()
 
     Return the data as a Pandas :class:`DataFrame`.
 
-    Currently, the :class:`DataFrame` is configured such that:
+    The :class:`DataFrame` is configured such that:
 
         * the *index* is a :class:`RangeIndex`
         * the *columns* are the variable descriptions
@@ -169,3 +170,8 @@ API reference
           rather than codes
         * data is returned as its corresponding Pandas column type
           or native Python type
+
+        .. seealso::
+            For more details on working with a Pandas DataFrame
+            see the `official Pandas documentation
+            <https://pandas.pydata.org/pandas-docs/stable/user_guide/index.html>`_.
