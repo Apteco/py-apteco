@@ -25,13 +25,11 @@ how many rows of data to return.
 
 .. note::
     The data grid functionality is still under active development,
-    and so is currently subject to several limitations:
+    and so is currently subject to a couple of limitations:
 
     * The data grid columns must be FastStats variables
       (expressions and other more complex column types are not currently supported)
     * **Array** and **FlagArray** variables are not currently supported as columns
-    * The variables for the columns must be from the same table
-      as the resolve table of the data grid.
 
 Basic use
 =========
@@ -109,7 +107,6 @@ API reference
         It is recommended to prefer those over instantiating this class directly,
         as they generally provide a simpler interface.
 
-    :param list[Variable] columns: variables to use as columns in the data grid
     :param Clause selection: base selection to apply to the data grid
     :param Table table: resolve table of the data grid
     :param int max_rows: maximum number of records to return *(default is 1000)*
@@ -121,6 +118,8 @@ API reference
           then :attr:`table` will be set to the resolve table of the selection.
         * If both are given and the resolve table of :attr:`selection`
           isn't :attr:`table`,
+    :param list[Variable] columns: variables to use as columns in the data grid.
+        These must be from `table` or from one of its ancestor tables.
           then the records returned in the data grid
           are determined by mapping the selection to the required table by applying
           **ANY**/**THE** logic as necessary.
