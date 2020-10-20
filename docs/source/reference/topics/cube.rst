@@ -1,8 +1,8 @@
 .. _cube_reference:
 
-*********
-  Cubes
-*********
+********
+  Cube
+********
 
 .. py:currentmodule:: apteco.cube
 

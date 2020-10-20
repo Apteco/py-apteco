@@ -1,8 +1,8 @@
 .. _datagrid_reference:
 
-**************
-  Data Grids
-**************
+*************
+  Data Grid
+*************
 
 .. py:currentmodule:: apteco.datagrid
 

@@ -10,8 +10,8 @@ Welcome to py-apteco's documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   install.rst
    getting_started.rst
+   install.rst
    tutorial.rst
    reference.rst
    changelog.rst
