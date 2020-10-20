@@ -28,9 +28,9 @@ class DataGrid:
         elif column_type == "Numeric":
             return pd.to_numeric(data)
         elif column_type == "Date":
-            return pd.to_datetime(data, format="%d-%m-%Y").dt.date
+            return pd.to_datetime(data, format="%d-%m-%Y", errors="coerce").dt.date
         elif column_type == "DateTime":
-            return pd.to_datetime(data, format="%d-%m-%Y %H:%M:%S")
+            return pd.to_datetime(data, format="%d-%m-%Y %H:%M:%S", errors="coerce")
         else:
             raise ValueError(f"Unrecognised column type: {column_type}")
 
