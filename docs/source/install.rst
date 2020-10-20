@@ -130,9 +130,10 @@ Checking your installation
 To make sure everything is installed correctly,
 first start a Python interactive session
 by opening the command line, typing 'python' and pressing return.
-Then type the following commands:
+Then type the following commands
+(double underscores either side of 'version'):
 
-.. code-block:: pycon
+.. code-block:: python
 
     >>> import apteco
     >>> print(apteco.__version__)
