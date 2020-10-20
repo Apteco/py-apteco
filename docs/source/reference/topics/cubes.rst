@@ -96,6 +96,7 @@ Pivoting the ``Destination`` dimension to make it easier to read::
                        Silver               0       0  ...            0             0
                        TOTAL                0       0  ...            0             0
                        Unclassified         0       0  ...            0             0
+
     [25 rows x 21 columns]
 
 Using a base selection to filter the records::
@@ -129,7 +130,7 @@ Using a base selection from a different table::
 
     >>> households = my_session.tables["Households"]
     >>> manchester = households["hoRegion"] == "13"
-    >>> manc_cube = bookings.cube([dest, product, grade], selection=manchester)
+    >>> manc_cube = manchester.cube([dest, product, grade], table=bookings)
     >>> manc_df = manc_cube.to_df()
     >>> manc_df.loc["Germany"].unstack(level=1)
                        Bookings

@@ -81,7 +81,7 @@ Using a base selection from a different table::
 
     >>> households = my_session.tables["Households"]
     >>> manchester = households["Region"] == "13"
-    >>> manc_dg = bookings.datagrid([urn, dest, trav, cost], selection=manchester)
+    >>> manc_dg = manchester.datagrid([urn, dest, trav, cost], table=bookings)
     >>> manc_df = manc_dg.to_df()
     >>> manc_df.head()
       Booking URN    Destination Travel Date     Cost
