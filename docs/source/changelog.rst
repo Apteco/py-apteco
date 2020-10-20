@@ -5,7 +5,7 @@
 Version 0.6.0
 =============
 
-*release date TBC*
+*2020-10-20*
 
 Added
 -----
