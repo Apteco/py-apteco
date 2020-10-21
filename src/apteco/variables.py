@@ -275,11 +275,23 @@ class TextVariable(Variable):
     def __ne__(self, other):
         return self.equals(other, include=False)
 
-    # def __le__(self, other):
-    #     return self.before(other)
-    #
-    # def __ge__(self, other):
-    #     return self.after(other)
+    def __le__(self, other):
+        # return self.before(other)
+        return TextClause(
+            self,
+            [f'<="{normalize_string_value(other, single_value_error_msg_text)}"'],
+            "Ranges",
+            session=self.session,
+        )
+
+    def __ge__(self, other):
+        # return self.after(other)
+        return TextClause(
+            self,
+            [f'>="{normalize_string_value(other, single_value_error_msg_text)}"'],
+            "Ranges",
+            session=self.session,
+        )
 
 
 class ArrayVariable(BaseSelectorVariable):
