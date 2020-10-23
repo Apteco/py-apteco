@@ -171,21 +171,92 @@ Selector-type variables
 Selector variable
 -----------------
 
-*(no extra properties beyond the common ones)*
+.. class:: SelectorVariable
+
+    Subclass of :class:`BaseSelectorVariable` which represents
+    a standard FastStats **Selector** variable.
+
+Operators
+~~~~~~~~~
+
+Use the equals operator ``==`` to select records
+where this selector variable equals the given value.
+If multiple values are given, it must be equal to one of them.
+
+    >>> sweden = bookings["Destination"] == "29"
+    >>> high_earners = people["Income"] == ["07", "08", "09", "10", "11"]
+
+Use the inequality operator ``!=`` to select records
+where this selector variable does not equal the given value.
+If multiple values are given, it must not be equal to any of them.
+
+    >>> not_unclassified = people["Occupation"] != "!"
+    >>> england = households["Region"] != ["10", "11", "12", "14"]
+
 
 Numeric variable
 ----------------
 
-    * :attr:`min` (:class:`int` or :class:`float`): smallest value of this variable
-      over all records
-    * :attr:`max` (:class:`int` or :class:`float`): largest value of this variable
-      over all records
-    * :attr:`is_currency` (:class:`bool`): whether this variable represents
-      a currency value
-    * :attr:`currency_locale` (:class:`str`): locale name for the currency
-      (if this is a currency variable)
-    * :attr:`currency_symbol` (:class:`str`): currency symbol for the currency
-      (if this is a currency variable)
+.. class:: NumericVariable
+
+    Class which represents a FastStats **Numeric** variable.
+
+    .. py:attribute:: min
+
+        The smallest value of this variable over all records.
+
+    .. py:attribute:: max
+
+        The largest value of this variable over all records.
+
+    .. py:attribute:: is_currency
+
+        Whether this variable represents a currency value.
+
+    .. py:attribute:: currency_locale
+
+        Locale name for the currency (if this is a currency variable).
+
+    .. py:attribute:: currency_symbol
+
+        Currency symbol for the currency (if this is a currency variable).
+
+Operators
+~~~~~~~~~
+
+Use the ``==`` operator to select records
+where this numeric variable equals the given value.
+If multiple values are given, it must be equal to one of them.
+
+    >>> booked_3_days_ago = policies["Days Since Booking"] == 3
+    >>> cost_multiple_of_100 = bookings["Cost"] == [i * 100 for i in range(1, 284)]
+
+Use the ``!=`` operator to select records
+where this numeric variable does not equal the given value.
+If multiple values are given, it must not be equal to any of them.
+
+    >>> some_profit = bookings["Profit"] != 0
+    >>> waiting_more_than_week = journeys["Days Waiting"] != range(7)
+
+Use the ``<=`` operator to select records
+where this numeric variable is less than or equal to the given value.
+
+    >>> premium_up_to_25 = policies["Premium"] <= 25
+
+Use the ``>=`` operator to select records
+where this numeric variable is greater than or equal to the given value.
+
+    >>> high_profit = bookings["Profit"] >= 1000
+
+Use the ``<`` operator to select records
+where this numeric variable is strictly less than the given value.
+
+    >>> visit_shorter_than_minute = web_visits["Duration"] < 60
+
+Use the ``>`` operator to select records
+where this numeric variable is strictly greater than the given value.
+
+    >>> more_than_4_weeks_to_travel = policies["Days Until Travel"] > 28
 
 Text variable
 -------------
@@ -333,30 +404,173 @@ Text variable
          - (the two wildcards can be used in conjunction)
          - ``Sm?th*`` matches all of the above, as well as ``Smethurst``, ``Smythe``
 
+Operators
+~~~~~~~~~
+
+Use the equals operator ``==`` to select records
+where this text variable equals the given value.
+If multiple values are given, it must be equal to one of them.
+
+    >>> smiths = people["Surname"] == "Smith"
+    >>> royal = people["Surname"] == ["King", "Queen", "Prince", "Princess"]
+
+Use the inequality operator ``!=`` to select records
+where this text variable does not equal the given value.
+If multiple values are given, it must not be equal to any of them.
+
+    >>> not_s = people["Initial"] != "S"
+    >>> consonant = people["Initial"] != list("AEIOU")
+
+
 Array variable
 --------------
 
-*(no extra properties beyond the common ones)*
+.. class:: ArrayVariable
+
+    Subclass of :class:`BaseSelectorVariable` which represents
+    a FastStats **Array** variable.
+
+Operators
+~~~~~~~~~
+
+Use the equals operator ``==`` to select records
+where this array variable has the given value.
+If multiple values are given, it must have one of them.
+
+    >>> james_bond = households["Car Make Code"] == "ASM"
+    >>> french_car = households["Car Make Code"] == ["CIT", "PEU", "REN"]
+
+Use the inequality operator ``!=`` to select records
+where this array variable does not have the given value.
+If multiple values are given, it must not have any of them.
+
+    >>> not_unclassified_car = households["Car Make Code"] != "  !"
+    >>> not_f_car = households["Car Make Code"] != ["FER", "FIA", "FOR"]
 
 Flag array variable
 -------------------
 
-*(no extra properties beyond the common ones)*
+.. class:: FlagArrayVariable
+
+    Subclass of :class:`BaseSelectorVariable` which represents
+    a FastStats **FlagArray** variable.
+
+Operators
+~~~~~~~~~
+
+Use the equals operator ``==`` to select records
+where this flag array variable has the given value.
+If multiple values are given, it must have one of them.
+
+    >>> financial_times_reader = people["Newspapers"] == "Financial Times"
+    >>> tabloid_reader = people["Newspapers"] == [
+    ...     "Daily Express", "The Sun", "Daily Mirror", "Daily Mail", "Record"
+    ... ]
+
+Use the inequality operator ``!=`` to select records
+where this flag array variable does not have the given value.
+If multiple values are given, it must not have any of them.
+
+    >>> self_catering = bookings["Facilities"] != "Food"
+    >>> cannot_contact = people["Contact Permission"] != ["EPS", "MPS", "TPS", "FPS"]
 
 Date-type variables
 -------------------
 
-    * :attr:`min_date` (:class:`datetime.datetime`): earliest date value
-      of this variable over all records
-    * :attr:`max_date` (:class:`datetime.datetime`): latest date value
-      of this variable over all records
+.. class:: BaseDateVariable
+
+    A subclass of :class:`BaseSelectorVariable`
+    which is the base class for date-type variables,
+    with attributes common to all of them.
+
+    .. py:attribute:: min_date
+
+        The earliest date value of this variable over all records.
+
+    .. py:attribute:: max_date
+
+        The latest date value of this variable over all records.
+
+Date variable
+-------------
+
+.. class:: DateVariable
+
+    Subclass of :class:`BaseDateVariable` which represents
+    a FastStats **Date** variable.
+
+Operators
+~~~~~~~~~
+
+Use the equals operator ``==`` to select records
+where this date variable is the given date.
+If multiple dates are given, it must be one of them.
+
+    >>> from datetime import date
+    >>> christmas_day_2018 = bookings["Booking Date"] == date(2018, 12, 25)
+    >>> valentines_day = bookings["Travel Date"] == [
+    ...     date(y, 2, 14) for y in range(2016, 2023)
+    ... ]
+
+Use the equals operator ``!=`` to select records
+where this date variable is not the given date.
+If multiple dates are given, it must not be any of them.
+
+    >>> not_new_years_day_2020 = bookings["Travel Date"] != date(2020, 1, 1)
+    >>> not_easter = bookings["Travel Date"] != [
+    ...     date(2016, 3, 27)
+    ...     date(2017, 4, 16)
+    ...     date(2018, 4, 1)
+    ...     date(2019, 4, 21)
+    ...     date(2020, 4, 12)
+    ...     date(2021, 4, 4)
+    ...     date(2022, 4, 17)
+    ... ]
+
+Use the ``<=`` operator to select records
+where this date variable is before the given date (or is the date itself).
+
+    >>> bookings_before_2019 = bookings["Booking Date"] <= date(2018, 12, 31)
+
+Use the ``>=`` operator to select records
+where this date variable is after the given date (or is the date itself).
+
+    >>> from dateutil.relativedelta import relativedelta
+    >>> under_30 = people["DOB"] >= date.today() - relativedelta(years=30)
 
 Date-time variable
 ------------------
 
-*(no extra properties beyond the common ones)*
+.. class:: DateTimeVariable
+
+    Subclass of :class:`BaseDateVariable` which represents
+    a FastStats **DateTime** variable.
+
+Operators
+~~~~~~~~~
+
+Use the ``<=`` operator to select records
+where this datetime variable is before the given datetime
+(or is the datetime itself).
+
+    >>> before_4pm_halloween_2019 = web_visits["wvTime"] <= datetime(
+    ...     2019, 10, 31, 15, 59, 59
+    ... )
+
+Use the ``>=`` operator to select records
+where this datetime variable is after the given datetime
+(or is the datetime itself).
+
+    >>> after_juy_2016 = communications["cmCommDt"] >= datetime(2016, 8, 1, 0, 0, 0)
 
 Reference variable
 ------------------
 
-*(no extra properties beyond the common ones)*
+.. class:: ReferenceVariable
+
+    Class which represents a FastStats **Reference** variable.
+
+Operators
+~~~~~~~~~
+
+*(no operators are currently supported for* :class:`ReferenceVariable` *objects)*
