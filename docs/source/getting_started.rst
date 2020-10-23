@@ -135,6 +135,7 @@ You can use other operators as well; for example, to exclude values:
 
 .. code-block:: python
 
+    >>> households = my_session.tables["Households"]
     >>> uk_only = households["Region"] != "14"  # 14 is Channel Islands
     >>> uk_only.count()
     741572
