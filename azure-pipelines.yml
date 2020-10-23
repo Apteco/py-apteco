@@ -24,7 +24,7 @@ steps:
   displayName: 'Use Python $(python.version)'
 
 - script: |
-    pip install --upgrade pip
+    pip install --user --upgrade pip
     pip install poetry
     poetry update
     poetry install
