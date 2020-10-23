@@ -31,7 +31,7 @@ from apteco.variables import (
 )
 
 NOT_ASSIGNED: Any = object()
-VARIABLES_PER_PAGE = 100
+VARIABLES_PER_PAGE = 1000
 
 
 class Session:
