@@ -26,6 +26,7 @@ steps:
 - script: |
     pip install --user --upgrade pip
     pip install poetry
+    poetry python docs/readme_generator.py
     poetry update
     poetry install
   displayName: 'Install dependencies'
