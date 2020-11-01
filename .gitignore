@@ -206,6 +206,7 @@ fabric.properties
 .idea/*.iml
 .idea/misc.xml
 .idea/other.xml
+.idea/inspectionProfiles/
 
 # local development tests
 tests/local/
