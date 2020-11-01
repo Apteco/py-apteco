@@ -8,6 +8,8 @@ import apteco_api as aa
 from apteco.cube import Cube
 from apteco.datagrid import DataGrid
 from apteco.exceptions import AptecoException
+from apteco.tables import Table
+from apteco.variables import Variable
 
 DECIMAL_PLACES = 4
 
@@ -347,6 +349,60 @@ class Clause:
             table=table if table is not None else self.table,
             session=self.session,
         )
+
+    def sample(
+        self, n=None, frac=None, sample_type="First", skip_first=0, *, label=None
+    ):
+        if sum((i is not None) for i in (n, frac)) != 1:
+            raise ValueError("Must specify either n or frac")
+        percent = None
+        fraction = None
+        if n is not None:
+            if not isinstance(n, Integral) or n < 1:
+                raise ValueError("n must be an integer greater than 0")
+        else:
+            if frac >= 1 or frac <= 0:
+                raise ValueError("frac must be between 0 and 1")
+            if isinstance(frac, Rational):
+                fraction = frac
+            elif isinstance(frac, Real):
+                percent = frac * 100
+            else:
+                raise ValueError("frac must be either a float or a fraction")
+        return LimitClause(
+            total=n,
+            percent=percent,
+            fraction=(fraction.numerator, fraction.denominator) if fraction else None,
+            clause=self,
+            sample_type=sample_type,
+            skip_first=skip_first,
+            label=label,
+            session=self.session,
+        )
+
+    def limit(self, n=None, frac=None, by=None, ascending=None, per=None, *, label=None):
+        if ascending is not None:
+            if not isinstance(ascending, bool):
+                raise ValueError("ascending must be True or False")
+            if by is None:
+                raise ValueError("Must specify by with ascending")
+        else:
+            ascending = False
+        if by is not None and not isinstance(by, Variable):
+            raise ValueError("by must be a variable")
+        if per is not None:
+            if isinstance(per, Table):
+                pass
+                #npertable
+            if isinstance(per, Variable):
+                pass
+                #npervariable
+            raise ValueError("per must be a table or a variable")
+        if by is None:
+            pass
+            #call.sample()
+        pass
+        #topn
 
 
 class SelectorClauseMixin:
@@ -879,4 +935,57 @@ class SubSelectionClause(Clause):
             # TODO: this may need to be changed depending on
             #  the final shape of the base py-apteco Selection object
             sub_selection=self.selection._to_model()
+        )
+
+
+class LimitClause(Clause):
+    def __init__(
+        self,
+        total=None,
+        percent=None,
+        fraction=None,
+        clause=None,
+        sample_type="First",
+        skip_first=0,
+        *,
+        label=None,
+        session=None,
+    ):
+        input_flag = tuple((i is not None) for i in (total, percent, fraction))
+        if sum(input_flag) != 1:
+            raise ValueError("Must specify one of total, percent or fraction")
+        self.type_ = {0: "Total", 1: "Percent", 2: "Fraction"}[input_flag.index(True)]
+        if sample_type not in ("First", "Stratified", "Random"):
+            raise ValueError(f"{sample_type} is not a valid sample type")
+
+        self.total = total
+        self.percent = percent
+        self.fraction = fraction
+        self.clause = clause
+        self.sample_type = sample_type
+        self.skip_first = skip_first
+        self.table = clause.table
+
+        self.label = label
+        self.session = session
+
+    def _to_model(self):
+        return aa.Clause(
+            sub_selection=aa.SubSelection(
+                selection=aa.Selection(
+                    rule=aa.Rule(clause=self.clause._to_model()),
+                    limits=aa.Limits(
+                        sampling=self.sample_type,
+                        total=self.total,
+                        type=self.type_,
+                        start_at=self.skip_first,
+                        percent=self.percent,
+                        fraction=aa.Fraction(self.fraction[0], self.fraction[1])
+                        if self.fraction
+                        else None,
+                    ),
+                    table_name=self.clause.table_name,
+                    name=self.label,
+                )
+            )
         )
