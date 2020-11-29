@@ -83,10 +83,7 @@ class DataGrid:
     def _get_export(self):
         export = aa.Export(
             base_query=aa.Query(
-                selection=aa.Selection(
-                    table_name=self.selection.table.name,
-                    rule=aa.Rule(clause=self.selection._to_model_clause()),
-                )
+                selection=self.selection._to_model_selection()
                 if self.selection is not None
                 else aa.Selection(table_name=self.table.name)
             ),

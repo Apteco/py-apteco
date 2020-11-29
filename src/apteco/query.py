@@ -245,14 +245,17 @@ class Clause:
 
     def count(self):
         query_final = aa.Query(
-            selection=aa.Selection(
+            selection=self._to_model_selection()
+        )
+        session = self.session
+        return Selection(query_final, session).count
+
+    def _to_model_selection(self):
+        return aa.Selection(
                 table_name=self.table_name,
                 ancestor_counts=True,
                 rule=aa.Rule(clause=self._to_model_clause()),
             )
-        )
-        session = self.session
-        return Selection(query_final, session).count
 
     def _change_table(self, new_table, simplify=False):
 
@@ -934,7 +937,7 @@ class SubSelectionClause(Clause):
         return aa.Clause(
             # TODO: this may need to be changed depending on
             #  the final shape of the base py-apteco Selection object
-            sub_selection=self.selection._to_model_clause()
+            sub_selection=self.selection._to_model_selection()
         )
 
 
@@ -972,20 +975,23 @@ class LimitClause(Clause):
     def _to_model_clause(self):
         return aa.Clause(
             sub_selection=aa.SubSelection(
-                selection=aa.Selection(
-                    rule=aa.Rule(clause=self.clause._to_model_clause()),
-                    limits=aa.Limits(
-                        sampling=self.sample_type,
-                        total=self.total,
-                        type=self.type_,
-                        start_at=self.skip_first,
-                        percent=self.percent,
-                        fraction=aa.Fraction(self.fraction[0], self.fraction[1])
-                        if self.fraction
-                        else None,
-                    ),
-                    table_name=self.clause.table_name,
-                    name=self.label,
-                )
+                selection=self._to_model_selection()
             )
+        )
+
+    def _to_model_selection(self):
+        return aa.Selection(
+            rule=aa.Rule(clause=self.clause._to_model_clause()),
+            limits=aa.Limits(
+                sampling=self.sample_type,
+                total=self.total,
+                type=self.type_,
+                start_at=self.skip_first,
+                percent=self.percent,
+                fraction=aa.Fraction(self.fraction[0], self.fraction[1])
+                if self.fraction
+                else None,
+            ),
+            table_name=self.clause.table_name,
+            name=self.label,
         )

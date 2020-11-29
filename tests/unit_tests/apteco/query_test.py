@@ -1187,7 +1187,7 @@ class TestSubSelectionClause:
 
     def test_sub_selection_clause_to_model_clause(self):
         fake_selection = Mock()
-        fake_selection._to_model_clause.return_value = "Selection model goes here"
+        fake_selection._to_model_selection.return_value = "Selection model goes here"
         fake_subselection_clause = Mock(
             selection=fake_selection, label=None, session=None
         )
@@ -1198,4 +1198,4 @@ class TestSubSelectionClause:
             SubSelectionClause._to_model_clause(fake_subselection_clause)
             == expected_subselection_clause_model
         )
-        fake_selection._to_model_clause.assert_called_once_with()
+        fake_selection._to_model_selection.assert_called_once_with()

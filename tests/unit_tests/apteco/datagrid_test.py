@@ -238,11 +238,7 @@ class TestDataGrid:
             exports_perform_export_synchronously=fake_exports_perform_export_sync
         )
         expected_export = aa.Export(
-            base_query=aa.Query(
-                selection=aa.Selection(
-                    table_name="Customers", rule=aa.Rule(clause="selection_model")
-                )
-            ),
+            base_query=aa.Query(selection="selection_model"),
             resolve_table_name="Customers",
             maximum_number_of_rows_to_browse=1234,
             return_browse_rows=True,

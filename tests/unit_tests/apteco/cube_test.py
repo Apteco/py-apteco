@@ -16,10 +16,7 @@ def sel_empty():
 def sel_nonempty(rtl_sel_high_value_purchases):
     return (
         rtl_sel_high_value_purchases,
-        aa.Selection(
-            table_name="Purchases",
-            rule=aa.Rule(clause="selection_high_value_purchases_model"),
-        ),
+        "selection_high_value_purchases_model",
     )
 
 
