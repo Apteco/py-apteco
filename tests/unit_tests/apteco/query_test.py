@@ -186,12 +186,12 @@ def test_normalize_date_input():
     assert exc_info.value.args[0] == "A number isn't a date."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_date_input("2008-12-03", "A date-y string doesn't count as a number.")
-    assert exc_info.value.args[0] == "A date-y string doesn't count as a number."
+        normalize_date_input("2008-12-03", "A date-y string doesn't count as a date.")
+    assert exc_info.value.args[0] == "A date-y string doesn't count as a date."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_date_input([20081203, 20001016], "Can't sneak numbers through inside a list")
-    assert exc_info.value.args[0] == "Can't sneak numbers through inside a list"
+        normalize_date_input([20081203, 20001016], "Can't sneak dates through inside a list")
+    assert exc_info.value.args[0] == "Can't sneak dates through inside a list"
 
 
 def test_normalize_datetime_value():
