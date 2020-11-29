@@ -331,7 +331,7 @@ class TestSelectorClause:
         assert bookings_fr_de_us.values == ["06", "07", "38"]
         assert bookings_fr_de_us.label == "Bookings to France, Germany or USA"
 
-    def test_selector_clause_to_model(self):
+    def test_selector_clause_to_model_clause(self):
         fake_bookings_fr_de_us = Mock(
             table_name="Bookings",
             variable_name="boDest",
@@ -357,7 +357,7 @@ class TestSelectorClause:
             )
         )
         assert (
-            SelectorClause._to_model(fake_bookings_fr_de_us)
+            SelectorClause._to_model_clause(fake_bookings_fr_de_us)
             == expected_selector_clause_model
         )
 
@@ -394,7 +394,7 @@ class TestCombinedCategoriesClause:
         }
         assert bookings_contains_u.label == "Location contains 'u'"
 
-    def test_combined_categories_clause_to_model(self):
+    def test_combined_categories_clause_to_model_clause(self):
         fake_bookings_contains_u = Mock(
             table_name="Bookings",
             variable_name="boCont",
@@ -423,7 +423,7 @@ class TestCombinedCategoriesClause:
             )
         )
         assert (
-            CombinedCategoriesClause._to_model(fake_bookings_contains_u)
+            CombinedCategoriesClause._to_model_clause(fake_bookings_contains_u)
             == expected_combined_categories_model
         )
 
@@ -472,7 +472,7 @@ class TestNumericClause:
             example_numeric_clause.label == "Exclude total spend matching monarch dates"
         )
 
-    def test_numeric_clause_to_model(self):
+    def test_numeric_clause_to_model_clause(self):
         fake_numeric_clause = Mock(
             table_name="People",
             variable_name="peTotalS",
@@ -501,7 +501,7 @@ class TestNumericClause:
             )
         )
         assert (
-            NumericClause._to_model(fake_numeric_clause)
+            NumericClause._to_model_clause(fake_numeric_clause)
             == expected_numeric_clause_model
         )
 
@@ -547,7 +547,7 @@ class TestTextClause:
             == "Green Monopoly squares addresses (minus 'Street')"
         )
 
-    def test_text_clause_to_model(self):
+    def test_text_clause_to_model_clause(self):
         fake_text_clause = Mock(
             table_name="Households",
             variable_name="hoAddr",
@@ -576,7 +576,7 @@ class TestTextClause:
                 name="Green Monopoly squares addresses (minus 'Street')",
             )
         )
-        assert TextClause._to_model(fake_text_clause) == expected_text_clause_model
+        assert TextClause._to_model_clause(fake_text_clause) == expected_text_clause_model
 
 
 class TestArrayClause:
@@ -611,7 +611,7 @@ class TestArrayClause:
         assert example_array_clause.logic == "AND"
         assert example_array_clause.label == "House has Ford, Peugeot & Volvo"
 
-    def test_array_clause_to_model(self):
+    def test_array_clause_to_model_clause(self):
         fake_array_clause = Mock(
             table_name="Households",
             variable_name="HHCarmak",
@@ -639,7 +639,7 @@ class TestArrayClause:
                 name="House has Ford, Peugeot & Volvo",
             )
         )
-        assert ArrayClause._to_model(fake_array_clause) == expected_array_clause_model
+        assert ArrayClause._to_model_clause(fake_array_clause) == expected_array_clause_model
 
 
 class TestFlagArrayClause:
@@ -696,7 +696,7 @@ class TestFlagArrayClause:
         assert example_flag_array_clause.logic == "OR"
         assert example_flag_array_clause.label == "Tabloid newspaper readers"
 
-    def test_flag_array_clause_to_model(self):
+    def test_flag_array_clause_to_model_clause(self):
         fake_flag_array_clause = Mock(
             table_name="People",
             variable_name="peNews",
@@ -738,7 +738,7 @@ class TestFlagArrayClause:
             )
         )
         assert (
-            FlagArrayClause._to_model(fake_flag_array_clause)
+            FlagArrayClause._to_model_clause(fake_flag_array_clause)
             == expected_flag_array_clause_model
         )
 
@@ -785,7 +785,7 @@ class TestDateListClause:
         )
         assert exclude_bank_hols_cmas16_new_year17.include is False
 
-    def test_date_list_clause_to_model(self):
+    def test_date_list_clause_to_model_clause(self):
         fake_date_list_clause = Mock(
             table_name="Bookings",
             variable_name="boTrav",
@@ -814,7 +814,7 @@ class TestDateListClause:
             )
         )
         assert (
-            DateListClause._to_model(fake_date_list_clause)
+            DateListClause._to_model_clause(fake_date_list_clause)
             == expected_date_list_clause_model
         )
 
@@ -886,7 +886,7 @@ class TestDateRangeClause:
         assert example_date_range_clause.label == "Holidays booked during BST 2016"
         assert example_date_range_clause.include is True
 
-    def test_date_range_clause_to_model(self):
+    def test_date_range_clause_to_model_clause(self):
         fake_date_range_clause = Mock(
             table_name="Bookings",
             variable_name="boDate",
@@ -928,7 +928,7 @@ class TestDateRangeClause:
             )
         )
         assert (
-            DateRangeClause._to_model(fake_date_range_clause)
+            DateRangeClause._to_model_clause(fake_date_range_clause)
             == expected_date_range_clause_model
         )
 
@@ -941,7 +941,7 @@ class TestTimeRangeClause:
     def test_time_range_clause_init_var_as_str(self):
         raise NotImplementedError
 
-    def test_time_range_clause_to_model(self):
+    def test_time_range_clause_to_model_clause(self):
         raise NotImplementedError
 
 
@@ -1018,7 +1018,7 @@ class TestDateTimeRangeClause:
         )
         assert example_date_range_clause.include is True
 
-    def test_datetime_range_clause_to_model(self):
+    def test_datetime_range_clause_to_model_clause(self):
         fake_datetime_range_clause = Mock(
             table_name="Bookings",
             variable_name="boTrav",
@@ -1060,7 +1060,7 @@ class TestDateTimeRangeClause:
             )
         )
         assert (
-            DateTimeRangeClause._to_model(fake_datetime_range_clause)
+            DateTimeRangeClause._to_model_clause(fake_datetime_range_clause)
             == expected_datetime_range_clause_model
         )
 
@@ -1073,7 +1073,7 @@ class TestReferenceClause:
     def test_reference_clause_init_var_as_str(self):
         raise NotImplementedError
 
-    def test_reference_clause_to_model(self):
+    def test_reference_clause_to_model_clause(self):
         raise NotImplementedError
 
 
@@ -1104,11 +1104,11 @@ class TestBooleanClause:
         assert example_boolean_clause.operands == [clause1, clause2]
         assert example_boolean_clause.label == "Both of these please!"
 
-    def test_boolean_clause_to_model(self):
+    def test_boolean_clause_to_model_clause(self):
         clause1 = Mock()
         clause2 = Mock()
-        clause1._to_model.return_value = "Clause1 model goes here"
-        clause2._to_model.return_value = "Clause2 model goes here"
+        clause1._to_model_clause.return_value = "Clause1 model goes here"
+        clause2._to_model_clause.return_value = "Clause2 model goes here"
         fake_boolean_clause = Mock(
             table_name="Bookings",
             operation="AND",
@@ -1125,11 +1125,11 @@ class TestBooleanClause:
             )
         )
         assert (
-            BooleanClause._to_model(fake_boolean_clause)
+            BooleanClause._to_model_clause(fake_boolean_clause)
             == expected_boolean_clause_model
         )
-        clause1._to_model.assert_called_once_with()
-        clause2._to_model.assert_called_once_with()
+        clause1._to_model_clause.assert_called_once_with()
+        clause2._to_model_clause.assert_called_once_with()
 
 
 # TODO: unary logic query
@@ -1157,9 +1157,9 @@ class TestTableClause:
         assert example_table_clause.operand is subclause
         assert example_table_clause.label == "People who live at these houses"
 
-    def test_table_clause_to_model(self):
+    def test_table_clause_to_model_clause(self):
         subclause = Mock()
-        subclause._to_model.return_value = "Subclause model goes here"
+        subclause._to_model_clause.return_value = "Subclause model goes here"
         fake_table_clause = Mock(
             table_name="People",
             operation="THE",
@@ -1175,8 +1175,8 @@ class TestTableClause:
                 name="People who live at these houses",
             )
         )
-        assert TableClause._to_model(fake_table_clause) == expected_table_clause_model
-        subclause._to_model.assert_called_once_with()
+        assert TableClause._to_model_clause(fake_table_clause) == expected_table_clause_model
+        subclause._to_model_clause.assert_called_once_with()
 
 
 class TestSubSelectionClause:
@@ -1185,9 +1185,9 @@ class TestSubSelectionClause:
         example_subselection_clause = SubSelectionClause(fake_selection)
         assert example_subselection_clause.selection is fake_selection
 
-    def test_sub_selection_clause_to_model(self):
+    def test_sub_selection_clause_to_model_clause(self):
         fake_selection = Mock()
-        fake_selection._to_model.return_value = "Selection model goes here"
+        fake_selection._to_model_clause.return_value = "Selection model goes here"
         fake_subselection_clause = Mock(
             selection=fake_selection, label=None, session=None
         )
@@ -1195,7 +1195,7 @@ class TestSubSelectionClause:
             sub_selection="Selection model goes here"
         )
         assert (
-            SubSelectionClause._to_model(fake_subselection_clause)
+            SubSelectionClause._to_model_clause(fake_subselection_clause)
             == expected_subselection_clause_model
         )
-        fake_selection._to_model.assert_called_once_with()
+        fake_selection._to_model_clause.assert_called_once_with()

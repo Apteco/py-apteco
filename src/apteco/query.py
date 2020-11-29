@@ -248,7 +248,7 @@ class Clause:
             selection=aa.Selection(
                 table_name=self.table_name,
                 ancestor_counts=True,
-                rule=aa.Rule(clause=self._to_model()),
+                rule=aa.Rule(clause=self._to_model_clause()),
             )
         )
         session = self.session
@@ -573,7 +573,7 @@ class SelectorClause(CriteriaClause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
@@ -605,7 +605,7 @@ class CombinedCategoriesClause(CriteriaClause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
@@ -637,7 +637,7 @@ class NumericClause(CriteriaClause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
@@ -681,7 +681,7 @@ class TextClause(CriteriaClause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
@@ -716,7 +716,7 @@ class ArrayClause(CriteriaClause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
@@ -752,7 +752,7 @@ class DateListClause(CriteriaClause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
@@ -800,7 +800,7 @@ class DateRangeClause(CriteriaClause):
             params["range_end_date"] = self.end + "T00:00:00"
         return params
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
@@ -836,7 +836,7 @@ class TimeRangeClause(CriteriaClause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             criteria=aa.Criteria(
                 variable_name=self.variable_name,
@@ -879,7 +879,7 @@ class ReferenceClause(CriteriaClause):
     def __init__(self, variable, values, *, include=True, label=None, session=None):
         raise NotImplementedError
 
-    def _to_model(self):
+    def _to_model_clause(self):
         raise NotImplementedError
 
 
@@ -892,11 +892,11 @@ class BooleanClause(Clause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             logic=aa.Logic(
                 operation=self.operation,
-                operands=[op._to_model() for op in self.operands],
+                operands=[op._to_model_clause() for op in self.operands],
                 table_name=self.table_name,
                 name=self.label,
             )
@@ -912,11 +912,11 @@ class TableClause(Clause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             logic=aa.Logic(
                 operation=self.operation,
-                operands=[self.operand._to_model()],
+                operands=[self.operand._to_model_clause()],
                 table_name=self.table_name,
                 name=self.label,
             )
@@ -930,11 +930,11 @@ class SubSelectionClause(Clause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             # TODO: this may need to be changed depending on
             #  the final shape of the base py-apteco Selection object
-            sub_selection=self.selection._to_model()
+            sub_selection=self.selection._to_model_clause()
         )
 
 
@@ -969,11 +969,11 @@ class LimitClause(Clause):
         self.label = label
         self.session = session
 
-    def _to_model(self):
+    def _to_model_clause(self):
         return aa.Clause(
             sub_selection=aa.SubSelection(
                 selection=aa.Selection(
-                    rule=aa.Rule(clause=self.clause._to_model()),
+                    rule=aa.Rule(clause=self.clause._to_model_clause()),
                     limits=aa.Limits(
                         sampling=self.sample_type,
                         total=self.total,

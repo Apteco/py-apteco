@@ -87,7 +87,7 @@ class Cube:
             base_query=aa.Query(
                 selection=aa.Selection(
                     table_name=self.selection.table.name,
-                    rule=aa.Rule(clause=self.selection._to_model()),
+                    rule=aa.Rule(clause=self.selection._to_model_clause()),
                 )
                 if self.selection is not None
                 else aa.Selection(table_name=self.table.name)
