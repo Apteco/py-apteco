@@ -274,9 +274,9 @@ def test_normalize_datetime_input():
 
     with pytest.raises(ValueError) as exc_info:
         normalize_datetime_input(
-            "2008-12-03T03:33:30", "A datetime-y string doesn't count as a number."
+            "2008-12-03T03:33:30", "A datetime-y string doesn't count as a datetime."
         )
-    assert exc_info.value.args[0] == "A datetime-y string doesn't count as a number."
+    assert exc_info.value.args[0] == "A datetime-y string doesn't count as a datetime."
 
     with pytest.raises(ValueError) as exc_info:
         normalize_datetime_input(
