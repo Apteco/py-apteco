@@ -2,7 +2,7 @@ from fractions import Fraction
 
 import pytest
 
-from apteco.query import LimitClause
+from apteco.query import LimitClause, TopNClause
 
 
 @pytest.fixture()
@@ -173,3 +173,15 @@ class TestLimitClause:
     def test_random_fraction_skip(self, holidays, france):
         france_random_12_51sts_skip_678 = LimitClause(france, fraction=Fraction(12, 51), sample_type="Random", skip_first=678, session=holidays)
         assert france_random_12_51sts_skip_678.count() == 123406
+
+
+class TestTopNClause:
+    def test_between_top_percentage(self, holidays, bookings, france):
+        between_top_6_28_10_35_pct_by_profit = TopNClause(france, percent=(6.28, 10.35), by=bookings["Profit"], session=holidays)
+        assert between_top_6_28_10_35_pct_by_profit.count() == 21346
+        df = between_top_6_28_10_35_pct_by_profit.datagrid(
+            [bookings[var] for var in ("Booking URN", "Destination", "Profit", "Cost")],
+            max_rows=21347,
+        ).to_df().sort_values(["Profit", "Cost"], ascending=[False, True])
+        assert len(df) == 21346
+        assert df.loc[0, "Booking URN"] == "10001265"

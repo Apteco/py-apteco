@@ -939,7 +939,14 @@ class SubSelectionClause(Clause):
         )
 
 
-class LimitClause(Clause):
+class BaseLimitClause(Clause):
+    def _to_model_clause(self):
+        return aa.Clause(
+            sub_selection=aa.SubSelection(selection=self._to_model_selection())
+        )
+
+
+class LimitClause(BaseLimitClause):
     def __init__(
         self,
         clause,
@@ -994,13 +1001,6 @@ class LimitClause(Clause):
         self.label = label
         self.session = session
 
-    def _to_model_clause(self):
-        return aa.Clause(
-            sub_selection=aa.SubSelection(
-                selection=self._to_model_selection()
-            )
-        )
-
     def _to_model_selection(self):
         return aa.Selection(
             rule=aa.Rule(clause=self.clause._to_model_clause()),
@@ -1012,6 +1012,92 @@ class LimitClause(Clause):
                 percent=self.percent,
                 fraction=aa.Fraction(self.fraction.numerator, self.fraction.denominator)
                 if self.fraction is not None else None,
+            ),
+            table_name=self.clause.table_name,
+            name=self.label,
+        )
+
+
+class TopNClause(BaseLimitClause):
+    def __init__(
+        self,
+        clause,
+        total=None,
+        percent=None,
+        by=None,
+        ascending=False,
+        *,
+        label=None,
+        session=None,
+    ):
+        if total is not None:
+            if percent is not None:
+                raise ValueError(
+                    "Must specify either `total` or `percent`, but not both"
+                )
+            if isinstance(total, tuple):
+                self.kind = ("range", "total")
+            elif isinstance(total, Integral):
+                self.kind = ("single", "total")
+            else:
+                raise ValueError("`total` must be an integer or tuple of integers")
+        elif percent is not None:
+            if isinstance(percent, tuple):
+                self.kind = ("range", "percent")
+            elif isinstance(percent, Real):
+                self.kind = ("single", "percent")
+            else:
+                raise ValueError("`percent` must be a number or tuple of numbers")
+        else:
+            raise ValueError("Must specify one of `total` or `percent`")
+
+        self.clause = clause
+        self.table = clause.table
+        self.total = total
+        self.percent = percent
+        self.by = by
+        self.ascending = ascending
+
+        self.label = label
+        self.session = session
+
+    def _to_model_selection(self):
+        if self.kind[0] == "single":
+            if self.kind[1] == "total":
+                value = self.total
+                percent = "NaN"
+            elif self.kind[1] == "percent":
+                value = 0
+                percent = self.percent
+            else:
+                raise ValueError("Did not recognise kind")
+            direction = "Bottom" if self.ascending else "Top"
+            min_value = "NaN"
+            max_value = "NaN"
+        elif self.kind[0] == "range":
+            if self.kind[1] == "total":
+                direction = "Range"
+                min_value, max_value = self.total
+            elif self.kind[1] == "percent":
+                direction = "PercentRange"
+                min_value, max_value = self.percent
+            else:
+                raise ValueError("Did not recognise kind")
+            direction += "BottomUp" if self.ascending else "TopDown"
+            value = 0
+            percent = "NaN"
+        else:
+            raise ValueError("Did not recognise kind")
+
+        return aa.Selection(
+            rule=aa.Rule(clause=self.clause._to_model_clause()),
+            top_n=aa.TopN(
+                variable_name=self.by.name,
+                direction=direction,
+                value=value,
+                percent=percent,
+                min_value=min_value,
+                max_value=max_value,
             ),
             table_name=self.clause.table_name,
             name=self.label,
