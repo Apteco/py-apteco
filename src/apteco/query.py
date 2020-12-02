@@ -244,18 +244,16 @@ class Clause:
         return self.table.name
 
     def count(self):
-        query_final = aa.Query(
-            selection=self._to_model_selection()
-        )
+        query_final = aa.Query(selection=self._to_model_selection())
         session = self.session
         return Selection(query_final, session).count
 
     def _to_model_selection(self):
         return aa.Selection(
-                table_name=self.table_name,
-                ancestor_counts=True,
-                rule=aa.Rule(clause=self._to_model_clause()),
-            )
+            table_name=self.table_name,
+            ancestor_counts=True,
+            rule=aa.Rule(clause=self._to_model_clause()),
+        )
 
     def _change_table(self, new_table, simplify=False):
 
@@ -287,8 +285,7 @@ class Clause:
                     t.name for t in new_table.ancestors
                 )
                 nearest_common_ancestor = max(
-                    self.session.tables[name]
-                    for name in common_ancestor_names
+                    self.session.tables[name] for name in common_ancestor_names
                 )
             except ValueError:  # empty list passed to max() -> no common ancestors
                 raise OperationError(
