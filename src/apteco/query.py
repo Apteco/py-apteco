@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
+from fractions import Fraction
 from numbers import Integral, Number, Rational, Real
 from typing import Iterable, List, Optional
 
@@ -370,10 +371,10 @@ class Clause:
             else:
                 raise ValueError("frac must be either a float or a fraction")
         return LimitClause(
+            clause=self,
             total=n,
             percent=percent,
-            fraction=(fraction.numerator, fraction.denominator) if fraction else None,
-            clause=self,
+            fraction=fraction,
             sample_type=sample_type,
             skip_first=skip_first,
             label=label,
@@ -941,29 +942,53 @@ class SubSelectionClause(Clause):
 class LimitClause(Clause):
     def __init__(
         self,
+        clause,
         total=None,
         percent=None,
         fraction=None,
-        clause=None,
         sample_type="First",
         skip_first=0,
         *,
         label=None,
         session=None,
     ):
+
         input_flag = tuple((i is not None) for i in (total, percent, fraction))
         if sum(input_flag) != 1:
-            raise ValueError("Must specify one of total, percent or fraction")
-        self.type_ = {0: "Total", 1: "Percent", 2: "Fraction"}[input_flag.index(True)]
-        if sample_type not in ("First", "Stratified", "Random"):
-            raise ValueError(f"{sample_type} is not a valid sample type")
+            raise ValueError(
+                "Must specify exactly one of `total`, `percent` or `fraction`"
+            )
+        self.kind = {0: "Total", 1: "Percent", 2: "Fraction"}[input_flag.index(True)]
 
-        self.total = total
-        self.percent = percent
-        self.fraction = fraction
+        self.total = None
+        self.percent = None
+        self.fraction = None
+        if self.kind == "Total":
+            if not isinstance(total, Integral) or int(total) < 1:
+                raise ValueError("`total` must be an integer greater than 0")
+            self.total = int(total)
+        elif self.kind == "Percent":
+            if not isinstance(percent, Real) or not (0 < float(percent) < 100):
+                raise ValueError("`percent` must be a number between 0–100 (exclusive)")
+            self.percent = float(percent)
+        elif self.kind == "Fraction":
+            if not isinstance(fraction, Rational) or not (0 < float(fraction) < 1):
+                raise ValueError(
+                    "`fraction` must be a rational number between 0 and 1 (exclusive)"
+                )
+            self.fraction = Fraction(fraction.numerator, fraction.denominator)
+        else:
+            raise ValueError("Limit kind not recognised")
+
+        if sample_type.title() not in ("First", "Stratified", "Random"):
+            raise ValueError(f"{sample_type} is not a valid sample type")
+        self.sample_type = sample_type.title()
+
+        if not isinstance(skip_first, Integral) or int(skip_first) < 0:
+            raise ValueError("`skip_first` must be a non-negative integer")
+        self.skip_first = int(skip_first)
+
         self.clause = clause
-        self.sample_type = sample_type
-        self.skip_first = skip_first
         self.table = clause.table
 
         self.label = label
@@ -982,12 +1007,11 @@ class LimitClause(Clause):
             limits=aa.Limits(
                 sampling=self.sample_type,
                 total=self.total,
-                type=self.type_,
+                type=self.kind,
                 start_at=self.skip_first,
                 percent=self.percent,
-                fraction=aa.Fraction(self.fraction[0], self.fraction[1])
-                if self.fraction
-                else None,
+                fraction=aa.Fraction(self.fraction.numerator, self.fraction.denominator)
+                if self.fraction is not None else None,
             ),
             table_name=self.clause.table_name,
             name=self.label,
