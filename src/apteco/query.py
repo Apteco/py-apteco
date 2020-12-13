@@ -1011,7 +1011,8 @@ class LimitClause(BaseLimitClause):
                 start_at=self.skip_first,
                 percent=self.percent,
                 fraction=aa.Fraction(self.fraction.numerator, self.fraction.denominator)
-                if self.fraction is not None else None,
+                if self.fraction is not None
+                else None,
             ),
             table_name=self.clause.table_name,
             name=self.label,

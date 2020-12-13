@@ -135,6 +135,7 @@ def rtl_var_purchase_department(rtl_table_purchases):
         description="Department",
         type="Selector",
         table=rtl_table_purchases,
+        table_name=rtl_table_purchases.name,
     )
     return var
 
