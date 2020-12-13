@@ -1019,6 +1019,79 @@ class LimitClause(BaseLimitClause):
         )
 
 
+def ensure_single_or_range(
+    input_value,
+    type_,
+    convert,
+    number_text,
+    param_text,
+    lower_bound=None,
+    upper_bound=None,
+):
+
+    if isinstance(input_value, Iterable) and not isinstance(input_value, str):
+        if not (isinstance(input_value, tuple) and len(input_value) == 2):
+            raise ValueError(
+                f"Invalid range given for `{param_text}`"
+                f" - must be a tuple of two values."
+            )
+        try:
+            start, end = input_value
+            start = ensure_single(
+                start,
+                type_,
+                convert,
+                number_text,
+                f"start of range",
+                lower_bound,
+                upper_bound,
+            )
+            end = ensure_single(
+                end,
+                type_,
+                convert,
+                number_text,
+                f"end of range",
+                lower_bound,
+                upper_bound,
+            )
+        except ValueError as exc:
+            exc_msg = f"Invalid range given for `{param_text}` - {exc.args[0]}"
+            raise ValueError(exc_msg)
+        if not start < end:
+            raise ValueError(
+                f"Invalid range given for `{param_text}`"
+                f" - start of range must be less than the end."
+            )
+        return "range", (start, end)
+
+    return (
+        "single",
+        ensure_single(
+            input_value,
+            type_,
+            convert,
+            number_text,
+            f"`{param_text}`",
+            lower_bound,
+            upper_bound,
+        ),
+    )
+
+
+def ensure_single(
+    value, type_, convert, number_text, param_text, lower_bound=None, upper_bound=None
+):
+    if not isinstance(value, type_):
+        raise ValueError(f"{param_text} must be {number_text}")
+    value = convert(value)
+    if lower_bound is not None and not lower_bound < value:
+        raise ValueError(f"{param_text} must be greater than {lower_bound}")
+    if upper_bound is not None and not value < upper_bound:
+        raise ValueError(f"{param_text} must be less than {upper_bound}")
+    return value
+
+
 class TopNClause(BaseLimitClause):
     def __init__(
         self,
