@@ -1104,36 +1104,60 @@ class TopNClause(BaseLimitClause):
         label=None,
         session=None,
     ):
+        self.kind, self.total, self.percent = self._check_numerical_inputs(
+            percent, total
+        )
+
+        if by is None or not hasattr(by, "name"):
+            raise ValueError("`by` must be an ordered variable")
+        self.by = by
+
+        if not isinstance(ascending, bool):
+            raise ValueError("`ascending` must be a boolean (True or False)")
+        self.ascending = ascending
+
+        self.clause = clause
+        self.table = clause.table
+
+        self.label = label
+        self.session = session
+
+    @staticmethod
+    def _check_numerical_inputs(percent, total):
         if total is not None:
             if percent is not None:
                 raise ValueError(
                     "Must specify either `total` or `percent`, but not both"
                 )
-            if isinstance(total, tuple):
-                self.kind = ("range", "total")
-            elif isinstance(total, Integral):
-                self.kind = ("single", "total")
-            else:
-                raise ValueError("`total` must be an integer or tuple of integers")
+            try:
+                single_or_range, total = ensure_single_or_range(
+                    total, Integral, int, "an integer", "total", lower_bound=0
+                )
+                kind = (single_or_range, "total")
+                return kind, total, None
+            except ValueError:
+                raise ValueError(
+                    "`total` must be an integer or a tuple of two integers (to indicate a range)"
+                ) from None
         elif percent is not None:
-            if isinstance(percent, tuple):
-                self.kind = ("range", "percent")
-            elif isinstance(percent, Real):
-                self.kind = ("single", "percent")
-            else:
-                raise ValueError("`percent` must be a number or tuple of numbers")
+            try:
+                single_or_range, percent = ensure_single_or_range(
+                    percent,
+                    Real,
+                    float,
+                    "a percentage",
+                    "percent",
+                    lower_bound=0,
+                    upper_bound=100,
+                )
+                kind = (single_or_range, "percent")
+                return kind, None, percent
+            except ValueError:
+                raise ValueError(
+                    "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+                )
         else:
             raise ValueError("Must specify one of `total` or `percent`")
-
-        self.clause = clause
-        self.table = clause.table
-        self.total = total
-        self.percent = percent
-        self.by = by
-        self.ascending = ascending
-
-        self.label = label
-        self.session = session
 
     def _to_model_selection(self):
         if self.kind[0] == "single":
@@ -1144,7 +1168,7 @@ class TopNClause(BaseLimitClause):
                 value = 0
                 percent = self.percent
             else:
-                raise ValueError("Did not recognise kind")
+                raise ValueError(f"Invalid kind: {self.kind}")
             direction = "Bottom" if self.ascending else "Top"
             min_value = "NaN"
             max_value = "NaN"
@@ -1156,12 +1180,12 @@ class TopNClause(BaseLimitClause):
                 direction = "PercentRange"
                 min_value, max_value = self.percent
             else:
-                raise ValueError("Did not recognise kind")
+                raise ValueError(f"Invalid kind: {self.kind}")
             direction += "BottomUp" if self.ascending else "TopDown"
             value = 0
             percent = "NaN"
         else:
-            raise ValueError("Did not recognise kind")
+            raise ValueError(f"Invalid kind: {self.kind}")
 
         return aa.Selection(
             rule=aa.Rule(clause=self.clause._to_model_clause()),

@@ -15,6 +15,16 @@ def france(bookings):
     return bookings["boDest"] == "06"
 
 
+@pytest.fixture()
+def usa(bookings):
+    return bookings["boDest"] == "38"
+
+
+@pytest.fixture()
+def topn_dg_cols(bookings):
+    return [bookings[var] for var in ("Booking URN", "Destination", "Profit", "Cost")]
+
+
 class UnrealFrac:
     def __ge__(self, other):
         return False
@@ -234,13 +244,186 @@ class TestLimitClause:
         assert france_random_12_51sts_skip_678.count() == 123406
 
 
+def verify_topn_values(
+    selection, sel_count, dg_cols, dg_max_rows, by, sample_row, sample_col, sample_value
+):
+    """Helper function to verify TopN selection values.
+
+    Verify TopN selection is correct by:
+        - checking the number of rows returned in a maxed-out data grid
+        - checking that the values based on the subclause being limited are as expected
+        - picking out specific value and checking
+
+    Because a TopN selection specifies the number of records to return
+    (either explicitly as a fixed total
+    or implicitly as a percentage of the whole selection),
+    just checking the count risks being just tautological.
+    A way to improve on this would be to verify the URN set of the records selected,
+    but this would be quite expensive and lead to lots of large URN set data files.
+    A compromise is to pick an arbitrary data point from the selection
+    and check it against its expected value (initially retrieved through FastStats).
+
+    We can still check the count and also check that
+    the variable used in the subselection has a uniform value
+    (in this case Destination of United States).
+
+    We always sort all the data descending, even for 'bottom' limits,
+    as the 'bottom' data tends to be a lot of 0s,
+    which makes it harder to pick out a unique data point to use for verifying.
+
+    Args:
+        selection (TopNClause): TopN selection to verify
+        sel_count (int): expected count of selection
+        dg_cols (List[Variable]): list of variables to use as columns in data grid
+            (this is the same for every test, but it's a fixture and so needs to be
+            passed into the test function to be used)
+        dg_max_rows (int): number of rows to request from data grid
+            (must be greater than count to ensure we fetch all data)
+        by (Variable): variable to order records by to select top/bottom
+        sample_row (int): row index to sample data from
+        sample_col (str): column name to sample data from
+        sample_value (float or str): expected value of sampled data point
+
+    Raises:
+        AssertionError: if any of the checks fail
+
+    """
+    sort_order = (
+        ["Profit", "Cost", "Booking URN"]
+        if by == "Profit"
+        else ["Cost", "Profit", "Booking URN"]
+    )
+    df = (
+        selection.datagrid(dg_cols, max_rows=dg_max_rows)
+        .to_df()
+        .sort_values(sort_order, ascending=[False, False, False])
+        .reset_index(drop=True)
+    )
+    assert len(df) == sel_count
+    assert (df["Destination"] == "United States").all()
+    assert df.loc[sample_row, sample_col] == sample_value
+
+
 class TestTopNClause:
-    def test_between_top_percentage(self, holidays, bookings, france):
-        between_top_6_28_10_35_pct_by_profit = TopNClause(france, percent=(6.28, 10.35), by=bookings["Profit"], session=holidays)
-        assert between_top_6_28_10_35_pct_by_profit.count() == 21346
-        df = between_top_6_28_10_35_pct_by_profit.datagrid(
-            [bookings[var] for var in ("Booking URN", "Destination", "Profit", "Cost")],
-            max_rows=21347,
-        ).to_df().sort_values(["Profit", "Cost"], ascending=[False, True])
-        assert len(df) == 21346
-        assert df.loc[0, "Booking URN"] == "10001265"
+    def test_top_total(self, holidays, bookings, usa, topn_dg_cols):
+        top_637_by_cost = TopNClause(usa, 637, by=bookings["Cost"], session=holidays)
+        assert top_637_by_cost.count() == 637
+        verify_topn_values(
+            top_637_by_cost, 637, topn_dg_cols, 750, "Cost", 9, "Cost", 28400.18
+        )
+
+    def test_top_percentage(self, holidays, bookings, usa, topn_dg_cols):
+        top_1_65_pct_by_cost = TopNClause(
+            usa, percent=1.65, by=bookings["Cost"], session=holidays
+        )
+        assert top_1_65_pct_by_cost.count() == 9270
+        verify_topn_values(
+            top_1_65_pct_by_cost,
+            9270,
+            topn_dg_cols,
+            10000,
+            "Cost",
+            17,
+            "Profit",
+            4309.71,
+        )
+
+    def test_bottom_total(self, holidays, bookings, usa, topn_dg_cols):
+        bottom_4278_by_cost = TopNClause(
+            usa, 4278, by=bookings["Cost"], ascending=True, session=holidays
+        )
+        assert bottom_4278_by_cost.count() == 4278
+        verify_topn_values(
+            bottom_4278_by_cost,
+            4278,
+            topn_dg_cols,
+            4300,
+            "Cost",
+            13,
+            "Booking URN",
+            "10583471",
+        )
+
+    def test_bottom_percentage(self, holidays, bookings, usa, topn_dg_cols):
+        bottom_0_827_pct_by_cost = TopNClause(
+            usa, percent=0.827, by=bookings["Cost"], ascending=True, session=holidays
+        )
+        assert bottom_0_827_pct_by_cost.count() == 4646
+        verify_topn_values(
+            bottom_0_827_pct_by_cost,
+            4646,
+            topn_dg_cols,
+            50000,
+            "Cost",
+            22,
+            "Booking URN",
+            "11701935",
+        )
+
+    def test_between_top_total(self, holidays, bookings, usa, topn_dg_cols):
+        between_top_50_100_by_profit = TopNClause(
+            usa, (50, 100), by=bookings["Profit"], session=holidays
+        )
+        assert between_top_50_100_by_profit.count() == 51
+        verify_topn_values(
+            between_top_50_100_by_profit,
+            51,
+            topn_dg_cols,
+            1000,
+            "Profit",
+            33,
+            "Profit",
+            2733.14,
+        )
+
+    def test_between_bottom_total(self, holidays, bookings, usa, topn_dg_cols):
+        between_bottom_1_3600_by_profit = TopNClause(
+            usa, (1, 3600), by=bookings["Profit"], ascending=True, session=holidays
+        )
+        assert between_bottom_1_3600_by_profit.count() == 3600
+        verify_topn_values(
+            between_bottom_1_3600_by_profit,
+            3600,
+            topn_dg_cols,
+            4000,
+            "Profit",
+            16,
+            "Cost",
+            87.11,
+        )
+
+    def test_between_top_percentage(self, holidays, bookings, usa, topn_dg_cols):
+        between_top_6_28_10_35_pct_by_profit = TopNClause(
+            usa, percent=(6.28, 10.35), by=bookings["Profit"], session=holidays
+        )
+        assert between_top_6_28_10_35_pct_by_profit.count() == 22867
+        verify_topn_values(
+            between_top_6_28_10_35_pct_by_profit,
+            22867,
+            topn_dg_cols,
+            25000,
+            "Profit",
+            0,
+            "Booking URN",
+            "10641231",
+        )
+
+    def test_between_bottom_percentage(self, holidays, bookings, usa, topn_dg_cols):
+        between_bottom_24_63_25_86_pct_by_profit = TopNClause(
+            usa,
+            percent=(24.63, 25.86),
+            by=bookings["Profit"],
+            ascending=True,
+            session=holidays,
+        )
+        assert between_bottom_24_63_25_86_pct_by_profit.count() == 6911
+        verify_topn_values(
+            between_bottom_24_63_25_86_pct_by_profit,
+            6911,
+            topn_dg_cols,
+            7000,
+            "Profit",
+            8,
+            "Cost",
+            300.51,
+        )

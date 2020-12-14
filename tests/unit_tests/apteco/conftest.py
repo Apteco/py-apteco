@@ -4,12 +4,14 @@ import pytest
 
 from apteco.tables import Table
 from apteco.variables import (
+    DateTimeVariable,
+    FlagArrayVariable,
+    NumericVariable,
+    ReferenceVariable,
     SelectorVariable,
     TextVariable,
-    FlagArrayVariable,
-    DateTimeVariable,
-    ReferenceVariable,
 )
+
 
 """
 Fake 'Retail' system
@@ -37,6 +39,7 @@ Purchases   | Department                    | puDept    | Selector  |
 Purchases   | Purchase Date                 | puDate    | DateTime  |
 Purchases   | Store Type                    | puStType  | Selector  |
 Purchases   | Payment Method                | puPayMtd  | Selector  |
+Purchases   | Profit                        | puProfit  | Numeric   |
 
 """
 
@@ -172,6 +175,15 @@ def rtl_var_purchase_payment_method(rtl_table_purchases):
         description="Payment Method",
         type="Selector",
         table=rtl_table_purchases,
+    )
+    return var
+
+
+@pytest.fixture()
+def rtl_var_purchase_profit(rtl_table_purchases):
+    var = Mock(spec=NumericVariable)
+    var.configure_mock(
+        name="puProfit", description="Profit", type="Numeric", table=rtl_table_purchases
     )
     return var
 

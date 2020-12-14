@@ -7,7 +7,7 @@ import apteco_api as aa
 import pandas as pd
 import pytest
 
-from apteco.query import LimitClause, SelectorClause, ensure_single_or_range
+from apteco.query import LimitClause, SelectorClause, TopNClause, ensure_single_or_range
 
 
 class FractionableDecimal(Decimal, Rational):
@@ -25,6 +25,15 @@ class FractionableDecimal(Decimal, Rational):
 @pytest.fixture()
 def electronics(rtl_var_purchase_department):
     return SelectorClause(rtl_var_purchase_department, ["Electronics"])
+
+
+@pytest.fixture()
+def clothing(rtl_var_purchase_department):
+    clothing_clause = SelectorClause(rtl_var_purchase_department, ["Clothing"])
+    clothing_clause._to_model_clause = Mock(
+        return_value="Clothing clause model goes here"
+    )
+    return clothing_clause
 
 
 class TestLimitClause:
@@ -891,3 +900,604 @@ class TestEnsureSingleOrRangeRealRange:
             "Invalid range given for `the_number_param`"
             " - must be a tuple of two values."
         )
+
+
+class TestTopNClause:
+    def test_topn_clause_total_single_correct_type(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        top_43210 = TopNClause(
+            clothing, 43210, by=rtl_var_purchase_profit, session=rtl_session
+        )
+        assert top_43210.kind == ("single", "total")
+        assert top_43210.total == 43210
+        assert top_43210.percent is None
+        assert top_43210.by is rtl_var_purchase_profit
+        assert top_43210.ascending is False
+        assert top_43210.clause is clothing
+        assert top_43210.label is None
+        assert top_43210.session is rtl_session
+
+    def test_topn_clause_total_single_needs_converting(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        s = pd.Series([123]).astype("int8")
+        top_123 = TopNClause(
+            clothing, s[0], by=rtl_var_purchase_profit, session=rtl_session
+        )
+        assert top_123.kind == ("single", "total")
+        assert top_123.total == 123
+        assert top_123.percent is None
+        assert top_123.by is rtl_var_purchase_profit
+        assert top_123.ascending is False
+        assert top_123.clause is clothing
+        assert top_123.label is None
+        assert top_123.session is rtl_session
+
+    def test_topn_clause_total_single_not_integral(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_total_as_float = TopNClause(clothing, 428.06, session=rtl_session)
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+    def test_topn_clause_total_single_less_than_1(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_total_betw_0_1 = TopNClause(clothing, 0.23, session=rtl_session)
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            top_total_is_0 = TopNClause(clothing, 0, session=rtl_session)
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            top_total_is_negative = TopNClause(clothing, -8100, session=rtl_session)
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+    def test_topn_clause_percent_single_correct_type(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        top_4_615_percent = TopNClause(
+            clothing, percent=4.615, by=rtl_var_purchase_profit, session=rtl_session
+        )
+        assert top_4_615_percent.kind == ("single", "percent")
+        assert top_4_615_percent.total is None
+        assert top_4_615_percent.percent == 4.615
+        assert top_4_615_percent.by is rtl_var_purchase_profit
+        assert top_4_615_percent.ascending is False
+        assert top_4_615_percent.clause is clothing
+        assert top_4_615_percent.label is None
+        assert top_4_615_percent.session is rtl_session
+
+        top_0_332_percent = TopNClause(
+            clothing, percent=0.332, by=rtl_var_purchase_profit, session=rtl_session
+        )
+        assert top_0_332_percent.kind == ("single", "percent")
+        assert top_0_332_percent.total is None
+        assert top_0_332_percent.percent == 0.332
+        assert top_0_332_percent.by is rtl_var_purchase_profit
+        assert top_0_332_percent.ascending is False
+        assert top_0_332_percent.clause is clothing
+        assert top_0_332_percent.label is None
+        assert top_0_332_percent.session is rtl_session
+
+    def test_topn_clause_percent_single_needs_converting(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        top_19_782_percent = TopNClause(
+            clothing,
+            percent=Fraction(9891 / 500),
+            by=rtl_var_purchase_profit,
+            session=rtl_session,
+        )
+        assert top_19_782_percent.kind == ("single", "percent")
+        assert top_19_782_percent.total is None
+        assert top_19_782_percent.percent == 19.782
+        assert top_19_782_percent.by is rtl_var_purchase_profit
+        assert top_19_782_percent.ascending is False
+        assert top_19_782_percent.clause is clothing
+        assert top_19_782_percent.label is None
+        assert top_19_782_percent.session is rtl_session
+
+    def test_topn_clause_percent_single_not_real(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_as_str = TopNClause(
+                clothing, percent="22.33", session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+    def test_topn_clause_percent_single_out_of_range(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_is_too_big = TopNClause(
+                clothing, percent=110, session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_is_negative = TopNClause(
+                clothing, percent=-54.32, session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_is_0 = TopNClause(clothing, percent=0, session=rtl_session)
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_is_100 = TopNClause(clothing, percent=100, session=rtl_session)
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+    def test_topn_clause_total_range_correct_type(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        top_1234_5678 = TopNClause(
+            clothing, (1234, 5678), by=rtl_var_purchase_profit, session=rtl_session
+        )
+        assert top_1234_5678.kind == ("range", "total")
+        assert top_1234_5678.total == (1234, 5678)
+        assert top_1234_5678.percent is None
+        assert top_1234_5678.by is rtl_var_purchase_profit
+        assert top_1234_5678.ascending is False
+        assert top_1234_5678.clause is clothing
+        assert top_1234_5678.label is None
+        assert top_1234_5678.session is rtl_session
+
+    def test_topn_clause_total_range_needs_converting(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        top_1_6_start_needs_converting = TopNClause(
+            clothing, (True, 6), by=rtl_var_purchase_profit, session=rtl_session
+        )
+        assert top_1_6_start_needs_converting.kind == ("range", "total")
+        assert top_1_6_start_needs_converting.total == (1, 6)
+        assert top_1_6_start_needs_converting.percent is None
+        assert top_1_6_start_needs_converting.by is rtl_var_purchase_profit
+        assert top_1_6_start_needs_converting.ascending is False
+        assert top_1_6_start_needs_converting.clause is clothing
+        assert top_1_6_start_needs_converting.label is None
+        assert top_1_6_start_needs_converting.session is rtl_session
+
+        s = pd.Series([2, 5]).astype("int16")
+        top_2k_to_5k_both_need_converting = TopNClause(
+            clothing, tuple(s * 1000), by=rtl_var_purchase_profit, session=rtl_session
+        )
+        assert top_2k_to_5k_both_need_converting.kind == ("range", "total")
+        assert top_2k_to_5k_both_need_converting.total == (2000, 5000)
+        assert top_2k_to_5k_both_need_converting.percent is None
+        assert top_2k_to_5k_both_need_converting.by is rtl_var_purchase_profit
+        assert top_2k_to_5k_both_need_converting.ascending is False
+        assert top_2k_to_5k_both_need_converting.clause is clothing
+        assert top_2k_to_5k_both_need_converting.label is None
+        assert top_2k_to_5k_both_need_converting.session is rtl_session
+
+    def test_topn_clause_total_range_not_integral(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_total_range_end_as_float = TopNClause(
+                clothing, (4, 54.0), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+    def test_topn_clause_total_range_start_less_than_1(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_total_range_start_less_than_1 = TopNClause(
+                clothing, (-3, 6), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+    def test_topn_clause_total_range_start_greater_than_end(
+        self, clothing, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            top_total_range_end_as_float = TopNClause(
+                clothing, (70, 34), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+    def test_topn_clause_total_range_list_not_tuple(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_total_range_end_as_float = TopNClause(
+                clothing, [500, 2000], session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+    def test_topn_clause_total_range_tuple_of_3(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_total_range_end_as_float = TopNClause(
+                clothing, (111, 222, 333), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`total` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
+        )
+
+    def test_topn_clause_percent_range_correct_type(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        top_5_31_to_9_753_percent = TopNClause(
+            clothing,
+            percent=(5.31, 9.753),
+            by=rtl_var_purchase_profit,
+            session=rtl_session,
+        )
+        assert top_5_31_to_9_753_percent.kind == ("range", "percent")
+        assert top_5_31_to_9_753_percent.total is None
+        assert top_5_31_to_9_753_percent.percent == (5.31, 9.753)
+        assert top_5_31_to_9_753_percent.by is rtl_var_purchase_profit
+        assert top_5_31_to_9_753_percent.ascending is False
+        assert top_5_31_to_9_753_percent.clause is clothing
+        assert top_5_31_to_9_753_percent.label is None
+        assert top_5_31_to_9_753_percent.session is rtl_session
+
+    def test_topn_clause_percent_range_needs_converting(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        s = pd.Series([14.2856]).astype("float64")
+        top_7_2163_to_14_2856_end_needs_converting = TopNClause(
+            clothing,
+            percent=(7.2163, s[0]),
+            by=rtl_var_purchase_profit,
+            session=rtl_session,
+        )
+        assert top_7_2163_to_14_2856_end_needs_converting.kind == ("range", "percent")
+        assert top_7_2163_to_14_2856_end_needs_converting.total is None
+        assert top_7_2163_to_14_2856_end_needs_converting.percent == (7.2163, 14.2856)
+        assert top_7_2163_to_14_2856_end_needs_converting.by is rtl_var_purchase_profit
+        assert top_7_2163_to_14_2856_end_needs_converting.ascending is False
+        assert top_7_2163_to_14_2856_end_needs_converting.clause is clothing
+        assert top_7_2163_to_14_2856_end_needs_converting.label is None
+        assert top_7_2163_to_14_2856_end_needs_converting.session is rtl_session
+
+        top_65_432_to_76_54_end_needs_converting = TopNClause(
+            clothing,
+            percent=(Fraction(8179, 125), Fraction(3827, 50)),
+            by=rtl_var_purchase_profit,
+            session=rtl_session,
+        )
+        assert top_65_432_to_76_54_end_needs_converting.kind == ("range", "percent")
+        assert top_65_432_to_76_54_end_needs_converting.total is None
+        assert top_65_432_to_76_54_end_needs_converting.percent == (65.432, 76.54)
+        assert top_65_432_to_76_54_end_needs_converting.by is rtl_var_purchase_profit
+        assert top_65_432_to_76_54_end_needs_converting.ascending is False
+        assert top_65_432_to_76_54_end_needs_converting.clause is clothing
+        assert top_65_432_to_76_54_end_needs_converting.label is None
+        assert top_65_432_to_76_54_end_needs_converting.session is rtl_session
+
+    def test_topn_clause_percent_range_not_real(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_range_start_as_complex = TopNClause(
+                clothing, percent=(1 + 2j, 3.4), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+    def test_topn_clause_percent_range_out_of_bounds(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_range_start_too_small = TopNClause(
+                clothing, percent=(-25, 46.8), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_range_end_too_big = TopNClause(
+                clothing, percent=(15.5, 240.25), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_range_both_out_of_range = TopNClause(
+                clothing, percent=(-123.45, 123.45), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+    def test_topn_clause_percent_range_start_greater_than_end(
+        self, clothing, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_range_start_greater_than_end = TopNClause(
+                clothing, percent=(3.1, 2.0), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+    def test_topn_clause_percent_range_list_not_tuple(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_range_list_not_tuple = TopNClause(
+                clothing, percent=[4.6, 5.7], session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+    def test_topn_clause_percent_range_tuple_of_4(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_percent_range_tuple_of_4 = TopNClause(
+                clothing, percent=(1.1, 2.2, 3.3, 4.4), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+        )
+
+    def test_topn_clause_no_value_given(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            topn_no_value_given = TopNClause(clothing, session=rtl_session)
+        assert exc_info.value.args[0] == ("Must specify one of `total` or `percent`")
+
+    def test_topn_clause_both_values_given(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            topn_both_values_given = TopNClause(clothing, 10, 20.3, session=rtl_session)
+        assert exc_info.value.args[0] == (
+            "Must specify either `total` or `percent`, but not both"
+        )
+
+    def test_topn_clause_by_is_none(self, clothing, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_n_by_is_none = TopNClause(clothing, 100, session=rtl_session)
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+    def test_topn_clause_by_not_variable(self, clothing, electronics, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            top_n_by_is_selection = TopNClause(
+                clothing, 100, by=electronics, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+    def test_topn_clause_ascending_correct_type(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        bottom_500 = TopNClause(
+            clothing,
+            500,
+            by=rtl_var_purchase_profit,
+            ascending=True,
+            session=rtl_session,
+        )
+        assert bottom_500.kind == ("single", "total")
+        assert bottom_500.total == 500
+        assert bottom_500.percent is None
+        assert bottom_500.by is rtl_var_purchase_profit
+        assert bottom_500.ascending is True
+        assert bottom_500.clause is clothing
+        assert bottom_500.label is None
+        assert bottom_500.session is rtl_session
+
+    def test_topn_clause_ascending_not_boolean(
+        self, clothing, rtl_var_purchase_profit, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            top_n_ascending_is_str = TopNClause(
+                clothing,
+                100,
+                by=rtl_var_purchase_profit,
+                ascending="bottom",
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`ascending` must be a boolean (True or False)"
+
+    def test_topn_clause_to_model_selection_single_total(
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
+    ):
+        fake_topn_clause = Mock(
+            kind=("single", "total"),
+            total=8787,
+            percent=None,
+            by=rtl_var_purchase_profit,
+            ascending=False,
+            clause=clothing,
+            table=rtl_table_purchases,
+            label="Top 8787 clothing purchases by profit",
+            session=rtl_session,
+        )
+        expected_topn_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Clothing clause model goes here"),
+            top_n=aa.TopN(
+                variable_name="puProfit",
+                direction="Top",
+                value=8787,
+                percent="NaN",
+                min_value="NaN",
+                max_value="NaN",
+            ),
+            table_name="Purchases",
+            name="Top 8787 clothing purchases by profit",
+        )
+        assert (
+            TopNClause._to_model_selection(fake_topn_clause)
+            == expected_topn_selection_model
+        )
+        clothing._to_model_clause.assert_called_once_with()
+
+    def test_topn_clause_to_model_selection_single_percent(
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
+    ):
+        fake_topn_clause = Mock(
+            kind=("single", "percent"),
+            total=None,
+            percent=3.45,
+            by=rtl_var_purchase_profit,
+            ascending=False,
+            clause=clothing,
+            table=rtl_table_purchases,
+            label="Top 3.45% of clothing purchases by profit",
+            session=rtl_session,
+        )
+        expected_topn_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Clothing clause model goes here"),
+            top_n=aa.TopN(
+                variable_name="puProfit",
+                direction="Top",
+                value=0,
+                percent=3.45,
+                min_value="NaN",
+                max_value="NaN",
+            ),
+            table_name="Purchases",
+            name="Top 3.45% of clothing purchases by profit",
+        )
+        assert (
+            TopNClause._to_model_selection(fake_topn_clause)
+            == expected_topn_selection_model
+        )
+        clothing._to_model_clause.assert_called_once_with()
+
+    def test_topn_clause_to_model_selection_range_total(
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
+    ):
+        fake_topn_clause = Mock(
+            kind=("range", "total"),
+            total=(5000, 10000),
+            percent=None,
+            by=rtl_var_purchase_profit,
+            ascending=False,
+            clause=clothing,
+            table=rtl_table_purchases,
+            label="Between top 5-10k clothing purchases by profit",
+            session=rtl_session,
+        )
+        expected_topn_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Clothing clause model goes here"),
+            top_n=aa.TopN(
+                variable_name="puProfit",
+                direction="RangeTopDown",
+                value=0,
+                percent="NaN",
+                min_value=5000.0,
+                max_value=10000.0,
+            ),
+            table_name="Purchases",
+            name="Between top 5-10k clothing purchases by profit",
+        )
+        assert (
+            TopNClause._to_model_selection(fake_topn_clause)
+            == expected_topn_selection_model
+        )
+        clothing._to_model_clause.assert_called_once_with()
+
+    def test_topn_clause_to_model_selection_range_percent(
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
+    ):
+        fake_topn_clause = Mock(
+            kind=("range", "percent"),
+            total=None,
+            percent=(12.5, 17.5),
+            by=rtl_var_purchase_profit,
+            ascending=True,
+            clause=clothing,
+            table=rtl_table_purchases,
+            label="Between bottom 12.5-17.5% clothing purchases by profit",
+            session=rtl_session,
+        )
+        expected_topn_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Clothing clause model goes here"),
+            top_n=aa.TopN(
+                variable_name="puProfit",
+                direction="PercentRangeBottomUp",
+                value=0,
+                percent="NaN",
+                min_value=12.5,
+                max_value=17.5,
+            ),
+            table_name="Purchases",
+            name="Between bottom 12.5-17.5% clothing purchases by profit",
+        )
+        assert (
+            TopNClause._to_model_selection(fake_topn_clause)
+            == expected_topn_selection_model
+        )
+        clothing._to_model_clause.assert_called_once_with()
+
+    def test_topn_clause_to_model_selection_invalid_kind_single(
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
+    ):
+        fake_topn_clause = Mock(
+            kind=("single", "fraction"),
+            total=None,
+            percent=3.4,
+            by=rtl_var_purchase_profit,
+            ascending=False,
+            clause=clothing,
+            table=rtl_table_purchases,
+            label="Top 17/5 clothing purchases by profit",
+            session=rtl_session,
+        )
+        with pytest.raises(ValueError) as exc_info:
+            TopNClause._to_model_selection(fake_topn_clause)
+        assert exc_info.value.args[0] == "Invalid kind: ('single', 'fraction')"
+        clothing._to_model_clause.assert_not_called()
+
+    def test_topn_clause_to_model_selection_invalid_kind_range(
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
+    ):
+        fake_topn_clause = Mock(
+            kind=("range", "decimal"),
+            total=None,
+            percent=(12.3456789, 23.4567891),
+            by=rtl_var_purchase_profit,
+            ascending=False,
+            clause=clothing,
+            table=rtl_table_purchases,
+            label="Top 12.3456789-23.4567891% clothing purchases by profit",
+            session=rtl_session,
+        )
+        with pytest.raises(ValueError) as exc_info:
+            TopNClause._to_model_selection(fake_topn_clause)
+        assert exc_info.value.args[0] == "Invalid kind: ('range', 'decimal')"
+        clothing._to_model_clause.assert_not_called()
+
+    def test_topn_clause_to_model_selection_invalid_kind_total(
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
+    ):
+        fake_topn_clause = Mock(
+            kind=("sample", "total"),
+            total=1111,
+            percent=None,
+            by=rtl_var_purchase_profit,
+            ascending=False,
+            clause=clothing,
+            table=rtl_table_purchases,
+            label="Top sample 1111 clothing purchases by profit",
+            session=rtl_session,
+        )
+        with pytest.raises(ValueError) as exc_info:
+            TopNClause._to_model_selection(fake_topn_clause)
+        assert exc_info.value.args[0] == "Invalid kind: ('sample', 'total')"
+        clothing._to_model_clause.assert_not_called()
