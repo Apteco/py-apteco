@@ -1200,3 +1200,51 @@ class TopNClause(BaseLimitClause):
             table_name=self.clause.table_name,
             name=self.label,
         )
+
+
+class NPerVariableClause(BaseLimitClause):
+    def __init__(
+        self, clause, n, per, by=None, ascending=False, *, label=None, session=None
+    ):
+        if not isinstance(n, Integral) or int(n) < 1:
+            raise ValueError("`n` must be an integer greater than 0")
+        self.n = int(n)
+
+        if per is None or not hasattr(per, "is_selectable"):  # only vars have this attr
+            raise ValueError("`per` must be a variable")
+        if "Array" in per.type:
+            raise ValueError("`per` cannot be an Array or Flag Array variable")
+        self.per = per
+
+        if by is not None and not hasattr(by, "is_selectable"):  # only vars have attr
+            raise ValueError("`by` must be an ordered variable")
+        self.by = by
+
+        if not isinstance(ascending, bool):
+            raise ValueError("`ascending` must be a boolean (True or False)")
+        self.ascending = ascending
+
+        self.clause = clause
+        self.table = clause.table
+
+        self.label = label
+        self.session = session
+
+    def _to_model_selection(self):
+        if self.by is not None:
+            grouping_sequence_variable_name = self.by.name
+            grouping_ascending = self.ascending
+        else:
+            grouping_sequence_variable_name = None
+            grouping_ascending = None
+        return aa.Selection(
+            rule=aa.Rule(clause=self.clause._to_model_clause()),
+            top_n=aa.TopN(
+                grouping_variable_name=self.per.name,
+                grouping_sequence_variable_name=grouping_sequence_variable_name,
+                grouping_ascending=grouping_ascending,
+                group_max=self.n,
+            ),
+            table_name=self.clause.table_name,
+            name=self.label,
+        )

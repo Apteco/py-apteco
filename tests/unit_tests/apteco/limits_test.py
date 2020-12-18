@@ -7,7 +7,13 @@ import apteco_api as aa
 import pandas as pd
 import pytest
 
-from apteco.query import LimitClause, SelectorClause, TopNClause, ensure_single_or_range
+from apteco.query import (
+    LimitClause,
+    NPerVariableClause,
+    SelectorClause,
+    TopNClause,
+    ensure_single_or_range,
+)
 
 
 class FractionableDecimal(Decimal, Rational):
@@ -34,6 +40,15 @@ def clothing(rtl_var_purchase_department):
         return_value="Clothing clause model goes here"
     )
     return clothing_clause
+
+
+@pytest.fixture()
+def domestic(rtl_var_purchase_department):
+    domestic_clause = SelectorClause(rtl_var_purchase_department, ["Home", "Garden"])
+    domestic_clause._to_model_clause = Mock(
+        return_value="Domestic clause model goes here"
+    )
+    return domestic_clause
 
 
 class TestLimitClause:
@@ -1501,3 +1516,268 @@ class TestTopNClause:
             TopNClause._to_model_selection(fake_topn_clause)
         assert exc_info.value.args[0] == "Invalid kind: ('sample', 'total')"
         clothing._to_model_clause.assert_not_called()
+
+
+class TestNPerVariableClause:
+    def test_nper_variable_clause_n_correct_type(
+        self, domestic, rtl_var_purchase_store, rtl_session
+    ):
+        n_1000_per_store = NPerVariableClause(
+            domestic, 1000, rtl_var_purchase_store, session=rtl_session
+        )
+        assert n_1000_per_store.n == 1000
+        assert n_1000_per_store.per is rtl_var_purchase_store
+        assert n_1000_per_store.by is None
+        assert n_1000_per_store.ascending is False
+        assert n_1000_per_store.label is None
+        assert n_1000_per_store.session is rtl_session
+
+    def test_nper_variable_clause_n_needs_converting(
+        self, domestic, rtl_var_purchase_store, rtl_session
+    ):
+        s = pd.Series([5]).astype("int8")
+        n_5_per_store_from_pd_series = NPerVariableClause(
+            domestic, s[0], rtl_var_purchase_store, session=rtl_session
+        )
+        assert n_5_per_store_from_pd_series.n == 5
+        assert n_5_per_store_from_pd_series.per is rtl_var_purchase_store
+        assert n_5_per_store_from_pd_series.by is None
+        assert n_5_per_store_from_pd_series.ascending is False
+        assert n_5_per_store_from_pd_series.label is None
+        assert n_5_per_store_from_pd_series.session is rtl_session
+
+    def test_nper_variable_clause_n_not_integral(
+        self, domestic, rtl_var_purchase_store, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            n_as_float = NPerVariableClause(
+                domestic, 8.4, rtl_var_purchase_store, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            n_as_float_no_fractional_part = NPerVariableClause(
+                domestic, 80.0, rtl_var_purchase_store, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            n_is_none = NPerVariableClause(
+                domestic, None, rtl_var_purchase_store, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+    def test_nper_variable_clause_n_less_than_1(
+        self, domestic, rtl_var_purchase_store, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            n_is_0 = NPerVariableClause(
+                domestic, 0, rtl_var_purchase_store, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            n_negative = NPerVariableClause(
+                domestic, -150, rtl_var_purchase_store, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            n_too_small_and_not_int = NPerVariableClause(
+                domestic, 0.4444, rtl_var_purchase_store, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+    def test_nper_clause_per_is_none(
+        self, domestic, rtl_var_purchase_store, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            per_is_none = NPerVariableClause(domestic, 10, None, session=rtl_session)
+        assert exc_info.value.args[0] == "`per` must be a variable"
+
+    def test_nper_clause_per_not_variable(
+        self, domestic, rtl_table_customers, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            per_is_string = NPerVariableClause(
+                domestic, 10, "Store", session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`per` must be a variable"
+
+        with pytest.raises(ValueError) as exc_info:
+            per_is_table = NPerVariableClause(
+                domestic, 10, rtl_table_customers, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`per` must be a variable"
+
+    def test_nper_clause_per_array_variable(
+        self, domestic, rtl_var_customer_contact_pref, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            per_is_flag_array_var = NPerVariableClause(
+                domestic, 10, rtl_var_customer_contact_pref, session=rtl_session
+            )
+        assert (
+            exc_info.value.args[0] == "`per` cannot be an Array or Flag Array variable"
+        )
+
+    def test_nper_clause_by_correct_type(
+        self, domestic, rtl_var_purchase_store, rtl_var_purchase_date, rtl_session
+    ):
+        n_400_domestic_most_recent_by_store = NPerVariableClause(
+            domestic,
+            400,
+            rtl_var_purchase_store,
+            rtl_var_purchase_date,
+            session=rtl_session,
+        )
+        assert n_400_domestic_most_recent_by_store.n == 400
+        assert n_400_domestic_most_recent_by_store.per is rtl_var_purchase_store
+        assert n_400_domestic_most_recent_by_store.by is rtl_var_purchase_date
+        assert n_400_domestic_most_recent_by_store.ascending is False
+        assert n_400_domestic_most_recent_by_store.label is None
+        assert n_400_domestic_most_recent_by_store.session is rtl_session
+
+    def test_nper_clause_by_not_variable(
+        self, domestic, rtl_var_purchase_store, rtl_table_customers, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            by_is_string = NPerVariableClause(
+                domestic, 2500, rtl_var_purchase_store, "Cost", session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+        with pytest.raises(ValueError) as exc_info:
+            by_is_table = NPerVariableClause(
+                domestic,
+                750,
+                rtl_var_purchase_store,
+                rtl_table_customers,
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+    @pytest.mark.xfail(reason="Cannot identify unordered variables")
+    def test_nper_clause_by_variable_not_ordered(
+        self,
+        domestic,
+        rtl_var_purchase_store,
+        rtl_var_purchase_payment_method,
+        rtl_var_customer_contact_pref,
+        rtl_session,
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            by_is_unordered_selector_var = NPerVariableClause(
+                domestic,
+                10,
+                rtl_var_purchase_store,
+                rtl_var_purchase_payment_method,
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+        with pytest.raises(ValueError) as exc_info:
+            by_is_array_var = NPerVariableClause(
+                domestic,
+                10,
+                rtl_var_purchase_store,
+                rtl_var_customer_contact_pref,
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+    def test_nper_clause_ascending_correct_type(
+        self, domestic, rtl_var_purchase_store, rtl_var_purchase_profit, rtl_session
+    ):
+        lowest_300_profit_per_store = NPerVariableClause(
+            domestic,
+            300,
+            rtl_var_purchase_store,
+            rtl_var_purchase_profit,
+            ascending=True,
+            session=rtl_session,
+        )
+        assert lowest_300_profit_per_store.n == 300
+        assert lowest_300_profit_per_store.per is rtl_var_purchase_store
+        assert lowest_300_profit_per_store.by is rtl_var_purchase_profit
+        assert lowest_300_profit_per_store.ascending is True
+        assert lowest_300_profit_per_store.label is None
+        assert lowest_300_profit_per_store.session is rtl_session
+
+    def test_nper_clause_ascending_not_boolean(
+        self, domestic, rtl_var_purchase_store, rtl_var_purchase_date, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            n_per_var_direction_is_string = NPerVariableClause(
+                domestic,
+                1234,
+                rtl_var_purchase_store,
+                rtl_var_purchase_date,
+                ascending="latest",
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`ascending` must be a boolean (True or False)"
+
+    def test_nper_clause_to_model_selection_by_is_none(
+        self, domestic, rtl_var_purchase_store, rtl_table_purchases, rtl_session
+    ):
+        fake_nper_clause = Mock(
+            n=654,
+            per=rtl_var_purchase_store,
+            by=None,
+            ascending=False,
+            clause=domestic,
+            table=rtl_table_purchases,
+            label="654 domestic purchases per store",
+            session=rtl_session,
+        )
+        expected_nper_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Domestic clause model goes here"),
+            top_n=aa.TopN(
+                grouping_variable_name="puStore",
+                grouping_sequence_variable_name=None,
+                group_max=654,
+            ),
+            table_name="Purchases",
+            name="654 domestic purchases per store",
+        )
+        assert (
+            NPerVariableClause._to_model_selection(fake_nper_clause)
+            == expected_nper_selection_model
+        )
+        domestic._to_model_clause.assert_called_once_with()
+
+    def test_nper_clause_to_model_selection_by_not_none(
+        self,
+        domestic,
+        rtl_var_purchase_store,
+        rtl_var_purchase_date,
+        rtl_table_purchases,
+        rtl_session,
+    ):
+        fake_nper_clause = Mock(
+            n=789,
+            per=rtl_var_purchase_store,
+            by=rtl_var_purchase_date,
+            ascending=False,
+            clause=domestic,
+            table=rtl_table_purchases,
+            label="789 most recent domestic purchases per store",
+            session=rtl_session,
+        )
+        expected_nper_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Domestic clause model goes here"),
+            top_n=aa.TopN(
+                grouping_variable_name="puStore",
+                grouping_sequence_variable_name="puDate",
+                grouping_ascending=False,
+                group_max=789,
+            ),
+            table_name="Purchases",
+            name="789 most recent domestic purchases per store",
+        )
+        assert (
+            NPerVariableClause._to_model_selection(fake_nper_clause)
+            == expected_nper_selection_model
+        )
+        domestic._to_model_clause.assert_called_once_with()

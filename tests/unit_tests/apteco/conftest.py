@@ -35,6 +35,7 @@ Customers   | Gender                        | cuGender  | Selector  |
 Customers   | Customer Contact Preferences  | cuContac  | FlagArray |
 ------------|-------------------------------|-----------|-----------|
 Purchases   | Purchase ID                   | puID      | Reference |
+Purchases   | Store                         | puStore   | Selector  |
 Purchases   | Department                    | puDept    | Selector  |
 Purchases   | Purchase Date                 | puDate    | DateTime  |
 Purchases   | Store Type                    | puStType  | Selector  |
@@ -113,6 +114,7 @@ def rtl_var_customer_contact_pref(rtl_table_customers):
         name="cuContac",
         description="Customer Contact Preferences",
         type="FlagArray",
+        is_selectable=True,
         table=rtl_table_customers,
     )
     return var
@@ -125,6 +127,19 @@ def rtl_var_purchase_id(rtl_table_purchases):
         name="puID",
         description="Purchase ID",
         type="Reference",
+        table=rtl_table_purchases,
+    )
+    return var
+
+
+@pytest.fixture()
+def rtl_var_purchase_store(rtl_table_purchases):
+    var = Mock(spec=SelectorVariable)
+    var.configure_mock(
+        name="puStore",
+        description="Store",
+        type="Selector",
+        is_selectable=True,
         table=rtl_table_purchases,
     )
     return var
@@ -150,6 +165,7 @@ def rtl_var_purchase_date(rtl_table_purchases):
         name="puDate",
         description="Purchase Date",
         type="DateTime",
+        is_selectable=True,
         table=rtl_table_purchases,
     )
     return var
@@ -183,7 +199,11 @@ def rtl_var_purchase_payment_method(rtl_table_purchases):
 def rtl_var_purchase_profit(rtl_table_purchases):
     var = Mock(spec=NumericVariable)
     var.configure_mock(
-        name="puProfit", description="Profit", type="Numeric", table=rtl_table_purchases
+        name="puProfit",
+        description="Profit",
+        type="Numeric",
+        is_selectable=True,
+        table=rtl_table_purchases,
     )
     return var
 

@@ -2,7 +2,7 @@ from fractions import Fraction
 
 import pytest
 
-from apteco.query import LimitClause, TopNClause
+from apteco.query import LimitClause, NPerVariableClause, TopNClause
 
 
 @pytest.fixture()
@@ -23,6 +23,11 @@ def usa(bookings):
 @pytest.fixture()
 def topn_dg_cols(bookings):
     return [bookings[var] for var in ("Booking URN", "Destination", "Profit", "Cost")]
+
+
+@pytest.fixture()
+def flights(bookings):
+    return bookings["Product"] == "2"
 
 
 class UnrealFrac:
@@ -427,3 +432,56 @@ class TestTopNClause:
             "Cost",
             300.51,
         )
+
+
+class TestNPerVariableClause:
+    def test_per_same_table_any(self, holidays, bookings, flights):
+        flight_only_any_250_per_dest = NPerVariableClause(
+            flights, 250, bookings["Destination"], session=holidays
+        )
+        assert flight_only_any_250_per_dest.count() == 3217
+
+    def test_per_by_same_table(self, holidays, bookings, flights):
+        flights_only_12_per_dest_by_profit = NPerVariableClause(
+            flights,
+            12,
+            bookings["Destination"],
+            by=bookings["Profit"],
+            session=holidays,
+        )
+        assert flights_only_12_per_dest_by_profit.count() == 228
+
+    def test_per_different_table_any(self, holidays, bookings, people, flights):
+        flights_only_any_500_per_occupation = NPerVariableClause(
+            flights, 500, people["Occupation"], session=holidays
+        )
+        assert flights_only_any_500_per_occupation.count() == 5500
+
+    def test_per_different_table_by_same_as_clause(
+        self, holidays, bookings, people, flights
+    ):
+        flights_only_1000_highest_cost_per_income = NPerVariableClause(
+            flights, 1000, people["Income"], by=bookings["Cost"], session=holidays
+        )
+        assert flights_only_1000_highest_cost_per_income.count() == 9409
+
+    def test_per_different_table_by_same_as_per(
+        self, holidays, bookings, people, flights
+    ):
+        flights_only_2_per_surname_by_top_income = NPerVariableClause(
+            flights, 2, people["Surname"], by=people["Income"], session=holidays
+        )
+        assert flights_only_2_per_surname_by_top_income.count() == 89233
+
+    def test_per_different_table_by_different_table(
+        self, holidays, households, people, bookings, flights
+    ):
+        flights_only_75_per_region_by_oldest_person = NPerVariableClause(
+            flights,
+            75,
+            households["Region"],
+            by=people["DOB"],
+            ascending=True,
+            session=holidays,
+        )
+        assert flights_only_75_per_region_by_oldest_person.count() == 1125
