@@ -52,7 +52,9 @@ def domestic(rtl_var_purchase_department):
 
 
 class TestLimitClause:
-    def test_limit_clause_total_correct_type(self, electronics, rtl_session):
+    def test_limit_clause_total_correct_type(
+        self, electronics, rtl_table_purchases, rtl_session
+    ):
         limit_2500 = LimitClause(electronics, 2500, session=rtl_session)
         assert limit_2500.kind == "Total"
         assert limit_2500.total == 2500
@@ -60,10 +62,14 @@ class TestLimitClause:
         assert limit_2500.fraction is None
         assert limit_2500.sample_type == "First"
         assert limit_2500.skip_first == 0
+        assert limit_2500.clause is electronics
+        assert limit_2500.table is rtl_table_purchases
         assert limit_2500.label is None
         assert limit_2500.session is rtl_session
 
-    def test_limit_clause_total_needs_converting(self, electronics, rtl_session):
+    def test_limit_clause_total_needs_converting(
+        self, electronics, rtl_table_purchases, rtl_session
+    ):
         s = pd.Series([654]).astype("int32")
         limit_654_from_pd_series = LimitClause(electronics, s[0], session=rtl_session)
         assert limit_654_from_pd_series.kind == "Total"
@@ -72,6 +78,8 @@ class TestLimitClause:
         assert limit_654_from_pd_series.fraction is None
         assert limit_654_from_pd_series.sample_type == "First"
         assert limit_654_from_pd_series.skip_first == 0
+        assert limit_654_from_pd_series.clause is electronics
+        assert limit_654_from_pd_series.table is rtl_table_purchases
         assert limit_654_from_pd_series.label is None
         assert limit_654_from_pd_series.session is rtl_session
 
@@ -101,7 +109,9 @@ class TestLimitClause:
             )
         assert exc_info.value.args[0] == "`total` must be an integer greater than 0"
 
-    def test_limit_clause_percent_correct_type(self, electronics, rtl_session):
+    def test_limit_clause_percent_correct_type(
+        self, electronics, rtl_table_purchases, rtl_session
+    ):
         limit_0_6_pct = LimitClause(electronics, percent=0.6, session=rtl_session)
         assert limit_0_6_pct.kind == "Percent"
         assert limit_0_6_pct.total is None
@@ -109,10 +119,14 @@ class TestLimitClause:
         assert limit_0_6_pct.fraction is None
         assert limit_0_6_pct.sample_type == "First"
         assert limit_0_6_pct.skip_first == 0
+        assert limit_0_6_pct.clause is electronics
+        assert limit_0_6_pct.table is rtl_table_purchases
         assert limit_0_6_pct.label is None
         assert limit_0_6_pct.session is rtl_session
 
-    def test_limit_clause_percent_needs_converting(self, electronics, rtl_session):
+    def test_limit_clause_percent_needs_converting(
+        self, electronics, rtl_table_purchases, rtl_session
+    ):
         limit_127_2000_pct = LimitClause(
             electronics, percent=Fraction("127/20"), session=rtl_session
         )
@@ -122,6 +136,8 @@ class TestLimitClause:
         assert limit_127_2000_pct.fraction is None
         assert limit_127_2000_pct.sample_type == "First"
         assert limit_127_2000_pct.skip_first == 0
+        assert limit_127_2000_pct.clause is electronics
+        assert limit_127_2000_pct.table is rtl_table_purchases
         assert limit_127_2000_pct.label is None
         assert limit_127_2000_pct.session is rtl_session
 
@@ -130,18 +146,16 @@ class TestLimitClause:
             limit_percent_as_complex = LimitClause(
                 electronics, percent=13.87 + 951.84j, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`percent` must be a number between 0–100 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number between 0–100 (exclusive)"
         )
 
         with pytest.raises(ValueError) as exc_info:
             limit_percent_as_str = LimitClause(
                 electronics, percent="7.25", session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`percent` must be a number between 0–100 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number between 0–100 (exclusive)"
         )
 
     def test_limit_clause_percent_out_of_range(self, electronics, rtl_session):
@@ -149,39 +163,37 @@ class TestLimitClause:
             limit_percent_is_0 = LimitClause(
                 electronics, percent=0, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`percent` must be a number between 0–100 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number between 0–100 (exclusive)"
         )
 
         with pytest.raises(ValueError) as exc_info:
             limit_percent_too_small = LimitClause(
                 electronics, percent=-1.5, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`percent` must be a number between 0–100 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number between 0–100 (exclusive)"
         )
 
         with pytest.raises(ValueError) as exc_info:
             limit_percent_is_100 = LimitClause(
                 electronics, percent=100, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`percent` must be a number between 0–100 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number between 0–100 (exclusive)"
         )
 
         with pytest.raises(ValueError) as exc_info:
             limit_percent_too_big = LimitClause(
                 electronics, percent=144.1, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`percent` must be a number between 0–100 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number between 0–100 (exclusive)"
         )
 
-    def test_limit_clause_fraction_correct_type(self, electronics, rtl_session):
+    def test_limit_clause_fraction_correct_type(
+        self, electronics, rtl_table_purchases, rtl_session
+    ):
         limit_2_9_frac = LimitClause(
             electronics, fraction=Fraction(2, 9), session=rtl_session
         )
@@ -192,10 +204,14 @@ class TestLimitClause:
         assert limit_2_9_frac.fraction.denominator == 9
         assert limit_2_9_frac.sample_type == "First"
         assert limit_2_9_frac.skip_first == 0
+        assert limit_2_9_frac.clause is electronics
+        assert limit_2_9_frac.table is rtl_table_purchases
         assert limit_2_9_frac.label is None
         assert limit_2_9_frac.session is rtl_session
 
-    def test_limit_clause_fraction_needs_converting(self, electronics, rtl_session):
+    def test_limit_clause_fraction_needs_converting(
+        self, electronics, rtl_table_purchases, rtl_session
+    ):
         limit_custom_rational_class = LimitClause(
             electronics, fraction=FractionableDecimal("0.0265"), session=rtl_session
         )
@@ -206,6 +222,8 @@ class TestLimitClause:
         assert limit_custom_rational_class.fraction.denominator == 2000
         assert limit_custom_rational_class.sample_type == "First"
         assert limit_custom_rational_class.skip_first == 0
+        assert limit_custom_rational_class.clause is electronics
+        assert limit_custom_rational_class.table is rtl_table_purchases
         assert limit_custom_rational_class.label is None
         assert limit_custom_rational_class.session is rtl_session
 
@@ -214,18 +232,16 @@ class TestLimitClause:
             limit_fraction_as_float = LimitClause(
                 electronics, fraction=0.3333, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`fraction` must be a rational number between 0 and 1 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`fraction` must be a rational number between 0 and 1 (exclusive)"
         )
 
         with pytest.raises(ValueError) as exc_info:
             limit_fraction_as_str = LimitClause(
                 electronics, fraction="2/17", session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`fraction` must be a rational number between 0 and 1 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`fraction` must be a rational number between 0 and 1 (exclusive)"
         )
 
     def test_limit_clause_fraction_out_of_range(self, electronics, rtl_session):
@@ -233,39 +249,37 @@ class TestLimitClause:
             limit_fraction_is_0 = LimitClause(
                 electronics, fraction=0, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`fraction` must be a rational number between 0 and 1 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`fraction` must be a rational number between 0 and 1 (exclusive)"
         )
 
         with pytest.raises(ValueError) as exc_info:
             limit_fraction_too_small = LimitClause(
                 electronics, fraction=Fraction(-4, 100), session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`fraction` must be a rational number between 0 and 1 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`fraction` must be a rational number between 0 and 1 (exclusive)"
         )
 
         with pytest.raises(ValueError) as exc_info:
             limit_fraction_is_1 = LimitClause(
                 electronics, fraction=1, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`fraction` must be a rational number between 0 and 1 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`fraction` must be a rational number between 0 and 1 (exclusive)"
         )
 
         with pytest.raises(ValueError) as exc_info:
             limit_fraction_too_big = LimitClause(
                 electronics, fraction=Fraction(4, 3), session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "`fraction` must be a rational number between 0 and 1 (exclusive)"
+        assert exc_info.value.args[0] == (
+            "`fraction` must be a rational number between 0 and 1 (exclusive)"
         )
 
-    def test_limit_clause_skip_first_correct_type(self, electronics, rtl_session):
+    def test_limit_clause_skip_first_correct_type(
+        self, electronics, rtl_table_purchases, rtl_session
+    ):
         limit_skip_82 = LimitClause(
             electronics, 55000, skip_first=82, session=rtl_session
         )
@@ -275,10 +289,14 @@ class TestLimitClause:
         assert limit_skip_82.fraction is None
         assert limit_skip_82.sample_type == "First"
         assert limit_skip_82.skip_first == 82
+        assert limit_skip_82.clause is electronics
+        assert limit_skip_82.table is rtl_table_purchases
         assert limit_skip_82.label is None
         assert limit_skip_82.session is rtl_session
 
-    def test_limit_clause_skip_first_needs_converting(self, electronics, rtl_session):
+    def test_limit_clause_skip_first_needs_converting(
+        self, electronics, rtl_table_purchases, rtl_session
+    ):
         limit_skip_1_as_true = LimitClause(
             electronics, percent=64.2, skip_first=True, session=rtl_session
         )
@@ -288,6 +306,8 @@ class TestLimitClause:
         assert limit_skip_1_as_true.fraction is None
         assert limit_skip_1_as_true.sample_type == "First"
         assert limit_skip_1_as_true.skip_first == 1
+        assert limit_skip_1_as_true.clause is electronics
+        assert limit_skip_1_as_true.table is rtl_table_purchases
         assert limit_skip_1_as_true.label is None
         assert limit_skip_1_as_true.session is rtl_session
 
@@ -311,9 +331,8 @@ class TestLimitClause:
     def test_limit_clause_no_value_given(self, electronics, rtl_session):
         with pytest.raises(ValueError) as exc_info:
             electronics_no_value = LimitClause(clause=electronics, session=rtl_session)
-        assert (
-            exc_info.value.args[0]
-            == "Must specify exactly one of `total`, `percent` or `fraction`"
+        assert exc_info.value.args[0] == (
+            "Must specify exactly one of `total`, `percent` or `fraction`"
         )
 
     def test_limit_clause_two_values_given(self, electronics, rtl_session):
@@ -321,9 +340,8 @@ class TestLimitClause:
             electronics_2_values = LimitClause(
                 clause=electronics, total=10, percent=0, session=rtl_session
             )
-        assert (
-            exc_info.value.args[0]
-            == "Must specify exactly one of `total`, `percent` or `fraction`"
+        assert exc_info.value.args[0] == (
+            "Must specify exactly one of `total`, `percent` or `fraction`"
         )
 
     def test_limit_clause_three_values_given(self, electronics, rtl_session):
@@ -335,9 +353,8 @@ class TestLimitClause:
                 fraction=Fraction(2, 3),
                 session=rtl_session,
             )
-        assert (
-            exc_info.value.args[0]
-            == "Must specify exactly one of `total`, `percent` or `fraction`"
+        assert exc_info.value.args[0] == (
+            "Must specify exactly one of `total`, `percent` or `fraction`"
         )
 
     def test_limit_clause_sample_invalid_type(self, electronics, rtl_session):
@@ -347,7 +364,7 @@ class TestLimitClause:
             )
         assert exc_info.value.args[0] == "Regular is not a valid sample type"
 
-    def test_limit_clause_init(self, electronics, rtl_session):
+    def test_limit_clause_init(self, electronics, rtl_table_purchases, rtl_session):
         electronics_2_thirds_random_skip_first_5 = LimitClause(
             clause=electronics,
             fraction=Fraction(2, 3),
@@ -360,10 +377,10 @@ class TestLimitClause:
         assert electronics_2_thirds_random_skip_first_5.percent is None
         assert electronics_2_thirds_random_skip_first_5.fraction.numerator == 2
         assert electronics_2_thirds_random_skip_first_5.fraction.denominator == 3
-        assert electronics_2_thirds_random_skip_first_5.clause == electronics
         assert electronics_2_thirds_random_skip_first_5.sample_type == "Random"
         assert electronics_2_thirds_random_skip_first_5.skip_first == 5
-        assert electronics_2_thirds_random_skip_first_5.table == electronics.table
+        assert electronics_2_thirds_random_skip_first_5.clause is electronics
+        assert electronics_2_thirds_random_skip_first_5.table is rtl_table_purchases
         assert electronics_2_thirds_random_skip_first_5.label is None
         assert electronics_2_thirds_random_skip_first_5.session == rtl_session
 
