@@ -936,7 +936,7 @@ class TestEnsureSingleOrRangeRealRange:
 
 class TestTopNClause:
     def test_topn_clause_total_single_correct_type(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         top_43210 = TopNClause(
             clothing, 43210, by=rtl_var_purchase_profit, session=rtl_session
@@ -947,11 +947,12 @@ class TestTopNClause:
         assert top_43210.by is rtl_var_purchase_profit
         assert top_43210.ascending is False
         assert top_43210.clause is clothing
+        assert top_43210.table is rtl_table_purchases
         assert top_43210.label is None
         assert top_43210.session is rtl_session
 
     def test_topn_clause_total_single_needs_converting(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         s = pd.Series([123]).astype("int8")
         top_123 = TopNClause(
@@ -963,6 +964,7 @@ class TestTopNClause:
         assert top_123.by is rtl_var_purchase_profit
         assert top_123.ascending is False
         assert top_123.clause is clothing
+        assert top_123.table is rtl_table_purchases
         assert top_123.label is None
         assert top_123.session is rtl_session
 
@@ -997,7 +999,7 @@ class TestTopNClause:
         )
 
     def test_topn_clause_percent_single_correct_type(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         top_4_615_percent = TopNClause(
             clothing, percent=4.615, by=rtl_var_purchase_profit, session=rtl_session
@@ -1008,6 +1010,7 @@ class TestTopNClause:
         assert top_4_615_percent.by is rtl_var_purchase_profit
         assert top_4_615_percent.ascending is False
         assert top_4_615_percent.clause is clothing
+        assert top_4_615_percent.table is rtl_table_purchases
         assert top_4_615_percent.label is None
         assert top_4_615_percent.session is rtl_session
 
@@ -1020,11 +1023,12 @@ class TestTopNClause:
         assert top_0_332_percent.by is rtl_var_purchase_profit
         assert top_0_332_percent.ascending is False
         assert top_0_332_percent.clause is clothing
+        assert top_0_332_percent.table is rtl_table_purchases
         assert top_0_332_percent.label is None
         assert top_0_332_percent.session is rtl_session
 
     def test_topn_clause_percent_single_needs_converting(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         top_19_782_percent = TopNClause(
             clothing,
@@ -1038,6 +1042,7 @@ class TestTopNClause:
         assert top_19_782_percent.by is rtl_var_purchase_profit
         assert top_19_782_percent.ascending is False
         assert top_19_782_percent.clause is clothing
+        assert top_19_782_percent.table is rtl_table_purchases
         assert top_19_782_percent.label is None
         assert top_19_782_percent.session is rtl_session
 
@@ -1080,7 +1085,7 @@ class TestTopNClause:
         )
 
     def test_topn_clause_total_range_correct_type(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         top_1234_5678 = TopNClause(
             clothing, (1234, 5678), by=rtl_var_purchase_profit, session=rtl_session
@@ -1091,11 +1096,12 @@ class TestTopNClause:
         assert top_1234_5678.by is rtl_var_purchase_profit
         assert top_1234_5678.ascending is False
         assert top_1234_5678.clause is clothing
+        assert top_1234_5678.table is rtl_table_purchases
         assert top_1234_5678.label is None
         assert top_1234_5678.session is rtl_session
 
     def test_topn_clause_total_range_needs_converting(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         top_1_6_start_needs_converting = TopNClause(
             clothing, (True, 6), by=rtl_var_purchase_profit, session=rtl_session
@@ -1106,6 +1112,7 @@ class TestTopNClause:
         assert top_1_6_start_needs_converting.by is rtl_var_purchase_profit
         assert top_1_6_start_needs_converting.ascending is False
         assert top_1_6_start_needs_converting.clause is clothing
+        assert top_1_6_start_needs_converting.table is rtl_table_purchases
         assert top_1_6_start_needs_converting.label is None
         assert top_1_6_start_needs_converting.session is rtl_session
 
@@ -1119,6 +1126,7 @@ class TestTopNClause:
         assert top_2k_to_5k_both_need_converting.by is rtl_var_purchase_profit
         assert top_2k_to_5k_both_need_converting.ascending is False
         assert top_2k_to_5k_both_need_converting.clause is clothing
+        assert top_2k_to_5k_both_need_converting.table is rtl_table_purchases
         assert top_2k_to_5k_both_need_converting.label is None
         assert top_2k_to_5k_both_need_converting.session is rtl_session
 
@@ -1175,7 +1183,7 @@ class TestTopNClause:
         )
 
     def test_topn_clause_percent_range_correct_type(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         top_5_31_to_9_753_percent = TopNClause(
             clothing,
@@ -1189,11 +1197,12 @@ class TestTopNClause:
         assert top_5_31_to_9_753_percent.by is rtl_var_purchase_profit
         assert top_5_31_to_9_753_percent.ascending is False
         assert top_5_31_to_9_753_percent.clause is clothing
+        assert top_5_31_to_9_753_percent.table is rtl_table_purchases
         assert top_5_31_to_9_753_percent.label is None
         assert top_5_31_to_9_753_percent.session is rtl_session
 
     def test_topn_clause_percent_range_needs_converting(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         s = pd.Series([14.2856]).astype("float64")
         top_7_2163_to_14_2856_end_needs_converting = TopNClause(
@@ -1208,6 +1217,7 @@ class TestTopNClause:
         assert top_7_2163_to_14_2856_end_needs_converting.by is rtl_var_purchase_profit
         assert top_7_2163_to_14_2856_end_needs_converting.ascending is False
         assert top_7_2163_to_14_2856_end_needs_converting.clause is clothing
+        assert top_7_2163_to_14_2856_end_needs_converting.table is rtl_table_purchases
         assert top_7_2163_to_14_2856_end_needs_converting.label is None
         assert top_7_2163_to_14_2856_end_needs_converting.session is rtl_session
 
@@ -1223,6 +1233,7 @@ class TestTopNClause:
         assert top_65_432_to_76_54_end_needs_converting.by is rtl_var_purchase_profit
         assert top_65_432_to_76_54_end_needs_converting.ascending is False
         assert top_65_432_to_76_54_end_needs_converting.clause is clothing
+        assert top_65_432_to_76_54_end_needs_converting.table is rtl_table_purchases
         assert top_65_432_to_76_54_end_needs_converting.label is None
         assert top_65_432_to_76_54_end_needs_converting.session is rtl_session
 
@@ -1292,7 +1303,7 @@ class TestTopNClause:
     def test_topn_clause_no_value_given(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
             topn_no_value_given = TopNClause(clothing, session=rtl_session)
-        assert exc_info.value.args[0] == ("Must specify one of `total` or `percent`")
+        assert exc_info.value.args[0] == "Must specify one of `total` or `percent`"
 
     def test_topn_clause_both_values_given(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
@@ -1314,7 +1325,7 @@ class TestTopNClause:
         assert exc_info.value.args[0] == "`by` must be an ordered variable"
 
     def test_topn_clause_ascending_correct_type(
-        self, clothing, rtl_var_purchase_profit, rtl_session
+        self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
         bottom_500 = TopNClause(
             clothing,
@@ -1329,6 +1340,7 @@ class TestTopNClause:
         assert bottom_500.by is rtl_var_purchase_profit
         assert bottom_500.ascending is True
         assert bottom_500.clause is clothing
+        assert bottom_500.table is rtl_table_purchases
         assert bottom_500.label is None
         assert bottom_500.session is rtl_session
 
