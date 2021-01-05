@@ -352,27 +352,29 @@ class Clause:
         )
 
     def sample(
-        self, n=None, frac=None, sample_type="First", skip_first=0, *, label=None
+        self, n=None, frac=None, sample_type="Random", skip_first=0, *, label=None
     ):
         if sum((i is not None) for i in (n, frac)) != 1:
             raise ValueError("Must specify either n or frac")
+        total = None
         percent = None
         fraction = None
         if n is not None:
             if not isinstance(n, Integral) or n < 1:
                 raise ValueError("n must be an integer greater than 0")
+            total = int(n)
         else:
-            if frac >= 1 or frac <= 0:
+            if not isinstance(frac, Real):
+                raise ValueError("frac must be either a float or a fraction")
+            if not 0 < float(frac) < 1:
                 raise ValueError("frac must be between 0 and 1")
             if isinstance(frac, Rational):
-                fraction = frac
-            elif isinstance(frac, Real):
-                percent = frac * 100
+                fraction = Fraction(frac.numerator, frac.denominator)
             else:
-                raise ValueError("frac must be either a float or a fraction")
+                percent = float(frac) * 100
         return LimitClause(
             clause=self,
-            total=n,
+            total=total,
             percent=percent,
             fraction=fraction,
             sample_type=sample_type,
