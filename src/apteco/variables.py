@@ -8,6 +8,7 @@ from apteco.query import (
     DateRangeClause,
     DateTimeRangeClause,
     FlagArrayClause,
+    NPerVariableClause,
     NumericClause,
     SelectorClause,
     TextClause,
@@ -63,6 +64,9 @@ class Variable:
     @property
     def table_name(self):
         return self.table.name
+
+    def _as_nper_clause(self, clause, n, by, ascending, label):
+        return NPerVariableClause(clause=clause, n=n, per=self, by=by, ascending=ascending, label=label, session=self.session)
 
 
 class BaseSelectorVariable(Variable):

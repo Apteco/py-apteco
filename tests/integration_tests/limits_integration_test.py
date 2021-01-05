@@ -92,7 +92,6 @@ class TestSample:
 
 
 class TestLimit:
-    @pytest.mark.xfail(reason="Top N under development")
     def test_top_n(self, men, people):
         men_top_100_by_income = men.limit(n=100, by=people["Income"])
         men_between_bottom_5pct_10pct_by_income = men.limit(
@@ -103,10 +102,9 @@ class TestLimit:
         assert men_between_bottom_5pct_10pct_by_income.count() == 18928
         assert men_between_top_20_50_by_income.count() == 31
 
-    @pytest.mark.xfail(reason="N per variable under development")
     def test_n_per_variable(self, men, people):
         men_highest_5_income_per_surname = men.limit(
-            value=5, by=people["Income"], per=people["Surname"]
+            n=5, by=people["Income"], per=people["Surname"]
         )
         men_10_per_surname = men.limit(n=10, per=people["Surname"])
         men_lowest_2_income_per_surname = men.limit(
@@ -116,7 +114,6 @@ class TestLimit:
         assert men_10_per_surname.count() == 148541
         assert men_lowest_2_income_per_surname.count() == 81527
 
-    @pytest.mark.xfail(reason="N per table under development")
     def test_n_per_table(self, france, people, bookings, households):
         france_bookings_1_per_person = france.limit(n=1, per=people)
         france_bookings_highest_2_costs_per_person = france.limit(
@@ -125,9 +122,9 @@ class TestLimit:
         france_bookings_lowest_3_profits_per_household = france.limit(
             n=3, by=bookings["Profit"], ascending=True, per=households
         )
-        assert france_bookings_1_per_person.count() == 796794
-        assert france_bookings_highest_2_costs_per_person.count() == 926322
-        assert france_bookings_lowest_3_profits_per_household.count() == 923771
+        assert france_bookings_1_per_person.count() == 522932
+        assert france_bookings_highest_2_costs_per_person.count() == 524349
+        assert france_bookings_lowest_3_profits_per_household.count() == 519165
 
 
 class TestLimitClause:

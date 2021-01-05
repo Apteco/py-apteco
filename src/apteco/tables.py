@@ -3,7 +3,7 @@ from typing import Iterable, List, Optional
 from apteco.cube import Cube
 from apteco.datagrid import DataGrid
 from apteco.exceptions import get_deprecated_attr
-from apteco.query import TableMixin
+from apteco.query import NPerTableClause, TableMixin
 from apteco.variables import VariablesAccessor
 
 
@@ -175,6 +175,9 @@ class Table(TableMixin):
         return Cube(
             dimensions, measures, selection=selection, table=self, session=self.session
         )
+
+    def _as_nper_clause(self, clause, n, by, ascending, label):
+        return NPerTableClause(clause=clause, n=n, per=self, by=by, ascending=ascending, label=label, session=self.session)
 
     def __getattr__(self, item):
         DEPRECATED_ATTRS = {

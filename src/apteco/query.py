@@ -9,8 +9,6 @@ import apteco_api as aa
 from apteco.cube import Cube
 from apteco.datagrid import DataGrid
 from apteco.exceptions import AptecoException
-# from apteco.tables import Table
-# from apteco.variables import Variable
 
 DECIMAL_PLACES = 4
 
@@ -383,29 +381,57 @@ class Clause:
             session=self.session,
         )
 
-    # def limit(self, n=None, frac=None, by=None, ascending=None, per=None, *, label=None):
-    #     if ascending is not None:
-    #         if not isinstance(ascending, bool):
-    #             raise ValueError("ascending must be True or False")
-    #         if by is None:
-    #             raise ValueError("Must specify by with ascending")
-    #     else:
-    #         ascending = False
-    #     if by is not None and not isinstance(by, Variable):
-    #         raise ValueError("by must be a variable")
-    #     if per is not None:
-    #         if isinstance(per, Table):
-    #             pass
-    #             #npertable
-    #         if isinstance(per, Variable):
-    #             pass
-    #             #npervariable
-    #         raise ValueError("per must be a table or a variable")
-    #     if by is None:
-    #         pass
-    #         #call.sample()
-    #     pass
-    #     #topn
+    def limit(
+        self, n=None, frac=None, by=None, ascending=None, per=None, *, label=None
+    ):
+        if ascending is not None:
+            if not isinstance(ascending, bool):
+                raise ValueError("ascending must be True or False")
+            if by is None:
+                raise ValueError("Must specify by with ascending")
+        else:
+            ascending = False
+        # if by is not None and not isinstance(by, Variable):
+        #     raise ValueError("by must be a variable")
+        if per is not None:
+            # nper
+            try:
+                return per._as_nper_clause(
+                    clause=self, n=n, by=by, ascending=ascending, label=label
+                )
+            except AttributeError:
+                raise ValueError("`per` must be a table or a variable") from None
+        if by is None:
+            # call.sample()
+            return self.sample(n=n, frac=frac, label=label)
+        # topn
+        if n is not None:
+            return TopNClause(
+                clause=self,
+                total=n,
+                percent=None,
+                by=by,
+                ascending=ascending,
+                label=label,
+                session=self.session,
+            )
+        if frac is not None:
+            if isinstance(frac, tuple):
+                percent = tuple(i * 100 for i in frac)
+            elif isinstance(frac, Real):
+                percent = frac * 100
+            else:
+                raise ValueError()
+            return TopNClause(
+                clause=self,
+                total=None,
+                percent=percent,
+                by=by,
+                ascending=ascending,
+                label=label,
+                session=self.session,
+            )
+        raise ValueError()
 
 
 class SelectorClauseMixin:
