@@ -48,7 +48,7 @@ Purchases   | Profit                        | puProfit  | Numeric   |
 @pytest.fixture()
 def rtl_table_customers():
     table = Mock(spec=Table)
-    table.configure_mock(name="Customers")
+    table.configure_mock(name="Customers", is_people=True)
     return table
 
 

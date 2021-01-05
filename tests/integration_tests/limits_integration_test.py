@@ -2,7 +2,7 @@ from fractions import Fraction
 
 import pytest
 
-from apteco.query import LimitClause, NPerVariableClause, TopNClause
+from apteco.query import LimitClause, NPerTableClause, NPerVariableClause, TopNClause
 
 
 @pytest.fixture()
@@ -28,6 +28,11 @@ def topn_dg_cols(bookings):
 @pytest.fixture()
 def flights(bookings):
     return bookings["Product"] == "2"
+
+
+@pytest.fixture()
+def tablet(web_visits):
+    return web_visits["Device Type"] == "2"
 
 
 class UnrealFrac:
@@ -485,3 +490,21 @@ class TestNPerVariableClause:
             session=holidays,
         )
         assert flights_only_75_per_region_by_oldest_person.count() == 1125
+
+
+class TestNPerTableClause:
+    def test_per_parent_any(self, holidays, people, tablet):
+        tablet_any_4_per_person = NPerTableClause(tablet, 4, people, session=holidays)
+        assert tablet_any_4_per_person.count() == 32533
+
+    def test_per_parent_first(self, holidays, people, web_visits, tablet):
+        tablet_first_2_per_person_by_wv_time = NPerTableClause(
+            tablet, 2, people, by=web_visits["Web Visit Time"], session=holidays
+        )
+        assert tablet_first_2_per_person_by_wv_time.count() == 31811
+
+    def test_per_ancestor_last(self, holidays, households, web_visits, tablet):
+        tablet_last_3_per_household_by_duration = NPerTableClause(
+            tablet, 3, households, by=web_visits["Duration"], session=holidays
+        )
+        assert tablet_last_3_per_household_by_duration.count() == 32084

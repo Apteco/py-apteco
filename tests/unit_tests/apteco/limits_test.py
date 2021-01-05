@@ -9,6 +9,7 @@ import pytest
 
 from apteco.query import (
     LimitClause,
+    NPerTableClause,
     NPerVariableClause,
     SelectorClause,
     TopNClause,
@@ -49,6 +50,18 @@ def domestic(rtl_var_purchase_department):
         return_value="Domestic clause model goes here"
     )
     return domestic_clause
+
+
+@pytest.fixture()
+def leisure(rtl_var_purchase_department):
+    leisure_clause = SelectorClause(
+        rtl_var_purchase_department,
+        ["Sportswear", "Fitness", "Hobbies", "Crafts", "Travel", "Luggage"],
+    )
+    leisure_clause._to_model_clause = Mock(
+        return_value="Leisure clause model goes here"
+    )
+    return leisure_clause
 
 
 class TestLimitClause:
@@ -1826,3 +1839,303 @@ class TestNPerVariableClause:
             == expected_nper_selection_model
         )
         domestic._to_model_clause.assert_called_once_with()
+
+
+class TestNPerTableClause:
+    def test_nper_table_clause_n_correct_type(
+        self, leisure, rtl_table_purchases, rtl_table_customers, rtl_session
+    ):
+        n_3_per_customer = NPerTableClause(
+            leisure, 3, rtl_table_customers, session=rtl_session
+        )
+        assert n_3_per_customer.n == 3
+        assert n_3_per_customer.per is rtl_table_customers
+        assert n_3_per_customer.by is None
+        assert n_3_per_customer.ascending is False
+        assert n_3_per_customer.clause is leisure
+        assert n_3_per_customer.table is rtl_table_purchases
+        assert n_3_per_customer.label is None
+        assert n_3_per_customer.session is rtl_session
+
+    def test_nper_table_clause_n_needs_converting(
+        self, leisure, rtl_table_purchases, rtl_table_customers, rtl_session
+    ):
+        n_1_per_customer_as_true = NPerTableClause(
+            leisure, True, rtl_table_customers, session=rtl_session
+        )
+        assert n_1_per_customer_as_true.n == 1
+        assert n_1_per_customer_as_true.per is rtl_table_customers
+        assert n_1_per_customer_as_true.by is None
+        assert n_1_per_customer_as_true.ascending is False
+        assert n_1_per_customer_as_true.clause is leisure
+        assert n_1_per_customer_as_true.table is rtl_table_purchases
+        assert n_1_per_customer_as_true.label is None
+        assert n_1_per_customer_as_true.session is rtl_session
+
+    def test_nper_table_clause_n_not_integral(
+        self, leisure, rtl_table_customers, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            n_as_float = NPerTableClause(
+                leisure, 2.4, rtl_table_customers, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            n_as_float_no_fractional_part = NPerTableClause(
+                leisure, 4.0, rtl_table_customers, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            n_is_none = NPerTableClause(
+                leisure, None, rtl_table_customers, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+    def test_nper_table_clause_n_less_than_1(
+        self, leisure, rtl_table_customers, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            n_is_0 = NPerTableClause(
+                leisure, 0, rtl_table_customers, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            n_negative = NPerTableClause(
+                leisure, -2, rtl_table_customers, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            n_too_small_and_not_int = NPerTableClause(
+                leisure, 0.2143, rtl_table_customers, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`n` must be an integer greater than 0"
+
+    def test_nper_table_clause_per_is_none(self, leisure, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            per_is_none = NPerTableClause(leisure, 5, None, session=rtl_session)
+        assert exc_info.value.args[0] == "`per` must be a table"
+
+    def test_nper_table_clause_per_not_table(
+        self, leisure, rtl_var_purchase_store, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            per_is_string = NPerTableClause(leisure, 5, "Customer", session=rtl_session)
+        assert exc_info.value.args[0] == "`per` must be a table"
+
+        with pytest.raises(ValueError) as exc_info:
+            per_is_variable = NPerTableClause(
+                leisure, 5, rtl_var_purchase_store, session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`per` must be a table"
+
+    def test_nper_table_clause_by_correct_type(
+        self,
+        leisure,
+        rtl_table_purchases,
+        rtl_table_customers,
+        rtl_var_purchase_date,
+        rtl_session,
+    ):
+        leisure_6_most_recent_per_customer = NPerTableClause(
+            leisure, 6, rtl_table_customers, rtl_var_purchase_date, session=rtl_session
+        )
+        assert leisure_6_most_recent_per_customer.n == 6
+        assert leisure_6_most_recent_per_customer.per is rtl_table_customers
+        assert leisure_6_most_recent_per_customer.by is rtl_var_purchase_date
+        assert leisure_6_most_recent_per_customer.ascending is False
+        assert leisure_6_most_recent_per_customer.clause is leisure
+        assert leisure_6_most_recent_per_customer.table is rtl_table_purchases
+        assert leisure_6_most_recent_per_customer.label is None
+        assert leisure_6_most_recent_per_customer.session is rtl_session
+
+    def test_nper_table_clause_by_not_variable(
+        self, leisure, rtl_table_customers, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            by_is_string = NPerTableClause(
+                leisure, 4, rtl_table_customers, "Purchase date", session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+        with pytest.raises(ValueError) as exc_info:
+            by_is_table = NPerTableClause(
+                leisure,
+                4,
+                rtl_table_customers,
+                rtl_table_customers,
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+    @pytest.mark.xfail(reason="Cannot identify unordered variables")
+    def test_nper_table_clause_by_variable_not_ordered(
+        self,
+        leisure,
+        rtl_table_customers,
+        rtl_var_purchase_payment_method,
+        rtl_var_customer_contact_pref,
+        rtl_session,
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            by_is_unordered_selector_var = NPerTableClause(
+                leisure,
+                3,
+                rtl_table_customers,
+                rtl_var_purchase_payment_method,
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+        with pytest.raises(ValueError) as exc_info:
+            by_is_array_var = NPerTableClause(
+                leisure,
+                3,
+                rtl_table_customers,
+                rtl_var_customer_contact_pref,
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
+
+    def test_nper_table_clause_ascending_correct_type(
+        self,
+        leisure,
+        rtl_table_purchases,
+        rtl_table_customers,
+        rtl_var_purchase_profit,
+        rtl_session,
+    ):
+        lowest_profit_per_customer = NPerTableClause(
+            leisure,
+            1,
+            rtl_table_customers,
+            rtl_var_purchase_profit,
+            ascending=True,
+            session=rtl_session,
+        )
+        assert lowest_profit_per_customer.n == 1
+        assert lowest_profit_per_customer.per is rtl_table_customers
+        assert lowest_profit_per_customer.by is rtl_var_purchase_profit
+        assert lowest_profit_per_customer.ascending is True
+        assert lowest_profit_per_customer.clause is leisure
+        assert lowest_profit_per_customer.table is rtl_table_purchases
+        assert lowest_profit_per_customer.label is None
+        assert lowest_profit_per_customer.session is rtl_session
+
+    def test_nper_table_clause_ascending_not_boolean(
+        self, leisure, rtl_table_customers, rtl_var_purchase_date, rtl_session
+    ):
+        with pytest.raises(ValueError) as exc_info:
+            n_per_table_direction_is_string = NPerTableClause(
+                leisure,
+                2,
+                rtl_table_customers,
+                rtl_var_purchase_date,
+                ascending="latest",
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == "`ascending` must be a boolean (True or False)"
+
+    def test_nper_table_clause_to_model_selection_by_is_none(
+        self, leisure, rtl_table_purchases, rtl_table_customers, rtl_session
+    ):
+        fake_nper_table_clause = Mock(
+            n=25,
+            per=rtl_table_customers,
+            by=None,
+            ascending=None,
+            clause=leisure,
+            table=rtl_table_purchases,
+            label="25 purchases per customer",
+            session=rtl_session,
+        )
+        expected_nper_table_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Leisure clause model goes here"),
+            n_per=aa.NPer(
+                recency=aa.RFVRecency(value=25),
+                grouping_table_name="Customers",
+                transactional_table_name="Purchases",
+            ),
+            table_name="Purchases",
+            name="25 purchases per customer",
+        )
+        assert (
+            NPerTableClause._to_model_selection(fake_nper_table_clause)
+            == expected_nper_table_selection_model
+        )
+        leisure._to_model_clause.assert_called_once_with()
+
+    def test_nper_table_clause_to_model_selection_by_first(
+        self,
+        leisure,
+        rtl_var_purchase_date,
+        rtl_table_purchases,
+        rtl_table_customers,
+        rtl_session,
+    ):
+        fake_nper_table_clause = Mock(
+            n=10,
+            per=rtl_table_customers,
+            by=rtl_var_purchase_date,
+            ascending=False,
+            clause=leisure,
+            table=rtl_table_purchases,
+            label="10 most recent purchases per customer",
+            session=rtl_session,
+        )
+        expected_nper_table_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Leisure clause model goes here"),
+            n_per=aa.NPer(
+                recency=aa.RFVRecency(
+                    variable_name="puDate", direction="Last", value=10
+                ),
+                grouping_table_name="Customers",
+                transactional_table_name="Purchases",
+            ),
+            table_name="Purchases",
+            name="10 most recent purchases per customer",
+        )
+        assert (
+            NPerTableClause._to_model_selection(fake_nper_table_clause)
+            == expected_nper_table_selection_model
+        )
+        leisure._to_model_clause.assert_called_once_with()
+
+    def test_nper_table_clause_to_model_selection_by_last(
+        self,
+        leisure,
+        rtl_var_purchase_date,
+        rtl_table_purchases,
+        rtl_table_customers,
+        rtl_session,
+    ):
+        fake_nper_table_clause = Mock(
+            n=15,
+            per=rtl_table_customers,
+            by=rtl_var_purchase_date,
+            ascending=True,
+            clause=leisure,
+            table=rtl_table_purchases,
+            label="First 15 purchases per customer",
+            session=rtl_session,
+        )
+        expected_nper_table_selection_model = aa.Selection(
+            rule=aa.Rule(clause="Leisure clause model goes here"),
+            n_per=aa.NPer(
+                recency=aa.RFVRecency(
+                    variable_name="puDate", direction="First", value=15
+                ),
+                grouping_table_name="Customers",
+                transactional_table_name="Purchases",
+            ),
+            table_name="Purchases",
+            name="First 15 purchases per customer",
+        )
+        assert (
+            NPerTableClause._to_model_selection(fake_nper_table_clause)
+            == expected_nper_table_selection_model
+        )
+        leisure._to_model_clause.assert_called_once_with()
