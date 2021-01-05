@@ -10,6 +10,7 @@ Reference topics:
     reference/topics/session.rst
     reference/topics/tables.rst
     reference/topics/variables.rst
+    reference/topics/selections.rst
     reference/topics/datagrid.rst
     reference/topics/cube.rst
 
