@@ -101,7 +101,7 @@ API reference
 
     Create a data grid.
 
-    .. note::
+    .. tip::
         The :meth:`datagrid` methods on tables and selections are wrappers
         around this class.
         It is recommended to prefer those over instantiating this class directly,

@@ -152,7 +152,7 @@ API reference
 
     Create a cube.
 
-    .. note::
+    .. tip::
         The :meth:`cube` methods on tables and selections are wrappers
         around this class.
         It is recommended to prefer those over instantiating this class directly,
