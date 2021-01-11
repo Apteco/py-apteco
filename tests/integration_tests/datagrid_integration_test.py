@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 
 from apteco import DataGrid
 
@@ -107,4 +108,41 @@ def test_datagrid_to_df_bookings_500_rows_households_selection(
 
     pd.testing.assert_frame_equal(
         bookings_df, datagrid_004_bookings_with_households_selection
+    )
+
+
+def test_datagrid_bad_columns_invalid_tables(holidays, households, people, bookings):
+    with pytest.raises(ValueError) as exc_info:
+        datagrid_with_bad_columns = DataGrid(
+            [households["Region"], people["Surname"], bookings["Destination"]],
+            table=people,
+            session=holidays,
+        )
+    assert exc_info.value.args[0] == (
+        "The resolve table of the data grid is 'People',"
+        " but the variable 'boDest' belongs to the 'Bookings' table."
+        "\nOnly variables from the same table as the data grid"
+        " or from ancestor tables can be used as data grid columns."
+    )
+
+
+def test_datagrid_to_df_bookings_columns_mixed_tables(
+    holidays, households, people, bookings, datagrid_005_bookings_with_mixed_columns
+):
+
+    bookings_dg = DataGrid(
+        [
+            bookings["Booking URN"],  # Reference (Numeric)
+            bookings["Destination"],  # Selector
+            people["Occupation"],  # Selector
+            people["DOB"],  # Date
+            households["Town"],  # Selector
+        ],
+        table=bookings,
+        session=holidays,
+    )
+    bookings_df = bookings_dg.to_df()
+
+    pd.testing.assert_frame_equal(
+        bookings_df, datagrid_005_bookings_with_mixed_columns
     )

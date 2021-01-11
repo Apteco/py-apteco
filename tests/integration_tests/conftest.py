@@ -189,6 +189,23 @@ def datagrid_004_bookings_with_households_selection(data_dir):
 
 
 @pytest.fixture(scope="session")
+def datagrid_005_bookings_with_mixed_columns(data_dir):
+    """DataGrid with columns from different tables, selection from same table.
+
+    Table: Bookings
+    Columns: Bookings, People, Households
+    Selection: [none]
+    Rows limit: [none]
+
+    """
+    return load_reference_dataframe(
+        data_dir / "datagrid_005_bookings_with_mixed_columns.csv",
+        str_cols=["Booking URN"],
+        date_cols={"DOB": "%d-%m-%Y"},
+    )
+
+
+@pytest.fixture(scope="session")
 def cube_001_people_various_dimensions(data_dir):
     """Cube with dimensions from same table.
 

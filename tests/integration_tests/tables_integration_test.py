@@ -217,6 +217,25 @@ class TestTablesDataGrid:
             check_dtype=False,
         )
 
+    def test_tables_datagrid_bookings_columns_mixed_tables(
+        self, holidays, households, people, bookings, datagrid_005_bookings_with_mixed_columns
+    ):
+
+        bookings_dg = bookings.datagrid(
+            [
+                bookings["Booking URN"],  # Reference (Numeric)
+                bookings["Destination"],  # Selector
+                people["Occupation"],  # Selector
+                people["DOB"],  # Date
+                households["Town"],  # Selector
+            ],
+        )
+        bookings_df = bookings_dg.to_df()
+
+        pd.testing.assert_frame_equal(
+            bookings_df, datagrid_005_bookings_with_mixed_columns
+        )
+
 
 class TestTablesCube:
     def test_cube_to_df_people_various_dimensions(
