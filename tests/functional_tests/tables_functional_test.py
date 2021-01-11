@@ -146,8 +146,25 @@ class TestTableRelations:
         chy_donations_table,
         chy_website_visits_table,
     ):
-        assert chy_campaigns_table != chy_donations_table
+        assert not chy_supporters_table != chy_supporters_table
+        assert chy_supporters_table != chy_campaigns_table
+        assert chy_supporters_table != chy_donations_table
+        assert chy_supporters_table != chy_website_visits_table
+
+        assert chy_campaigns_table != chy_supporters_table
         assert not chy_campaigns_table != chy_campaigns_table
+        assert chy_campaigns_table != chy_donations_table
+        assert chy_campaigns_table != chy_website_visits_table
+
+        assert chy_donations_table != chy_supporters_table
+        assert chy_donations_table != chy_campaigns_table
+        assert not chy_donations_table != chy_donations_table
+        assert chy_donations_table != chy_website_visits_table
+
+        assert chy_website_visits_table != chy_supporters_table
+        assert chy_website_visits_table != chy_campaigns_table
+        assert chy_website_visits_table != chy_donations_table
+        assert not chy_website_visits_table != chy_website_visits_table
 
 
 @pytest.fixture
