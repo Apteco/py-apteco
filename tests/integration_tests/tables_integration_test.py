@@ -214,7 +214,6 @@ class TestTablesDataGrid:
         pd.testing.assert_frame_equal(
             bookings_df,
             datagrid_004_bookings_with_households_selection,
-            check_dtype=False,
         )
 
     def test_tables_datagrid_bookings_columns_mixed_tables(

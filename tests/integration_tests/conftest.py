@@ -111,10 +111,10 @@ def load_reference_dataframe(path, str_cols=None, date_cols=None, datetime_cols=
         df.loc[:, col] = df.loc[:, col].astype(str)
 
     for col, fmt in date_cols.items():
-        df.loc[:, col] = pd.to_datetime(df.loc[:, col], format=fmt).dt.date
+        df.loc[:, col] = pd.to_datetime(df.loc[:, col], format=fmt, errors="coerce").dt.date
 
     for col, fmt in datetime_cols.items():
-        df.loc[:, col] = pd.to_datetime(df.loc[:, col], format=fmt)
+        df.loc[:, col] = pd.to_datetime(df.loc[:, col], format=fmt, errors="coerce")
 
     return df
 

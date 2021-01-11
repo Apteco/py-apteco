@@ -872,7 +872,6 @@ class TestClauseDataGrid:
         pd.testing.assert_frame_equal(
             bookings_df,
             datagrid_004_bookings_with_households_selection,
-            check_dtype=False,
         )
 
 
