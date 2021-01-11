@@ -69,8 +69,8 @@ for creating a data grid using records from that table::
             + [bookings[var] for var in ("boDate", "boCost", "boDest")]
         )
     >>> northern = households["Region"] == ["01", "02", "13"]
-    >>> dg = bookings.datagrid(cols, northern, max_rows=100)
-    >>> dg.to_df().head()
+    >>> datagrid = bookings.datagrid(cols, northern, max_rows=100)
+    >>> datagrid.to_df().head()
       Initial   Surname Booking Date     Cost    Destination
     0       A     Allen   2020-08-11   551.81         France
     1       W   Livesey   2021-08-02  1167.57   Sierra Leone
@@ -312,8 +312,8 @@ Data Grids and Cubes
             + [bookings[var] for var in ("boDate", "boCost", "boDest")]
         )
     >>> northern = households["Region"] == ["01", "02", "13"]
-    >>> dg = bookings.datagrid(cols, northern, max_rows=100)
-    >>> dg.to_df().head()
+    >>> datagrid = bookings.datagrid(cols, northern, max_rows=100)
+    >>> datagrid.to_df().head()
       Initial   Surname Booking Date     Cost    Destination
     0       A     Allen   2020-08-11   551.81         France
     1       W   Livesey   2021-08-02  1167.57   Sierra Leone

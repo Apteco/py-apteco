@@ -63,8 +63,8 @@ Selections can be used as the starting point
 for creating a data grid using records in that selection::
 
     >>> urn = bookings["Booking URN"]
-    >>> sweden_dg = sweden.datagrid([urn, dest, trav, cost])
-    >>> sweden_df = sweden_dg.to_df()
+    >>> sweden_datagrid = sweden.datagrid([urn, dest, trav, cost])
+    >>> sweden_df = sweden_datagrid.to_df()
     >>> sweden_df.head()
       Booking URN Destination Travel Date     Cost
     0    10172319      Sweden  2020-05-15  1201.81
@@ -172,8 +172,8 @@ Data Grids and Cubes
             + [bookings[var] for var in ("boDate", "boCost", "boDest")]
         )
     >>> northern = households["Region"] == ["01", "02", "13"]
-    >>> dg = bookings.datagrid(cols, northern, max_rows=100)
-    >>> dg.to_df().head()
+    >>> datagrid = bookings.datagrid(cols, northern, max_rows=100)
+    >>> datagrid.to_df().head()
       Initial   Surname Booking Date     Cost    Destination
     0       A     Allen   2020-08-11   551.81         France
     1       W   Livesey   2021-08-02  1167.57   Sierra Leone

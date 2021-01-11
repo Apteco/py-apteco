@@ -270,13 +270,13 @@ You can create a data grid from a table:
     >>> dest = bookings["Destination"]
     >>> occupation = people["Occupation"]
     >>> town = households["Town"]
-    >>> dg = bookings.datagrid([urn, dest, cost, occupation, town])
+    >>> datagrid = bookings.datagrid([urn, dest, cost, occupation, town])
 
 Convert it to a Pandas DataFrame:
 
 .. code-block:: python
 
-    >>> dg.to_df()
+    >>> datagrid.to_df()
         Booking URN    Destination     Cost       Occupation        Town
     0      10001265         France  1392.35  Sales Executive    Aberdeen
     1      10001266         France   780.34  Sales Executive    Aberdeen
@@ -297,8 +297,8 @@ You can use a base selection to filter the records:
 .. code-block:: python
 
     >>> sweden = dest == "29"
-    >>> sweden_dg = sweden.datagrid([urn, dest, cost, occupation, town])
-    >>> sweden_dg.to_df()
+    >>> sweden_datagrid = sweden.datagrid([urn, dest, cost, occupation, town])
+    >>> sweden_datagrid.to_df()
         Booking URN Destination     Cost       Occupation           Town
     0      10172319      Sweden  1201.81  Sales Executive         Bolton
     1      10384970      Sweden   344.30          Manager     Chelmsford
@@ -319,10 +319,10 @@ You can filter using a selection from a different table:
 .. code-block:: python
 
     >>> manchester = households["Region"] == "13"
-    >>> manc_dg = manchester.datagrid(
+    >>> manc_datagrid = manchester.datagrid(
     ...     [urn, dest, cost, occupation, town], table=bookings
     ... )
-    >>> manc_dg.to_df()
+    >>> manc_datagrid.to_df()
         Booking URN    Destination     Cost       Occupation         Town
     0      10172319         Sweden  1201.81  Sales Executive       Bolton
     1      10172320  United States  1616.80  Sales Executive       Bolton

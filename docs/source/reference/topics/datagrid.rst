@@ -44,11 +44,11 @@ Setting up variables::
 
 Creating a data grid::
 
-    >>> dg = bookings.datagrid([urn, dest, trav, cost])
+    >>> datagrid = bookings.datagrid([urn, dest, trav, cost])
 
 Converting to a Pandas :class:`DataFrame`::
 
-    >>> df = dg.to_df()
+    >>> df = datagrid.to_df()
     >>> df.head()
       Booking URN   Destination Travel Date     Cost
     0    10001265        France  2019-05-15  1392.35
@@ -59,16 +59,16 @@ Converting to a Pandas :class:`DataFrame`::
 
 Specifying the number of rows to return::
 
-    >>> dg = bookings.datagrid([urn, dest, trav, cost], max_rows=100)
-    >>> df = dg.to_df()
+    >>> datagrid = bookings.datagrid([urn, dest, trav, cost], max_rows=100)
+    >>> df = datagrid.to_df()
     >>> len(df)
     100
 
 Using a base selection to filter the records::
 
     >>> sweden = dest == "29"
-    >>> sweden_dg = sweden.datagrid([urn, dest, trav, cost])
-    >>> sweden_df = sweden_dg.to_df()
+    >>> sweden_datagrid = sweden.datagrid([urn, dest, trav, cost])
+    >>> sweden_df = sweden_datagrid.to_df()
     >>> sweden_df.head()
       Booking URN Destination Travel Date     Cost
     0    10172319      Sweden  2020-05-15  1201.81
@@ -81,8 +81,8 @@ Using a base selection from a different table::
 
     >>> households = my_session.tables["Households"]
     >>> manchester = households["Region"] == "13"
-    >>> manc_dg = manchester.datagrid([urn, dest, trav, cost], table=bookings)
-    >>> manc_df = manc_dg.to_df()
+    >>> manc_datagrid = manchester.datagrid([urn, dest, trav, cost], table=bookings)
+    >>> manc_df = manc_datagrid.to_df()
     >>> manc_df.head()
       Booking URN    Destination Travel Date     Cost
     0    10172319         Sweden  2020-05-15  1201.81
@@ -135,13 +135,13 @@ API reference
 .. tip::
     The following two data grids are equivalent::
 
-        >>> dg1 = DataGrid(
+        >>> datagrid1 = DataGrid(
         ...     columns,
         ...     selection=manchester,
         ...     table=bookings,
         ...     session=my_session,
         ... )
-        >>> dg2 = DataGrid(
+        >>> datagrid2 = DataGrid(
         ...     columns,
         ...     selection=(bookings * manchester),
         ...     session=my_session,

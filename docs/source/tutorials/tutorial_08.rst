@@ -19,12 +19,12 @@ We pass it a list of the FastStats variables we want to use as data grid columns
     >>> premium = policies["Premium"]
     >>> cover = policies["Cover"]
     >>> days_to_travel = policies["Days Until Travel"]
-    >>> dg = policies.datagrid([pol_num, pol_date, premium, cover, days_to_travel])
+    >>> datagrid = policies.datagrid([pol_num, pol_date, premium, cover, days_to_travel])
 
 To work with the data we can convert it to a Pandas :class:`DataFrame`
 using the :meth:`to_df()` method::
 
-    >>> df = dg.to_df()
+    >>> df = datagrid.to_df()
     >>> df
         Policy Number Policy Date  Premium        Cover  Days Until Travel
     0        10001265  2019-05-21    87.02   Individual                 25
@@ -74,10 +74,10 @@ except for Array and Flag Array variables.
 As in FastStats, you can also use variables from parent or ancestor tables,
 but not child or descendant tables::
 
-    >>> occupation = people["Occupation"]
+    >>> occu = people["Occupation"]
     >>> town = households["Town"]
-    >>> mixed_tables_dg = policies.datagrid([pol_num, premium, occupation, cover, town])
-    >>> mixed_tables_dg.to_df()
+    >>> mixed_tables_datagrid = policies.datagrid([pol_num, premium, occu, cover, town])
+    >>> mixed_tables_datagrid.to_df()
         Policy Number  Premium        Cover       Occupation                 Town
     0        10001265    87.02   Individual  Sales Executive             Aberdeen
     1        10036397   123.30   Individual     Professional           Birmingham
@@ -112,8 +112,8 @@ By default, the data grid will return 1000 rows,
 but we can adjust this using the `max_rows` parameter::
 
     >>> columns = [pol_num, premium, occupation, cover, town]
-    >>> only_10_policies_dg = policies.datagrid(columns, max_rows=10)
-    >>> only_10_policies_dg.to_df()
+    >>> only_10_policies_datagrid = policies.datagrid(columns, max_rows=10)
+    >>> only_10_policies_datagrid.to_df()
       Policy Number  Premium       Occupation        Cover              Town
     0      10001265    87.02  Sales Executive   Individual          Aberdeen
     1      10036397   123.30     Professional   Individual        Birmingham
@@ -139,8 +139,8 @@ You can filter the records shown in the data grid by applying a selection to it
 using the `selection` parameter::
 
     >>> multi_trip = policies["Cover"] == "4"
-    >>> multi_trip_dg = policies.datagrid(columns, selection=multi_trip)
-    >>> multi_trip_dg.to_df()
+    >>> multi_trip_datagrid = policies.datagrid(columns, selection=multi_trip)
+    >>> multi_trip_datagrid.to_df()
         Policy Number  Premium       Occupation       Cover              Town
     0        10078565   143.20  Sales Executive  Multi Trip  Sutton Coldfield
     1        10109674    33.87    Public Sector  Multi Trip            Yeovil
@@ -159,8 +159,8 @@ using the `selection` parameter::
 You can also build the data grid directly
 from the selection using the :meth:`datagrid` method::
 
-    >>> multi_trip_dg = multi_trip.datagrid(columns)
-    >>> multi_trip_dg.to_df()
+    >>> multi_trip_datagrid = multi_trip.datagrid(columns)
+    >>> multi_trip_datagrid.to_df()
         Policy Number  Premium       Occupation       Cover              Town
     0        10078565   143.20  Sales Executive  Multi Trip  Sutton Coldfield
     1        10109674    33.87    Public Sector  Multi Trip            Yeovil
@@ -188,8 +188,8 @@ Just as in FastStats, you can apply a selection based on a table
 different from the one used in your data grid::
 
     >>> student = people["Occupation"] == "4"
-    >>> student_policies_dg = policies.datagrid(columns, selection=student)
-    >>> student_policies_dg.to_df()
+    >>> student_policies_datagrid = policies.datagrid(columns, selection=student)
+    >>> student_policies_datagrid.to_df()
         Policy Number  Premium Occupation        Cover            Town
     0        10152036    33.82    Student  Single Trip     Bournemouth
     1        10165468    23.22    Student   Individual        Ferndown
@@ -216,8 +216,8 @@ Again, you can build the data grid from the selection itself,
 but this time you will need to use the `table` parameter
 to set the data grid to the desired table::
 
-    >>> student_policies_dg = student.datagrid(columns, table=policies)
-    >>> student_policies_dg.to_df()
+    >>> student_policies_datagrid = student.datagrid(columns, table=policies)
+    >>> student_policies_datagrid.to_df()
         Policy Number  Premium Occupation        Cover            Town
     0        10152036    33.82    Student  Single Trip     Bournemouth
     1        10165468    23.22    Student   Individual        Ferndown
