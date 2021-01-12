@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pandas as pd
+import pytest
 
 from apteco import Cube
 
@@ -146,4 +147,20 @@ def test_cube_to_df_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_tab
 
     assert_cube_dataframes_match(
         df, cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table
+    )
+
+
+def test_cube_bad_dimensions_invalid_tables(holidays, people, bookings, policies):
+    with pytest.raises(ValueError) as exc_info:
+        cube_with_bad_dimensions = Cube(
+            [people["Occupation"], bookings["Destination"], policies["Cover"]],
+            table=bookings,
+            session=holidays,
+        )
+    assert exc_info.value.args[0] == (
+        f"The counting table of the cube is 'Bookings',"
+        f" but the variable 'PoCover' belongs to the"
+        f" 'Policies' table."
+        f"\nOnly variables from the same table as the cube"
+        f" or from related tables can be used as cube dimensions."
     )
