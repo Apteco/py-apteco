@@ -80,16 +80,18 @@ Using a base selection to filter the records::
 Using a base selection from a different table::
 
     >>> households = my_session.tables["Households"]
+    >>> town = households["Town"]
+    >>> postcode = households["Postcode"]
     >>> manchester = households["Region"] == "13"
-    >>> manc_datagrid = manchester.datagrid([urn, dest, trav, cost], table=bookings)
+    >>> manc_datagrid = manchester.datagrid([urn, dest, trav, cost, town, postcode], table=bookings)
     >>> manc_df = manc_datagrid.to_df()
     >>> manc_df.head()
-      Booking URN    Destination Travel Date     Cost
-    0    10172319         Sweden  2020-05-15  1201.81
-    1    10172320  United States  2020-04-14  1616.80
-    2    10173729         France  2020-08-19   581.71
-    3    10173730         France  2020-08-09  2224.70
-    4    10177047         France  2021-05-07   686.53
+      Booking URN    Destination Travel Date     Cost    Town Postcode
+    0    10172319         Sweden  2020-05-15  1201.81  Bolton  BL1 5XB
+    1    10172320  United States  2020-04-14  1616.80  Bolton  BL1 5XB
+    2    10173729         France  2020-08-19   581.71  Bolton  BL1 8JJ
+    3    10173730         France  2020-08-09  2224.70  Bolton  BL1 8JJ
+    4    10177047         France  2021-05-07   686.53  Bolton  BL3 5LX
 
 .. Data Grid-related tasks
 .. =======================
@@ -165,13 +167,34 @@ API reference
     The :class:`DataFrame` is configured such that:
 
         * the *index* is a :class:`RangeIndex`
-        * the *columns* are the variable descriptions
-        * Selector, Date and DateTime variable columns display descriptions,
-          rather than codes
+        * the *columns* (headings) are the variable descriptions
         * data is returned as its corresponding Pandas column type
           or native Python type
+        * Selector variable columns contain strings of the category descriptions
 
-        .. seealso::
-            For more details on working with a Pandas DataFrame
-            see the `official Pandas documentation
-            <https://pandas.pydata.org/pandas-docs/stable/user_guide/index.html>`_.
+    >>> pol_num = policies["Policy Number"]
+    >>> premium = policies["Premium"]
+    >>> cover = policies["Cover"]
+    >>> dob = people["DOB"]
+    >>> postcode = households["Postcode"]
+    >>> policies_datagrid = policies.datagrid([pol_num, premium, cover, dob, postcode])
+    >>> policies_datagrid.to_df()
+        Policy Number  Premium        Cover         DOB  Postcode
+    0        10001265    87.02   Individual  1975-02-09  AB10 1XL
+    1        10036397   123.30   Individual  1972-11-25    B6 4TN
+    2        10078565   143.20   Multi Trip  1971-10-05   B74 2QX
+    3        10078566    29.23       Family  1971-10-05   B74 2QX
+    4        10078567    14.65  Single Trip  1999-11-14   B74 2QX
+    ..            ...      ...          ...         ...       ...
+    995      11192414    17.83  Single Trip         NaT  ME15 0QB
+    996      11205561    10.43   Individual  1976-01-30  MK18 7ZT
+    997      11242733    33.56   Individual  1977-01-22   N16 7NJ
+    998      11252163    13.57   Individual  1997-09-12   NE2 2DJ
+    999      11262841    11.19   Individual  1978-08-03  NE20 9QJ
+
+    [1000 rows x 5 columns]
+
+    .. seealso::
+        For more details on working with a Pandas DataFrame
+        see the `official Pandas documentation
+        <https://pandas.pydata.org/pandas-docs/stable/user_guide/index.html>`_.
