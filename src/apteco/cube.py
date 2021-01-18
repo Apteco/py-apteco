@@ -121,10 +121,16 @@ class Cube:
         ]
 
     def to_df(self):
+        if len(self.dimensions) == 1:
+            index = pd.Index(
+                self._headers["descs"][0], name=self.dimensions[0].description
+            )
+        else:
+            index = pd.MultiIndex.from_product(
+                self._headers["descs"], names=[d.description for d in self.dimensions]
+            )
         return pd.DataFrame(
             self._data.ravel(),
-            index=pd.MultiIndex.from_product(
-                self._headers["descs"], names=[d.description for d in self.dimensions]
-            ),
+            index=index,
             columns=[f"{self.table.plural.title()}"],
         )

@@ -294,3 +294,19 @@ def cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table(data
         / "cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table.csv"
     )
     return df.set_index(["Region", "Pool", "Gender"])
+
+
+@pytest.fixture(scope="session")
+def cube_007_bookings_single_dimension_default_count_measure(data_dir):
+    """Cube with single dimension and single non-default measure.
+
+    Table: Bookings
+    Dimensions: Destination
+    Measures: [none]
+    Selection: [none]
+
+    """
+    df = pd.read_csv(
+        data_dir / "cube_007_bookings_single_dimension_default_count_measure.csv"
+    )
+    return df.set_index("Destination")

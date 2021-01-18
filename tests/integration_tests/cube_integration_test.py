@@ -164,3 +164,21 @@ def test_cube_bad_dimensions_invalid_tables(holidays, people, bookings, policies
         f"\nOnly variables from the same table as the cube"
         f" or from related tables can be used as cube dimensions."
     )
+
+
+def test_cube_to_df_bookings_single_dimension_default_count_measure(
+    holidays,
+    bookings,
+    cube_007_bookings_single_dimension_default_count_measure,
+):
+
+    cube = Cube(
+        [bookings["Destination"]],
+        table=bookings,
+        session=holidays,
+    )
+    df = cube.to_df()
+
+    assert_cube_dataframes_match(
+        df, cube_007_bookings_single_dimension_default_count_measure, False
+    )
