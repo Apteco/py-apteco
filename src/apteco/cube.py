@@ -15,15 +15,6 @@ class Cube:
         self._check_inputs()
         self._data, self._headers, self._sizes = self._get_data()
 
-    def to_df(self):
-        return pd.DataFrame(
-            self._data.ravel(),
-            index=pd.MultiIndex.from_product(
-                self._headers["descs"], names=[d.description for d in self.dimensions]
-            ),
-            columns=[f"{self.table.plural.title()}"],
-        )
-
     def _check_inputs(self):
         if self.session is None:
             raise ValueError("You must provide a valid session (none was given).")
@@ -66,40 +57,6 @@ class Cube:
                     f" or from related tables can be used as cube dimensions."
                 )
 
-    def _create_dimensions(self):
-        return [
-            aa.Dimension(id=str(i), type="Selector", variable_name=v.name)
-            for i, v in enumerate(self.dimensions)
-        ]
-
-    def _create_measures(self):
-        return [
-            aa.Measure(
-                id="0",
-                resolve_table_name=self.table.name,
-                function="Count",
-                variable_name=None,
-            )
-        ]
-
-    def _get_cube(self):
-        cube = aa.Cube(
-            base_query=aa.Query(
-                selection=self.selection._to_model_selection()
-                if self.selection is not None
-                else aa.Selection(table_name=self.table.name)
-            ),
-            resolve_table_name=self.table.name,
-            storage="Full",
-            dimensions=self._create_dimensions(),
-            measures=self._create_measures(),
-        )
-        cubes_controller = aa.CubesApi(self.session.api_client)
-        cube_result = cubes_controller.cubes_calculate_cube_synchronously(
-            self.session.data_view, self.session.system, cube=cube
-        )
-        return cube_result
-
     def _get_data(self):
         cube_result = self._get_cube()
         raw_data = [
@@ -128,3 +85,46 @@ class Cube:
         data = data_as_array.T.reshape(sizes, order="F")
         dimensions = [dim.id for dim in cube_result.dimension_results]
         return data, headers, sizes
+
+    def _get_cube(self):
+        cube = aa.Cube(
+            base_query=aa.Query(
+                selection=self.selection._to_model_selection()
+                if self.selection is not None
+                else aa.Selection(table_name=self.table.name)
+            ),
+            resolve_table_name=self.table.name,
+            storage="Full",
+            dimensions=self._create_dimensions(),
+            measures=self._create_measures(),
+        )
+        cubes_controller = aa.CubesApi(self.session.api_client)
+        cube_result = cubes_controller.cubes_calculate_cube_synchronously(
+            self.session.data_view, self.session.system, cube=cube
+        )
+        return cube_result
+
+    def _create_dimensions(self):
+        return [
+            aa.Dimension(id=str(i), type="Selector", variable_name=v.name)
+            for i, v in enumerate(self.dimensions)
+        ]
+
+    def _create_measures(self):
+        return [
+            aa.Measure(
+                id="0",
+                resolve_table_name=self.table.name,
+                function="Count",
+                variable_name=None,
+            )
+        ]
+
+    def to_df(self):
+        return pd.DataFrame(
+            self._data.ravel(),
+            index=pd.MultiIndex.from_product(
+                self._headers["descs"], names=[d.description for d in self.dimensions]
+            ),
+            columns=[f"{self.table.plural.title()}"],
+        )
