@@ -762,7 +762,9 @@ class TestTableClause:
         been_to_sweden = TableClause(people, "ANY", sweden, session=holidays)
         assert been_to_sweden.count() == 25175
 
-    def test_table_clause_multi_any(self, holidays, households, people, communications, suggested_booking):
+    def test_table_clause_multi_any(
+        self, holidays, households, people, communications, suggested_booking
+    ):
         house_suggested_booking = TableClause(
             households,
             "ANY",
@@ -780,7 +782,9 @@ class TestTableClause:
         mazda_drivers = TableClause(people, "THE", mazda, session=holidays)
         assert mazda_drivers.count() == 6959
 
-    def test_table_clause_multi_the(self, holidays, responses, communications, vowel_initial):
+    def test_table_clause_multi_the(
+        self, holidays, responses, communications, vowel_initial
+    ):
         responses_by_vowels = TableClause(
             responses,
             "THE",
@@ -790,12 +794,7 @@ class TestTableClause:
         assert responses_by_vowels.count() == 216
 
     def test_table_clause_mixed(
-        self,
-        holidays,
-        people,
-        communications,
-        content,
-        sweden,
+        self, holidays, people, communications, content, sweden
     ):
         sweden_content = TableClause(
             content,
@@ -803,12 +802,7 @@ class TestTableClause:
             TableClause(
                 communications,
                 "THE",
-                TableClause(
-                    people,
-                    "ANY",
-                    sweden,
-                    session=holidays
-                ),
+                TableClause(people, "ANY", sweden, session=holidays),
                 session=holidays,
             ),
             session=holidays,
@@ -870,8 +864,7 @@ class TestClauseDataGrid:
         bookings_df = bookings_dg.to_df()
 
         pd.testing.assert_frame_equal(
-            bookings_df,
-            datagrid_004_bookings_with_households_selection,
+            bookings_df, datagrid_004_bookings_with_households_selection
         )
 
 

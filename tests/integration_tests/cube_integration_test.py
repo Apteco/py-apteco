@@ -32,11 +32,7 @@ def assert_cube_dataframes_match(test_df, expected_df, missing_subtotals=True):
     else:
         test_df_reduced = test_df
 
-    pd.testing.assert_frame_equal(
-        test_df_reduced,
-        expected_df,
-        check_dtype=False,
-    )
+    pd.testing.assert_frame_equal(test_df_reduced, expected_df, check_dtype=False)
 
 
 def test_cube_to_df_people_various_dimensions(
@@ -168,16 +164,10 @@ def test_cube_bad_dimensions_invalid_tables(holidays, people, bookings, policies
 
 
 def test_cube_to_df_bookings_single_dimension_default_count_measure(
-    holidays,
-    bookings,
-    cube_007_bookings_single_dimension_default_count_measure,
+    holidays, bookings, cube_007_bookings_single_dimension_default_count_measure
 ):
 
-    cube = Cube(
-        [bookings["Destination"]],
-        table=bookings,
-        session=holidays,
-    )
+    cube = Cube([bookings["Destination"]], table=bookings, session=holidays)
     df = cube.to_df()
 
     assert_cube_dataframes_match(
@@ -186,9 +176,7 @@ def test_cube_to_df_bookings_single_dimension_default_count_measure(
 
 
 def test_cube_to_df_bookings_single_non_count_measure(
-    holidays,
-    bookings,
-    cube_008_bookings_dimension_destination_measure_sum_profit,
+    holidays, bookings, cube_008_bookings_dimension_destination_measure_sum_profit
 ):
 
     cube = Cube(

@@ -66,7 +66,15 @@ class Variable:
         return self.table.name
 
     def _as_nper_clause(self, clause, n, by, ascending, label):
-        return NPerVariableClause(clause=clause, n=n, per=self, by=by, ascending=ascending, label=label, session=self.session)
+        return NPerVariableClause(
+            clause=clause,
+            n=n,
+            per=self,
+            by=by,
+            ascending=ascending,
+            label=label,
+            session=self.session,
+        )
 
 
 class BaseSelectorVariable(Variable):

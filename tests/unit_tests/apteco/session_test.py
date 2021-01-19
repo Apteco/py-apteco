@@ -1064,9 +1064,7 @@ class TestInitializeTablesAlgorithm:
         assert fake_children_lookup.default_factory is None
 
     def test_check_child_tables_consistency(self, mocker):
-        table_has_children = mocker.Mock(
-            has_children=True, children=["Ben", "Emma"]
-        )
+        table_has_children = mocker.Mock(has_children=True, children=["Ben", "Emma"])
         table_has_children.name = "Ross"
         table_has_no_children = mocker.Mock(has_children=False, children=[])
         table_has_no_children.name = "Joey"

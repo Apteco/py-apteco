@@ -471,7 +471,10 @@ class TestTextVariable:
             " must be given as a string or an iterable of strings."
         )
 
-    @pytest.mark.xfail(reason="Feature-switched off before/after TextVariable methods", raises=AttributeError)
+    @pytest.mark.xfail(
+        reason="Feature-switched off before/after TextVariable methods",
+        raises=AttributeError,
+    )
     def test_before(self, fake_text_variable_surname, chy_session):
         first_half_alphabet = fake_text_variable_surname.before("n")
         assert type(first_half_alphabet) == TextClause
@@ -495,7 +498,10 @@ class TestTextVariable:
             "Must specify a single string for this type of operation."
         )
 
-    @pytest.mark.xfail(reason="Feature-switched off before/after TextVariable methods", raises=AttributeError)
+    @pytest.mark.xfail(
+        reason="Feature-switched off before/after TextVariable methods",
+        raises=AttributeError,
+    )
     def test_after(self, fake_text_variable_surname, chy_session):
         smith_or_later = fake_text_variable_surname.after("Smith")
         assert type(smith_or_later) == TextClause

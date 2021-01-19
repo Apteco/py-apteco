@@ -181,7 +181,15 @@ class Table(TableMixin):
         )
 
     def _as_nper_clause(self, clause, n, by, ascending, label):
-        return NPerTableClause(clause=clause, n=n, per=self, by=by, ascending=ascending, label=label, session=self.session)
+        return NPerTableClause(
+            clause=clause,
+            n=n,
+            per=self,
+            by=by,
+            ascending=ascending,
+            label=label,
+            session=self.session,
+        )
 
     def _to_model_measure(self, table):
         return aa.Measure(
@@ -205,7 +213,9 @@ class Table(TableMixin):
         if item in DEPRECATED_ATTRS:
             return get_deprecated_attr(self, item, *DEPRECATED_ATTRS[item])
         else:
-            raise AttributeError(f"'{self.__class__.__name__}' has no attribute '{item}'")
+            raise AttributeError(
+                f"'{self.__class__.__name__}' has no attribute '{item}'"
+            )
 
 
 class TablesAccessor:

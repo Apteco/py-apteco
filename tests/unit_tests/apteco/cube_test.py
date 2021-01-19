@@ -14,10 +14,7 @@ def sel_empty():
 
 @case(id="with_selection")
 def sel_nonempty(rtl_sel_high_value_purchases):
-    return (
-        rtl_sel_high_value_purchases,
-        "selection_high_value_purchases_model",
-    )
+    return (rtl_sel_high_value_purchases, "selection_high_value_purchases_model")
 
 
 @pytest.fixture()
@@ -294,7 +291,9 @@ class TestCube:
     @patch("apteco.cube.Cube._get_cube")
     def test__get_data(self, patch__get_cube, patch_np_array, fake_cube):
         fake_cube_result = Mock(
-            measure_results=[Mock(rows=["1\t2\t3", "4\t5\t6", "7\t8\t9"], id="Purchases")],
+            measure_results=[
+                Mock(rows=["1\t2\t3", "4\t5\t6", "7\t8\t9"], id="Purchases")
+            ],
             dimension_results=[
                 Mock(
                     header_codes="S\tF\tO",
@@ -326,7 +325,7 @@ class TestCube:
                 ["Cash", "Card", "Cheque", "Voucher", "Gift Card"],
                 ["Home", "Garden", "Electronics", "DIY"],
             ],
-            "measures": ["Purchases"]
+            "measures": ["Purchases"],
         }
         expected_sizes = (3, 5, 4)
 

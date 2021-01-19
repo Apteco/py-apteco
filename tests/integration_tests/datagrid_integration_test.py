@@ -143,6 +143,4 @@ def test_datagrid_to_df_bookings_columns_mixed_tables(
     )
     bookings_df = bookings_dg.to_df()
 
-    pd.testing.assert_frame_equal(
-        bookings_df, datagrid_005_bookings_with_mixed_columns
-    )
+    pd.testing.assert_frame_equal(bookings_df, datagrid_005_bookings_with_mixed_columns)
