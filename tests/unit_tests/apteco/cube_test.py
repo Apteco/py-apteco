@@ -213,7 +213,7 @@ class TestCube:
         with pytest.raises(ValueError) as exc_info:
             fake_cube._check_dimensions()
         assert exc_info.value.args[0] == (
-            "The counting table of the cube is 'Purchases',"
+            "The resolve table of the cube is 'Purchases',"
             " but the variable 'cuGender' belongs to the"
             " 'Customers' table."
             "\nOnly variables from the same table as the cube"

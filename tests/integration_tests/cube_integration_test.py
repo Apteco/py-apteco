@@ -158,7 +158,7 @@ def test_cube_bad_dimensions_invalid_tables(holidays, people, bookings, policies
             session=holidays,
         )
     assert exc_info.value.args[0] == (
-        f"The counting table of the cube is 'Bookings',"
+        f"The resolve table of the cube is 'Bookings',"
         f" but the variable 'PoCover' belongs to the"
         f" 'Policies' table."
         f"\nOnly variables from the same table as the cube"

@@ -30,15 +30,17 @@ class Cube:
                 " `measures` argument should be `None` or omitted,"
                 " and is only included now for forwards-compatibility."
             )
+        self._check_table()
+        self._check_dimensions()
+
+    def _check_table(self):
         if self.table is None:
-            if self.selection is not None:
-                self.table = self.selection.table
-            else:
+            if self.selection is None:
                 raise ValueError(
                     "You must specify the resolve table of the cube"
                     " (no table or selection was given)."
                 )
-        self._check_dimensions()
+            self.table = self.selection.table
 
     def _check_dimensions(self):
         for dimension in self.dimensions:
@@ -50,7 +52,7 @@ class Cube:
                 )
             if not dimension.table.is_related(self.table, allow_same=True):
                 raise ValueError(
-                    f"The counting table of the cube is '{self.table.name}',"
+                    f"The resolve table of the cube is '{self.table.name}',"
                     f" but the variable '{dimension.name}' belongs to the"
                     f" '{dimension.table.name}' table."
                     f"\nOnly variables from the same table as the cube"
@@ -67,14 +69,14 @@ class Cube:
         headers = {
             "codes": [
                 [
-                    c if c != "iTOTAL" else "TOTAL"
+                    "TOTAL" if c == "iTOTAL" else c
                     for c in dimension.header_codes.split("\t")
                 ]
                 for dimension in cube_result.dimension_results
             ],
             "descs": [
                 [
-                    d if d != "iTOTAL" else "TOTAL"
+                    "TOTAL" if d == "iTOTAL" else d
                     for d in dimension.header_descriptions.split("\t")
                 ]
                 for dimension in cube_result.dimension_results
