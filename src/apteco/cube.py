@@ -23,15 +23,9 @@ class Cube:
                 "You must specify at least one variable"
                 " to use as a dimension on the cube (none was given)."
             )
-        if self.measures is not None:
-            raise ValueError(
-                "Only the default count measure is currently supported"
-                " for cubes, and this is set automatically."
-                " `measures` argument should be `None` or omitted,"
-                " and is only included now for forwards-compatibility."
-            )
         self._check_table()
         self._check_dimensions()
+        self._check_measures()
 
     def _check_table(self):
         if self.table is None:
@@ -59,10 +53,27 @@ class Cube:
                     f" or from related tables can be used as cube dimensions."
                 )
 
+    def _check_measures(self):
+        if self.measures is None:
+            return
+        if len(self.measures) > 1:
+            raise ValueError("Only a single measure is currently supported.")
+        for measure in self.measures:
+            if not hasattr(measure, "_to_model_measure"):
+                raise ValueError(f"Invalid measure given: must be statistic")
+            if not measure.table.is_related(self.table, allow_same=True):
+                raise ValueError(
+                    f"The resolve table of the cube is '{self.table.name}',"
+                    f" but the measure '{measure.name}' belongs to the"
+                    f" '{measure.table.name}' table."
+                    f"\nOnly measures from the same table as the cube"
+                    f" or from related tables can be used as cube dimensions."
+                )
+
     def _get_data(self):
         cube_result = self._get_cube()
         raw_data = [
-            int(x)
+            x
             for row in cube_result.measure_results[0].rows
             for x in row.split("\t")
         ]
@@ -81,6 +92,7 @@ class Cube:
                 ]
                 for dimension in cube_result.dimension_results
             ],
+            "measures": [cube_result.measure_results[0].id]
         }
         sizes = tuple(len(h) for h in headers["codes"])
         data_as_array = np.array(raw_data)
@@ -113,14 +125,17 @@ class Cube:
         ]
 
     def _create_measures(self):
-        return [
-            aa.Measure(
-                id="0",
-                resolve_table_name=self.table.name,
-                function="Count",
-                variable_name=None,
-            )
-        ]
+        if self.measures is not None:
+            return [m._to_model_measure(self.table) for m in self.measures]
+        else:
+            return [
+                aa.Measure(
+                    id=f"{self.table.plural.title()}",
+                    resolve_table_name=self.table.name,
+                    function="Count",
+                    variable_name=None,
+                )
+            ]
 
     def to_df(self):
         if len(self.dimensions) == 1:
@@ -132,7 +147,7 @@ class Cube:
                 self._headers["descs"], names=[d.description for d in self.dimensions]
             )
         return pd.DataFrame(
-            self._data.ravel(),
+            pd.to_numeric(self._data.ravel()),
             index=index,
-            columns=[f"{self.table.plural.title()}"],
+            columns=self._headers["measures"],
         )

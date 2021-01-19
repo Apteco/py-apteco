@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from apteco import Cube
+from apteco.statistics import Sum
 
 
 def assert_cube_dataframes_match(test_df, expected_df, missing_subtotals=True):
@@ -181,4 +182,23 @@ def test_cube_to_df_bookings_single_dimension_default_count_measure(
 
     assert_cube_dataframes_match(
         df, cube_007_bookings_single_dimension_default_count_measure, False
+    )
+
+
+def test_cube_to_df_bookings_single_non_count_measure(
+    holidays,
+    bookings,
+    cube_008_bookings_dimension_destination_measure_sum_profit,
+):
+
+    cube = Cube(
+        [bookings["Destination"]],
+        [Sum(bookings["Profit"])],
+        table=bookings,
+        session=holidays,
+    )
+    df = cube.to_df()
+
+    assert_cube_dataframes_match(
+        df, cube_008_bookings_dimension_destination_measure_sum_profit, False
     )

@@ -28,7 +28,7 @@ def fake_cube_data():
 @pytest.fixture()
 def fake_cube_headers():
     headers = MagicMock()
-    headers.__getitem__ = Mock(return_value="cube_header_descriptions")
+    headers.__getitem__ = Mock(side_effect=["cube_header_descriptions", "cube_measure_names"])
     return headers
 
 
@@ -87,31 +87,35 @@ class TestCube:
         patch__check_inputs.assert_called_once_with()
         patch__get_data.assert_called_once_with()
 
+    @patch("pandas.to_numeric")
     @patch("pandas.MultiIndex.from_product")
     @patch("pandas.DataFrame")
     def test_to_df(
         self,
         patch_pd_dataframe,
         patch_pd_mi_fp,
+        patch_pd_to_numeric,
         fake_cube,
         fake_cube_data,
-        fake_cube_headers,
+        fake_cube_headers  # type: Mock,
     ):
         patch_pd_dataframe.return_value = "my_cube_df"
         patch_pd_mi_fp.return_value = "multi_index_for_cube_df"
+        patch_pd_to_numeric.return_value = "numeric_flattened_cube_data"
         df = fake_cube.to_df()
         assert df == "my_cube_df"
-        patch_pd_dataframe.assert_called_once_with(
-            "flattened_cube_data",
-            index="multi_index_for_cube_df",
-            columns=["Purchases"],
-        )
         fake_cube_data.ravel.assert_called_once_with()
+        patch_pd_to_numeric.assert_called_once_with("flattened_cube_data")
         patch_pd_mi_fp.assert_called_once_with(
             "cube_header_descriptions",
             names=["Store Type", "Payment Method", "Department"],
         )
-        fake_cube_headers.__getitem__.assert_called_once_with("descs")
+        patch_pd_dataframe.assert_called_once_with(
+            "numeric_flattened_cube_data",
+            index="multi_index_for_cube_df",
+            columns="cube_measure_names",
+        )
+        fake_cube_headers.__getitem__.assert_has_calls([call("descs"), call("measures")])
 
     @patch("apteco.cube.Cube._check_dimensions")
     def test__check_inputs(self, patch__check_dimensions, fake_cube):
@@ -136,21 +140,6 @@ class TestCube:
         assert exc_info.value.args[0] == (
             "You must specify at least one variable"
             " to use as a dimension on the cube (none was given)."
-        )
-        patch__check_dimensions.assert_not_called()
-
-    @patch("apteco.cube.Cube._check_dimensions")
-    def test__check_inputs_measures_is_bad(
-        self, patch__check_dimensions, fake_cube, rtl_var_purchase_department
-    ):
-        fake_cube.measures = [rtl_var_purchase_department]
-        with pytest.raises(ValueError) as exc_info:
-            fake_cube._check_inputs()
-        assert exc_info.value.args[0] == (
-            "Only the default count measure is currently supported"
-            " for cubes, and this is set automatically."
-            " `measures` argument should be `None` or omitted,"
-            " and is only included now for forwards-compatibility."
         )
         patch__check_dimensions.assert_not_called()
 
@@ -220,6 +209,16 @@ class TestCube:
             " or from related tables can be used as cube dimensions."
         )
 
+    @patch("apteco.cube.Cube._check_dimensions")
+    def test__check_measures_bad_type(
+        self, patch__check_dimensions, fake_cube, rtl_var_purchase_department
+    ):
+        fake_cube.measures = [rtl_var_purchase_department]
+        with pytest.raises(ValueError) as exc_info:
+            fake_cube._check_measures()
+        assert exc_info.value.args[0] == "Invalid measure given: must be statistic"
+        patch__check_dimensions.assert_not_called()
+
     @patch("apteco_api.Dimension")
     def test__create_dimensions(self, patch_aa_dimension, fake_cube):
         patch_aa_dimension.side_effect = ["First dim", "Second dim", "Third dim"]
@@ -238,7 +237,7 @@ class TestCube:
         measures = fake_cube._create_measures()
         assert measures == ["Table count measure"]
         patch_aa_measure.assert_called_once_with(
-            id="0", resolve_table_name="Purchases", function="Count", variable_name=None
+            id="Purchases", resolve_table_name="Purchases", function="Count", variable_name=None
         )
 
     @patch("apteco_api.CubesApi")
@@ -282,7 +281,7 @@ class TestCube:
     @patch("apteco.cube.Cube._get_cube")
     def test__get_data(self, patch__get_cube, patch_np_array, fake_cube):
         fake_cube_result = Mock(
-            measure_results=[Mock(rows=["1\t2\t3", "4\t5\t6", "7\t8\t9"])],
+            measure_results=[Mock(rows=["1\t2\t3", "4\t5\t6", "7\t8\t9"], id="Purchases")],
             dimension_results=[
                 Mock(
                     header_codes="S\tF\tO",
@@ -302,7 +301,7 @@ class TestCube:
         fake_reshape = Mock(return_value="my_reshaped_data")
         patch_np_array.return_value = Mock(T=Mock(reshape=fake_reshape))
         # expected_raw_data = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-        expected_raw_data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        expected_raw_data = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
         expected_headers = {
             "codes": [
                 ["S", "F", "O"],
@@ -314,6 +313,7 @@ class TestCube:
                 ["Cash", "Card", "Cheque", "Voucher", "Gift Card"],
                 ["Home", "Garden", "Electronics", "DIY"],
             ],
+            "measures": ["Purchases"]
         }
         expected_sizes = (3, 5, 4)
 
