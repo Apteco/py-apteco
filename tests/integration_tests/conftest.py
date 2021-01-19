@@ -326,3 +326,17 @@ def cube_008_bookings_dimension_destination_measure_sum_profit(data_dir):
         data_dir / "cube_008_bookings_dimension_destination_measure_sum_profit.csv"
     )
     return df.set_index("Destination")
+
+
+@pytest.fixture(scope="session")
+def cube_009_bookings_multiple_measures(data_dir):
+    """Cube with single dimension and multiple measures from same table.
+
+    Table: Bookings
+    Dimensions: Destination
+    Measures: Bookings, Sum(Profit), Mean(Cost)
+    Selection: [none]
+
+    """
+    df = pd.read_csv(data_dir / "cube_009_bookings_multiple_measures.csv")
+    return df.set_index("Destination")

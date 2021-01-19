@@ -22,13 +22,19 @@ def sel_nonempty(rtl_sel_high_value_purchases):
 
 @pytest.fixture()
 def fake_cube_data():
-    return Mock(ravel=Mock(return_value="flattened_cube_data"))
+    data = [
+        Mock(ravel=Mock(return_value="flattened_cube_data1")),
+        Mock(ravel=Mock(return_value="flattened_cube_data2")),
+    ]
+    return data
 
 
 @pytest.fixture()
 def fake_cube_headers():
-    headers = MagicMock()
-    headers.__getitem__ = Mock(side_effect=["cube_header_descriptions", "cube_measure_names"])
+    headers = {
+        "descs": "cube_header_descriptions",
+        "measures": ["measure_name_1", "measure_name_2"],
+    }
     return headers
 
 
@@ -97,25 +103,32 @@ class TestCube:
         patch_pd_to_numeric,
         fake_cube,
         fake_cube_data,
-        fake_cube_headers  # type: Mock,
+        fake_cube_headers,
     ):
         patch_pd_dataframe.return_value = "my_cube_df"
         patch_pd_mi_fp.return_value = "multi_index_for_cube_df"
-        patch_pd_to_numeric.return_value = "numeric_flattened_cube_data"
+        patch_pd_to_numeric.side_effect = [
+            "numeric_flattened_cube_data1",
+            "numeric_flattened_cube_data2",
+        ]
         df = fake_cube.to_df()
         assert df == "my_cube_df"
-        fake_cube_data.ravel.assert_called_once_with()
-        patch_pd_to_numeric.assert_called_once_with("flattened_cube_data")
+        for d in fake_cube_data:
+            d.ravel.assert_called_once_with()
+        patch_pd_to_numeric.assert_has_calls(
+            [call("flattened_cube_data1"), call("flattened_cube_data2")]
+        )
         patch_pd_mi_fp.assert_called_once_with(
             "cube_header_descriptions",
             names=["Store Type", "Payment Method", "Department"],
         )
         patch_pd_dataframe.assert_called_once_with(
-            "numeric_flattened_cube_data",
+            {
+                "measure_name_1": "numeric_flattened_cube_data1",
+                "measure_name_2": "numeric_flattened_cube_data2",
+            },
             index="multi_index_for_cube_df",
-            columns="cube_measure_names",
         )
-        fake_cube_headers.__getitem__.assert_has_calls([call("descs"), call("measures")])
 
     @patch("apteco.cube.Cube._check_dimensions")
     def test__check_inputs(self, patch__check_dimensions, fake_cube):
@@ -231,14 +244,14 @@ class TestCube:
         assert dimensions == ["First dim", "Second dim", "Third dim"]
         patch_aa_dimension.assert_has_calls(dimension_calls)
 
-    @patch("apteco_api.Measure")
-    def test__create_measures(self, patch_aa_measure, fake_cube):
-        patch_aa_measure.side_effect = ["Table count measure"]
+    def test__create_measures(self, fake_cube):
+        fake_measures = [
+            Mock(_to_model_measure=Mock(return_value="First measure model")),
+            Mock(_to_model_measure=Mock(return_value="Second measure model")),
+        ]
+        fake_cube.measures = fake_measures
         measures = fake_cube._create_measures()
-        assert measures == ["Table count measure"]
-        patch_aa_measure.assert_called_once_with(
-            id="Purchases", resolve_table_name="Purchases", function="Count", variable_name=None
-        )
+        assert measures == ["First measure model", "Second measure model"]
 
     @patch("apteco_api.CubesApi")
     @patch("apteco.cube.Cube._create_measures")
@@ -319,7 +332,7 @@ class TestCube:
 
         data, headers, sizes = fake_cube._get_data()
 
-        assert data == "my_reshaped_data"
+        assert data == ["my_reshaped_data"]
         assert headers == expected_headers
         assert sizes == expected_sizes
         patch_np_array.assert_called_once_with(expected_raw_data)

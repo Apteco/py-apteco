@@ -55,9 +55,8 @@ class Cube:
 
     def _check_measures(self):
         if self.measures is None:
+            self.measures = [self.table]
             return
-        if len(self.measures) > 1:
-            raise ValueError("Only a single measure is currently supported.")
         for measure in self.measures:
             if not hasattr(measure, "_to_model_measure"):
                 raise ValueError(f"Invalid measure given: must be statistic")
@@ -73,9 +72,8 @@ class Cube:
     def _get_data(self):
         cube_result = self._get_cube()
         raw_data = [
-            x
-            for row in cube_result.measure_results[0].rows
-            for x in row.split("\t")
+            [x for row in mr.rows for x in row.split("\t")]
+            for mr in cube_result.measure_results
         ]
         headers = {
             "codes": [
@@ -92,11 +90,14 @@ class Cube:
                 ]
                 for dimension in cube_result.dimension_results
             ],
-            "measures": [cube_result.measure_results[0].id]
+            "measures": [mr.id for mr in cube_result.measure_results],
         }
         sizes = tuple(len(h) for h in headers["codes"])
-        data_as_array = np.array(raw_data)
-        data = data_as_array.T.reshape(sizes, order="F")
+        data_as_array = [np.array(raw_measure_data) for raw_measure_data in raw_data]
+        data = [
+            measure_data_as_array.T.reshape(sizes, order="F")
+            for measure_data_as_array in data_as_array
+        ]
         dimensions = [dim.id for dim in cube_result.dimension_results]
         return data, headers, sizes
 
@@ -125,17 +126,7 @@ class Cube:
         ]
 
     def _create_measures(self):
-        if self.measures is not None:
-            return [m._to_model_measure(self.table) for m in self.measures]
-        else:
-            return [
-                aa.Measure(
-                    id=f"{self.table.plural.title()}",
-                    resolve_table_name=self.table.name,
-                    function="Count",
-                    variable_name=None,
-                )
-            ]
+        return [m._to_model_measure(self.table) for m in self.measures]
 
     def to_df(self):
         if len(self.dimensions) == 1:
@@ -147,7 +138,11 @@ class Cube:
                 self._headers["descs"], names=[d.description for d in self.dimensions]
             )
         return pd.DataFrame(
-            pd.to_numeric(self._data.ravel()),
+            {
+                measure_name: pd.to_numeric(measure_data.ravel())
+                for measure_name, measure_data in zip(
+                    self._headers["measures"], self._data
+                )
+            },
             index=index,
-            columns=self._headers["measures"],
         )

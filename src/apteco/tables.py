@@ -1,5 +1,7 @@
 from typing import Iterable, List, Optional
 
+import apteco_api as aa
+
 from apteco.cube import Cube
 from apteco.datagrid import DataGrid
 from apteco.exceptions import get_deprecated_attr
@@ -78,6 +80,8 @@ class Table(TableMixin):
         self.descendants = descendants
         self.variables = variables
         self.session = session
+
+        self.table = self
 
     def is_same(self, other: "Table"):
         """Return whether this table is the same as ``other``.
@@ -178,6 +182,14 @@ class Table(TableMixin):
 
     def _as_nper_clause(self, clause, n, by, ascending, label):
         return NPerTableClause(clause=clause, n=n, per=self, by=by, ascending=ascending, label=label, session=self.session)
+
+    def _to_model_measure(self, table):
+        return aa.Measure(
+            id=f"{self.plural.title()}",
+            resolve_table_name=self.name,
+            function="Count",
+            variable_name=None,
+        )
 
     def __getattr__(self, item):
         DEPRECATED_ATTRS = {
