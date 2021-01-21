@@ -1,3 +1,5 @@
+import itertools
+
 import apteco_api as aa
 import numpy as np
 import pandas as pd
@@ -26,6 +28,7 @@ class Cube:
         self._check_table()
         self._check_dimensions()
         self._check_measures()
+        self._check_relations()
 
     def _check_table(self):
         if self.table is None:
@@ -68,6 +71,25 @@ class Cube:
                     f"\nOnly measures from the same table as the cube"
                     f" or from related tables can be used as cube dimensions."
                 )
+
+    def _check_relations(self):
+        elements = [
+            (d, f"dimension '{d.name}' (table: {d.table.name})")
+            for d in self.dimensions
+        ] + [(m, f"measure '{m._name}' (table: {m.table.name})") for m in self.measures]
+
+        non_related = []
+        for x, y in itertools.combinations(elements, r=2):
+            if not x[0].table.is_related(y[0].table, allow_same=True):
+                non_related.append((x, y))
+
+        if not non_related:
+            return
+
+        error_msg = "The tables of all elements in the cube must be mutually-related, but the tables of the following pair(s) of elements are not related:"
+        for x, y in non_related:
+            error_msg += f"\n{x[1]} & {y[1]}"
+        raise ValueError(error_msg)
 
     def _get_data(self):
         cube_result = self._get_cube()

@@ -82,6 +82,7 @@ class Table(TableMixin):
         self.session = session
 
         self.table = self
+        self._name = self.name
 
     def is_same(self, other: "Table"):
         """Return whether this table is the same as ``other``.

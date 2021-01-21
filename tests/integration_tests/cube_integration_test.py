@@ -259,3 +259,23 @@ def test_cube_to_df_bookings_measures_smorgasbord(
     )
 
     assert_cube_dataframes_match(df, expected_df, False, atol=0.005)
+
+
+def test_cube_unrelated_elements(holidays, people, bookings, policies, web_visits):
+    with pytest.raises(ValueError) as exc_info:
+        cube_with_unrelated_elements = Cube(
+            [people["Occupation"], bookings["Destination"], policies["Cover"]],
+            [Max(web_visits["Duration"]), Sum(bookings["Cost"]), bookings],
+            table=people,
+            session=holidays,
+        )
+    assert exc_info.value.args[0] == (
+        "The tables of all elements in the cube must be mutually-related, but the tables of the following pair(s) of elements are not related:"
+        "\ndimension 'boDest' (table: Bookings) & dimension 'PoCover' (table: Policies)"
+        "\ndimension 'boDest' (table: Bookings) & measure 'Max(Duration)' (table: WebVisits)"
+        "\ndimension 'PoCover' (table: Policies) & measure 'Max(Duration)' (table: WebVisits)"
+        "\ndimension 'PoCover' (table: Policies) & measure 'Sum(Cost)' (table: Bookings)"
+        "\ndimension 'PoCover' (table: Policies) & measure 'Bookings' (table: Bookings)"
+        "\nmeasure 'Max(Duration)' (table: WebVisits) & measure 'Sum(Cost)' (table: Bookings)"
+        "\nmeasure 'Max(Duration)' (table: WebVisits) & measure 'Bookings' (table: Bookings)"
+    )
