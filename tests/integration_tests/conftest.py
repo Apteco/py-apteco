@@ -342,3 +342,21 @@ def cube_009_bookings_multiple_measures(data_dir):
     """
     df = pd.read_csv(data_dir / "cube_009_bookings_multiple_measures.csv")
     return df.set_index("Destination")
+
+
+@pytest.fixture(scope="session")
+def cube_010_bookings_measures_smorgasbord(data_dir):
+    """Cube with single dimension and all measures, some from different tables.
+
+    Table: Bookings
+    Dimensions: Destination
+    Measures: Bookings, Sum(Profit), Mean(Cost), Maximum(Cost), Minimum(Profit),
+        Variance(Cost), Standard Deviation(Profit), Lower Quartile(Cost),
+        Upper Quartile(Cost), Inter Quartile Range(Profit), 80 Percentile(Cost),
+        Populated(DOB), Mode(Source), Count Mode(Product), Count Distinct(Source),
+        People, Households
+    Selection: [none]
+
+    """
+    df = pd.read_csv(data_dir / "cube_010_bookings_measures_smorgasbord.csv")
+    return df.set_index("Destination")

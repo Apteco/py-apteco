@@ -4,10 +4,26 @@ import pandas as pd
 import pytest
 
 from apteco import Cube
-from apteco.statistics import Mean, Sum
+from apteco.statistics import (
+    CountDistinct,
+    CountMode,
+    InterQuartileRange,
+    LowerQuartile,
+    Max,
+    Mean,
+    Min,
+    Mode,
+    Populated,
+    StdDev,
+    Sum,
+    UpperQuartile,
+    Variance,
+)
 
 
-def assert_cube_dataframes_match(test_df, expected_df, missing_subtotals=True):
+def assert_cube_dataframes_match(
+    test_df, expected_df, missing_subtotals=True, **kwargs
+):
     """Check that two cube DataFrames match.
 
     Compare test data with reference data, ignoring dtype,
@@ -32,7 +48,9 @@ def assert_cube_dataframes_match(test_df, expected_df, missing_subtotals=True):
     else:
         test_df_reduced = test_df
 
-    pd.testing.assert_frame_equal(test_df_reduced, expected_df, check_dtype=False)
+    pd.testing.assert_frame_equal(
+        test_df_reduced, expected_df, check_dtype=False, **kwargs
+    )
 
 
 def test_cube_to_df_people_various_dimensions(
@@ -205,3 +223,39 @@ def test_cube_to_df_bookings_multiple_measures(
     df = cube.to_df()
 
     assert_cube_dataframes_match(df, cube_009_bookings_multiple_measures)
+
+
+def test_cube_to_df_bookings_measures_smorgasbord(
+    holidays, households, people, bookings, cube_010_bookings_measures_smorgasbord
+):
+    cube = Cube(
+        [bookings["Destination"]],
+        [
+            bookings,
+            Sum(bookings["Profit"]),
+            Mean(bookings["Cost"]),
+            Max(bookings["Cost"], label="Maximum(Cost)"),
+            Min(bookings["Profit"], label="Minimum(Profit)"),
+            Variance(bookings["Cost"]),
+            StdDev(bookings["Profit"], label="Standard Deviation(Profit)"),
+            LowerQuartile(bookings["Cost"]),
+            UpperQuartile(bookings["Cost"]),
+            InterQuartileRange(bookings["Profit"]),
+            # Percentile(bookings["Cost"], 80),
+            Populated(people["DOB"]),
+            Mode(people["Source"]),
+            CountMode(bookings["Product"]),
+            CountDistinct(people["Source"]),
+            people,
+            households,
+        ],
+        table=bookings,
+        session=holidays,
+    )
+    df = cube.to_df()
+
+    expected_df = cube_010_bookings_measures_smorgasbord.drop(
+        columns="80 Percentile(Cost)"
+    )
+
+    assert_cube_dataframes_match(df, expected_df, False, atol=0.005)

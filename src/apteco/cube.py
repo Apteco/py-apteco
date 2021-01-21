@@ -63,7 +63,7 @@ class Cube:
             if not measure.table.is_related(self.table, allow_same=True):
                 raise ValueError(
                     f"The resolve table of the cube is '{self.table.name}',"
-                    f" but the measure '{measure.name}' belongs to the"
+                    f" but the measure '{measure._name}' belongs to the"
                     f" '{measure.table.name}' table."
                     f"\nOnly measures from the same table as the cube"
                     f" or from related tables can be used as cube dimensions."
@@ -139,7 +139,7 @@ class Cube:
             )
         return pd.DataFrame(
             {
-                measure_name: pd.to_numeric(measure_data.ravel())
+                measure_name: pd.to_numeric(measure_data.ravel(), errors="coerce")
                 for measure_name, measure_data in zip(
                     self._headers["measures"], self._data
                 )

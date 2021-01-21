@@ -113,7 +113,10 @@ class TestCube:
         for d in fake_cube_data:
             d.ravel.assert_called_once_with()
         patch_pd_to_numeric.assert_has_calls(
-            [call("flattened_cube_data1"), call("flattened_cube_data2")]
+            [
+                call("flattened_cube_data1", errors="coerce"),
+                call("flattened_cube_data2", errors="coerce"),
+            ]
         )
         patch_pd_mi_fp.assert_called_once_with(
             "cube_header_descriptions",
