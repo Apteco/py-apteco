@@ -228,6 +228,9 @@ def test_cube_to_df_bookings_multiple_measures(
 def test_cube_to_df_bookings_measures_smorgasbord(
     holidays, households, people, bookings, cube_010_bookings_measures_smorgasbord
 ):
+    # TODO: remove this hack once Date variables are properly supported in statistics
+    people["DOB"].type = "Numeric"
+    people["Source"].type = "Numeric"
     cube = Cube(
         [bookings["Destination"]],
         [
@@ -257,6 +260,8 @@ def test_cube_to_df_bookings_measures_smorgasbord(
     expected_df = cube_010_bookings_measures_smorgasbord.drop(
         columns="80 Percentile(Cost)"
     )
+    people["DOB"].type = "Date"
+    people["Source"].type = "Selector"
 
     assert_cube_dataframes_match(df, expected_df, False, atol=0.005)
 

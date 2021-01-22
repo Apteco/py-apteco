@@ -70,7 +70,7 @@ class Median(Statistic):
 class Mode(Statistic):
     _model_function = "Mode"
     _display_name = "Mode"
-    _accepted_types = ("Numeric", "Selector")
+    _accepted_types = ("Numeric",)
 
 
 class Variance(Statistic):

@@ -278,10 +278,6 @@ The statistics all have the same signature:
 
 These statistics accept either a **selector** or **numeric** variable as the operand:
 
-.. class:: Mode
-
-    The mode (most common) value of the variable.
-
 
 .. class:: CountMode
 
@@ -294,10 +290,6 @@ These statistics accept either a **selector** or **numeric** variable as the ope
 
 
 These statistics accept a **numeric** variable as the operand:
-
-.. class:: Populated
-
-    The number of records for which the variable has a (non-missing) value.
 
 
 .. class:: Sum
@@ -313,6 +305,14 @@ These statistics accept a **numeric** variable as the operand:
 .. class:: Max
 
     The maximum value of the variable.
+
+.. class:: Populated
+
+    The number of records for which the variable has a (non-missing) value.
+
+.. class:: Mode
+
+    The mode (most common) value of the variable.
 
 
 .. class:: Mean
