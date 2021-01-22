@@ -370,6 +370,15 @@ class Clause:
                 fraction = Fraction(frac.numerator, frac.denominator)
             else:
                 percent = float(frac) * 100
+
+        if sample_type.title() not in ("First", "Stratified", "Random"):
+            raise ValueError(f"'{sample_type}' is not a valid sample type")
+        sample_type = sample_type.title()
+
+        if not isinstance(skip_first, Integral) or int(skip_first) < 0:
+            raise ValueError("`skip_first` must be a non-negative integer")
+        skip_first = int(skip_first)
+
         return LimitClause(
             clause=self,
             total=total,

@@ -128,37 +128,52 @@ Core attributes & methods
 Sampling and limits
 -------------------
 
-.. py:method:: sample(n=None, frac=None, sample_type="First", skip_first=0, *, label=None)
+.. py:method:: sample(n=None, frac=None, sample_type="Random", skip_first=0, *, label=None)
+
     Take a sample of records from the selection.
 
-    :param int n: number of records to sample
-        (cannot be used with `frac`)
-    :param float frac: proportion of records to sample from the whole selection
-        (cannot be used with `n`)
-    :param str sample_type: type of sampling to use,
-        one of: `First`, `Stratified`, `Random` (default is `Random`)
-    :param int skip_first: number of records to skip from start of selection
-        (default is `0`)
-    :param str label: optional textual name for this selection clause
-        (default is `None`)
+    :param int n: Number of records to return from selection.
+        Cannot be used with `frac`.
+    :param float frac: Proportion of records to return out of whole selection,
+        given as a number between 0 and 1.
+        Cannot be used with `n`.
+    :type sample_type: {'Random', 'Stratified', 'First'}
+    :param sample_type: Type of sampling to use. Default is 'Random'.
+    :param int skip_first: Number of records to skip from start of selection.
+        Default is 0.
+    :param str label: Optional textual name for this selection clause.
 
 .. py:method:: limit(n=None, frac=None, by=None, ascending=None, per=None, *, label=None)
+
     Limit the selection to a subset of records.
 
-    :type ascending: bool or None
+    :type n: int or tuple
+    :type frac: float or tuple
+    :type ascending: bool, optional
     :type per: Table or Variable
-    :param int n: number of records to limit selection to
-        (cannot be used with `frac`)
-    :param float frac: proportion of records to limit selection to,
-        out of whole selection (cannot be used with `n`)
-    :param Variable by: variable to sort records by before limiting
-        (if this is given and `ascending` isn't, default behaviour is to sort descending)
-    :param ascending: whether to sort records ascending (`True`)
-        or descending (`False`) before applying limit
-        (if `by` is given and this isn't set, default behaviour is to sort descending)
-    :param per:
-        * **Table:** select `n` records per record on this parent table
-        * **Variable:** select `n` records per value of this variable
+    :param n: Number of records to return from selection.
+        Cannot be used with `frac`.
+        If `by` is given, a tuple of two integers `(i, j)` may be passed to
+        select from the `i`\ th to the `j`\ th records.
+    :param frac: Proportion of records to return out of whole selection,
+        given as a number between 0 and 1.
+        Cannot be used with `n`.
+        If `by` is given, a tuple of two numbers `(p, q)` may be passed to
+        select the proportion of records between them.
+        For example `frac=(0.1, 0.25)` with `ascending=False`
+        would give the top 10–25% of records.
+    :param Variable by: Variable specifying order in which records are selected.
+    :param ascending: Whether to order records ascending (`True`)
+        or descending (`False`) when selecting limit.
+        Must be used with `by`. Default is `False`.
+    :param per: Return `n` records per this entity. Cannot be used with `frac`.
+        If `per` is a **Table**, it must be a parent or ancestor table of the
+        selection's table, and for each record on this table
+        `n` child records are returned from the selection.
+        If per is a **Variable**, `n` records are returned
+        for each value of this variable.
+        If `per` is a selector variable, this means `n` records
+        for each selector category.
 
 Data Grids and Cubes
 --------------------
