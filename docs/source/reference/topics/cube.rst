@@ -18,21 +18,16 @@ The cube is specified by:
     * a resolve **table** – statistics in the cube are measures of
       records in this table
     * a set of **dimensions** – these are the fields over which the data
-      is being summarised
+      is being analysed
     * a set of **measures** – these define the statistics displayed in the cube
-      to summarise the data
+      to analyse the data
     * a base **selection** *(optional)* – this filters records in the table
-      to only include in the summary ones that match the given criteria
+      to only include in the analysis ones that match the given criteria
 
 .. note::
-    The cube functionality is still under active development,
-    and so is currently subject to a couple of limitations:
-
-    * The cube dimensions must be FastStats **Selector** variables
-      (other variable types and more complex types like expressions
-      are not currently supported).
-    * Only the default *count* is supported as a measure,
-      and this is set automatically.
+    Currently, the cube dimensions must be FastStats **Selector** variables.
+    Other variable types and more complex types like expressions or selections
+    are not yet supported.
 
 Basic use
 =========
@@ -148,6 +143,9 @@ Using a base selection from a different table::
 API reference
 =============
 
+Cube creation and conversion
+----------------------------
+
 .. class:: Cube(dimensions, measures=None, selection=None, table=None, *, session=None)
 
     Create a cube.
@@ -158,25 +156,19 @@ API reference
         It is recommended to prefer those over instantiating this class directly,
         as they generally provide a simpler interface.
 
-    :param list[Variable] dimensions: variables to use as dimensions in the cube.
+    :param list[Variable] dimensions: Variables to use as dimensions in the cube.
         These must be from `table` or from a 'related' table
         – either an ancestor or descendant.
-    :param measures: measures to display in the cube
-        (default is :const:`None`, which will return the default `count` measure
-        – this is the only option currently supported)
-    :param Clause selection: base selection to apply to the cube.
+    :param list measures: Statistics to display in the cube.
+        If `measures` is None, the count measure of the cube's resolve table
+        will be used by default.
+    :param Clause selection: Base selection to apply to the cube.
         The table of this selection must be a 'related' table
         – either an ancestor or descendant.
     :param Table table: resolve table of the cube.
-        This table's records used in the analysis for the cube,
-        e.g. the `count` measure is counting records from this table.
-    :param Session session: current Apteco API session.
-
-    .. note::
-        The only measure currently supported is the default count.
-        The `measures` parameter is primarily included now
-        for forward-compatibility,
-        and must be set to :const:`None` (which is its default value).
+        This table's records are used in the analysis for the cube,
+        e.g. the default count measure is counts records from this table.
+    :param Session session: Current Apteco API session.
 
     At least one of `selection` or `table` must be given:
 
@@ -216,7 +208,8 @@ API reference
         It is held on the object in the :attr:`_data` attribute as a Numpy :class:`array`
         but this is not considered public, and so to work with the data
         you should convert it to your desired output format.
-        The only format currently supported is a Pandas :class:`DataFrame`.
+        The format currently supported is a Pandas :class:`DataFrame`,
+        via the the :meth:`to_df` method.
 
     .. method:: to_df()
 
@@ -224,13 +217,11 @@ API reference
 
         The :class:`DataFrame` is configured such that:
 
-            * the *index* is a :class:`MultiIndex`,
-              with each level corresponding to a dimension
-            * there is one *column* which is the single (default) `count` measure,
-              named after resolve table of the cube
-            * the index labels are the dimension category descriptions,
-              rather than codes
-            * all data values are integers, since they represent a count
+            * the dimensions form the *index*.
+              If multiple dimensions are given, this is a :class:`MultiIndex`,
+              with each level corresponding to a dimension.
+              The index labels are the dimension category descriptions.
+            * there is one *column* for each measure.
 
         .. tip::
             The structure of the DataFrame returned by the :meth:`to_df()` method
@@ -247,3 +238,114 @@ API reference
             see the `user guide
             <https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html>`_
             in the official Pandas documentation.
+
+Statistics
+----------
+
+.. py:currentmodule:: apteco.statistics
+
+Two types of statistics are currently supported as cube measures:
+table counts and variable statistics.
+
+Table counts
+~~~~~~~~~~~~
+
+These can be specified by passing a Table object in the `measures` list,
+and will return a count of the records from that Table.
+If `measures` is None, the count of records from the resolve table
+will be added by default.
+
+Variable statistics
+~~~~~~~~~~~~~~~~~~~
+
+These are summary statistics over a given variable and can be specified
+using the classes available in the :mod:`apteco.statistics` module.
+
+The statistics all have the same signature:
+
+.. class:: Statistic(operand, *, label=None)
+
+    Create a variable statistic.
+
+    :param Variable operand: Variable over which to apply the statistic.
+        Most statistics can only be calculated over numeric variables,
+        but some also accept selector variables.
+        See details below for specific restrictions.
+    :type label: str, optional
+    :param label: Descriptive name for this statistic.
+        Used as the column label for this statistic
+        on the DataFrame returned by :meth:`to_df`.
+
+These statistics accept either a **selector** or **numeric** variable as the operand:
+
+.. class:: Mode
+
+    The mode (most common) value of the variable.
+
+
+.. class:: CountMode
+
+    The number of records which take the modal value of the variable.
+
+
+.. class:: CountDistinct
+
+    The number of distinct values of the variable.
+
+
+These statistics accept a **numeric** variable as the operand:
+
+.. class:: Populated
+
+    The number of records for which the variable has a (non-missing) value.
+
+
+.. class:: Sum
+
+    The sum of values of the variable.
+
+
+.. class:: Min
+
+    The minimum value of the variable.
+
+
+.. class:: Max
+
+    The maximum value of the variable.
+
+
+.. class:: Mean
+
+    The mean value of the variable.
+
+
+.. class:: StdDev
+
+    The standard deviation of the variable.
+
+
+.. class:: Variance
+
+    The variance of the variable.
+
+
+.. class:: Median
+
+    The median value of the variable.
+
+
+.. class:: LowerQuartile
+
+    The lower quartile of the variable.
+
+
+.. class:: UpperQuartile
+
+    The upper quartile of the variable.
+
+
+.. class:: InterQuartileRange
+
+    The inter-quartile range of the variable.
+
