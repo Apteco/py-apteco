@@ -2,6 +2,7 @@ from typing import Iterable, Mapping, Optional
 
 import apteco_api as aa
 
+from apteco.exceptions import get_deprecated_attr
 from apteco.query import (
     ArrayClause,
     DateListClause,
@@ -134,8 +135,8 @@ class NumericVariable(Variable):
         super().__init__(**kwargs)
         self.type = "Numeric"
         numeric_info = kwargs["numeric_info"]  # type: aa.NumericVariableInfo
-        self.min = numeric_info.minimum
-        self.max = numeric_info.maximum
+        self.min_value = numeric_info.minimum
+        self.max_value = numeric_info.maximum
         self.is_currency = numeric_info.is_currency
         self.currency_locale = numeric_info.currency_locale
         self.currency_symbol = numeric_info.currency_symbol
@@ -182,6 +183,19 @@ class NumericVariable(Variable):
             [f">={normalize_number_value(other, single_value_error_msg_numeric)}"],
             session=self.session,
         )
+
+    def __getattr__(self, item):
+        DEPRECATED_ATTRS = {
+            "max": ("max_value", "0.7.0"),
+            "min": ("min_value", "0.7.0"),
+        }
+
+        if item in DEPRECATED_ATTRS:
+            return get_deprecated_attr(self, item, *DEPRECATED_ATTRS[item])
+        else:
+            raise AttributeError(
+                f"'{self.__class__.__name__}' has no attribute '{item}'"
+            )
 
 
 class TextVariable(Variable):

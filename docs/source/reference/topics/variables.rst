@@ -201,11 +201,11 @@ Numeric variable
 
     Class which represents a FastStats **Numeric** variable.
 
-    .. py:attribute:: min
+    .. py:attribute:: min_value
 
         The smallest value of this variable over all records.
 
-    .. py:attribute:: max
+    .. py:attribute:: max_value
 
         The largest value of this variable over all records.
 
