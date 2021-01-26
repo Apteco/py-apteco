@@ -2,6 +2,58 @@
   Change Log
 **************
 
+Version 0.7.0
+=============
+
+*2021-01-26*
+
+Added
+-----
+
+* Added ``LimitClause``, ``TopNClause``, ``NPerVariableClause``, ``NPerTableClause``
+  classes for creating selections with limits.
+* Added ``sample()`` and ``limit()`` methods to selections for applying limits to them.
+* Added cube variable statistics in new ``apteco.statistics`` module:
+
+  - ``Sum``
+  - ``Mean``
+  - ``Populated``
+  - ``Min``
+  - ``Max``
+  - ``Median``
+  - ``Mode``
+  - ``Variance``
+  - ``StdDev``
+  - ``LowerQuartile``
+  - ``UpperQuartile``
+  - ``InterQuartileRange``
+  - ``CountDistinct``
+  - ``CountMode``
+
+* Added ``missing()`` method to ``NumericVariable`` for selecting records
+  with missing values.
+
+Changed
+-------
+
+* Cubes can now have multiple measures rather than just the single default count.
+* For cubes with just a single dimension, ``Cube.to_df()`` now returns a DataFrame
+  with a normal ``Index`` (rather than a ``MultiIndex``).
+
+Deprecated
+----------
+
+* ``NumericVariable.max`` → use ``NumericVariable.max_value``
+* ``NumericVariable.min`` → use ``NumericVariable.min_value``
+
+Fixed
+-----
+
+* Process that validates cube dimensions and measures has been improved
+  to catch some invalid combinations that were previously allowed,
+  and allow some valid combinations that were previously prevented.
+
+
 Version 0.6.0
 =============
 

@@ -54,8 +54,8 @@ If Python isn't installed, you may see a message like this:
 
 .. image:: _static/python_command_line_not_installed.png
 
-or it may open the the download page for the Python app in the Windows Store
-(see `below <windows_store_install_>`_
+or it may open the the download page for the Python app in the Microsoft Store
+(see `below <microsoft_store_install_>`_
 for more information about installing from there).
 
 Which version do I need?
@@ -79,27 +79,27 @@ you can download it from the official Python website:
 https://www.python.org/downloads/
 
 If in doubt, choose the newest release of the latest version
-(at the time of writing, this is Python 3.8.2),
+(at the time of writing, this is Python 3.9.1),
 though be aware that this won't necessarily be at the top of the download list.
 Once you're on the page for that release,
 scroll to the bottom and choose the appropriate download under **Files**.
 If you're a Windows user and aren't sure which download option to take,
-the **Windows executable installer** is probably best, highlighted here:
+the **Windows installer** is probably best, highlighted here:
 
 .. image:: _static/python_download_files.png
 
-If you don't know whether you need the **x86** or **x86-64** version,
+If you don't know whether you need the **32-bit** or **64-bit** version,
 go to **Settings** → **System** → **About** on your computer
 and check **System type** under **Device specifications**:
 
 .. image:: _static/check_system_type.png
 
-.. _windows_store_install:
+.. _microsoft_store_install:
 
-Installing from the Windows Store
----------------------------------
+Installing from the Microsoft Store
+-----------------------------------
 
-Python versions 3.7+ are available as apps in the Windows Store.
+Python versions 3.7+ are available as apps in the Microsoft Store.
 Installing Python from here will install it just for your user
 and doesn't require administrator privileges,
 so this a good option if you don't normally have the necessary permissions
