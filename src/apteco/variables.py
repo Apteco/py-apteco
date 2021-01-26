@@ -197,6 +197,11 @@ class NumericVariable(Variable):
                 f"'{self.__class__.__name__}' has no attribute '{item}'"
             )
 
+    def missing(self, *, include=True, label=None):
+        return NumericClause(
+            self, ["><"], include=include, label=label, session=self.session
+        )
+
 
 class TextVariable(Variable):
     """Class representing a FastStats Text variable."""

@@ -221,6 +221,15 @@ Numeric variable
 
         Currency symbol for the currency (if this is a currency variable).
 
+.. py:method:: NumericVariable.missing(*, include=True, label=None)
+
+    Select records where this numeric variable's value is missing.
+
+    :type label: str or None
+    :param bool include: set to `False` to *exclude* missing values
+        from the selection (default is `True`)
+    :param label: textual label for this selection clause
+
 Operators
 ~~~~~~~~~
 

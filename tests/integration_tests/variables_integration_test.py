@@ -48,23 +48,31 @@ def test_flag_array_operators(people, bookings):
     assert no_activities.count() == 75774
 
 
-def test_numeric_operator(policies, bookings, web_visits):
-    thirty_days_to_travel = policies["PoDaysUn"] == 30
-    assert thirty_days_to_travel.count() == 2647
-    multiple_of_100 = bookings["boCost"] == (i * 100 for i in range(285))
-    assert multiple_of_100.count() == 3123
-    profit_not_33_33 = bookings["boProfit"] != decimal.Decimal("33.33")
-    assert profit_not_33_33.count() == 2_129_833
-    more_than_5_days_until_travel = policies["PoDaysUn"] != [0, 1, 2, 3, 4, 5]
-    assert more_than_5_days_until_travel.count() == 172_044
-    low_profit = bookings["boProfit"] <= 25
-    assert low_profit.count() == 211_328
-    cost_at_least_2k = bookings["boCost"] >= 2000
-    assert cost_at_least_2k.count() == 53267
-    less_than_minute = web_visits["wvDuratn"] < 60
-    assert less_than_minute.count() == 44399
-    more_than_8_weeks = policies["PoDaysSi"] > 56
-    assert more_than_8_weeks.count() == 23950
+class TestNumericVariable:
+    def test_numeric_operator(self, policies, bookings, web_visits):
+        thirty_days_to_travel = policies["PoDaysUn"] == 30
+        assert thirty_days_to_travel.count() == 2647
+        multiple_of_100 = bookings["boCost"] == (i * 100 for i in range(285))
+        assert multiple_of_100.count() == 3123
+        profit_not_33_33 = bookings["boProfit"] != decimal.Decimal("33.33")
+        assert profit_not_33_33.count() == 2_129_833
+        more_than_5_days_until_travel = policies["PoDaysUn"] != [0, 1, 2, 3, 4, 5]
+        assert more_than_5_days_until_travel.count() == 172_044
+        low_profit = bookings["boProfit"] <= 25
+        assert low_profit.count() == 211_328
+        cost_at_least_2k = bookings["boCost"] >= 2000
+        assert cost_at_least_2k.count() == 53267
+        less_than_minute = web_visits["wvDuratn"] < 60
+        assert less_than_minute.count() == 44399
+        more_than_8_weeks = policies["PoDaysSi"] > 56
+        assert more_than_8_weeks.count() == 23950
+
+    def test_numeric_missing(self, bookings, policies):
+        missing_profit = bookings["Profit"].missing()
+        assert missing_profit.count() == 67012
+
+        not_missing_premium = policies["Premium"].missing(include=False)
+        assert not_missing_premium.count() == 213567
 
 
 def test_text_operator(people, households):

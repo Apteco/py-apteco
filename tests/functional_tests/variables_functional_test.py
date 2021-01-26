@@ -211,6 +211,15 @@ class TestNumericVariable:
             "Must specify a single number for this type of operation."
         )
 
+    def test_missing(self, fake_numeric_variable, chy_session):
+        missing_value = fake_numeric_variable.missing()
+        assert type(missing_value) == NumericClause
+        assert missing_value.table_name == "Donations"
+        assert missing_value.variable_name == "Amount"
+        assert missing_value.values == ["><"]
+        assert missing_value.include is True
+        assert missing_value.session is chy_session
+
 
 class TestTextVariable:
     def test_eq(self, fake_text_variable_email, chy_session):
