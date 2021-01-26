@@ -275,12 +275,10 @@ def test_cube_unrelated_elements(holidays, people, bookings, policies, web_visit
             session=holidays,
         )
     assert exc_info.value.args[0] == (
-        "The tables of all elements in the cube must be mutually-related, but the tables of the following pair(s) of elements are not related:"
-        "\ndimension 'boDest' (table: Bookings) & dimension 'PoCover' (table: Policies)"
-        "\ndimension 'boDest' (table: Bookings) & measure 'Max(Duration)' (table: WebVisits)"
-        "\ndimension 'PoCover' (table: Policies) & measure 'Max(Duration)' (table: WebVisits)"
-        "\ndimension 'PoCover' (table: Policies) & measure 'Sum(Cost)' (table: Bookings)"
-        "\ndimension 'PoCover' (table: Policies) & measure 'Bookings' (table: Bookings)"
-        "\nmeasure 'Max(Duration)' (table: WebVisits) & measure 'Sum(Cost)' (table: Bookings)"
-        "\nmeasure 'Max(Duration)' (table: WebVisits) & measure 'Bookings' (table: Bookings)"
+        "For 'cross cubes' (where two dimensions are unrelated),"
+        " all measures must be from the resolve table or one of its ancestors."
+        " The following measure(s) did not meet those criteria:"
+        "\nmeasure 'Max(Duration)' (table: WebVisits)"
+        "\nmeasure 'Sum(Cost)' (table: Bookings)"
+        "\nmeasure 'Bookings' (table: Bookings)"
     )

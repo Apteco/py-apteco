@@ -160,6 +160,8 @@ Cube creation and conversion
         These must be from `table` or from a 'related' table
         – either an ancestor or descendant.
     :param list measures: Statistics to display in the cube.
+        These must be from `table` or from a 'related' table
+        – either an ancestor or descendant.
         If `measures` is None, the count measure of the cube's resolve table
         will be used by default.
     :param Clause selection: Base selection to apply to the cube.
@@ -169,6 +171,17 @@ Cube creation and conversion
         This table's records are used in the analysis for the cube,
         e.g. the default count measure is counts records from this table.
     :param Session session: Current Apteco API session.
+
+    As well as being related to `table`,
+    the following restrictions apply to dimensions and measures:
+
+        * All dimensions must be from tables related to each other,
+          except in the case of a 'cross cube'
+          when dimensions may be from unrelated tables,
+          as long as these are all *descendants* of `table`.
+        * Each measure's table must be related to each dimension's table.
+          In the case of a 'cross cube', all measures must be from `table`
+          or one of its ancestors.
 
     At least one of `selection` or `table` must be given:
 

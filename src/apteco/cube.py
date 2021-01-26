@@ -73,23 +73,65 @@ class Cube:
                 )
 
     def _check_relations(self):
-        elements = [
+        d_elements = [
             (d, f"dimension '{d.name}' (table: {d.table.name})")
             for d in self.dimensions
-        ] + [(m, f"measure '{m._name}' (table: {m.table.name})") for m in self.measures]
+        ]
+        m_elements = [(m, f"measure '{m._name}' (table: {m.table.name})") for m in self.measures]
 
+        cross_cube = False
         non_related = []
-        for x, y in itertools.combinations(elements, r=2):
-            if not x[0].table.is_related(y[0].table, allow_same=True):
+        for x, y in itertools.combinations(d_elements, r=2):
+            if x[0].table.is_related(y[0].table, allow_same=True):
+                pass
+            elif x[0].table.is_descendant(self.table) and y[0].table.is_descendant(self.table):
+                cross_cube = True
+            else:
                 non_related.append((x, y))
 
-        if not non_related:
-            return
+        if non_related:
+            error_msg = (
+                "Dimension tables must either be related,"
+                " or be descendants of the resolve table."
+                " The following pair(s) of dimensions did not meet those criteria:"
+            )
+            for x, y in non_related:
+                error_msg += f"\n{x[1]} & {y[1]}"
+            raise ValueError(error_msg)
 
-        error_msg = "The tables of all elements in the cube must be mutually-related, but the tables of the following pair(s) of elements are not related:"
-        for x, y in non_related:
-            error_msg += f"\n{x[1]} & {y[1]}"
-        raise ValueError(error_msg)
+        if cross_cube:
+            cell_table = self.table
+            bad_measures = []
+            for m in m_elements:
+                if not m[0].table.is_ancestor(cell_table, allow_same=True):
+                    bad_measures.append(m)
+            if bad_measures:
+                error_msg = (
+                    "For 'cross cubes' (where two dimensions are unrelated),"
+                    " all measures must be from the resolve table"
+                    " or one of its ancestors."
+                    " The following measure(s) did not meet those criteria:"
+                )
+                for bm in bad_measures:
+                    error_msg += f"\n{bm[1]}"
+                raise ValueError(error_msg)
+
+        else:
+            # cell_table = max(dim.table for dim in self.dimensions)
+            non_related = []
+            for m, d in itertools.product(m_elements, d_elements):
+                if not m[0].table.is_related(d[0].table, allow_same=True):
+                    non_related.append((m, d))
+            if non_related:
+                error_msg = (
+                    "Measure and dimension tables must be related."
+                    " The following measure-dimension pair(s) "
+                    " did not meet those criteria:"
+                )
+                for m, d in non_related:
+                    error_msg += f"\n{m[1]} & {d[1]}"
+                raise ValueError(error_msg)
+
 
     def _get_data(self):
         cube_result = self._get_cube()
