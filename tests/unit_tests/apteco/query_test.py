@@ -508,7 +508,6 @@ class TestNumericClause:
 
 class TestTextClause:
     def test_text_clause_init(self, fake_households_table):
-        # TODO: add tests for other text match types
         fake_address_var = Mock()
         fake_address_var.configure_mock(name="hoAddr", table=fake_households_table)
         example_text_clause = TextClause(
