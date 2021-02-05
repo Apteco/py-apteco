@@ -186,7 +186,7 @@ If multiple values are given, it must be equal to one of them.
     >>> sweden = bookings["Destination"] == "29"
     >>> high_earners = people["Income"] == ["07", "08", "09", "10", "11"]
 
-Use the inequality operator ``!=`` to select records
+Use the 'not equals' operator ``!=`` to select records
 where this selector variable does not equal the given value.
 If multiple values are given, it must not be equal to any of them.
 
@@ -435,7 +435,7 @@ If multiple values are given, it must be equal to one of them.
     >>> smiths = people["Surname"] == "Smith"
     >>> royal = people["Surname"] == ["King", "Queen", "Prince", "Princess"]
 
-Use the inequality operator ``!=`` to select records
+Use the 'not equals' operator ``!=`` to select records
 where this text variable does not equal the given value.
 If multiple values are given, it must not be equal to any of them.
 
@@ -461,7 +461,7 @@ If multiple values are given, it must have one of them.
     >>> james_bond = households["Car Make Code"] == "ASM"
     >>> french_car = households["Car Make Code"] == ["CIT", "PEU", "REN"]
 
-Use the inequality operator ``!=`` to select records
+Use the 'not equals' operator ``!=`` to select records
 where this array variable does not have the given value.
 If multiple values are given, it must not have any of them.
 
@@ -488,7 +488,7 @@ If multiple values are given, it must have one of them.
     ...     "Daily Express", "The Sun", "Daily Mirror", "Daily Mail", "Record"
     ... ]
 
-Use the inequality operator ``!=`` to select records
+Use the 'not equals' operator ``!=`` to select records
 where this flag array variable does not have the given value.
 If multiple values are given, it must not have any of them.
 
@@ -594,7 +594,7 @@ Use the ``>=`` operator to select records
 where this datetime variable is after the given datetime
 (or is the datetime itself).
 
-    >>> after_juy_2016 = communications["cmCommDt"] >= datetime(2016, 8, 1, 0, 0, 0)
+    >>> after_july_2016 = communications["cmCommDt"] >= datetime(2016, 8, 1, 0, 0, 0)
 
 .. warning::
 

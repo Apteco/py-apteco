@@ -55,7 +55,7 @@ Specifying ranges of values
 
 As well as choosing one or more specific values,
 some variables also allow you to choose a whole range of values
-using the Python inequality operators ``<=`` and ``>=`` :
+using the Python operators ``<=`` and ``>=`` :
 
 Numeric ranges
 --------------
@@ -69,21 +69,22 @@ Numeric ranges
     >>> low_profit.count()
     211328
 
-**Numeric** variables also support the *strict* inequality operators
-``<`` and ``>`` .
+**Numeric** variables also support the operators
+``<`` and ``>`` for selecting a range of values,
+but *not* include the boundary value itself.
 
 .. note::
 
     Unlike the ``==`` and ``!=`` operators,
-    the inequality operators only accept a single value.
+    the other comparison operators only accept a single value.
 
     If necessary, you can use the Python built-in :func:`max` or :func:`min` function
-    to pick out the appropriate value to use for your selection.
+    to pick out the appropriate value to use as the bound for your range.
 
 Date & DateTime ranges
 ----------------------
 
-We can use inequality operators to create a selection with a range of dates or times:
+We can use comparison operators to create a selection with a range of dates or times:
 
 .. code-block:: python
 
@@ -112,7 +113,7 @@ For example, using the popular :mod:`dateutil` package:
 Text Ranges
 -----------
 
-Using the inequality operators with a **Text** variable
+Using the comparison operators with a **Text** variable
 allows you to select values that are alphabetically earlier or later than a given value.
 
 .. code-block:: python
@@ -121,7 +122,7 @@ allows you to select values that are alphabetically earlier or later than a give
     >>> second_half_of_alphabet.count()
     410954
 
-Restrictions on using inequality operators
+Restrictions on using comparison operators
 ------------------------------------------
 
 All of the examples above specify an *unbounded* range of values
@@ -129,7 +130,7 @@ All of the examples above specify an *unbounded* range of values
 and allows all values above or below this (depending on the operator used).
 
 .. warning::
-    You **cannot** use two inequality operators at once,
+    You **cannot** use two comparison operators at once,
     for example, to try to pick values bounded within a range on either side.
     So the following code **will not** have the desired effect:
 
