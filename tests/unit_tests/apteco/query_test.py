@@ -514,18 +514,15 @@ class TestTextClause:
             fake_address_var,
             ["Regent", "Oxford", "Bond"],
             "Contains",
-            True,
-            label="Green Monopoly squares addresses (minus 'Street')",
+            False,
+            label="Not green Monopoly squares addresses",
         )
         assert example_text_clause.table_name == "Households"
         assert example_text_clause.variable_name == "hoAddr"
         assert example_text_clause.values == ["Regent", "Oxford", "Bond"]
         assert example_text_clause.match_type == "Contains"
-        assert example_text_clause.match_case is True
-        assert (
-            example_text_clause.label
-            == "Green Monopoly squares addresses (minus 'Street')"
-        )
+        assert example_text_clause.match_case is False
+        assert example_text_clause.label == "Not green Monopoly squares addresses"
 
     @pytest.mark.xfail(reason="Variable & table parameters as str not implemented.")
     def test_text_clause_init_var_as_str(self):
