@@ -48,7 +48,7 @@ class TestCombinedCategoriesClause:
         raise NotImplementedError
 
 
-class TestNumericClause:
+class TestArrayClause:
     def test_array_clause(self, holidays, households):
         mazda = ArrayClause(households["HHCarmak"], ["MAZ"], session=holidays)
         assert mazda.count() == 3587
@@ -96,7 +96,7 @@ class TestNumericClause:
         assert exclude_both_fiat_kia.count() == 742_265
 
 
-class TestTextClause:
+class TestFlagArrayClause:
     def test_flag_array_clause(self, holidays, people, bookings):
         ft_readers = FlagArrayClause(
             people["peNews"], ["Financial Times"], session=holidays
@@ -154,7 +154,7 @@ class TestTextClause:
         assert not_both_m.count() == 1_148_318
 
 
-class TestArrayClause:
+class TestNumericClause:
     def test_numeric_clause(self, holidays, policies, bookings, web_visits):
         thirty_days_to_travel = NumericClause(
             policies["PoDaysUn"], ["30"], session=holidays
@@ -220,7 +220,7 @@ class TestArrayClause:
         assert not_high_profit.count() == 211_328 + 67012
 
 
-class TestFlagArrayClause:
+class TestTextClause:
     def test_text_clause_is(self, holidays, people):
         smith = TextClause(people["peSName"], ["Smith"], session=holidays)
         assert smith.count() == 13302
