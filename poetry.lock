@@ -92,6 +92,14 @@ six = ">=1.9.0"
 webencodings = "*"
 
 [[package]]
+name = "bump2version"
+version = "1.0.1"
+description = "Version-bump your software with a single command!"
+category = "dev"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "certifi"
 version = "2020.12.5"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -775,7 +783,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.1"  # pandas 1.0 requires >=3.6.1, see: https://github.com/pandas-dev/pandas/pull/29212#issuecomment-551370118
-content-hash = "80fd008c7a53a33ceaf75dea48b138f1b123bb5a1323c82842551a6331c11c3b"
+content-hash = "7c8f94154d45335baa321a233ff4d9741a52cbf3b9cbad0bdc96ab2794f94e22"
 
 [metadata.files]
 alabaster = [
@@ -809,6 +817,10 @@ black = [
 bleach = [
     {file = "bleach-3.2.3-py2.py3-none-any.whl", hash = "sha256:2d3b3f7e7d69148bb683b26a3f21eabcf62fa8fb7bc75d0e7a13bcecd9568d4d"},
     {file = "bleach-3.2.3.tar.gz", hash = "sha256:c6ad42174219b64848e2e2cd434e44f56cd24a93a9b4f8bc52cfed55a1cd5aad"},
+]
+bump2version = [
+    {file = "bump2version-1.0.1-py2.py3-none-any.whl", hash = "sha256:37f927ea17cde7ae2d7baf832f8e80ce3777624554a653006c9144f8017fe410"},
+    {file = "bump2version-1.0.1.tar.gz", hash = "sha256:762cb2bfad61f4ec8e2bdf452c7c267416f8c70dd9ecb1653fd0bbb01fa936e6"},
 ]
 certifi = [
     {file = "certifi-2020.12.5-py2.py3-none-any.whl", hash = "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"},
