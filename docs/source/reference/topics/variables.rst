@@ -267,6 +267,18 @@ where this numeric variable is strictly greater than the given value.
 
     >>> more_than_4_weeks_to_travel = policies["Days Until Travel"] > 28
 
+.. warning::
+
+    You **cannot** use two comparison operators at once,
+    for example, to try to pick values bounded within a range on either side.
+    So the following code **will not** have the desired effect:
+
+    .. code-block:: python
+
+        >>> cost_between_50_100 = 50 <= bookings["Cost"] <= 100
+
+    See the :ref:`operator_chaining` section below for more details.
+
 Text variable
 -------------
 
@@ -547,6 +559,18 @@ where this date variable is after the given date (or is the date itself).
     >>> from dateutil.relativedelta import relativedelta
     >>> under_30 = people["DOB"] >= date.today() - relativedelta(years=30)
 
+.. warning::
+
+    You **cannot** use two comparison operators at once,
+    for example, to try to pick values bounded within a range on either side.
+    So the following code **will not** have the desired effect:
+
+    .. code-block:: python
+
+        >>> summer_holiday_2019 = date(2019, 7, 1) <= bookings["Travel Date"] <= date(2019, 8, 31)
+
+    See the :ref:`operator_chaining` section below for more details.
+
 Date-time variable
 ------------------
 
@@ -572,6 +596,18 @@ where this datetime variable is after the given datetime
 
     >>> after_juy_2016 = communications["cmCommDt"] >= datetime(2016, 8, 1, 0, 0, 0)
 
+.. warning::
+
+    You **cannot** use two comparison operators at once,
+    for example, to try to pick values bounded within a range on either side.
+    So the following code **will not** have the desired effect:
+
+    .. code-block:: python
+
+        >>> during_webinar = datetime(2019, 6, 3, 15) <= web_visits["wvTime"] <= datetime(2019, 6, 3, 16)
+
+    See the :ref:`operator_chaining` section below for more details.
+
 Reference variable
 ------------------
 
@@ -579,7 +615,41 @@ Reference variable
 
     Class which represents a FastStats **Reference** variable.
 
-Operators
-~~~~~~~~~
-
 *(no operators are currently supported for* :class:`ReferenceVariable` *objects)*
+
+.. _operator_chaining:
+
+Operator chaining
+-----------------
+
+The following is true for all variable types,
+as it also applies to the [not] equals operators ``==``, ``!=``,
+but is particularly relevant for those types that support the operators
+``<=``, ``>=``, ``<``, ``>``:
+**Numeric**, **Date**, **DateTime**
+
+.. warning::
+
+    You **cannot** use two comparison operators at once,
+    for example, to try to pick values bounded within a range on either side.
+    So the following code **will not** have the desired effect:
+
+    .. code-block:: python
+
+        >>> born_in_1990 = date(1990, 1, 1) <= people["DOB"] <= date(1990, 12, 31)
+
+    Python *does* normally support this 'operator chaining' syntax
+    when `using the operators for standard comparison
+    <https://realpython.com/python-operators-expressions/
+    #compound-logical-expressions-and-short-circuit-evaluation>`_,
+    but it doesn't work in our situation where the operators have been overloaded
+    for creating selections.
+
+    In this example, because of the way `operator chaining
+    <https://realpython.com/python-operators-expressions/#chained-comparisons>`_
+    and short-circuit evaluation work,
+    this ends up being equivalent to just the right-hand part of the expression:
+
+    .. code-block:: python
+
+        >>> born_in_1990 = people["DOB"] <= date(1990, 12, 31)

@@ -128,8 +128,6 @@ All of the examples above specify an *unbounded* range of values
 — it is only limited by one value,
 and allows all values above or below this (depending on the operator used).
 
-.. _operator_chaining_warning:
-
 .. warning::
     You **cannot** use two inequality operators at once,
     for example, to try to pick values bounded within a range on either side.
@@ -139,22 +137,8 @@ and allows all values above or below this (depending on the operator used).
 
         >>> born_in_1990 = date(1990, 1, 1) <= people["DOB"] <= date(1990, 12, 31)
 
-    Python *does* normally support this 'operator chaining' syntax
-    when `using the inequality operators for standard comparison
-    <https://realpython.com/python-operators-expressions/
-    #compound-logical-expressions-and-short-circuit-evaluation>`_,
-    but it doesn't work in our situation where the operators have been overloaded
-    for creating selections.
-    This applies to *all* FastStats variable types, not just **Date** variables.
-
-    In this example, because of the way `operator chaining
-    <https://realpython.com/python-operators-expressions/#chained-comparisons>`_
-    and short-circuit evaluation work,
-    this ends up being equivalent to just the right-hand part of the expression:
-
-    .. code-block:: python
-
-        >>> born_in_1990 = people["DOB"] <= date(1990, 12, 31)
+    See the warning about :ref:`operator_chaining`
+    in the variables reference guide for more information about this.
 
 We will learn in the next part how to achieve the desired result
 by joining more than one selection together instead.
