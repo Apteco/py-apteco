@@ -2,6 +2,18 @@
   Change Log
 **************
 
+Version 0.7.1
+=============
+
+*2021-01-27*
+
+Fixed
+-----
+
+* Creating a session with a new system no longer produces an error on the first attempt.
+  Fixed by requiring ``apteco-api`` v0.2.1, in which the `last_login` parameter on
+  `SessionDetails` object is now optional.
+
 Version 0.7.0
 =============
 
