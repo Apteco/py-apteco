@@ -6,6 +6,7 @@ from typing import Iterable, List, Optional
 
 import apteco_api as aa
 
+from apteco.common import VariableType
 from apteco.cube import Cube
 from apteco.datagrid import DataGrid
 from apteco.exceptions import AptecoException
@@ -1249,7 +1250,7 @@ class NPerVariableClause(BaseLimitClause):
 
         if per is None or not hasattr(per, "is_selectable"):  # only vars have this attr
             raise ValueError("`per` must be a variable")
-        if "Array" in per.type:
+        if per.type in (VariableType.ARRAY, VariableType.FLAG_ARRAY):
             raise ValueError("`per` cannot be an Array or Flag Array variable")
         self.per = per
 

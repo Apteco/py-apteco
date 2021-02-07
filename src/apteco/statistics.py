@@ -17,6 +17,8 @@ __all__ = [
     "CountMode",
 ]
 
+from apteco.common import VariableType
+
 
 def _ensure_correct_type(operand, accepted_types):
     try:
@@ -51,82 +53,82 @@ class Statistic:
 class Sum(Statistic):
     _model_function = "Sum"
     _display_name = "Sum"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class Mean(Statistic):
     _model_function = "Mean"
     _display_name = "Mean"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class Populated(Statistic):
     _model_function = "VariableCount"
     _display_name = "Populated"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class Min(Statistic):
     _model_function = "Minimum"
     _display_name = "Min"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class Max(Statistic):
     _model_function = "Maximum"
     _display_name = "Max"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class Median(Statistic):
     _model_function = "Median"
     _display_name = "Median"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class Mode(Statistic):
     _model_function = "Mode"
     _display_name = "Mode"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class Variance(Statistic):
     _model_function = "Variance"
     _display_name = "Variance"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class StdDev(Statistic):
     _model_function = "StandardDeviation"
     _display_name = "Std Dev"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class LowerQuartile(Statistic):
     _model_function = "LowerQuartile"
     _display_name = "Lower Quartile"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class UpperQuartile(Statistic):
     _model_function = "UpperQuartile"
     _display_name = "Upper Quartile"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class InterQuartileRange(Statistic):
     _model_function = "InterQuartileRange"
     _display_name = "Inter Quartile Range"
-    _accepted_types = ("Numeric",)
+    _accepted_types = (VariableType.NUMERIC,)
 
 
 class CountDistinct(Statistic):
     _model_function = "CountDistinct"
     _display_name = "Count Distinct"
-    _accepted_types = ("Numeric", "Selector")
+    _accepted_types = (VariableType.NUMERIC, VariableType.SELECTOR)
 
 
 class CountMode(Statistic):
     _model_function = "MaxDistinctCount"
     _display_name = "Count Mode"
-    _accepted_types = ("Numeric", "Selector")
+    _accepted_types = (VariableType.NUMERIC, VariableType.SELECTOR)

@@ -2,6 +2,7 @@ from typing import Iterable, Mapping, Optional
 
 import apteco_api as aa
 
+from apteco.common import VariableType
 from apteco.exceptions import get_deprecated_attr
 from apteco.query import (
     ArrayClause,
@@ -94,7 +95,7 @@ class SelectorVariable(BaseSelectorVariable):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "Selector"
+        self.type = VariableType.SELECTOR
 
     def __eq__(self, other):
         return SelectorClause(
@@ -133,7 +134,7 @@ class NumericVariable(Variable):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "Numeric"
+        self.type = VariableType.NUMERIC
         numeric_info = kwargs["numeric_info"]  # type: aa.NumericVariableInfo
         self.min_value = numeric_info.minimum
         self.max_value = numeric_info.maximum
@@ -208,7 +209,7 @@ class TextVariable(Variable):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "Text"
+        self.type = VariableType.TEXT
         text_info = kwargs["text_info"]  # type: aa.TextVariableInfo
         self.max_length = text_info.maximum_text_length
 
@@ -330,7 +331,7 @@ class ArrayVariable(BaseSelectorVariable):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "Array"
+        self.type = VariableType.ARRAY
 
     def __eq__(self, other):
         return ArrayClause(
@@ -353,7 +354,7 @@ class FlagArrayVariable(BaseSelectorVariable):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "FlagArray"
+        self.type = VariableType.FLAG_ARRAY
 
     def __eq__(self, other):
         return FlagArrayClause(
@@ -384,7 +385,7 @@ class DateVariable(BaseDateVariable):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "Date"
+        self.type = VariableType.DATE
 
     def __eq__(self, other):
         return DateListClause(
@@ -423,7 +424,7 @@ class DateTimeVariable(BaseDateVariable):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "DateTime"
+        self.type = VariableType.DATETIME
 
     def __eq__(self, other):
         raise NotImplementedError
@@ -453,7 +454,7 @@ class ReferenceVariable(Variable):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.type = "Reference"
+        self.type = VariableType.REFERENCE
 
     def __eq__(self, other):
         raise NotImplementedError

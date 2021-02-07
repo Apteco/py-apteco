@@ -5,6 +5,7 @@ import apteco_api as aa
 import pytest
 
 from apteco import Session
+from apteco.common import VariableType
 from apteco.tables import Table
 from apteco.variables import (
     ArrayVariable,
@@ -322,7 +323,7 @@ def test_selector_variable_init(aa_fake_sel_var_gender, ins_table_clnts, ins_ses
         reference_info=v.reference_info,
         session=ins_session,
     )
-    assert selector_variable.type == "Selector"
+    assert selector_variable.type == VariableType.SELECTOR
     assert selector_variable.code_length == 2
     assert selector_variable.num_codes == 4
     assert selector_variable.var_code_min_count == 123456
@@ -358,7 +359,7 @@ def test_numeric_variable_init(aa_fake_num_var_prem, ins_table_prods, ins_sessio
         reference_info=v.reference_info,
         session=ins_session,
     )
-    assert numeric_variable.type == "Numeric"
+    assert numeric_variable.type == VariableType.NUMERIC
     assert numeric_variable.min_value == 1.00
     assert numeric_variable.max_value == 3044.21
     assert numeric_variable.is_currency == True
@@ -394,7 +395,7 @@ def test_text_variable_init(aa_fake_text_var_addr, ins_table_clnts, ins_session)
         reference_info=v.reference_info,
         session=ins_session,
     )
-    assert text_variable.type == "Text"
+    assert text_variable.type == VariableType.TEXT
     assert text_variable.max_length == 80
     assert text_variable.name == "clAddr"
     assert text_variable.description == "Address"
@@ -426,7 +427,7 @@ def test_array_variable_init(aa_fake_arr_var_prexco, ins_table_clnts, ins_sessio
         reference_info=v.reference_info,
         session=ins_session,
     )
-    assert array_variable.type == "Array"
+    assert array_variable.type == VariableType.ARRAY
     assert array_variable.code_length == 10
     assert array_variable.num_codes == 678
     assert array_variable.var_code_min_count == 0
@@ -462,7 +463,7 @@ def test_flag_array_variable_init(aa_fake_flarr_var_tags, ins_table_prods, ins_s
         reference_info=v.reference_info,
         session=ins_session,
     )
-    assert flag_array_variable.type == "FlagArray"
+    assert flag_array_variable.type == VariableType.FLAG_ARRAY
     assert flag_array_variable.code_length == 6
     assert flag_array_variable.num_codes == 58
     assert flag_array_variable.var_code_min_count == 56
@@ -498,7 +499,7 @@ def test_date_variable_init(aa_fake_dat_var_payrcvd, ins_table_pmnts, ins_sessio
         reference_info=v.reference_info,
         session=ins_session,
     )
-    assert date_variable.type == "Date"
+    assert date_variable.type == VariableType.DATE
     assert date_variable.code_length == 13
     assert date_variable.num_codes == 5678
     assert date_variable.var_code_min_count == 0
@@ -534,7 +535,7 @@ def test_datetime_variable_init(aa_fake_dtme_var_timesnt, ins_table_comms, ins_s
         reference_info=v.reference_info,
         session=ins_session,
     )
-    assert datetime_variable.type == "DateTime"
+    assert datetime_variable.type == VariableType.DATETIME
     assert datetime_variable.code_length == 12
     assert datetime_variable.num_codes == 2468
     assert datetime_variable.var_code_min_count == 0
@@ -570,7 +571,7 @@ def test_reference_variable_init(aa_fake_ref_var_payid, ins_table_pmnts, ins_ses
         reference_info=v.reference_info,
         session=ins_session,
     )
-    assert reference_variable.type == "Reference"
+    assert reference_variable.type == VariableType.REFERENCE
     assert reference_variable.name == "pmID"
     assert reference_variable.description == "Payment ID"
     assert reference_variable._model_type == "Reference"

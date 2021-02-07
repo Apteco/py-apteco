@@ -2,6 +2,8 @@ import apteco_api as aa
 import numpy as np
 import pandas as pd
 
+from apteco.common import VariableType
+
 
 class DataGrid:
     def __init__(
@@ -23,13 +25,13 @@ class DataGrid:
 
     @staticmethod
     def _convert_column(data: pd.Series, column_type):
-        if column_type in ("Selector", "Text", "Reference"):
+        if column_type in (VariableType.SELECTOR, VariableType.TEXT, VariableType.REFERENCE):
             return data.astype(str)
-        elif column_type == "Numeric":
+        elif column_type == VariableType.NUMERIC:
             return pd.to_numeric(data)
-        elif column_type == "Date":
+        elif column_type == VariableType.DATE:
             return pd.to_datetime(data, format="%d-%m-%Y", errors="coerce").dt.date
-        elif column_type == "DateTime":
+        elif column_type == VariableType.DATETIME:
             return pd.to_datetime(data, format="%d-%m-%Y %H:%M:%S", errors="coerce")
         else:
             raise ValueError(f"Unrecognised column type: {column_type}")
@@ -67,7 +69,7 @@ class DataGrid:
                     f"\nOnly variables from the same table as the data grid"
                     f" or from ancestor tables can be used as data grid columns."
                 )
-            if column.type in ("Array", "FlagArray"):
+            if column.type in (VariableType.ARRAY, VariableType.FLAG_ARRAY):
                 raise ValueError(
                     f"The variable '{column.name}' has type '{column.type}'."
                     f"\nArray and Flag Array variables"

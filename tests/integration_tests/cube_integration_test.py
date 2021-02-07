@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from apteco import Cube
+from apteco.common import VariableType
 from apteco.statistics import (
     CountDistinct,
     CountMode,
@@ -229,8 +230,8 @@ def test_cube_to_df_bookings_measures_smorgasbord(
     holidays, households, people, bookings, cube_010_bookings_measures_smorgasbord
 ):
     # TODO: remove this hack once Date variables are properly supported in statistics
-    people["DOB"].type = "Numeric"
-    people["Source"].type = "Numeric"
+    people["DOB"].type = VariableType.NUMERIC
+    people["Source"].type = VariableType.NUMERIC
     cube = Cube(
         [bookings["Destination"]],
         [

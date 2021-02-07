@@ -4,6 +4,8 @@ import apteco_api as aa
 import numpy as np
 import pandas as pd
 
+from apteco.common import VariableType
+
 
 class Cube:
     def __init__(
@@ -41,7 +43,7 @@ class Cube:
 
     def _check_dimensions(self):
         for dimension in self.dimensions:
-            if dimension.type != "Selector":
+            if dimension.type != VariableType.SELECTOR:
                 raise ValueError(
                     f"The variable '{dimension.name}' has type '{dimension.type}'."
                     f"\nOnly Selector variables (excluding sub-types)"
