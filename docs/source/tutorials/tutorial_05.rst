@@ -129,6 +129,8 @@ All of the examples above specify an *unbounded* range of values
 — it is only limited by one value,
 and allows all values above or below this (depending on the operator used).
 
+.. _tutorial_operator_chaining_warning:
+
 .. warning::
     You **cannot** use two comparison operators at once,
     for example, to try to pick values bounded within a range on either side.
