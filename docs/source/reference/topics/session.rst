@@ -274,6 +274,10 @@ for the FastStats system the object is connected to.
         >>> my_session.variables["Destination"].name
         'boDest'
 
+    .. note::
+        Variables are also accessible through their respective :class:`Table` object.
+        See the :ref:`Tables documentation <table_variables>` for details.
+
     Variables can be counted using the built-in :func:`len` function
     and you can also iterate over them::
 
@@ -292,18 +296,6 @@ for the FastStats system the object is connected to.
         cmCommDt: Date of Communication
         raRspDat: Response Date
         ReCommun: Communication Date
-
-    .. note::
-        Variables are also accessible on their respective :class:`Table` object.
-
-    .. tip::
-        You may find it helpful to allocate commonly-used FastStats variables
-        to Python variables at the beginning your script or interactive session
-        for easier use and reference
-
-        >>> dest = my_session.variables["Destination"]
-        >>> dest.name, dest.type, dest.is_virtual
-        ('boDest', 'Selector', False)
 
     .. seealso::
         Refer to the :ref:`variables_reference` documentation for more details

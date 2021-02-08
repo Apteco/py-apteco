@@ -653,3 +653,22 @@ but is particularly relevant for those types that support the operators
     .. code-block:: python
 
         >>> born_in_1990 = people["DOB"] <= date(1990, 12, 31)
+
+Variables missing from Session object
+-------------------------------------
+
+If the session initialization process encounters an unfamiliar variable type
+not supported by the package, it will log a warning using the
+`Python built-in logging module <https://docs.python.org/3/library/logging.html>`_.
+If a variable from your FastStats system seems to be missing from the `Session` object,
+this may be the cause.
+
+To investigate, you will need to run the session initialization process with a
+log handler configured to direct the log output to your chosen destination
+to inspect the log.
+The log message for this warning will begin ``Failed to initialize variable``.
+
+You can report unsupported variable types by contacting Apteco support:
+support@apteco.com
+or `creating a GitHub issue <https://github.com/Apteco/py-apteco/issues>`_
+— this will help us prioritise developments.

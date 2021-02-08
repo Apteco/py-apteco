@@ -232,6 +232,7 @@ with another table to check how they are related, if at all.
         or direct descendant relationships,
         not including indirect 'sibling' or 'cousin' relationships.
 
+.. _table_variables:
 
 Table variables
 ---------------

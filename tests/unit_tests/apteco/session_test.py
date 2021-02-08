@@ -1,5 +1,6 @@
 import getpass
 import json
+import logging
 from json import JSONDecodeError
 
 import apteco_api as aa
@@ -1541,6 +1542,31 @@ class TestInitializeVariablesAlgorithm:
             "Created 2nd var",
             "Created 3rd var",
         ]
+
+    def test_create_variables_with_bad_raw_variable(self, mocker, caplog):
+        bad_raw_var = mocker.Mock(
+            type="Numeric",
+            selector_info=mocker.Mock(sub_type="Boolean", selector_type=None),
+            to_dict=mocker.Mock(
+                return_value={
+                    "selector_info": {"sub_type": "Boolean", "selector_type": None}
+                }
+            ),
+        )
+        bad_raw_var.configure_mock(name="BadVariable")
+        fake_initialise_variables_algo = mocker.Mock(
+            raw_variables=[bad_raw_var],
+            _choose_variable=InitializeVariablesAlgorithm._choose_variable
+        )
+
+        InitializeVariablesAlgorithm._create_variables(fake_initialise_variables_algo)
+
+        warning_msg = (
+            "Failed to initialize variable 'BadVariable',"
+            " did not recognise the type from determinant:"
+            " ('Numeric', 'Boolean', None, False)"
+        )
+        assert caplog.record_tuples == [("root", logging.WARN, warning_msg)]
 
     def test_choose_variable_with_selector_var(self, mocker):
         raw_selector_var = mocker.Mock(
