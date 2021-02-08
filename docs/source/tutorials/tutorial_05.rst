@@ -78,9 +78,6 @@ but *not* include the boundary value itself.
     Unlike the ``==`` and ``!=`` operators,
     the other comparison operators only accept a single value.
 
-    If necessary, you can use the Python built-in :func:`max` or :func:`min` function
-    to pick out the appropriate value to use as the bound for your range.
-
 Date & DateTime ranges
 ----------------------
 
