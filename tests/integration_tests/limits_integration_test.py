@@ -44,7 +44,7 @@ class UnrealFrac:
 
 
 class TestSample:
-    def test_limit(self, men, people):
+    def test_limit(self, men):
         men_10 = men.sample(10)
         men_skip_5_first_10pct = men.sample(frac=0.1, skip_first=5)
         men_regular_100 = men.sample(n=100, sample_type="Stratified")
@@ -268,7 +268,7 @@ def verify_topn_values(
     A way to improve on this would be to verify the URN set of the records selected,
     but this would be quite expensive and lead to lots of large URN set data files.
     A compromise is to pick an arbitrary data point from the selection
-    and check it against its expected value (initially retrieved through FastStats).
+    and check it against its expected value (originally retrieved through FastStats).
 
     We can still check the count and also check that
     the variable used in the subselection has a uniform value
@@ -453,7 +453,7 @@ class TestNPerVariableClause:
         )
         assert flights_only_12_per_dest_by_profit.count() == 228
 
-    def test_per_different_table_any(self, holidays, bookings, people, flights):
+    def test_per_different_table_any(self, holidays, people, flights):
         flights_only_any_500_per_occupation = NPerVariableClause(
             flights, 500, people["Occupation"], session=holidays
         )
@@ -467,16 +467,14 @@ class TestNPerVariableClause:
         )
         assert flights_only_1000_highest_cost_per_income.count() == 9409
 
-    def test_per_different_table_by_same_as_per(
-        self, holidays, bookings, people, flights
-    ):
+    def test_per_different_table_by_same_as_per(self, holidays, people, flights):
         flights_only_2_per_surname_by_top_income = NPerVariableClause(
             flights, 2, people["Surname"], by=people["Income"], session=holidays
         )
         assert flights_only_2_per_surname_by_top_income.count() == 89233
 
     def test_per_different_table_by_different_table(
-        self, holidays, households, people, bookings, flights
+        self, holidays, households, people, flights
     ):
         flights_only_75_per_region_by_oldest_person = NPerVariableClause(
             flights,
