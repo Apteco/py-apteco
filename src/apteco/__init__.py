@@ -1,4 +1,4 @@
-__version__ = "0.7.1"
+__version__ = "0.8.0-alpha.1"
 
 __all__ = ["login", "login_with_password", "Session", "DataGrid", "Cube"]
 

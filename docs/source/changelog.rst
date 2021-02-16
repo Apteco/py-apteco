@@ -2,10 +2,8 @@
   Change Log
 **************
 
-Version 0.8.0
-=============
-
-*Date TBC*
+Version 0.8.0-alpha.1
+=====================
 
 Changed
 -------
