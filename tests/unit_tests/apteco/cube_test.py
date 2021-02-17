@@ -244,14 +244,18 @@ class TestCube:
         assert dimensions == ["First dim", "Second dim", "Third dim"]
         patch_aa_dimension.assert_has_calls(dimension_calls)
 
-    def test__create_measures(self, fake_cube):
+    def test__create_measures(self, fake_cube, rtl_table_purchases):
         fake_measures = [
             Mock(_to_model_measure=Mock(return_value="First measure model")),
             Mock(_to_model_measure=Mock(return_value="Second measure model")),
         ]
         fake_cube.measures = fake_measures
+
         measures = fake_cube._create_measures()
+
         assert measures == ["First measure model", "Second measure model"]
+        for m in fake_measures:
+            m._to_model_measure.assert_called_once_with(rtl_table_purchases)
 
     @patch("apteco_api.CubesApi")
     @patch("apteco.cube.Cube._create_measures")

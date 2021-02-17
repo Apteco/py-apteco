@@ -1,3 +1,4 @@
+import apteco_api as aa
 import pytest
 
 from apteco.tables import Table
@@ -157,3 +158,16 @@ class TestTable:
             my_second_variable = fake_table_with_variables["var2"]
         exception_msg = excinfo.value.args[0]
         assert exception_msg == "var2"
+
+    def test_to_model_measure(self, rtl_table_purchases, rtl_table_customers):
+        expected_measures_model = aa.Measure(
+            id="Purchases",
+            resolve_table_name="Purchases",
+            function="Count",
+            variable_name=None,
+        )
+
+        assert (
+            Table._to_model_measure(rtl_table_purchases, rtl_table_customers)
+            == expected_measures_model
+        )

@@ -89,6 +89,7 @@ class Cube:
             elif x[0].table.is_descendant(self.table) and y[0].table.is_descendant(self.table):
                 cross_cube = True
             else:
+                # should be unreachable
                 non_related.append((x, y))
 
         if non_related:
@@ -134,7 +135,6 @@ class Cube:
                     error_msg += f"\n{m[1]} & {d[1]}"
                 raise ValueError(error_msg)
 
-
     def _get_data(self):
         cube_result = self._get_cube()
         raw_data = [
@@ -159,10 +159,10 @@ class Cube:
             "measures": [mr.id for mr in cube_result.measure_results],
         }
         sizes = tuple(len(h) for h in headers["codes"])
-        data_as_array = [np.array(raw_measure_data) for raw_measure_data in raw_data]
+        data_as_arrays = [np.array(raw_measure_data) for raw_measure_data in raw_data]
         data = [
             measure_data_as_array.T.reshape(sizes, order="F")
-            for measure_data_as_array in data_as_array
+            for measure_data_as_array in data_as_arrays
         ]
         dimensions = [dim.id for dim in cube_result.dimension_results]
         return data, headers, sizes
