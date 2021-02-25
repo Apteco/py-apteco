@@ -75,25 +75,74 @@ class TestNumericVariable:
         assert not_missing_premium.count() == 213567
 
 
-def test_text_operator(people, households):
-    smith = people["peSName"] == "Smith"
-    assert smith.count() == 13302
-    vowel_initial = people["peInit"] == list("AEIOU")
-    assert vowel_initial.count() == 168_548
-    not_t_initial = people["peInit"] != "T"
-    assert not_t_initial.count() == 1_051_815
-    outside_top_5_surnames = people["peSName"] != [
-        "Smith",
-        "Brown",
-        "Jones",
-        "Taylor",
-        "Patel",
-    ]
-    assert outside_top_5_surnames.count() == 1_113_731
-    early_postcode = households["hoPCode"] <= "E"
-    assert early_postcode.count() == 208_569
-    further_down_street = households["hoAddr"] >= "9"
-    assert further_down_street.count() == 31197
+class TestTextVariable:
+    def test_text_operator(self, people, households):
+        smith = people["peSName"] == "Smith"
+        assert smith.count() == 13302
+        vowel_initial = people["peInit"] == list("AEIOU")
+        assert vowel_initial.count() == 168_548
+        not_t_initial = people["peInit"] != "T"
+        assert not_t_initial.count() == 1_051_815
+        outside_top_5_surnames = people["peSName"] != [
+            "Smith",
+            "Brown",
+            "Jones",
+            "Taylor",
+            "Patel",
+        ]
+        assert outside_top_5_surnames.count() == 1_113_731
+        early_postcode = households["hoPCode"] <= "E"
+        assert early_postcode.count() == 208_569
+        further_down_street = households["hoAddr"] >= "9"
+        assert further_down_street.count() == 31197
+
+    def test_text_equals(self, people):
+        morse = people["Surname"].equals("Morse")
+        assert morse.count() == 143
+
+        sherlock = people["Surname"].equals(["Holmes", "Watson", "Moriarty"], match_case=False)
+        assert sherlock.count() == 2953
+
+    def test_text_contains(self, households):
+        no_lower_case_e = households["Address"].contains("e", include=False)
+        assert no_lower_case_e.count() == 139337
+
+        holy_address = households["Address"].contains(["church", "chapel", "cathedral", "temple"], match_case=False)
+        assert holy_address.count() == 8111
+
+    def test_text_startswith(self, people):
+        x_surname = people["Surname"].startswith("X")
+        assert x_surname.count() == 47
+
+        apteco_initial = people["Surname"].startswith(list("apteco"), match_case=False)
+        assert apteco_initial.count() == 288014
+
+    def test_text_endswith(self, people, households):
+        hotmail_co_uk = people["Email Address"].endswith("@hotmail.co.uk")
+        assert hotmail_co_uk.count() == 6880
+
+        not_common_road_type = households["Address"].endswith([" Road", " Street", " Close", " Avenue", " Drive", " Lane"], match_case=False, include=False)
+        assert not_common_road_type.count() == 269893
+
+    def test_text_between(self, people):
+        green_to_grey = people["Surname"].between("Green", "Grey")
+        assert green_to_grey.count() == 7546
+
+        brown_to_brown = people["Surname"].between("Brown", "Brown")
+        assert brown_to_brown.count() == 7613
+
+    def test_text_matches(self, people):
+        no_wildcards = people["Surname"].matches("Brown")
+        assert no_wildcards.count() == 6847
+
+        single_char_wildcard = people["Surname"].matches("Brown?")
+        assert single_char_wildcard.count() == 265
+
+        star_wildcard = people["Surname"].matches("Brown*", match_case=False)
+        assert star_wildcard.count() == 7618
+
+        both_wildcards = people["Surname"].matches("B?r*", match_case=False)
+        assert both_wildcards.count() == 25770
 
 
 def test_date_operator(bookings, policies):
