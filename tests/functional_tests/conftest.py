@@ -19,32 +19,38 @@ from apteco.variables import (
 Fake 'Charity' system
 =====================
 
+For use in functional tests.
+
+* variables, tables & session are instances of py-apteco Variable, Table & Session classes
+* tables have references to their table relations
+* variables & session have reference to tables
+
 Tables
 ------
 
-Supporters
-├── Campaigns
-│   └── Donations
-└── Website visits
+Supporters          | chy_supporters_table
+├── Campaigns       | chy_campaigns_table
+│   └── Donations   | chy_donations_table
+└── Website visits  | chy_website_visits_table
 
 Variables
 ---------
 
  Table          |  Name                 |  Type                 |
 -----------------------------------------------------------------
-Supporters      | Membership            | Selector              |
-Supporters      | Region                | CombinedCategories    |
-Supporters      | EmailAddress          | Text                  |
-Supporters      | Surname               | Text                  |
-Supporters      | ContactPreferences    | FlagArray             |
+Supporters      | Membership            | Selector              | fake_selector_variable
+Supporters      | Region                | CombinedCategories    | fake_combined_categories_variable
+Supporters      | EmailAddress          | Text                  | fake_text_variable_email
+Supporters      | Surname               | Text                  | fake_text_variable_surname
+Supporters      | ContactPreferences    | FlagArray             | fake_array_variable
 ----------------|-----------------------|-----------------------|
-Campaigns       | CampaignID            | Reference             |
-Campaigns       | Tags                  | Array                 |
+Campaigns       | CampaignID            | Reference             | fake_reference_variable
+Campaigns       | Tags                  | Array                 | fake_flag_array_variable
 ----------------|-----------------------|-----------------------|
-Donations       | Amount                | Numeric               |
-Donations       | DonationDate          | Date                  |
+Donations       | Amount                | Numeric               | fake_numeric_variable
+Donations       | DonationDate          | Date                  | fake_date_variable
 ----------------|-----------------------|-----------------------|
-Website visits  | BrowsingSessionStart  | DateTime              |
+Website visits  | BrowsingSessionStart  | DateTime              | fake_datetime_variable
 
 """
 
@@ -140,7 +146,7 @@ def chy_session(
 
 
 @pytest.fixture()
-def fake_selector_variable(chy_session, chy_supporters_table):
+def chy_selector_var(chy_session, chy_supporters_table):
     sv_example = SelectorVariable.__new__(SelectorVariable)
     sv_example.type = "Selector"
     sv_example.table = chy_supporters_table
@@ -150,7 +156,7 @@ def fake_selector_variable(chy_session, chy_supporters_table):
 
 
 @pytest.fixture()
-def fake_combined_categories_variable(chy_session, chy_supporters_table):
+def chy_combined_categories_var(chy_session, chy_supporters_table):
     ccv_example = CombinedCategoriesVariable.__new__(CombinedCategoriesVariable)
     ccv_example.type = "CombinedCategories"
     ccv_example.table = chy_supporters_table
@@ -160,7 +166,7 @@ def fake_combined_categories_variable(chy_session, chy_supporters_table):
 
 
 @pytest.fixture()
-def fake_numeric_variable(chy_session, chy_donations_table):
+def chy_numeric_var(chy_session, chy_donations_table):
     nv_example = NumericVariable.__new__(NumericVariable)
     nv_example.type = "Numeric"
     nv_example.table = chy_donations_table
@@ -170,7 +176,7 @@ def fake_numeric_variable(chy_session, chy_donations_table):
 
 
 @pytest.fixture()
-def fake_text_variable_email(chy_session, chy_supporters_table):
+def chy_text_var_email(chy_session, chy_supporters_table):
     tv_example = TextVariable.__new__(TextVariable)
     tv_example.type = "Text"
     tv_example.table = chy_supporters_table
@@ -180,7 +186,7 @@ def fake_text_variable_email(chy_session, chy_supporters_table):
 
 
 @pytest.fixture()
-def fake_text_variable_surname(chy_session, chy_supporters_table):
+def chy_text_var_surname(chy_session, chy_supporters_table):
     tv_example = TextVariable.__new__(TextVariable)
     tv_example.type = "Text"
     tv_example.table = chy_supporters_table
@@ -190,7 +196,7 @@ def fake_text_variable_surname(chy_session, chy_supporters_table):
 
 
 @pytest.fixture()
-def fake_array_variable(chy_session, chy_campaigns_table):
+def chy_array_var(chy_session, chy_campaigns_table):
     av_example = ArrayVariable.__new__(ArrayVariable)
     av_example.type = "Array"
     av_example.table = chy_campaigns_table
@@ -200,7 +206,7 @@ def fake_array_variable(chy_session, chy_campaigns_table):
 
 
 @pytest.fixture()
-def fake_flag_array_variable(chy_session, chy_supporters_table):
+def chy_flag_array_var(chy_session, chy_supporters_table):
     fav_example = FlagArrayVariable.__new__(FlagArrayVariable)
     fav_example.type = "FlagArray"
     fav_example.table = chy_supporters_table
@@ -210,7 +216,7 @@ def fake_flag_array_variable(chy_session, chy_supporters_table):
 
 
 @pytest.fixture()
-def fake_date_variable(chy_session, chy_donations_table):
+def chy_date_var(chy_session, chy_donations_table):
     dv_example = DateVariable.__new__(DateVariable)
     dv_example.type = "Date"
     dv_example.table = chy_donations_table
@@ -220,7 +226,7 @@ def fake_date_variable(chy_session, chy_donations_table):
 
 
 @pytest.fixture()
-def fake_datetime_variable(chy_session, chy_website_visits_table):
+def chy_datetime_var(chy_session, chy_website_visits_table):
     dtv_example = DateTimeVariable.__new__(DateTimeVariable)
     dtv_example.type = "DateTime"
     dtv_example.table = chy_website_visits_table
@@ -230,7 +236,7 @@ def fake_datetime_variable(chy_session, chy_website_visits_table):
 
 
 @pytest.fixture()
-def fake_reference_variable(chy_session, chy_campaigns_table):
+def chy_reference_var(chy_session, chy_campaigns_table):
     rv_example = ReferenceVariable.__new__(ReferenceVariable)
     rv_example.type = "Reference"
     rv_example.table = chy_campaigns_table

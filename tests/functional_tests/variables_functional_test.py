@@ -19,8 +19,8 @@ from apteco.query import (
 
 
 class TestSelectorVariable:
-    def test_eq(self, fake_selector_variable, chy_session):
-        high_value_supporters = fake_selector_variable == ("Gold", "Platinum")
+    def test_eq(self, chy_selector_var, chy_session):
+        high_value_supporters = chy_selector_var == ("Gold", "Platinum")
         assert type(high_value_supporters) == SelectorClause
         assert high_value_supporters.table_name == "Supporters"
         assert high_value_supporters.variable_name == "Membership"
@@ -28,7 +28,7 @@ class TestSelectorVariable:
         assert high_value_supporters.include is True
         assert high_value_supporters.session is chy_session
 
-        bronze_supporters = fake_selector_variable == "Bronze"
+        bronze_supporters = chy_selector_var == "Bronze"
         assert type(bronze_supporters) == SelectorClause
         assert bronze_supporters.table_name == "Supporters"
         assert bronze_supporters.variable_name == "Membership"
@@ -37,14 +37,14 @@ class TestSelectorVariable:
         assert bronze_supporters.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_a_number = fake_selector_variable == 3
+            trying_with_a_number = chy_selector_var == 3
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a selector variable"
             " must be given as a string or an iterable of strings."
         )
 
-    def test_ne(self, fake_selector_variable, chy_session):
-        higher_value_supporters = fake_selector_variable != ("Bronze", "Silver")
+    def test_ne(self, chy_selector_var, chy_session):
+        higher_value_supporters = chy_selector_var != ("Bronze", "Silver")
         assert type(higher_value_supporters) == SelectorClause
         assert higher_value_supporters.table_name == "Supporters"
         assert higher_value_supporters.variable_name == "Membership"
@@ -52,7 +52,7 @@ class TestSelectorVariable:
         assert higher_value_supporters.include is False
         assert higher_value_supporters.session is chy_session
 
-        not_platinum = fake_selector_variable != "Platinum"
+        not_platinum = chy_selector_var != "Platinum"
         assert type(not_platinum) == SelectorClause
         assert not_platinum.table_name == "Supporters"
         assert not_platinum.variable_name == "Membership"
@@ -61,7 +61,7 @@ class TestSelectorVariable:
         assert not_platinum.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_a_float = fake_selector_variable != 2.5
+            trying_with_a_float = chy_selector_var != 2.5
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a selector variable"
             " must be given as a string or an iterable of strings."
@@ -71,8 +71,8 @@ class TestSelectorVariable:
 @pytest.mark.xfail(reason="Not yet implemented.")
 class TestCombinedCategoriesVariable:
     # TODO: update when implemented
-    def test_eq(self, fake_combined_categories_variable, chy_session):
-        northern_supporters = fake_combined_categories_variable == ["NE", "NW", "YRK"]
+    def test_eq(self, chy_combined_categories_var, chy_session):
+        northern_supporters = chy_combined_categories_var == ["NE", "NW", "YRK"]
         assert type(northern_supporters) == CombinedCategoriesClause
         assert northern_supporters.table_name == "Supporters"
         assert northern_supporters.variable_name == "Region"
@@ -81,8 +81,8 @@ class TestCombinedCategoriesVariable:
         assert northern_supporters.session is chy_session
 
     # TODO: update when implemented
-    def test_ne(self, fake_combined_categories_variable, chy_session):
-        supporters_outside_london = fake_combined_categories_variable != "LDN"
+    def test_ne(self, chy_combined_categories_var, chy_session):
+        supporters_outside_london = chy_combined_categories_var != "LDN"
         assert type(supporters_outside_london) == CombinedCategoriesClause
         assert supporters_outside_london.table_name == "Supporters"
         assert supporters_outside_london.variable_name == "Region"
@@ -92,8 +92,8 @@ class TestCombinedCategoriesVariable:
 
 
 class TestNumericVariable:
-    def test_eq(self, fake_numeric_variable, chy_session):
-        donations_100 = fake_numeric_variable == 100
+    def test_eq(self, chy_numeric_var, chy_session):
+        donations_100 = chy_numeric_var == 100
         assert type(donations_100) == NumericClause
         assert donations_100.table_name == "Donations"
         assert donations_100.variable_name == "Amount"
@@ -101,7 +101,7 @@ class TestNumericVariable:
         assert donations_100.include is True
         assert donations_100.session is chy_session
 
-        hundreds_donations = fake_numeric_variable == (i * 100 for i in range(1, 10))
+        hundreds_donations = chy_numeric_var == (i * 100 for i in range(1, 10))
         assert type(hundreds_donations) == NumericClause
         assert hundreds_donations.table_name == "Donations"
         assert hundreds_donations.variable_name == "Amount"
@@ -120,14 +120,14 @@ class TestNumericVariable:
         assert hundreds_donations.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_a_string = fake_numeric_variable == "256"
+            trying_with_a_string = chy_numeric_var == "256"
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a numeric variable"
             " must be given as a number or an iterable of numbers."
         )
 
-    def test_ne(self, fake_numeric_variable, chy_session):
-        not_this = fake_numeric_variable != 72.1896
+    def test_ne(self, chy_numeric_var, chy_session):
+        not_this = chy_numeric_var != 72.1896
         assert type(not_this) == NumericClause
         assert not_this.table_name == "Donations"
         assert not_this.variable_name == "Amount"
@@ -135,7 +135,7 @@ class TestNumericVariable:
         assert not_this.include is False
         assert not_this.session is chy_session
 
-        not_one_of_these = fake_numeric_variable != (17.5, 8192)
+        not_one_of_these = chy_numeric_var != (17.5, 8192)
         assert type(not_one_of_these) == NumericClause
         assert not_one_of_these.table_name == "Donations"
         assert not_one_of_these.variable_name == "Amount"
@@ -144,14 +144,14 @@ class TestNumericVariable:
         assert not_one_of_these.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_a_boolean = fake_numeric_variable != False
+            trying_with_a_boolean = chy_numeric_var != False
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a numeric variable"
             " must be given as a number or an iterable of numbers."
         )
 
-    def test_lt(self, fake_numeric_variable, chy_session):
-        small_donations = fake_numeric_variable < Decimal("10.00")
+    def test_lt(self, chy_numeric_var, chy_session):
+        small_donations = chy_numeric_var < Decimal("10.00")
         assert type(small_donations) == NumericClause
         assert small_donations.table_name == "Donations"
         assert small_donations.variable_name == "Amount"
@@ -160,13 +160,13 @@ class TestNumericVariable:
         assert small_donations.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            less_than_a_list = fake_numeric_variable < [512.64, 646.464_646]
+            less_than_a_list = chy_numeric_var < [512.64, 646.464_646]
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )
 
-    def test_le(self, fake_numeric_variable, chy_session):
-        up_to_including_10k = fake_numeric_variable <= 10000
+    def test_le(self, chy_numeric_var, chy_session):
+        up_to_including_10k = chy_numeric_var <= 10000
         assert type(up_to_including_10k) == NumericClause
         assert up_to_including_10k.table_name == "Donations"
         assert up_to_including_10k.variable_name == "Amount"
@@ -175,13 +175,13 @@ class TestNumericVariable:
         assert up_to_including_10k.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            less_than_equal_tuple = fake_numeric_variable <= (52, 27, 9.75)
+            less_than_equal_tuple = chy_numeric_var <= (52, 27, 9.75)
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )
 
-    def test_gt(self, fake_numeric_variable, chy_session):
-        big_donations = fake_numeric_variable > 0.01 * 26000
+    def test_gt(self, chy_numeric_var, chy_session):
+        big_donations = chy_numeric_var > 0.01 * 26000
         assert type(big_donations) == NumericClause
         assert big_donations.table_name == "Donations"
         assert big_donations.variable_name == "Amount"
@@ -190,13 +190,13 @@ class TestNumericVariable:
         assert big_donations.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            more_than_a_set = fake_numeric_variable > {15, 30, 40, 40}
+            more_than_a_set = chy_numeric_var > {15, 30, 40, 40}
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )
 
-    def test_ge(self, fake_numeric_variable, chy_session):
-        at_least_this_ratio = fake_numeric_variable >= Fraction(65432, 987)
+    def test_ge(self, chy_numeric_var, chy_session):
+        at_least_this_ratio = chy_numeric_var >= Fraction(65432, 987)
         assert type(at_least_this_ratio) == NumericClause
         assert at_least_this_ratio.table_name == "Donations"
         assert at_least_this_ratio.variable_name == "Amount"
@@ -206,13 +206,13 @@ class TestNumericVariable:
 
         with pytest.raises(ValueError) as exc_info:
             number_gen = (n for n in "12.3 4.56 789".split())
-            at_least_a_generator = fake_numeric_variable >= number_gen
+            at_least_a_generator = chy_numeric_var >= number_gen
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )
 
-    def test_missing(self, fake_numeric_variable, chy_session):
-        missing_value = fake_numeric_variable.missing()
+    def test_missing(self, chy_numeric_var, chy_session):
+        missing_value = chy_numeric_var.missing()
         assert type(missing_value) == NumericClause
         assert missing_value.table_name == "Donations"
         assert missing_value.variable_name == "Amount"
@@ -222,8 +222,8 @@ class TestNumericVariable:
 
 
 class TestTextVariable:
-    def test_eq(self, fake_text_variable_email, chy_session):
-        specific_donor = fake_text_variable_email == "donor@domain.com"
+    def test_eq(self, chy_text_var_email, chy_session):
+        specific_donor = chy_text_var_email == "donor@domain.com"
         assert type(specific_donor) == TextClause
         assert specific_donor.table_name == "Supporters"
         assert specific_donor.variable_name == "EmailAddress"
@@ -233,7 +233,7 @@ class TestTextVariable:
         assert specific_donor.include is True
         assert specific_donor.session is chy_session
 
-        donors_by_email = fake_text_variable_email == [
+        donors_by_email = chy_text_var_email == [
             f"donor_{i}@domain.com" for i in range(4)
         ]
         assert type(donors_by_email) == TextClause
@@ -251,14 +251,14 @@ class TestTextVariable:
         assert donors_by_email.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            donors_by_number = fake_text_variable_email == {34, 765, 2930}
+            donors_by_number = chy_text_var_email == {34, 765, 2930}
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
-    def test_ne(self, fake_text_variable_email, chy_session):
-        dont_want_this_person = fake_text_variable_email != "bad_donor@domain.com"
+    def test_ne(self, chy_text_var_email, chy_session):
+        dont_want_this_person = chy_text_var_email != "bad_donor@domain.com"
         assert type(dont_want_this_person) == TextClause
         assert dont_want_this_person.table_name == "Supporters"
         assert dont_want_this_person.variable_name == "EmailAddress"
@@ -268,7 +268,7 @@ class TestTextVariable:
         assert dont_want_this_person.include is False
         assert dont_want_this_person.session is chy_session
 
-        not_these_people = fake_text_variable_email != {
+        not_these_people = chy_text_var_email != {
             "dont_email_me@domain.com",
             "unsubscribed@domain.org",
         }
@@ -285,14 +285,14 @@ class TestTextVariable:
         assert not_these_people.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            donor_not_an_obj = fake_text_variable_email != object()
+            donor_not_an_obj = chy_text_var_email != object()
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
-    def test_le(self, fake_text_variable_surname, chy_session):
-        first_half_alphabet = fake_text_variable_surname <= "n"
+    def test_le(self, chy_text_var_surname, chy_session):
+        first_half_alphabet = chy_text_var_surname <= "n"
         assert type(first_half_alphabet) == TextClause
         assert first_half_alphabet.table_name == "Supporters"
         assert first_half_alphabet.variable_name == "Surname"
@@ -303,13 +303,13 @@ class TestTextVariable:
         assert first_half_alphabet.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            earlier_than_letters = fake_text_variable_surname <= list("abcedfgh")
+            earlier_than_letters = chy_text_var_surname <= list("abcedfgh")
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
-    def test_ge(self, fake_text_variable_surname, chy_session):
-        smith_or_later = fake_text_variable_surname >= "Smith"
+    def test_ge(self, chy_text_var_surname, chy_session):
+        smith_or_later = chy_text_var_surname >= "Smith"
         assert type(smith_or_later) == TextClause
         assert smith_or_later.table_name == "Supporters"
         assert smith_or_later.variable_name == "Surname"
@@ -320,13 +320,13 @@ class TestTextVariable:
         assert smith_or_later.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            later_than_tuple = fake_text_variable_surname >= ("A", "e", "i", "O")
+            later_than_tuple = chy_text_var_surname >= ("A", "e", "i", "O")
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
-    def test_equals(self, fake_text_variable_email, chy_session):
-        specific_donor = fake_text_variable_email.equals("donor@domain.com")
+    def test_equals(self, chy_text_var_email, chy_session):
+        specific_donor = chy_text_var_email.equals("donor@domain.com")
         assert type(specific_donor) == TextClause
         assert specific_donor.table_name == "Supporters"
         assert specific_donor.variable_name == "EmailAddress"
@@ -336,7 +336,7 @@ class TestTextVariable:
         assert specific_donor.include is True
         assert specific_donor.session is chy_session
 
-        donors_by_email = fake_text_variable_email.equals(
+        donors_by_email = chy_text_var_email.equals(
             [f"donor_{i}@domain.com" for i in range(4)]
         )
         assert type(donors_by_email) == TextClause
@@ -354,13 +354,13 @@ class TestTextVariable:
         assert donors_by_email.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            donors_by_number = fake_text_variable_email.equals({34, 765, 2930})
+            donors_by_number = chy_text_var_email.equals({34, 765, 2930})
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
-        dont_want_this_person = fake_text_variable_email.equals(
+        dont_want_this_person = chy_text_var_email.equals(
             "bad_donor@domain.com", include=False
         )
         assert type(dont_want_this_person) == TextClause
@@ -372,7 +372,7 @@ class TestTextVariable:
         assert dont_want_this_person.include is False
         assert dont_want_this_person.session is chy_session
 
-        not_these_people = fake_text_variable_email.equals(
+        not_these_people = chy_text_var_email.equals(
             {"dont_email_me@domain.com", "unsubscribed@domain.org"}, include=False
         )
         assert type(not_these_people) == TextClause
@@ -388,14 +388,14 @@ class TestTextVariable:
         assert not_these_people.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            donor_not_an_obj = fake_text_variable_email.equals(object(), include=False)
+            donor_not_an_obj = chy_text_var_email.equals(object(), include=False)
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
-    def test_contains(self, fake_text_variable_surname, chy_session):
-        contains_nuts = fake_text_variable_surname.contains("nuts")
+    def test_contains(self, chy_text_var_surname, chy_session):
+        contains_nuts = chy_text_var_surname.contains("nuts")
         assert type(contains_nuts) == TextClause
         assert contains_nuts.table_name == "Supporters"
         assert contains_nuts.variable_name == "Surname"
@@ -405,7 +405,7 @@ class TestTextVariable:
         assert contains_nuts.include is True
         assert contains_nuts.session is chy_session
 
-        contains_multiple = fake_text_variable_surname.contains(["a", "b"])
+        contains_multiple = chy_text_var_surname.contains(["a", "b"])
         assert type(contains_multiple) == TextClause
         assert contains_multiple.table_name == "Supporters"
         assert contains_multiple.variable_name == "Surname"
@@ -416,14 +416,14 @@ class TestTextVariable:
         assert contains_multiple.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            contains_ints = fake_text_variable_surname.contains([1, 2, 3])
+            contains_ints = chy_text_var_surname.contains([1, 2, 3])
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
-    def test_starts_with(self, fake_text_variable_surname, chy_session):
-        starts_with_smith = fake_text_variable_surname.startswith("Smith")
+    def test_starts_with(self, chy_text_var_surname, chy_session):
+        starts_with_smith = chy_text_var_surname.startswith("Smith")
         assert type(starts_with_smith) == TextClause
         assert starts_with_smith.table_name == "Supporters"
         assert starts_with_smith.variable_name == "Surname"
@@ -433,7 +433,7 @@ class TestTextVariable:
         assert starts_with_smith.include is True
         assert starts_with_smith.session is chy_session
 
-        starts_with_multiple = fake_text_variable_surname.startswith(
+        starts_with_multiple = chy_text_var_surname.startswith(
             ["Tom", "James", "Dan", "Dav"]
         )
         assert type(starts_with_multiple) == TextClause
@@ -446,14 +446,14 @@ class TestTextVariable:
         assert starts_with_multiple.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            starts_with_boolean = fake_text_variable_surname.startswith(True)
+            starts_with_boolean = chy_text_var_surname.startswith(True)
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
-    def test_ends_with(self, fake_text_variable_surname, chy_session):
-        ends_with_son = fake_text_variable_surname.endswith("son")
+    def test_ends_with(self, chy_text_var_surname, chy_session):
+        ends_with_son = chy_text_var_surname.endswith("son")
         assert type(ends_with_son) == TextClause
         assert ends_with_son.table_name == "Supporters"
         assert ends_with_son.variable_name == "Surname"
@@ -463,7 +463,7 @@ class TestTextVariable:
         assert ends_with_son.include is True
         assert ends_with_son.session is chy_session
 
-        ends_with_multiple = fake_text_variable_surname.endswith(["son", "ez"])
+        ends_with_multiple = chy_text_var_surname.endswith(["son", "ez"])
         assert type(ends_with_multiple) == TextClause
         assert ends_with_multiple.table_name == "Supporters"
         assert ends_with_multiple.variable_name == "Surname"
@@ -474,7 +474,7 @@ class TestTextVariable:
         assert ends_with_multiple.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            ends_with_float = fake_text_variable_surname.endswith([2.8, 9.4])
+            ends_with_float = chy_text_var_surname.endswith([2.8, 9.4])
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
@@ -484,8 +484,8 @@ class TestTextVariable:
         reason="Feature-switched off before/after TextVariable methods",
         raises=AttributeError,
     )
-    def test_before(self, fake_text_variable_surname, chy_session):
-        first_half_alphabet = fake_text_variable_surname.before("n")
+    def test_before(self, chy_text_var_surname, chy_session):
+        first_half_alphabet = chy_text_var_surname.before("n")
         assert type(first_half_alphabet) == TextClause
         assert first_half_alphabet.table_name == "Supporters"
         assert first_half_alphabet.variable_name == "Surname"
@@ -496,13 +496,13 @@ class TestTextVariable:
         assert first_half_alphabet.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            earlier_than_letters = fake_text_variable_surname.before(list("abcedfgh"))
+            earlier_than_letters = chy_text_var_surname.before(list("abcedfgh"))
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
-            before_int = fake_text_variable_surname.before(6)
+            before_int = chy_text_var_surname.before(6)
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
@@ -511,8 +511,8 @@ class TestTextVariable:
         reason="Feature-switched off before/after TextVariable methods",
         raises=AttributeError,
     )
-    def test_after(self, fake_text_variable_surname, chy_session):
-        smith_or_later = fake_text_variable_surname.after("Smith")
+    def test_after(self, chy_text_var_surname, chy_session):
+        smith_or_later = chy_text_var_surname.after("Smith")
         assert type(smith_or_later) == TextClause
         assert smith_or_later.table_name == "Supporters"
         assert smith_or_later.variable_name == "Surname"
@@ -523,19 +523,19 @@ class TestTextVariable:
         assert smith_or_later.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            later_than_tuple = fake_text_variable_surname.after(("A", "e", "i", "O"))
+            later_than_tuple = chy_text_var_surname.after(("A", "e", "i", "O"))
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
-            after_boolean = fake_text_variable_surname.after(False)
+            after_boolean = chy_text_var_surname.after(False)
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
-    def test_between(self, fake_text_variable_surname, chy_session):
-        rock_and_hardplace = fake_text_variable_surname.between("hardplace", "rock")
+    def test_between(self, chy_text_var_surname, chy_session):
+        rock_and_hardplace = chy_text_var_surname.between("hardplace", "rock")
         assert type(rock_and_hardplace) == TextClause
         assert rock_and_hardplace.table_name == "Supporters"
         assert rock_and_hardplace.variable_name == "Surname"
@@ -546,19 +546,19 @@ class TestTextVariable:
         assert rock_and_hardplace.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            between_lists = fake_text_variable_surname.between(["a", "b"], ["y", "z"])
+            between_lists = chy_text_var_surname.between(["a", "b"], ["y", "z"])
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
-            between_ints = fake_text_variable_surname.between(1, 100)
+            between_ints = chy_text_var_surname.between(1, 100)
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
-    def test_matches(self, fake_text_variable_email, chy_session):
-        gmail_donor = fake_text_variable_email.matches("*@gmail.com")
+    def test_matches(self, chy_text_var_email, chy_session):
+        gmail_donor = chy_text_var_email.matches("*@gmail.com")
         assert type(gmail_donor) == TextClause
         assert gmail_donor.table_name == "Supporters"
         assert gmail_donor.variable_name == "EmailAddress"
@@ -568,7 +568,7 @@ class TestTextVariable:
         assert gmail_donor.include is True
         assert gmail_donor.session is chy_session
 
-        multiple_domain_donors = fake_text_variable_email.matches(
+        multiple_domain_donors = chy_text_var_email.matches(
             ["*@gmail.com", "*@hotmail.com", "*@apteco.com"]
         )
         assert type(multiple_domain_donors) == TextClause
@@ -585,7 +585,7 @@ class TestTextVariable:
         assert multiple_domain_donors.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            matches_int = fake_text_variable_email.matches(30)
+            matches_int = chy_text_var_email.matches(30)
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
@@ -593,8 +593,8 @@ class TestTextVariable:
 
 
 class TestArrayVariable:
-    def test_eq(self, fake_array_variable, chy_session):
-        national_campaigns = fake_array_variable == "National"
+    def test_eq(self, chy_array_var, chy_session):
+        national_campaigns = chy_array_var == "National"
         assert type(national_campaigns) == ArrayClause
         assert national_campaigns.table_name == "Campaigns"
         assert national_campaigns.variable_name == "Tags"
@@ -603,7 +603,7 @@ class TestArrayVariable:
         assert national_campaigns.include is True
         assert national_campaigns.session is chy_session
 
-        autumn_campaigns = fake_array_variable == {
+        autumn_campaigns = chy_array_var == {
             "Autumn",
             "Fall",
             "Sep",
@@ -629,14 +629,14 @@ class TestArrayVariable:
         assert autumn_campaigns.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            forgot_string_quotes = fake_array_variable == ["4", 6]
+            forgot_string_quotes = chy_array_var == ["4", 6]
         assert exc_info.value.args[0] == (
             "Chosen value(s) for an array variable"
             " must be given as a string or an iterable of strings."
         )
 
-    def test_ne(self, fake_array_variable, chy_session):
-        not_christmas = fake_array_variable != "Christmas"
+    def test_ne(self, chy_array_var, chy_session):
+        not_christmas = chy_array_var != "Christmas"
         assert type(not_christmas) == ArrayClause
         assert not_christmas.table_name == "Campaigns"
         assert not_christmas.variable_name == "Tags"
@@ -645,7 +645,7 @@ class TestArrayVariable:
         assert not_christmas.include is False
         assert not_christmas.session is chy_session
 
-        one_off_campaigns = fake_array_variable != [
+        one_off_campaigns = chy_array_var != [
             "Recurrent",
             "Annual",
             "Regular",
@@ -672,7 +672,7 @@ class TestArrayVariable:
 
         with pytest.raises(ValueError) as exc_info:
             undesired_values = ("value_we_dont_like", None)
-            not_none = fake_array_variable != undesired_values
+            not_none = chy_array_var != undesired_values
         assert exc_info.value.args[0] == (
             "Chosen value(s) for an array variable"
             " must be given as a string or an iterable of strings."
@@ -680,8 +680,8 @@ class TestArrayVariable:
 
 
 class TestFlagArrayVariable:
-    def test_eq(self, fake_flag_array_variable, chy_session):
-        can_post = fake_flag_array_variable == "DirectMail"
+    def test_eq(self, chy_flag_array_var, chy_session):
+        can_post = chy_flag_array_var == "DirectMail"
         assert type(can_post) == FlagArrayClause
         assert can_post.table_name == "Supporters"
         assert can_post.variable_name == "ContactPreferences"
@@ -690,7 +690,7 @@ class TestFlagArrayVariable:
         assert can_post.include is True
         assert can_post.session is chy_session
 
-        phone_or_text = fake_flag_array_variable == ("SMS", "Telephone")
+        phone_or_text = chy_flag_array_var == ("SMS", "Telephone")
         assert type(phone_or_text) == FlagArrayClause
         assert phone_or_text.table_name == "Supporters"
         assert phone_or_text.variable_name == "ContactPreferences"
@@ -701,14 +701,14 @@ class TestFlagArrayVariable:
 
         with pytest.raises(ValueError) as exc_info:
             true = True  # so editor doesn't complain about comparison not using `is`
-            contactable = fake_flag_array_variable == true
+            contactable = chy_flag_array_var == true
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a flag array variable"
             " must be given as a string or an iterable of strings."
         )
 
-    def test_ne(self, fake_flag_array_variable, chy_session):
-        cant_email = fake_flag_array_variable != "Email"
+    def test_ne(self, chy_flag_array_var, chy_session):
+        cant_email = chy_flag_array_var != "Email"
         assert type(cant_email) == FlagArrayClause
         assert cant_email.table_name == "Supporters"
         assert cant_email.variable_name == "ContactPreferences"
@@ -717,7 +717,7 @@ class TestFlagArrayVariable:
         assert cant_email.include is False
         assert cant_email.session is chy_session
 
-        not_business = fake_flag_array_variable != {
+        not_business = chy_flag_array_var != {
             "BusinessPhone",
             "BusinessDirectMail",
             "BusinessEmail",
@@ -735,7 +735,7 @@ class TestFlagArrayVariable:
         assert not_business.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            contactable = fake_flag_array_variable != 0
+            contactable = chy_flag_array_var != 0
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a flag array variable"
             " must be given as a string or an iterable of strings."
@@ -743,8 +743,8 @@ class TestFlagArrayVariable:
 
 
 class TestDateVariable:
-    def test_eq(self, fake_date_variable, chy_session):
-        august_bank_holiday_2018 = fake_date_variable == date(2018, 8, 27)
+    def test_eq(self, chy_date_var, chy_session):
+        august_bank_holiday_2018 = chy_date_var == date(2018, 8, 27)
         assert type(august_bank_holiday_2018) == DateListClause
         assert august_bank_holiday_2018.table_name == "Donations"
         assert august_bank_holiday_2018.variable_name == "DonationDate"
@@ -752,7 +752,7 @@ class TestDateVariable:
         assert august_bank_holiday_2018.include is True
         assert august_bank_holiday_2018.session is chy_session
 
-        festive_days_from_random_years = fake_date_variable == [
+        festive_days_from_random_years = chy_date_var == [
             date(1912, 12, 25),
             date(1934, 2, 14),
             date(1956, 4, 1),
@@ -777,14 +777,14 @@ class TestDateVariable:
         assert festive_days_from_random_years.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_date_string = fake_date_variable == "20180528"
+            trying_with_date_string = chy_date_var == "20180528"
         assert exc_info.value.args[0] == (
             "Chosen value for a date variable"
             " must be a date object or an iterable of date objects."
         )
 
-    def test_ne(self, fake_date_variable, chy_session):
-        not_easter_2050 = fake_date_variable != date(2050, 4, 10)
+    def test_ne(self, chy_date_var, chy_session):
+        not_easter_2050 = chy_date_var != date(2050, 4, 10)
         assert type(not_easter_2050) == DateListClause
         assert not_easter_2050.table_name == "Donations"
         assert not_easter_2050.variable_name == "DonationDate"
@@ -792,7 +792,7 @@ class TestDateVariable:
         assert not_easter_2050.include is False
         assert not_easter_2050.session is chy_session
 
-        exclude_solstices_and_equinoxes_2030 = fake_date_variable != [
+        exclude_solstices_and_equinoxes_2030 = chy_date_var != [
             date(2030, 3, 20),
             datetime(2030, 6, 21, 7, 31),
             date(2030, 9, 22),
@@ -811,7 +811,7 @@ class TestDateVariable:
         assert exclude_solstices_and_equinoxes_2030.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_list_some_invalid = fake_date_variable == [
+            trying_with_list_some_invalid = chy_date_var == [
                 date(2012, 7, 27),
                 "20221121",
                 datetime(2018, 2, 9, 11, 0, 0),
@@ -821,8 +821,8 @@ class TestDateVariable:
             " must be a date object or an iterable of date objects."
         )
 
-    def test_le(self, fake_date_variable, chy_session):
-        before_tax_year_end_2018_19 = fake_date_variable <= date(2019, 4, 5)
+    def test_le(self, chy_date_var, chy_session):
+        before_tax_year_end_2018_19 = chy_date_var <= date(2019, 4, 5)
         assert type(before_tax_year_end_2018_19) == DateRangeClause
         assert before_tax_year_end_2018_19.table_name == "Donations"
         assert before_tax_year_end_2018_19.variable_name == "DonationDate"
@@ -833,13 +833,13 @@ class TestDateVariable:
 
         with pytest.raises(ValueError) as exc_info:
             two_dates = (date(2019, 2, 14), date(2019, 6, 21))
-            less_than_equal_a_pair = fake_date_variable <= two_dates
+            less_than_equal_a_pair = chy_date_var <= two_dates
         assert exc_info.value.args[0] == (
             "Must specify a single date for this type of operation."
         )
 
-    def test_ge(self, fake_date_variable, chy_session):
-        after_christmas_2015 = fake_date_variable >= date(2015, 12, 25)
+    def test_ge(self, chy_date_var, chy_session):
+        after_christmas_2015 = chy_date_var >= date(2015, 12, 25)
         assert type(after_christmas_2015) == DateRangeClause
         assert after_christmas_2015.table_name == "Donations"
         assert after_christmas_2015.variable_name == "DonationDate"
@@ -849,16 +849,16 @@ class TestDateVariable:
         assert after_christmas_2015.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_a_string = fake_date_variable >= "2011-11-20"
+            trying_with_a_string = chy_date_var >= "2011-11-20"
         assert exc_info.value.args[0] == (
             "Must specify a single date for this type of operation."
         )
 
 
 class TestDateTimeVariable:
-    def test_le(self, fake_datetime_variable, chy_session):
+    def test_le(self, chy_datetime_var, chy_session):
         xmas_campaign_launch = datetime(2019, 11, 25, 11, 22, 33)
-        before_christmas_campaign = fake_datetime_variable <= xmas_campaign_launch
+        before_christmas_campaign = chy_datetime_var <= xmas_campaign_launch
         assert type(before_christmas_campaign) == DateTimeRangeClause
         assert before_christmas_campaign.table_name == "WebVisits"
         assert before_christmas_campaign.variable_name == "BrowsingSessionStart"
@@ -868,14 +868,14 @@ class TestDateTimeVariable:
         assert before_christmas_campaign.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_date_only = fake_datetime_variable <= date(2019, 11, 25)
+            trying_with_date_only = chy_datetime_var <= date(2019, 11, 25)
         assert exc_info.value.args[0] == (
             "Must specify a single datetime for this type of operation."
         )
 
-    def test_ge(self, fake_datetime_variable, chy_session):
+    def test_ge(self, chy_datetime_var, chy_session):
         sale_start = datetime(2019, 12, 26, 4, 32, 10)
-        after_boxing_day_sale_start = fake_datetime_variable >= sale_start
+        after_boxing_day_sale_start = chy_datetime_var >= sale_start
         assert type(after_boxing_day_sale_start) == DateTimeRangeClause
         assert after_boxing_day_sale_start.table_name == "WebVisits"
         assert after_boxing_day_sale_start.variable_name == "BrowsingSessionStart"
@@ -885,7 +885,7 @@ class TestDateTimeVariable:
         assert after_boxing_day_sale_start.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_number = fake_datetime_variable >= 2_019_122_643_210
+            trying_with_number = chy_datetime_var >= 2_019_122_643_210
         assert exc_info.value.args[0] == (
             "Must specify a single datetime for this type of operation."
         )
@@ -893,8 +893,8 @@ class TestDateTimeVariable:
 
 @pytest.mark.xfail(reason="Not yet implemented.")
 class TestReferenceVariable:
-    def test_eq(self, fake_reference_variable, chy_session):
-        abc_campaign = fake_reference_variable == "abc"
+    def test_eq(self, chy_reference_var, chy_session):
+        abc_campaign = chy_reference_var == "abc"
         assert type(abc_campaign) == ReferenceClause
         assert abc_campaign.table_name == "Campaigns"
         assert abc_campaign.variable_name == "CampaignID"
@@ -902,8 +902,8 @@ class TestReferenceVariable:
         assert abc_campaign.include is True
         assert abc_campaign.session is chy_session
 
-    def test_ne(self, fake_reference_variable, chy_session):
-        not_x_campaigns = fake_reference_variable != ["x", "xy", "xs", "xyz", "x1"]
+    def test_ne(self, chy_reference_var, chy_session):
+        not_x_campaigns = chy_reference_var != ["x", "xy", "xs", "xyz", "x1"]
         assert type(not_x_campaigns) == ReferenceClause
         assert not_x_campaigns.table_name == "Campaigns"
         assert not_x_campaigns.variable_name == "CampaignID"

@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from apteco import Session
 from apteco.tables import Table
 from apteco.variables import (
     DateTimeVariable,
@@ -17,32 +18,45 @@ from apteco.variables import (
 Fake 'Retail' system
 ====================
 
+For use in unit tests.
+
+* session, tables, variables & selections are Mock objects
+* session, tables & variables have `spec` set to the corresponding py-apteco class
+* variables & selections have a reference to their table, but not the session
+
 Tables
 ------
 
-Customers
-└── Purchases
+Customers       | rtl_table_customers
+└── Purchases   | rtl_table_purchases
 
 Variables
 ---------
 
  Table      |  Description                  |  Name     |  Type     |
 ---------------------------------------------------------------------
-Customers   | Customer ID                   | cuID      | Reference |
-Customers   | Customer First Name           | cuFName   | Text      |
-Customers   | Customer Surname              | cuSName   | Text      |
-Customers   | Gender                        | cuGender  | Selector  |
-Customers   | Customer Contact Preferences  | cuContac  | FlagArray |
+Customers   | Customer ID                   | cuID      | Reference | rtl_var_customer_id
+Customers   | Customer First Name           | cuFName   | Text      | rtl_var_customer_first_name
+Customers   | Customer Surname              | cuSName   | Text      | rtl_var_customer_surname
+Customers   | Gender                        | cuGender  | Selector  | rtl_var_customer_gender
+Customers   | Customer Contact Preferences  | cuContac  | FlagArray | rtl_var_customer_contact_pref
 ------------|-------------------------------|-----------|-----------|
-Purchases   | Purchase ID                   | puID      | Reference |
-Purchases   | Store                         | puStore   | Selector  |
-Purchases   | Department                    | puDept    | Selector  |
-Purchases   | Purchase Date                 | puDate    | DateTime  |
-Purchases   | Store Type                    | puStType  | Selector  |
-Purchases   | Payment Method                | puPayMtd  | Selector  |
-Purchases   | Profit                        | puProfit  | Numeric   |
+Purchases   | Purchase ID                   | puID      | Reference | rtl_var_purchase_id
+Purchases   | Store                         | puStore   | Selector  | rtl_var_purchase_store
+Purchases   | Department                    | puDept    | Selector  | rtl_var_purchase_department
+Purchases   | Purchase Date                 | puDate    | DateTime  | rtl_var_purchase_date
+Purchases   | Store Type                    | puStType  | Selector  | rtl_var_purchase_store_type
+Purchases   | Payment Method                | puPayMtd  | Selector  | rtl_var_purchase_payment_method
+Purchases   | Profit                        | puProfit  | Numeric   | rtl_var_purchase_profit
 
 """
+
+
+@pytest.fixture()
+def rtl_session():
+    return Mock(
+        spec=Session, data_view="acme_inc", system="retail", api_client="my_api_client"
+    )
 
 
 @pytest.fixture()
@@ -216,11 +230,6 @@ def rtl_sel_last_week_customers(rtl_table_customers):
         table=rtl_table_customers,
         _to_model_selection=Mock(return_value="selection_model"),
     )
-
-
-@pytest.fixture()
-def rtl_session():
-    return Mock(data_view="acme_inc", system="retail", api_client="my_api_client")
 
 
 @pytest.fixture()

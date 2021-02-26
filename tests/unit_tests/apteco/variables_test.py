@@ -22,36 +22,42 @@ from apteco.variables import (
 Fake 'Insurance' system
 =======================
 
+For use in unit tests interfacing with apteco_api.
+
+* variables are apteco_api instances
+* session & table are Mock objects
+  and have `spec` set to the corresponding py-apteco class
+
 Tables
 ------
 
-Clients
-├── Products
-│   └── Payments
-└── Communications
+Clients             | ins_table_clnts
+├── Products        | ins_table_prods
+│   └── Payments    | ins_table_pmnts
+└── Communications  | ins_table_comms
 
 Variables
 ---------
 
  Table          |  Description              |  Name     |  Type     |
 ---------------------------------------------------------------------
-Clients         | Gender                    | clGender  | Selector  |
-Clients         | Address                   | clAddr    | Text      |
-Clients         | Pre-existing conditions   | clPrExCo  | Array     |
+Clients         | Gender                    | clGender  | Selector  | ins_aa_sel_var_gender
+Clients         | Address                   | clAddr    | Text      | ins_aa_text_var_addr
+Clients         | Pre-existing conditions   | clPrExCo  | Array     | ins_aa_arr_var_prexco
 ----------------|---------------------------|-----------|-----------|
-Products        | Premium                   | prPrem    | Numeric   |
-Products        | Product tags              | prTags    | FlagArray |
+Products        | Premium                   | prPrem    | Numeric   | ins_aa_num_var_prem
+Products        | Product tags              | prTags    | FlagArray | ins_aa_flarr_var_tags
 ----------------|---------------------------|-----------|-----------|
-Payments        | Payment ID                | pmID      | Reference |
-Payments        | Payment received          | pmDate    | Date      |
+Payments        | Payment ID                | pmID      | Reference | ins_aa_ref_var_payid
+Payments        | Payment received          | pmDate    | Date      | ins_aa_dat_var_payrcvd
 ----------------|---------------------------|-----------|-----------|
-Communications  | Time sent                 | coSent    | DateTime  |
+Communications  | Time sent                 | coSent    | DateTime  | ins_aa_dtme_var_timesnt
 
 """
 
 
 @pytest.fixture()
-def aa_fake_sel_var_gender():
+def ins_aa_sel_var_gender():
     var = aa.Variable(
         name="clGender",
         description="Gender",
@@ -82,7 +88,7 @@ def aa_fake_sel_var_gender():
 
 
 @pytest.fixture()
-def aa_fake_num_var_prem():
+def ins_aa_num_var_prem():
     var = aa.Variable(
         name="prPrem",
         description="Premium",
@@ -108,7 +114,7 @@ def aa_fake_num_var_prem():
 
 
 @pytest.fixture()
-def aa_fake_text_var_addr():
+def ins_aa_text_var_addr():
     var = aa.Variable(
         name="clAddr",
         description="Address",
@@ -128,7 +134,7 @@ def aa_fake_text_var_addr():
 
 
 @pytest.fixture()
-def aa_fake_arr_var_prexco():
+def ins_aa_arr_var_prexco():
     var = aa.Variable(
         name="clPrExCo",
         description="Pre-existing conditions",
@@ -159,7 +165,7 @@ def aa_fake_arr_var_prexco():
 
 
 @pytest.fixture()
-def aa_fake_flarr_var_tags():
+def ins_aa_flarr_var_tags():
     var = aa.Variable(
         name="prTags",
         description="Product tags",
@@ -190,7 +196,7 @@ def aa_fake_flarr_var_tags():
 
 
 @pytest.fixture()
-def aa_fake_dat_var_payrcvd():
+def ins_aa_dat_var_payrcvd():
     var = aa.Variable(
         name="pmDate",
         description="Payment received",
@@ -221,7 +227,7 @@ def aa_fake_dat_var_payrcvd():
 
 
 @pytest.fixture()
-def aa_fake_dtme_var_timesnt():
+def ins_aa_dtme_var_timesnt():
     var = aa.Variable(
         name="coSent",
         description="Time sent",
@@ -252,7 +258,7 @@ def aa_fake_dtme_var_timesnt():
 
 
 @pytest.fixture()
-def aa_fake_ref_var_payid():
+def ins_aa_ref_var_payid():
     var = aa.Variable(
         name="pmID",
         description="Payment ID",
@@ -305,8 +311,8 @@ def ins_table_comms():
     return table
 
 
-def test_selector_variable_init(aa_fake_sel_var_gender, ins_table_clnts, ins_session):
-    v = aa_fake_sel_var_gender
+def test_selector_variable_init(ins_aa_sel_var_gender, ins_table_clnts, ins_session):
+    v = ins_aa_sel_var_gender
     selector_variable = SelectorVariable(
         name=v.name,
         description=v.description,
@@ -341,8 +347,8 @@ def test_selector_variable_init(aa_fake_sel_var_gender, ins_table_clnts, ins_ses
     assert selector_variable.session is ins_session
 
 
-def test_numeric_variable_init(aa_fake_num_var_prem, ins_table_prods, ins_session):
-    v = aa_fake_num_var_prem
+def test_numeric_variable_init(ins_aa_num_var_prem, ins_table_prods, ins_session):
+    v = ins_aa_num_var_prem
     numeric_variable = NumericVariable(
         name=v.name,
         description=v.description,
@@ -377,8 +383,8 @@ def test_numeric_variable_init(aa_fake_num_var_prem, ins_table_prods, ins_sessio
     assert numeric_variable.session is ins_session
 
 
-def test_text_variable_init(aa_fake_text_var_addr, ins_table_clnts, ins_session):
-    v = aa_fake_text_var_addr
+def test_text_variable_init(ins_aa_text_var_addr, ins_table_clnts, ins_session):
+    v = ins_aa_text_var_addr
     text_variable = TextVariable(
         name=v.name,
         description=v.description,
@@ -409,8 +415,8 @@ def test_text_variable_init(aa_fake_text_var_addr, ins_table_clnts, ins_session)
     assert text_variable.session is ins_session
 
 
-def test_array_variable_init(aa_fake_arr_var_prexco, ins_table_clnts, ins_session):
-    v = aa_fake_arr_var_prexco
+def test_array_variable_init(ins_aa_arr_var_prexco, ins_table_clnts, ins_session):
+    v = ins_aa_arr_var_prexco
     array_variable = ArrayVariable(
         name=v.name,
         description=v.description,
@@ -445,8 +451,8 @@ def test_array_variable_init(aa_fake_arr_var_prexco, ins_table_clnts, ins_sessio
     assert array_variable.session is ins_session
 
 
-def test_flag_array_variable_init(aa_fake_flarr_var_tags, ins_table_prods, ins_session):
-    v = aa_fake_flarr_var_tags
+def test_flag_array_variable_init(ins_aa_flarr_var_tags, ins_table_prods, ins_session):
+    v = ins_aa_flarr_var_tags
     flag_array_variable = FlagArrayVariable(
         name=v.name,
         description=v.description,
@@ -481,8 +487,8 @@ def test_flag_array_variable_init(aa_fake_flarr_var_tags, ins_table_prods, ins_s
     assert flag_array_variable.session is ins_session
 
 
-def test_date_variable_init(aa_fake_dat_var_payrcvd, ins_table_pmnts, ins_session):
-    v = aa_fake_dat_var_payrcvd
+def test_date_variable_init(ins_aa_dat_var_payrcvd, ins_table_pmnts, ins_session):
+    v = ins_aa_dat_var_payrcvd
     date_variable = DateVariable(
         name=v.name,
         description=v.description,
@@ -517,8 +523,8 @@ def test_date_variable_init(aa_fake_dat_var_payrcvd, ins_table_pmnts, ins_sessio
     assert date_variable.session is ins_session
 
 
-def test_datetime_variable_init(aa_fake_dtme_var_timesnt, ins_table_comms, ins_session):
-    v = aa_fake_dtme_var_timesnt
+def test_datetime_variable_init(ins_aa_dtme_var_timesnt, ins_table_comms, ins_session):
+    v = ins_aa_dtme_var_timesnt
     datetime_variable = DateTimeVariable(
         name=v.name,
         description=v.description,
@@ -553,8 +559,8 @@ def test_datetime_variable_init(aa_fake_dtme_var_timesnt, ins_table_comms, ins_s
     assert datetime_variable.session is ins_session
 
 
-def test_reference_variable_init(aa_fake_ref_var_payid, ins_table_pmnts, ins_session):
-    v = aa_fake_ref_var_payid
+def test_reference_variable_init(ins_aa_ref_var_payid, ins_table_pmnts, ins_session):
+    v = ins_aa_ref_var_payid
     reference_variable = ReferenceVariable(
         name=v.name,
         description=v.description,

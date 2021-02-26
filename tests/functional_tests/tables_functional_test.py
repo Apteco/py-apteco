@@ -168,9 +168,9 @@ class TestTableRelations:
 
 
 @pytest.fixture
-def web_visits_after_lockdown(fake_datetime_variable):
+def web_visits_after_lockdown(chy_datetime_var):
     lockdown_announcement = datetime(2020, 3, 23, 20, 6, 17)
-    web_visits_after_lockdown = fake_datetime_variable >= lockdown_announcement
+    web_visits_after_lockdown = chy_datetime_var >= lockdown_announcement
     return web_visits_after_lockdown
 
 
