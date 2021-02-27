@@ -39,6 +39,7 @@ Variables
 Customers   | Customer ID                   | cuID      | Reference | rtl_var_customer_id
 Customers   | Customer First Name           | cuFName   | Text      | rtl_var_customer_first_name
 Customers   | Customer Surname              | cuSName   | Text      | rtl_var_customer_surname
+Customers   | Customer Email                | cuEmail   | Text      | rtl_var_customer_email
 Customers   | Gender                        | cuGender  | Selector  | rtl_var_customer_gender
 Customers   | Customer Contact Preferences  | cuContac  | FlagArray | rtl_var_customer_contact_pref
 ------------|-------------------------------|-----------|-----------|
@@ -110,6 +111,20 @@ def rtl_var_customer_surname(rtl_table_customers, rtl_session):
     var.configure_mock(
         name="cuSName",
         description="Customer Surname",
+        type="Text",
+        table=rtl_table_customers,
+        table_name=rtl_table_customers.name,
+        session=rtl_session,
+    )
+    return var
+
+
+@pytest.fixture()
+def rtl_var_customer_email(rtl_table_customers, rtl_session):
+    var = Mock(spec=TextVariable)
+    var.configure_mock(
+        name="cuEmail",
+        description="Customer Email",
         type="Text",
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,

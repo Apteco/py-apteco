@@ -6,6 +6,7 @@ import pytest
 
 from apteco import Session
 from apteco.common import VariableType
+from apteco.query import NumericClause, TextClause
 from apteco.tables import Table
 from apteco.variables import (
     ArrayVariable,
@@ -347,72 +348,349 @@ def test_selector_variable_init(ins_aa_sel_var_gender, ins_table_clnts, ins_sess
     assert selector_variable.session is ins_session
 
 
-def test_numeric_variable_init(ins_aa_num_var_prem, ins_table_prods, ins_session):
-    v = ins_aa_num_var_prem
-    numeric_variable = NumericVariable(
-        name=v.name,
-        description=v.description,
-        type=v.type,
-        folder_name=v.folder_name,
-        table=ins_table_prods,
-        is_selectable=v.is_selectable,
-        is_browsable=v.is_browsable,
-        is_exportable=v.is_exportable,
-        is_virtual=v.is_virtual,
-        selector_info=v.selector_info,
-        numeric_info=v.numeric_info,
-        text_info=v.text_info,
-        reference_info=v.reference_info,
-        session=ins_session,
-    )
-    assert numeric_variable.type == VariableType.NUMERIC
-    assert numeric_variable.min_value == 1.00
-    assert numeric_variable.max_value == 3044.21
-    assert numeric_variable.is_currency == True
-    assert numeric_variable.currency_locale == "en-GB"
-    assert numeric_variable.currency_symbol == "£"
-    assert numeric_variable.name == "prPrem"
-    assert numeric_variable.description == "Premium"
-    assert numeric_variable._model_type == "Numeric"
-    assert numeric_variable.folder_name == "Products"
-    assert numeric_variable.table is ins_table_prods
-    assert numeric_variable.is_selectable is True
-    assert numeric_variable.is_browsable is True
-    assert numeric_variable.is_exportable is True
-    assert numeric_variable.is_virtual is False
-    assert numeric_variable.session is ins_session
+class TestNumericVariable:
+    def test_numeric_variable_init(self, ins_aa_num_var_prem, ins_table_prods, ins_session):
+        v = ins_aa_num_var_prem
+        numeric_variable = NumericVariable(
+            name=v.name,
+            description=v.description,
+            type=v.type,
+            folder_name=v.folder_name,
+            table=ins_table_prods,
+            is_selectable=v.is_selectable,
+            is_browsable=v.is_browsable,
+            is_exportable=v.is_exportable,
+            is_virtual=v.is_virtual,
+            selector_info=v.selector_info,
+            numeric_info=v.numeric_info,
+            text_info=v.text_info,
+            reference_info=v.reference_info,
+            session=ins_session,
+        )
+        assert numeric_variable.type == VariableType.NUMERIC
+        assert numeric_variable.min_value == 1.00
+        assert numeric_variable.max_value == 3044.21
+        assert numeric_variable.is_currency == True
+        assert numeric_variable.currency_locale == "en-GB"
+        assert numeric_variable.currency_symbol == "£"
+        assert numeric_variable.name == "prPrem"
+        assert numeric_variable.description == "Premium"
+        assert numeric_variable._model_type == "Numeric"
+        assert numeric_variable.folder_name == "Products"
+        assert numeric_variable.table is ins_table_prods
+        assert numeric_variable.is_selectable is True
+        assert numeric_variable.is_browsable is True
+        assert numeric_variable.is_exportable is True
+        assert numeric_variable.is_virtual is False
+        assert numeric_variable.session is ins_session
+
+    def test_missing(self, rtl_var_purchase_profit, rtl_table_purchases, rtl_session):
+        missing_value = NumericVariable.missing(rtl_var_purchase_profit)
+        assert type(missing_value) == NumericClause
+        assert missing_value.table is rtl_table_purchases
+        assert missing_value.variable_name == "puProfit"
+        assert missing_value.values == ["><"]
+        assert missing_value.include is True
+        assert missing_value.session is rtl_session
 
 
-def test_text_variable_init(ins_aa_text_var_addr, ins_table_clnts, ins_session):
-    v = ins_aa_text_var_addr
-    text_variable = TextVariable(
-        name=v.name,
-        description=v.description,
-        type=v.type,
-        folder_name=v.folder_name,
-        table=ins_table_clnts,
-        is_selectable=v.is_selectable,
-        is_browsable=v.is_browsable,
-        is_exportable=v.is_exportable,
-        is_virtual=v.is_virtual,
-        selector_info=v.selector_info,
-        numeric_info=v.numeric_info,
-        text_info=v.text_info,
-        reference_info=v.reference_info,
-        session=ins_session,
+class TestTextVariable:
+    def test_text_variable_init(self, ins_aa_text_var_addr, ins_table_clnts, ins_session):
+        v = ins_aa_text_var_addr
+        text_variable = TextVariable(
+            name=v.name,
+            description=v.description,
+            type=v.type,
+            folder_name=v.folder_name,
+            table=ins_table_clnts,
+            is_selectable=v.is_selectable,
+            is_browsable=v.is_browsable,
+            is_exportable=v.is_exportable,
+            is_virtual=v.is_virtual,
+            selector_info=v.selector_info,
+            numeric_info=v.numeric_info,
+            text_info=v.text_info,
+            reference_info=v.reference_info,
+            session=ins_session,
+        )
+        assert text_variable.type == VariableType.TEXT
+        assert text_variable.max_length == 80
+        assert text_variable.name == "clAddr"
+        assert text_variable.description == "Address"
+        assert text_variable._model_type == "Text"
+        assert text_variable.folder_name == "Client details"
+        assert text_variable.table is ins_table_clnts
+        assert text_variable.is_selectable is True
+        assert text_variable.is_browsable is False
+        assert text_variable.is_exportable is True
+        assert text_variable.is_virtual is False
+        assert text_variable.session is ins_session
+
+    def test_equals(self, rtl_var_customer_email, rtl_session):
+        specific_donor = TextVariable.equals(rtl_var_customer_email, "donor@domain.com")
+        assert type(specific_donor) == TextClause
+        assert specific_donor.table_name == "Customers"
+        assert specific_donor.variable_name == "cuEmail"
+        assert specific_donor.values == ["donor@domain.com"]
+        assert specific_donor.match_type == "Is"
+        assert specific_donor.match_case is True
+        assert specific_donor.include is True
+        assert specific_donor.session is rtl_session
+
+        donors_by_email = TextVariable.equals(rtl_var_customer_email,
+            [f"donor_{i}@domain.com" for i in range(4)]
+        )
+        assert type(donors_by_email) == TextClause
+        assert donors_by_email.table_name == "Customers"
+        assert donors_by_email.variable_name == "cuEmail"
+        assert donors_by_email.values == [
+            "donor_0@domain.com",
+            "donor_1@domain.com",
+            "donor_2@domain.com",
+            "donor_3@domain.com",
+        ]
+        assert donors_by_email.match_type == "Is"
+        assert donors_by_email.match_case is True
+        assert donors_by_email.include is True
+        assert donors_by_email.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            donors_by_number = TextVariable.equals(rtl_var_customer_email, {34, 765, 2930})
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+        dont_want_this_person = TextVariable.equals(rtl_var_customer_email,
+            "bad_donor@domain.com", include=False
+        )
+        assert type(dont_want_this_person) == TextClause
+        assert dont_want_this_person.table_name == "Customers"
+        assert dont_want_this_person.variable_name == "cuEmail"
+        assert dont_want_this_person.values == ["bad_donor@domain.com"]
+        assert dont_want_this_person.match_type == "Is"
+        assert dont_want_this_person.match_case is True
+        assert dont_want_this_person.include is False
+        assert dont_want_this_person.session is rtl_session
+
+        not_these_people = TextVariable.equals(rtl_var_customer_email,
+            {"dont_email_me@domain.com", "unsubscribed@domain.org"}, include=False
+        )
+        assert type(not_these_people) == TextClause
+        assert not_these_people.table_name == "Customers"
+        assert not_these_people.variable_name == "cuEmail"
+        assert sorted(not_these_people.values) == [
+            "dont_email_me@domain.com",
+            "unsubscribed@domain.org",
+        ]
+        assert not_these_people.match_type == "Is"
+        assert not_these_people.match_case is True
+        assert not_these_people.include is False
+        assert not_these_people.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            donor_not_an_obj = TextVariable.equals(rtl_var_customer_email, object(), include=False)
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    def test_contains(self, rtl_var_customer_surname, rtl_session):
+        contains_nuts = TextVariable.contains(rtl_var_customer_surname, "nuts")
+        assert type(contains_nuts) == TextClause
+        assert contains_nuts.table_name == "Customers"
+        assert contains_nuts.variable_name == "cuSName"
+        assert contains_nuts.values == ["nuts"]
+        assert contains_nuts.match_type == "Contains"
+        assert contains_nuts.match_case is True
+        assert contains_nuts.include is True
+        assert contains_nuts.session is rtl_session
+
+        contains_multiple = TextVariable.contains(rtl_var_customer_surname, ["a", "b"])
+        assert type(contains_multiple) == TextClause
+        assert contains_multiple.table_name == "Customers"
+        assert contains_multiple.variable_name == "cuSName"
+        assert contains_multiple.values == ["a", "b"]
+        assert contains_multiple.match_type == "Contains"
+        assert contains_multiple.match_case is True
+        assert contains_multiple.include is True
+        assert contains_multiple.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            contains_ints = TextVariable.contains(rtl_var_customer_surname, [1, 2, 3])
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    def test_starts_with(self, rtl_var_customer_surname, rtl_session):
+        starts_with_smith = TextVariable.startswith(rtl_var_customer_surname, "Smith")
+        assert type(starts_with_smith) == TextClause
+        assert starts_with_smith.table_name == "Customers"
+        assert starts_with_smith.variable_name == "cuSName"
+        assert starts_with_smith.values == ["Smith"]
+        assert starts_with_smith.match_type == "Begins"
+        assert starts_with_smith.match_case is True
+        assert starts_with_smith.include is True
+        assert starts_with_smith.session is rtl_session
+
+        starts_with_multiple = TextVariable.startswith(rtl_var_customer_surname,
+            ["Tom", "James", "Dan", "Dav"]
+        )
+        assert type(starts_with_multiple) == TextClause
+        assert starts_with_multiple.table_name == "Customers"
+        assert starts_with_multiple.variable_name == "cuSName"
+        assert starts_with_multiple.values == ["Tom", "James", "Dan", "Dav"]
+        assert starts_with_multiple.match_type == "Begins"
+        assert starts_with_multiple.match_case is True
+        assert starts_with_multiple.include is True
+        assert starts_with_multiple.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            starts_with_boolean = TextVariable.startswith(rtl_var_customer_surname, True)
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    def test_ends_with(self, rtl_var_customer_surname, rtl_session):
+        ends_with_son = TextVariable.endswith(rtl_var_customer_surname, "son")
+        assert type(ends_with_son) == TextClause
+        assert ends_with_son.table_name == "Customers"
+        assert ends_with_son.variable_name == "cuSName"
+        assert ends_with_son.values == ["son"]
+        assert ends_with_son.match_type == "Ends"
+        assert ends_with_son.match_case is True
+        assert ends_with_son.include is True
+        assert ends_with_son.session is rtl_session
+
+        ends_with_multiple = TextVariable.endswith(rtl_var_customer_surname, ["son", "ez"])
+        assert type(ends_with_multiple) == TextClause
+        assert ends_with_multiple.table_name == "Customers"
+        assert ends_with_multiple.variable_name == "cuSName"
+        assert ends_with_multiple.values == ["son", "ez"]
+        assert ends_with_multiple.match_type == "Ends"
+        assert ends_with_multiple.match_case is True
+        assert ends_with_multiple.include is True
+        assert ends_with_multiple.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            ends_with_float = TextVariable.endswith(rtl_var_customer_surname, [2.8, 9.4])
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
+
+    @pytest.mark.xfail(
+        reason="Feature-switched off before/after TextVariable methods",
+        raises=AttributeError,
     )
-    assert text_variable.type == VariableType.TEXT
-    assert text_variable.max_length == 80
-    assert text_variable.name == "clAddr"
-    assert text_variable.description == "Address"
-    assert text_variable._model_type == "Text"
-    assert text_variable.folder_name == "Client details"
-    assert text_variable.table is ins_table_clnts
-    assert text_variable.is_selectable is True
-    assert text_variable.is_browsable is False
-    assert text_variable.is_exportable is True
-    assert text_variable.is_virtual is False
-    assert text_variable.session is ins_session
+    def test_before(self, rtl_var_customer_surname, rtl_session):
+        first_half_alphabet = TextVariable.before(rtl_var_customer_surname, "n")
+        assert type(first_half_alphabet) == TextClause
+        assert first_half_alphabet.table_name == "Customers"
+        assert first_half_alphabet.variable_name == "cuSName"
+        assert first_half_alphabet.values == ['<="n"']
+        assert first_half_alphabet.match_type == "Ranges"
+        assert first_half_alphabet.match_case is True
+        assert first_half_alphabet.include is True
+        assert first_half_alphabet.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            earlier_than_letters = TextVariable.before(rtl_var_customer_surname, list("abcedfgh"))
+        assert exc_info.value.args[0] == (
+            "Must specify a single string for this type of operation."
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            before_int = TextVariable.before(rtl_var_customer_surname, 6)
+        assert exc_info.value.args[0] == (
+            "Must specify a single string for this type of operation."
+        )
+
+    @pytest.mark.xfail(
+        reason="Feature-switched off before/after TextVariable methods",
+        raises=AttributeError,
+    )
+    def test_after(self, rtl_var_customer_surname, rtl_session):
+        smith_or_later = TextVariable.after(rtl_var_customer_surname, "Smith")
+        assert type(smith_or_later) == TextClause
+        assert smith_or_later.table_name == "Customers"
+        assert smith_or_later.variable_name == "cuSName"
+        assert smith_or_later.values == ['>="Smith"']
+        assert smith_or_later.match_type == "Ranges"
+        assert smith_or_later.match_case is True
+        assert smith_or_later.include is True
+        assert smith_or_later.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            later_than_tuple = TextVariable.after(rtl_var_customer_surname, ("A", "e", "i", "O"))
+        assert exc_info.value.args[0] == (
+            "Must specify a single string for this type of operation."
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            after_boolean = TextVariable.after(rtl_var_customer_surname, False)
+        assert exc_info.value.args[0] == (
+            "Must specify a single string for this type of operation."
+        )
+
+    def test_between(self, rtl_var_customer_surname, rtl_session):
+        rock_and_hardplace = TextVariable.between(rtl_var_customer_surname, "hardplace", "rock")
+        assert type(rock_and_hardplace) == TextClause
+        assert rock_and_hardplace.table_name == "Customers"
+        assert rock_and_hardplace.variable_name == "cuSName"
+        assert rock_and_hardplace.values == ['>="hardplace" - <="rock"']
+        assert rock_and_hardplace.match_type == "Ranges"
+        assert rock_and_hardplace.match_case is True
+        assert rock_and_hardplace.include is True
+        assert rock_and_hardplace.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            between_lists = TextVariable.between(rtl_var_customer_surname, ["a", "b"], ["y", "z"])
+        assert exc_info.value.args[0] == (
+            "Must specify a single string for this type of operation."
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            between_ints = TextVariable.between(rtl_var_customer_surname, 1, 100)
+        assert exc_info.value.args[0] == (
+            "Must specify a single string for this type of operation."
+        )
+
+    def test_matches(self, rtl_var_customer_email, rtl_session):
+        gmail_donor = TextVariable.matches(rtl_var_customer_email, "*@gmail.com")
+        assert type(gmail_donor) == TextClause
+        assert gmail_donor.table_name == "Customers"
+        assert gmail_donor.variable_name == "cuEmail"
+        assert gmail_donor.values == ['="*@gmail.com"']
+        assert gmail_donor.match_type == "Ranges"
+        assert gmail_donor.match_case is True
+        assert gmail_donor.include is True
+        assert gmail_donor.session is rtl_session
+
+        multiple_domain_donors = TextVariable.matches(rtl_var_customer_email,
+            ["*@gmail.com", "*@hotmail.com", "*@apteco.com"]
+        )
+        assert type(multiple_domain_donors) == TextClause
+        assert multiple_domain_donors.table_name == "Customers"
+        assert multiple_domain_donors.variable_name == "cuEmail"
+        assert multiple_domain_donors.values == [
+            '="*@gmail.com"',
+            '="*@hotmail.com"',
+            '="*@apteco.com"',
+        ]
+        assert multiple_domain_donors.match_type == "Ranges"
+        assert multiple_domain_donors.match_case is True
+        assert multiple_domain_donors.include is True
+        assert multiple_domain_donors.session is rtl_session
+
+        with pytest.raises(ValueError) as exc_info:
+            matches_int = TextVariable.matches(rtl_var_customer_email, 30)
+        assert exc_info.value.args[0] == (
+            "Chosen value(s) for a text variable"
+            " must be given as a string or an iterable of strings."
+        )
 
 
 def test_array_variable_init(ins_aa_arr_var_prexco, ins_table_clnts, ins_session):
