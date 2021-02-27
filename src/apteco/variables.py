@@ -284,6 +284,7 @@ class TextVariable(Variable):
             self,
             [f'>="{normalized_start}" - <="{normalized_end}"'],
             match_type="Ranges",
+            match_case=False,
             include=include,
             label=label,
             session=self.session,

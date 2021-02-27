@@ -126,10 +126,16 @@ class TestTextVariable:
 
     def test_text_between(self, people):
         green_to_grey = people["Surname"].between("Green", "Grey")
-        assert green_to_grey.count() == 7546
+        assert green_to_grey.count() == 7549
 
         brown_to_brown = people["Surname"].between("Brown", "Brown")
-        assert brown_to_brown.count() == 7613
+        assert brown_to_brown.count() == 7618
+
+        lower_to_upper = people["Surname"].between("taupe", "TEAL")
+        assert lower_to_upper.count() == 6910
+
+        upper_to_lower = people["Surname"].between("Pink", "purple")
+        assert upper_to_lower.count() == 22760
 
     def test_text_matches(self, people):
         no_wildcards = people["Surname"].matches("Brown")

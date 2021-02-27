@@ -642,7 +642,7 @@ class TestTextVariable:
         assert rock_and_hardplace.variable_name == "cuSName"
         assert rock_and_hardplace.values == ['>="hardplace" - <="rock"']
         assert rock_and_hardplace.match_type == "Ranges"
-        assert rock_and_hardplace.match_case is True
+        assert rock_and_hardplace.match_case is False
         assert rock_and_hardplace.include is True
         assert rock_and_hardplace.session is rtl_session
 

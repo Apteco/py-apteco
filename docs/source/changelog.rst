@@ -2,6 +2,14 @@
   Change Log
 **************
 
+Version 0.8.0-alpha.2
+=====================
+
+Fixed
+-----
+
+* ``TextVariable.between()`` method now ignores case.
+
 Version 0.8.0-alpha.1
 =====================
 
@@ -10,7 +18,6 @@ Changed
 
 * The ``type`` attribute on ``Variable`` objects is now a Python ``Enum``,
   though this is implemented in a way that is backwards-compatible with strings.
-
 
 Version 0.7.1
 =============
