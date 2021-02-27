@@ -658,6 +658,89 @@ class TestTextVariable:
             "Must specify a single string for this type of operation."
         )
 
+    @pytest.mark.parametrize(
+        ["start", "end"],
+        [
+            pytest.param("-", "C", id="ascii 32-64 symbol & uppercase letter"),
+            pytest.param("'", "y", id="ascii 32-64 symbol & lowercase letter"),
+            pytest.param("^", "s", id="ascii 91-96 symbol & lowercase letter"),
+            pytest.param("G", "|", id="ascii 123-126 symbol & uppercase letter"),
+            pytest.param("t", "~", id="ascii 123-126 symbol & lowercase letter"),
+            pytest.param("J", "X", id="uppercase letter & uppercase letter"),
+            pytest.param("B", "k", id="uppercase letter & lowercase letter"),
+            pytest.param("m", "x", id="lowercase letter & lowercase letter"),
+
+        ],
+    )
+    def test_between_ordering(self, start, end, rtl_var_customer_surname):
+        """Check `between()` behaves correctly with different pairs of characters.
+
+        Testing with pairs of characters whose ASCII order is the same as
+        the order fs32svr uses when comparing case-insensitively.
+
+        """
+        TextVariable.between(rtl_var_customer_surname, start, end)
+
+        with pytest.raises(ValueError) as exc_info:
+            TextVariable.between(rtl_var_customer_surname, end, start)
+        assert exc_info.value.args[0] == "`start` must come before `end`"
+
+    @pytest.mark.parametrize(
+        ["start", "end", "error_message"],
+        [
+            pytest.param(
+                "N",
+                "_",
+                "`start` must come before `end`,"
+                " but 'N' comes after '_' when compared case-insensitively.",
+                id="ascii 91-96 symbol & uppercase letter",
+            ),
+            pytest.param(
+                "V",
+                "d",
+                "`start` must come before `end`,"
+                " but 'V' comes after 'd' when compared case-insensitively.",
+                id="lowercase letter & uppercase letter",
+            ),
+            pytest.param(
+                "H",
+                "f",
+                "`start` must come before `end`,"
+                " but 'H' comes after 'f' when compared case-insensitively.",
+                id="uppercase letter & lowercase letter",
+            ),
+        ],
+    )
+    def test_between_ascii_order_but_wrong(self, start, end, error_message, rtl_var_customer_surname):
+        """Test `between()` checks character order correctly.
+
+        Test `between()` with pairs of characters whose ASCII order is different
+        from the order fs32svr sorts in when comparing case-insensitively.
+
+        ASCII characters can be split into 5 ranges, based around the letters:
+        *  32 -  64: symbols (incl. space):  !"#$%&'()*+,-./0123456789:;<=>?@
+        *  65 -  90: uppercase letters    : ABCDEFGHIJKLMNOPQRSTUVWXYZ
+        *  91 -  96: symbols              : [\]^_`
+        *  97 - 122: lowercase letters    : abcdefghijklmnopqrstuvwxyz
+        * 123 - 126: symbols              : {|}~
+
+        When matching case, fs32svr follows ASCII order exactly,
+        but when ignoring case the symbols occurring between uppercase and lowercase
+        letters sort as if they came before the uppercase letters,
+        i.e. between '@' and 'A'.
+
+        The parameters for this test are passed with `start` & `end` in ASCII order,
+        but these are cases where this is the *incorrect* order,
+        on basis of the fs32svr rules outlined above and the fact that
+        `between()` always ignores case (on the principle of least surprise).
+
+        """
+        with pytest.raises(ValueError) as exc_info:
+            TextVariable.between(rtl_var_customer_surname, start, end)
+        assert exc_info.value.args[0] == error_message
+
+        TextVariable.between(rtl_var_customer_surname, end, start)
+
     def test_matches(self, rtl_var_customer_email, rtl_session):
         gmail_donor = TextVariable.matches(rtl_var_customer_email, "*@gmail.com")
         assert type(gmail_donor) == TextClause

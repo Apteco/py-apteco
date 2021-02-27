@@ -8,7 +8,8 @@ Version 0.8.0-alpha.2
 Fixed
 -----
 
-* ``TextVariable.between()`` method now ignores case.
+* ``TextVariable.between()`` method now ignores case,
+  and checks that ``start`` comes before ``end``.
 
 Version 0.8.0-alpha.1
 =====================

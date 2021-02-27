@@ -137,6 +137,17 @@ class TestTextVariable:
         upper_to_lower = people["Surname"].between("Pink", "purple")
         assert upper_to_lower.count() == 22760
 
+        with pytest.raises(ValueError) as exc_info:
+            empty_range = people["Surname"].between("W", "S")
+        assert exc_info.value.args[0] == "`start` must come before `end`"
+
+        with pytest.raises(ValueError) as exc_info:
+            wrong_way_round = people["Surname"].between("W", "s")
+        assert exc_info.value.args[0] == (
+            "`start` must come before `end`, but 'W'"
+            " comes after 's' when compared case-insensitively."
+        )
+
     def test_text_matches(self, people):
         no_wildcards = people["Surname"].matches("Brown")
         assert no_wildcards.count() == 6847
