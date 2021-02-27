@@ -22,7 +22,8 @@ For use in unit tests.
 
 * session, tables, variables & selections are Mock objects
 * session, tables & variables have `spec` set to the corresponding py-apteco class
-* variables & selections have a reference to their table, but not the session
+* variables have a reference to their table and the session
+* selections have a reference to their table, but not the session
 
 Tables
 ------
@@ -76,55 +77,63 @@ def rtl_table_purchases():
 
 
 @pytest.fixture()
-def rtl_var_customer_id(rtl_table_customers):
+def rtl_var_customer_id(rtl_table_customers, rtl_session):
     var = Mock(spec=ReferenceVariable)
     var.configure_mock(
         name="cuID",
         description="Customer ID",
         type="Reference",
         table=rtl_table_customers,
+        table_name=rtl_table_customers.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_customer_first_name(rtl_table_customers):
+def rtl_var_customer_first_name(rtl_table_customers, rtl_session):
     var = Mock(spec=TextVariable)
     var.configure_mock(
         name="cuFName",
         description="Customer First Name",
         type="Text",
         table=rtl_table_customers,
+        table_name=rtl_table_customers.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_customer_surname(rtl_table_customers):
+def rtl_var_customer_surname(rtl_table_customers, rtl_session):
     var = Mock(spec=TextVariable)
     var.configure_mock(
         name="cuSName",
         description="Customer Surname",
         type="Text",
         table=rtl_table_customers,
+        table_name=rtl_table_customers.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_customer_gender(rtl_table_customers):
+def rtl_var_customer_gender(rtl_table_customers, rtl_session):
     var = Mock(spec=SelectorVariable)
     var.configure_mock(
         name="cuGender",
         description="Gender",
         type="Selector",
         table=rtl_table_customers,
+        table_name=rtl_table_customers.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_customer_contact_pref(rtl_table_customers):
+def rtl_var_customer_contact_pref(rtl_table_customers, rtl_session):
     var = Mock(spec=FlagArrayVariable)
     var.configure_mock(
         name="cuContac",
@@ -132,24 +141,28 @@ def rtl_var_customer_contact_pref(rtl_table_customers):
         type="FlagArray",
         is_selectable=True,
         table=rtl_table_customers,
+        table_name=rtl_table_customers.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_purchase_id(rtl_table_purchases):
+def rtl_var_purchase_id(rtl_table_purchases, rtl_session):
     var = Mock(spec=ReferenceVariable)
     var.configure_mock(
         name="puID",
         description="Purchase ID",
         type="Reference",
         table=rtl_table_purchases,
+        table_name=rtl_table_purchases.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_purchase_store(rtl_table_purchases):
+def rtl_var_purchase_store(rtl_table_purchases, rtl_session):
     var = Mock(spec=SelectorVariable)
     var.configure_mock(
         name="puStore",
@@ -157,12 +170,14 @@ def rtl_var_purchase_store(rtl_table_purchases):
         type="Selector",
         is_selectable=True,
         table=rtl_table_purchases,
+        table_name=rtl_table_purchases.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_purchase_department(rtl_table_purchases):
+def rtl_var_purchase_department(rtl_table_purchases, rtl_session):
     var = Mock(spec=SelectorVariable)
     var.configure_mock(
         name="puDept",
@@ -170,12 +185,13 @@ def rtl_var_purchase_department(rtl_table_purchases):
         type="Selector",
         table=rtl_table_purchases,
         table_name=rtl_table_purchases.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_purchase_date(rtl_table_purchases):
+def rtl_var_purchase_date(rtl_table_purchases, rtl_session):
     var = Mock(spec=DateTimeVariable)
     var.configure_mock(
         name="puDate",
@@ -183,36 +199,42 @@ def rtl_var_purchase_date(rtl_table_purchases):
         type="DateTime",
         is_selectable=True,
         table=rtl_table_purchases,
+        table_name=rtl_table_purchases.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_purchase_store_type(rtl_table_purchases):
+def rtl_var_purchase_store_type(rtl_table_purchases, rtl_session):
     var = Mock(spec=SelectorVariable)
     var.configure_mock(
         name="puStType",
         description="Store Type",
         type="Selector",
         table=rtl_table_purchases,
+        table_name=rtl_table_purchases.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_purchase_payment_method(rtl_table_purchases):
+def rtl_var_purchase_payment_method(rtl_table_purchases, rtl_session):
     var = Mock(spec=SelectorVariable)
     var.configure_mock(
         name="puPayMtd",
         description="Payment Method",
         type="Selector",
         table=rtl_table_purchases,
+        table_name=rtl_table_purchases.name,
+        session=rtl_session,
     )
     return var
 
 
 @pytest.fixture()
-def rtl_var_purchase_profit(rtl_table_purchases):
+def rtl_var_purchase_profit(rtl_table_purchases, rtl_session):
     var = Mock(spec=NumericVariable)
     var.configure_mock(
         name="puProfit",
@@ -220,6 +242,8 @@ def rtl_var_purchase_profit(rtl_table_purchases):
         type="Numeric",
         is_selectable=True,
         table=rtl_table_purchases,
+        table_name=rtl_table_purchases.name,
+        session=rtl_session,
     )
     return var
 
