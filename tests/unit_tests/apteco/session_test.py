@@ -1556,7 +1556,7 @@ class TestInitializeVariablesAlgorithm:
         bad_raw_var.configure_mock(name="BadVariable")
         fake_initialise_variables_algo = mocker.Mock(
             raw_variables=[bad_raw_var],
-            _choose_variable=InitializeVariablesAlgorithm._choose_variable
+            _choose_variable=InitializeVariablesAlgorithm._choose_variable,
         )
 
         InitializeVariablesAlgorithm._create_variables(fake_initialise_variables_algo)

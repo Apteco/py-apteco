@@ -4,9 +4,9 @@ from unittest.mock import Mock
 import apteco_api as aa
 import pytest
 
-from apteco import Session
 from apteco.common import VariableType
 from apteco.query import NumericClause, TextClause
+from apteco.session import Session
 from apteco.tables import Table
 from apteco.variables import (
     ArrayVariable,
@@ -75,8 +75,8 @@ def ins_aa_sel_var_gender():
             var_code_order="Nominal",
             number_of_codes=4,
             code_length=2,
-            minimum_var_code_count=123456,
-            maximum_var_code_count=234567,
+            minimum_var_code_count=123_456,
+            maximum_var_code_count=234_567,
             minimum_date=None,
             maximum_date=None,
             combined_from_variable_name=None,
@@ -184,7 +184,7 @@ def ins_aa_flarr_var_tags():
             number_of_codes=58,
             code_length=6,
             minimum_var_code_count=56,
-            maximum_var_code_count=555666,
+            maximum_var_code_count=555_666,
             minimum_date=None,
             maximum_date=None,
             combined_from_variable_name=None,
@@ -333,8 +333,8 @@ def test_selector_variable_init(ins_aa_sel_var_gender, ins_table_clnts, ins_sess
     assert selector_variable.type == VariableType.SELECTOR
     assert selector_variable.code_length == 2
     assert selector_variable.num_codes == 4
-    assert selector_variable.var_code_min_count == 123456
-    assert selector_variable.var_code_max_count == 234567
+    assert selector_variable.var_code_min_count == 123_456
+    assert selector_variable.var_code_max_count == 234_567
     assert selector_variable.var_code_order == "Nominal"
     assert selector_variable.name == "clGender"
     assert selector_variable.description == "Gender"
@@ -349,7 +349,9 @@ def test_selector_variable_init(ins_aa_sel_var_gender, ins_table_clnts, ins_sess
 
 
 class TestNumericVariable:
-    def test_numeric_variable_init(self, ins_aa_num_var_prem, ins_table_prods, ins_session):
+    def test_numeric_variable_init(
+        self, ins_aa_num_var_prem, ins_table_prods, ins_session
+    ):
         v = ins_aa_num_var_prem
         numeric_variable = NumericVariable(
             name=v.name,
@@ -395,7 +397,9 @@ class TestNumericVariable:
 
 
 class TestTextVariable:
-    def test_text_variable_init(self, ins_aa_text_var_addr, ins_table_clnts, ins_session):
+    def test_text_variable_init(
+        self, ins_aa_text_var_addr, ins_table_clnts, ins_session
+    ):
         v = ins_aa_text_var_addr
         text_variable = TextVariable(
             name=v.name,
@@ -427,7 +431,9 @@ class TestTextVariable:
         assert text_variable.session is ins_session
 
     def test_equals(self, rtl_var_customer_email, rtl_session):
-        specific_donor = TextVariable.equals(rtl_var_customer_email, "donor@domain.com")
+        email = rtl_var_customer_email
+
+        specific_donor = TextVariable.equals(email, "donor@domain.com")
         assert type(specific_donor) == TextClause
         assert specific_donor.table_name == "Customers"
         assert specific_donor.variable_name == "cuEmail"
@@ -437,9 +443,8 @@ class TestTextVariable:
         assert specific_donor.include is True
         assert specific_donor.session is rtl_session
 
-        donors_by_email = TextVariable.equals(rtl_var_customer_email,
-            [f"donor_{i}@domain.com" for i in range(4)]
-        )
+        donor_list = [f"donor_{i}@domain.com" for i in range(4)]
+        donors_by_email = TextVariable.equals(email, donor_list)
         assert type(donors_by_email) == TextClause
         assert donors_by_email.table_name == "Customers"
         assert donors_by_email.variable_name == "cuEmail"
@@ -455,27 +460,24 @@ class TestTextVariable:
         assert donors_by_email.session is rtl_session
 
         with pytest.raises(ValueError) as exc_info:
-            donors_by_number = TextVariable.equals(rtl_var_customer_email, {34, 765, 2930})
+            donors_by_number = TextVariable.equals(email, {34, 765, 2930})
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
-        dont_want_this_person = TextVariable.equals(rtl_var_customer_email,
-            "bad_donor@domain.com", include=False
-        )
-        assert type(dont_want_this_person) == TextClause
-        assert dont_want_this_person.table_name == "Customers"
-        assert dont_want_this_person.variable_name == "cuEmail"
-        assert dont_want_this_person.values == ["bad_donor@domain.com"]
-        assert dont_want_this_person.match_type == "Is"
-        assert dont_want_this_person.match_case is True
-        assert dont_want_this_person.include is False
-        assert dont_want_this_person.session is rtl_session
+        exclude_them = TextVariable.equals(email, "bad_donor@domain.com", include=False)
+        assert type(exclude_them) == TextClause
+        assert exclude_them.table_name == "Customers"
+        assert exclude_them.variable_name == "cuEmail"
+        assert exclude_them.values == ["bad_donor@domain.com"]
+        assert exclude_them.match_type == "Is"
+        assert exclude_them.match_case is True
+        assert exclude_them.include is False
+        assert exclude_them.session is rtl_session
 
-        not_these_people = TextVariable.equals(rtl_var_customer_email,
-            {"dont_email_me@domain.com", "unsubscribed@domain.org"}, include=False
-        )
+        bad_donor_set = {"dont_email_me@domain.com", "unsubscribed@domain.org"}
+        not_these_people = TextVariable.equals(email, bad_donor_set, include=False)
         assert type(not_these_people) == TextClause
         assert not_these_people.table_name == "Customers"
         assert not_these_people.variable_name == "cuEmail"
@@ -489,7 +491,7 @@ class TestTextVariable:
         assert not_these_people.session is rtl_session
 
         with pytest.raises(ValueError) as exc_info:
-            donor_not_an_obj = TextVariable.equals(rtl_var_customer_email, object(), include=False)
+            donor_not_an_obj = TextVariable.equals(email, object(), include=False)
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
@@ -524,7 +526,9 @@ class TestTextVariable:
         )
 
     def test_starts_with(self, rtl_var_customer_surname, rtl_session):
-        starts_with_smith = TextVariable.startswith(rtl_var_customer_surname, "Smith")
+        surname = rtl_var_customer_surname
+
+        starts_with_smith = TextVariable.startswith(surname, "Smith")
         assert type(starts_with_smith) == TextClause
         assert starts_with_smith.table_name == "Customers"
         assert starts_with_smith.variable_name == "cuSName"
@@ -534,9 +538,8 @@ class TestTextVariable:
         assert starts_with_smith.include is True
         assert starts_with_smith.session is rtl_session
 
-        starts_with_multiple = TextVariable.startswith(rtl_var_customer_surname,
-            ["Tom", "James", "Dan", "Dav"]
-        )
+        surname_starters = ["Tom", "James", "Dan", "Dav"]
+        starts_with_multiple = TextVariable.startswith(surname, surname_starters)
         assert type(starts_with_multiple) == TextClause
         assert starts_with_multiple.table_name == "Customers"
         assert starts_with_multiple.variable_name == "cuSName"
@@ -547,14 +550,16 @@ class TestTextVariable:
         assert starts_with_multiple.session is rtl_session
 
         with pytest.raises(ValueError) as exc_info:
-            starts_with_boolean = TextVariable.startswith(rtl_var_customer_surname, True)
+            starts_with_boolean = TextVariable.startswith(surname, True)
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
     def test_ends_with(self, rtl_var_customer_surname, rtl_session):
-        ends_with_son = TextVariable.endswith(rtl_var_customer_surname, "son")
+        surname = rtl_var_customer_surname
+
+        ends_with_son = TextVariable.endswith(surname, "son")
         assert type(ends_with_son) == TextClause
         assert ends_with_son.table_name == "Customers"
         assert ends_with_son.variable_name == "cuSName"
@@ -564,7 +569,7 @@ class TestTextVariable:
         assert ends_with_son.include is True
         assert ends_with_son.session is rtl_session
 
-        ends_with_multiple = TextVariable.endswith(rtl_var_customer_surname, ["son", "ez"])
+        ends_with_multiple = TextVariable.endswith(surname, ["son", "ez"])
         assert type(ends_with_multiple) == TextClause
         assert ends_with_multiple.table_name == "Customers"
         assert ends_with_multiple.variable_name == "cuSName"
@@ -575,14 +580,16 @@ class TestTextVariable:
         assert ends_with_multiple.session is rtl_session
 
         with pytest.raises(ValueError) as exc_info:
-            ends_with_float = TextVariable.endswith(rtl_var_customer_surname, [2.8, 9.4])
+            ends_with_float = TextVariable.endswith(surname, [2.8, 9.4])
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a text variable"
             " must be given as a string or an iterable of strings."
         )
 
     def test_before(self, rtl_var_customer_surname, rtl_session):
-        first_half_alphabet = TextVariable.before(rtl_var_customer_surname, "n")
+        surname = rtl_var_customer_surname
+
+        first_half_alphabet = TextVariable.before(surname, "n")
         assert type(first_half_alphabet) == TextClause
         assert first_half_alphabet.table_name == "Customers"
         assert first_half_alphabet.variable_name == "cuSName"
@@ -592,9 +599,7 @@ class TestTextVariable:
         assert first_half_alphabet.include is True
         assert first_half_alphabet.session is rtl_session
 
-        up_to_my_neck = TextVariable.before(
-            rtl_var_customer_surname, "My neck", allow_equal=True
-        )
+        up_to_my_neck = TextVariable.before(surname, "My neck", allow_equal=True)
         assert type(up_to_my_neck) == TextClause
         assert up_to_my_neck.table_name == "Customers"
         assert up_to_my_neck.variable_name == "cuSName"
@@ -605,19 +610,21 @@ class TestTextVariable:
         assert up_to_my_neck.session is rtl_session
 
         with pytest.raises(ValueError) as exc_info:
-            earlier_than_letters = TextVariable.before(rtl_var_customer_surname, list("abcedfgh"))
+            earlier_than_letters = TextVariable.before(surname, list("abcedfgh"))
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
-            before_int = TextVariable.before(rtl_var_customer_surname, 6)
+            before_int = TextVariable.before(surname, 6)
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
     def test_after(self, rtl_var_customer_surname, rtl_session):
-        after_smith = TextVariable.after(rtl_var_customer_surname, "Smith")
+        surname = rtl_var_customer_surname
+
+        after_smith = TextVariable.after(surname, "Smith")
         assert type(after_smith) == TextClause
         assert after_smith.table_name == "Customers"
         assert after_smith.variable_name == "cuSName"
@@ -627,9 +634,7 @@ class TestTextVariable:
         assert after_smith.include is True
         assert after_smith.session is rtl_session
 
-        from_now_on = TextVariable.after(
-            rtl_var_customer_surname, "now", allow_equal=True
-        )
+        from_now_on = TextVariable.after(surname, "now", allow_equal=True)
         assert type(from_now_on) == TextClause
         assert from_now_on.table_name == "Customers"
         assert from_now_on.variable_name == "cuSName"
@@ -640,19 +645,21 @@ class TestTextVariable:
         assert from_now_on.session is rtl_session
 
         with pytest.raises(ValueError) as exc_info:
-            later_than_tuple = TextVariable.after(rtl_var_customer_surname, ("A", "e", "i", "O"))
+            later_than_tuple = TextVariable.after(surname, ("A", "e", "i", "O"))
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
-            after_boolean = TextVariable.after(rtl_var_customer_surname, False)
+            after_boolean = TextVariable.after(surname, False)
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
     def test_between(self, rtl_var_customer_surname, rtl_session):
-        rock_and_hardplace = TextVariable.between(rtl_var_customer_surname, "hardplace", "rock")
+        surname = rtl_var_customer_surname
+
+        rock_and_hardplace = TextVariable.between(surname, "hardplace", "rock")
         assert type(rock_and_hardplace) == TextClause
         assert rock_and_hardplace.table_name == "Customers"
         assert rock_and_hardplace.variable_name == "cuSName"
@@ -663,13 +670,13 @@ class TestTextVariable:
         assert rock_and_hardplace.session is rtl_session
 
         with pytest.raises(ValueError) as exc_info:
-            between_lists = TextVariable.between(rtl_var_customer_surname, ["a", "b"], ["y", "z"])
+            between_lists = TextVariable.between(surname, ["a", "b"], ["y", "z"])
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
 
         with pytest.raises(ValueError) as exc_info:
-            between_ints = TextVariable.between(rtl_var_customer_surname, 1, 100)
+            between_ints = TextVariable.between(surname, 1, 100)
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )
@@ -685,7 +692,6 @@ class TestTextVariable:
             pytest.param("J", "X", id="uppercase letter & uppercase letter"),
             pytest.param("B", "k", id="uppercase letter & lowercase letter"),
             pytest.param("m", "x", id="lowercase letter & lowercase letter"),
-
         ],
     )
     def test_between_ordering(self, start, end, rtl_var_customer_surname):
@@ -727,7 +733,9 @@ class TestTextVariable:
             ),
         ],
     )
-    def test_between_ascii_order_but_wrong(self, start, end, error_message, rtl_var_customer_surname):
+    def test_between_ascii_order_but_wrong(
+        self, start, end, error_message, rtl_var_customer_surname
+    ):
         """Test `between()` checks character order correctly.
 
         Test `between()` with pairs of characters whose ASCII order is different
@@ -736,7 +744,7 @@ class TestTextVariable:
         ASCII characters can be split into 5 ranges, based around the letters:
         *  32 -  64: symbols (incl. space):  !"#$%&'()*+,-./0123456789:;<=>?@
         *  65 -  90: uppercase letters    : ABCDEFGHIJKLMNOPQRSTUVWXYZ
-        *  91 -  96: symbols              : [\]^_`
+        *  91 -  96: symbols (+ backslash): []^_`
         *  97 - 122: lowercase letters    : abcdefghijklmnopqrstuvwxyz
         * 123 - 126: symbols              : {|}~
 
@@ -768,9 +776,8 @@ class TestTextVariable:
         assert gmail_donor.include is True
         assert gmail_donor.session is rtl_session
 
-        multiple_domain_donors = TextVariable.matches(rtl_var_customer_email,
-            ["*@gmail.com", "*@hotmail.com", "*@apteco.com"]
-        )
+        domains = ["*@gmail.com", "*@hotmail.com", "*@apteco.com"]
+        multiple_domain_donors = TextVariable.matches(rtl_var_customer_email, domains)
         assert type(multiple_domain_donors) == TextClause
         assert multiple_domain_donors.table_name == "Customers"
         assert multiple_domain_donors.variable_name == "cuEmail"
@@ -850,7 +857,7 @@ def test_flag_array_variable_init(ins_aa_flarr_var_tags, ins_table_prods, ins_se
     assert flag_array_variable.code_length == 6
     assert flag_array_variable.num_codes == 58
     assert flag_array_variable.var_code_min_count == 56
-    assert flag_array_variable.var_code_max_count == 555666
+    assert flag_array_variable.var_code_max_count == 555_666
     assert flag_array_variable.var_code_order == "Nominal"
     assert flag_array_variable.name == "prTags"
     assert flag_array_variable.description == "Product tags"

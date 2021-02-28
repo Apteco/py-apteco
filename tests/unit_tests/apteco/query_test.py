@@ -29,10 +29,12 @@ from apteco.query import (
     normalize_string_value,
 )
 
+NO_ERROR = "Shouldn't raise an error"
+
 
 def test_normalize_string_value():
-    assert normalize_string_value("MyVarCode", "Error shouldn't be raised") == "MyVarCode"
-    assert normalize_string_value("", "Error shouldn't be raised") == ""
+    assert normalize_string_value("MyVarCode", NO_ERROR) == "MyVarCode"
+    assert normalize_string_value("", NO_ERROR) == ""
 
     with pytest.raises(ValueError) as exc_info:
         normalize_string_value(True, "Can't have Booleans here.")
@@ -52,12 +54,18 @@ def test_normalize_string_value():
 
 
 def test_normalize_string_input():
-    assert normalize_string_input("0", "Error shouldn't be raised") == ["0"]
-    assert normalize_string_input("MyVarCode", "Error shouldn't be raised") == ["MyVarCode"]
-    assert normalize_string_input(["VarCodeListOfOne"], "Error shouldn't be raised") == ["VarCodeListOfOne"]
-    assert normalize_string_input(["VarCode1", "VarCode2"], "Error shouldn't be raised") == ["VarCode1", "VarCode2"]
-    assert sorted(normalize_string_input(set(list("TESTED")), "Error shouldn't be raised")) == ["D", "E", "S", "T"]
-    assert normalize_string_input((f"VarCodeFromGenerator{i}" for i in range(3)), "Error shouldn't be raised") == ["VarCodeFromGenerator0", "VarCodeFromGenerator1", "VarCodeFromGenerator2"]
+    nsi = normalize_string_input
+
+    assert nsi("0", NO_ERROR) == ["0"]
+    assert nsi("MyVarCode", NO_ERROR) == ["MyVarCode"]
+    assert nsi(["VarCodeListOfOne"], NO_ERROR) == ["VarCodeListOfOne"]
+    assert nsi(["VarCode1", "VarCode2"], NO_ERROR) == ["VarCode1", "VarCode2"]
+    assert sorted(nsi(set(list("TESTED")), NO_ERROR)) == ["D", "E", "S", "T"]
+    assert nsi((f"VarCodeFromGenerator{i}" for i in range(3)), NO_ERROR) == [
+        "VarCodeFromGenerator0",
+        "VarCodeFromGenerator1",
+        "VarCodeFromGenerator2",
+    ]
 
     with pytest.raises(ValueError) as exc_info:
         normalize_string_input(True, "Input can't be a bool.")
@@ -76,18 +84,24 @@ def test_normalize_string_input():
     assert exc_info.value.args[0] == "Input can't be None."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_string_input([1, 2, 3], "Lists must contain only strings if given as input here")
-    assert exc_info.value.args[0] == "Lists must contain only strings if given as input here"
+        normalize_string_input(
+            [1, 2, 3], "Lists must contain only strings if given as input here"
+        )
+    assert exc_info.value.args[0] == (
+        "Lists must contain only strings if given as input here"
+    )
 
 
 def test_normalize_number_value():
-    assert normalize_number_value(0, "Shouldn't see this...") == "0"
-    assert normalize_number_value(999, "Shouldn't see this...") == "999"
-    assert normalize_number_value(10.62, "Shouldn't see this...") == "10.62"
-    assert normalize_number_value(1234.567890123, "Shouldn't see this...") == "1234.5679"
-    assert normalize_number_value(Decimal("67.123456"), "Shouldn't see this...") == "67.1235"
-    assert normalize_number_value(Decimal("67.12396"), "Shouldn't see this...") == "67.1240"
-    assert normalize_number_value(Fraction(6543, 89), "Shouldn't see this...") == "73.5169"
+    nnv = normalize_number_value
+
+    assert nnv(0, NO_ERROR) == "0"
+    assert nnv(999, NO_ERROR) == "999"
+    assert nnv(10.62, NO_ERROR) == "10.62"
+    assert nnv(1234.567_890_123, NO_ERROR) == "1234.5679"
+    assert nnv(Decimal("67.123456"), NO_ERROR) == "67.1235"
+    assert nnv(Decimal("67.12396"), NO_ERROR) == "67.1240"
+    assert nnv(Fraction(6543, 89), NO_ERROR) == "73.5169"
 
     with pytest.raises(ValueError) as exc_info:
         normalize_number_value(True, "Can't have Booleans here.")
@@ -107,13 +121,15 @@ def test_normalize_number_value():
 
 
 def test_normalize_number_input():
-    assert normalize_number_input(123, "Shouldn't see this error") == ["123"]
-    assert normalize_number_input(10.62, "Shouldn't see this error") == ["10.62"]
-    assert normalize_number_input(1234.567890123, "Shouldn't see this error") == ["1234.5679"]
-    assert normalize_number_input(Decimal("67.123456"), "Shouldn't see this error") == ["67.1235"]
-    assert normalize_number_input(Fraction(6543, 89), "Shouldn't see this error") == ["73.5169"]
-    assert normalize_number_input([16, 18, 21], "Shouldn't see this error") == ["16", "18", "21"]
-    assert normalize_number_input((22, 6546.3216487, Fraction(65421, 984), Decimal("729421.65487")), "Shouldn't see this error") == ["22", "6546.3216", "66.4848", "729421.6549"]
+    assert normalize_number_input(123, NO_ERROR) == ["123"]
+    assert normalize_number_input(10.62, NO_ERROR) == ["10.62"]
+    assert normalize_number_input(1234.567_890_123, NO_ERROR) == ["1234.5679"]
+    assert normalize_number_input(Decimal("67.123456"), NO_ERROR) == ["67.1235"]
+    assert normalize_number_input(Fraction(6543, 89), NO_ERROR) == ["73.5169"]
+    assert normalize_number_input([16, 18, 21], NO_ERROR) == ["16", "18", "21"]
+    assert normalize_number_input(
+        (22, 6546.321_648_7, Fraction(65421, 984), Decimal("729421.65487")), NO_ERROR
+    ) == ["22", "6546.3216", "66.4848", "729421.6549"]
 
     with pytest.raises(ValueError) as exc_info:
         normalize_number_input(True, "A bool doesn't count as a number.")
@@ -125,10 +141,12 @@ def test_normalize_number_input():
 
 
 def test_normalize_date_value():
-    assert normalize_date_value(date(2012, 3, 4), "Shouldn't see this...") == "2012-03-04"
-    assert normalize_date_value(date(2012, 3, 4), "Shouldn't see this...", basic=True) == "20120304"
-    assert normalize_date_value(datetime(2021, 9, 8, 7, 6, 54), "Shouldn't see this...") == "2021-09-08"
-    assert normalize_date_value(datetime(2021, 9, 8, 7, 6, 54), "Shouldn't see this...", basic=True) == "20210908"
+    ndv = normalize_date_value
+
+    assert ndv(date(2012, 3, 4), NO_ERROR) == "2012-03-04"
+    assert ndv(date(2012, 3, 4), NO_ERROR, basic=True) == "20120304"
+    assert ndv(datetime(2021, 9, 8, 7, 6, 54), NO_ERROR) == "2021-09-08"
+    assert ndv(datetime(2021, 9, 8, 7, 6, 54), NO_ERROR, basic=True) == "20210908"
 
     with pytest.raises(ValueError) as exc_info:
         normalize_date_value(True, "Can't have Booleans here.")
@@ -143,7 +161,10 @@ def test_normalize_date_value():
     assert exc_info.value.args[0] == "Can't use strings here."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_date_value([date(2012, 12, 20), date(2012, 12, 21), date(2012, 12, 22)], "Can't have lists here.")
+        normalize_date_value(
+            [date(2012, 12, 20), date(2012, 12, 21), date(2012, 12, 22)],
+            "Can't have lists here.",
+        )
     assert exc_info.value.args[0] == "Can't have lists here."
 
     with pytest.raises(ValueError) as exc_info:
@@ -152,30 +173,28 @@ def test_normalize_date_value():
 
 
 def test_normalize_date_input():
-    assert normalize_date_input(date(1952, 2, 6), "Shouldn't see this error") == ["1952-02-06"]
-    assert normalize_date_input(date(1952, 2, 6), "Shouldn't see this error", basic=True) == ["19520206"]
-    assert normalize_date_input(datetime(1952, 2, 6, 7, 30), "Shouldn't see this error") == ["1952-02-06"]
-    assert normalize_date_input(datetime(1952, 2, 6, 7, 30), "Shouldn't see this error", basic=True) == ["19520206"]
-    assert normalize_date_input([
-        date(2000, 4, 24), date(2000, 5, 1), date(2000, 5, 29), date(2000, 8, 28)
-    ], "Shouldn't see this error") == [
-        "2000-04-24", "2000-05-01", "2000-05-29", "2000-08-28"
-    ]
-    assert normalize_date_input([
-        date(2000, 4, 24), date(2000, 5, 1), date(2000, 5, 29), date(2000, 8, 28)
-    ], "Shouldn't see this error", basic=True) == [
-        "20000424", "20000501", "20000529", "20000828"
-    ]
-    assert normalize_date_input([
+    ndi = normalize_date_input
+
+    assert ndi(date(1952, 2, 6), NO_ERROR) == ["1952-02-06"]
+    assert ndi(date(1952, 2, 6), NO_ERROR, basic=True) == ["19520206"]
+    assert ndi(datetime(1952, 2, 6, 7, 30), NO_ERROR) == ["1952-02-06"]
+    assert ndi(datetime(1952, 2, 6, 7, 30), NO_ERROR, basic=True) == ["19520206"]
+
+    dates1 = [date(2000, 4, 24), date(2000, 5, 1), date(2000, 5, 29), date(2000, 8, 28)]
+    dates1_out = ["2000-04-24", "2000-05-01", "2000-05-29", "2000-08-28"]
+    dates1_basic = ["20000424", "20000501", "20000529", "20000828"]
+    assert ndi(dates1, NO_ERROR) == dates1_out
+    assert normalize_date_input(dates1, NO_ERROR, basic=True) == dates1_basic
+
+    datetimes2 = [
         datetime(1926, 4, 21, 4, 20),
         datetime(1948, 11, 14, 9, 14),
         datetime(1982, 6, 21, 9, 3),
-    ], "Shouldn't see this error") == ["1926-04-21", "1948-11-14", "1982-06-21"]
-    assert normalize_date_input([
-        datetime(1926, 4, 21, 4, 20),
-        datetime(1948, 11, 14, 9, 14),
-        datetime(1982, 6, 21, 9, 3),
-    ], "Shouldn't see this error", basic=True) == ["19260421", "19481114", "19820621"]
+    ]
+    datetimes2_out = ["1926-04-21", "1948-11-14", "1982-06-21"]
+    datetimes2_basic = ["19260421", "19481114", "19820621"]
+    assert normalize_date_input(datetimes2, NO_ERROR) == datetimes2_out
+    assert normalize_date_input(datetimes2, NO_ERROR, basic=True) == datetimes2_basic
 
     with pytest.raises(ValueError) as exc_info:
         normalize_date_input(True, "A bool isn't a date.")
@@ -190,13 +209,17 @@ def test_normalize_date_input():
     assert exc_info.value.args[0] == "A date-y string doesn't count as a date."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_date_input([20081203, 20001016], "Can't sneak numbers through inside a list")
+        normalize_date_input(
+            [20_081_203, 20_001_016], "Can't sneak numbers through inside a list"
+        )
     assert exc_info.value.args[0] == "Can't sneak numbers through inside a list"
 
 
 def test_normalize_datetime_value():
-    assert normalize_datetime_value(datetime(2021, 9, 8, 12, 34, 56), "Shouldn't see this...") == "2021-09-08T12:34:56"
-    assert normalize_datetime_value(datetime(1912, 6, 23, 7, 6, 54), "Shouldn't see this...") == "1912-06-23T07:06:54"
+    ndtv = normalize_datetime_value
+
+    assert ndtv(datetime(2021, 9, 8, 12, 34, 56), NO_ERROR) == "2021-09-08T12:34:56"
+    assert ndtv(datetime(1912, 6, 23, 7, 6, 54), NO_ERROR) == "1912-06-23T07:06:54"
 
     with pytest.raises(ValueError) as exc_info:
         normalize_datetime_value(True, "Can't have Booleans here.")
@@ -231,12 +254,10 @@ def test_normalize_datetime_value():
 
 
 def test_normalize_datetime_input():
-    assert normalize_datetime_input(
-        datetime(1952, 2, 6, 7, 30), "Shouldn't see this error"
-    ) == ["1952-02-06T07:30:00"]
-    assert normalize_datetime_input(
-        datetime(2026, 4, 21, 4, 20, 59), "Shouldn't see this error"
-    ) == ["2026-04-21T04:20:59"]
+    ndti = normalize_datetime_input
+
+    assert ndti(datetime(1952, 2, 6, 7, 30), NO_ERROR) == ["1952-02-06T07:30:00"]
+    assert ndti(datetime(2026, 4, 21, 4, 20, 59), NO_ERROR) == ["2026-04-21T04:20:59"]
     assert normalize_datetime_input(
         [
             datetime(2000, 4, 24, 1, 23, 45),
@@ -244,7 +265,7 @@ def test_normalize_datetime_input():
             datetime(2000, 5, 29, 8),
             datetime(2000, 8, 28),
         ],
-        "Shouldn't see this error",
+        NO_ERROR,
     ) == [
         "2000-04-24T01:23:45",
         "2000-05-01T06:07:00",
@@ -256,7 +277,7 @@ def test_normalize_datetime_input():
             datetime(2020 + i, i, i + 23, i ** 2 % (i + 5), i ** 2, i * 8)
             for i in range(4, 8)
         ),
-        "Shouldn't see this error",
+        NO_ERROR,
     ) == [
         "2024-04-27T07:16:32",
         "2025-05-28T05:25:40",
@@ -273,9 +294,7 @@ def test_normalize_datetime_input():
     assert exc_info.value.args[0] == "A number isn't a datetime."
 
     with pytest.raises(ValueError) as exc_info:
-        normalize_datetime_input(
-            "2008-12-03T03:33:30", "A datetime-y string doesn't count as a datetime."
-        )
+        ndti("2008-12-03T03:33:30", "A datetime-y string doesn't count as a datetime.")
     assert exc_info.value.args[0] == "A datetime-y string doesn't count as a datetime."
 
     with pytest.raises(ValueError) as exc_info:
@@ -572,7 +591,9 @@ class TestTextClause:
                 name="Green Monopoly squares addresses (minus 'Street')",
             )
         )
-        assert TextClause._to_model_clause(fake_text_clause) == expected_text_clause_model
+        assert (
+            TextClause._to_model_clause(fake_text_clause) == expected_text_clause_model
+        )
 
 
 class TestArrayClause:
@@ -635,7 +656,10 @@ class TestArrayClause:
                 name="House has Ford, Peugeot & Volvo",
             )
         )
-        assert ArrayClause._to_model_clause(fake_array_clause) == expected_array_clause_model
+        assert (
+            ArrayClause._to_model_clause(fake_array_clause)
+            == expected_array_clause_model
+        )
 
 
 class TestFlagArrayClause:
@@ -1171,7 +1195,10 @@ class TestTableClause:
                 name="People who live at these houses",
             )
         )
-        assert TableClause._to_model_clause(fake_table_clause) == expected_table_clause_model
+        assert (
+            TableClause._to_model_clause(fake_table_clause)
+            == expected_table_clause_model
+        )
         subclause._to_model_clause.assert_called_once_with()
 
 

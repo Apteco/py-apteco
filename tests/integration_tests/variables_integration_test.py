@@ -72,7 +72,7 @@ class TestNumericVariable:
         assert missing_profit.count() == 67012
 
         not_missing_premium = policies["Premium"].missing(include=False)
-        assert not_missing_premium.count() == 213567
+        assert not_missing_premium.count() == 213_567
 
 
 class TestTextVariable:
@@ -100,14 +100,16 @@ class TestTextVariable:
         morse = people["Surname"].equals("Morse")
         assert morse.count() == 143
 
-        sherlock = people["Surname"].equals(["Holmes", "Watson", "Moriarty"], match_case=False)
+        sherlock_surnames = ["Holmes", "Watson", "Moriarty"]
+        sherlock = people["Surname"].equals(sherlock_surnames, match_case=False)
         assert sherlock.count() == 2953
 
     def test_text_contains(self, households):
         no_lower_case_e = households["Address"].contains("e", include=False)
-        assert no_lower_case_e.count() == 139337
+        assert no_lower_case_e.count() == 139_337
 
-        holy_address = households["Address"].contains(["church", "chapel", "cathedral", "temple"], match_case=False)
+        holy_buildings = ["church", "chapel", "cathedral", "temple"]
+        holy_address = households["Address"].contains(holy_buildings, match_case=False)
         assert holy_address.count() == 8111
 
     def test_text_startswith(self, people):
@@ -115,14 +117,18 @@ class TestTextVariable:
         assert x_surname.count() == 47
 
         apteco_initial = people["Surname"].startswith(list("apteco"), match_case=False)
-        assert apteco_initial.count() == 288014
+        assert apteco_initial.count() == 288_014
 
     def test_text_endswith(self, people, households):
         hotmail_co_uk = people["Email Address"].endswith("@hotmail.co.uk")
         assert hotmail_co_uk.count() == 6880
 
-        not_common_road_type = households["Address"].endswith([" Road", " Street", " Close", " Avenue", " Drive", " Lane"], match_case=False, include=False)
-        assert not_common_road_type.count() == 269893
+        not_common_road_type = households["Address"].endswith(
+            [" Road", " Street", " Close", " Avenue", " Drive", " Lane"],
+            match_case=False,
+            include=False,
+        )
+        assert not_common_road_type.count() == 269_893
 
     def test_text_before(self, people):
         before_black = people["Surname"].before("black")
@@ -206,10 +212,8 @@ def test_date_operator(bookings, policies):
 
 
 def test_datetime_operator(web_visits, communications):
-    before_4pm_halloween_2019 = web_visits["wvTime"] <= datetime(
-        2019, 10, 31, 15, 59, 59
-    )
-    assert before_4pm_halloween_2019.count() == 169_019
+    before_4_halloween_2019 = web_visits["wvTime"] <= datetime(2019, 10, 31, 15, 59, 59)
+    assert before_4_halloween_2019.count() == 169_019
     after_juy_2016 = communications["cmCommDt"] >= datetime(2016, 8, 1, 0, 0, 0)
     assert after_juy_2016.count() == 3926
 
