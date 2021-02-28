@@ -10,6 +10,10 @@ Added
 
 * Added ``before()`` and ``after()`` methods to ``TextVariable`` for querying it
   according to whether it occurs alphabetically before or after a given value.
+  They have parameter ``allow_equal`` (default False) to also include records equal
+  to the given value.
+* Added support for using ``<`` ``>`` operators with ``TextVariable``\ s,
+  corresponding to the ``before()`` and ``after()`` methods.
 
 Fixed
 -----

@@ -306,7 +306,7 @@ class TestTextVariable:
         assert first_half_alphabet.variable_name == "Surname"
         assert first_half_alphabet.values == ['<="n"']
         assert first_half_alphabet.match_type == "Ranges"
-        assert first_half_alphabet.match_case is True
+        assert first_half_alphabet.match_case is False
         assert first_half_alphabet.include is True
         assert first_half_alphabet.session is chy_session
 
@@ -340,7 +340,7 @@ class TestTextVariable:
         assert smith_or_later.variable_name == "Surname"
         assert smith_or_later.values == ['>="Smith"']
         assert smith_or_later.match_type == "Ranges"
-        assert smith_or_later.match_case is True
+        assert smith_or_later.match_case is False
         assert smith_or_later.include is True
         assert smith_or_later.session is chy_session
 

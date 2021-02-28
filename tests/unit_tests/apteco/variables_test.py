@@ -592,6 +592,18 @@ class TestTextVariable:
         assert first_half_alphabet.include is True
         assert first_half_alphabet.session is rtl_session
 
+        up_to_my_neck = TextVariable.before(
+            rtl_var_customer_surname, "My neck", allow_equal=True
+        )
+        assert type(up_to_my_neck) == TextClause
+        assert up_to_my_neck.table_name == "Customers"
+        assert up_to_my_neck.variable_name == "cuSName"
+        assert up_to_my_neck.values == ['<="My neck"']
+        assert up_to_my_neck.match_type == "Ranges"
+        assert up_to_my_neck.match_case is False
+        assert up_to_my_neck.include is True
+        assert up_to_my_neck.session is rtl_session
+
         with pytest.raises(ValueError) as exc_info:
             earlier_than_letters = TextVariable.before(rtl_var_customer_surname, list("abcedfgh"))
         assert exc_info.value.args[0] == (
@@ -605,15 +617,27 @@ class TestTextVariable:
         )
 
     def test_after(self, rtl_var_customer_surname, rtl_session):
-        smith_or_later = TextVariable.after(rtl_var_customer_surname, "Smith")
-        assert type(smith_or_later) == TextClause
-        assert smith_or_later.table_name == "Customers"
-        assert smith_or_later.variable_name == "cuSName"
-        assert smith_or_later.values == ['>"Smith"']
-        assert smith_or_later.match_type == "Ranges"
-        assert smith_or_later.match_case is False
-        assert smith_or_later.include is True
-        assert smith_or_later.session is rtl_session
+        after_smith = TextVariable.after(rtl_var_customer_surname, "Smith")
+        assert type(after_smith) == TextClause
+        assert after_smith.table_name == "Customers"
+        assert after_smith.variable_name == "cuSName"
+        assert after_smith.values == ['>"Smith"']
+        assert after_smith.match_type == "Ranges"
+        assert after_smith.match_case is False
+        assert after_smith.include is True
+        assert after_smith.session is rtl_session
+
+        from_now_on = TextVariable.after(
+            rtl_var_customer_surname, "now", allow_equal=True
+        )
+        assert type(from_now_on) == TextClause
+        assert from_now_on.table_name == "Customers"
+        assert from_now_on.variable_name == "cuSName"
+        assert from_now_on.values == ['>="now"']
+        assert from_now_on.match_type == "Ranges"
+        assert from_now_on.match_case is False
+        assert from_now_on.include is True
+        assert from_now_on.session is rtl_session
 
         with pytest.raises(ValueError) as exc_info:
             later_than_tuple = TextVariable.after(rtl_var_customer_surname, ("A", "e", "i", "O"))

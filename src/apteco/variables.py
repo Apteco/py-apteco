@@ -257,10 +257,12 @@ class TextVariable(Variable):
             session=self.session,
         )
 
-    def before(self, value, *, include=True, label=None):
+    def before(self, value, allow_equal=False, *, include=True, label=None):
+        operator = "<=" if allow_equal else "<"
+        normalized_value = normalize_string_value(value, single_value_error_msg_text)
         return TextClause(
             self,
-            [f'<"{normalize_string_value(value, single_value_error_msg_text)}"'],
+            [f'{operator}"{normalized_value}"'],
             match_type="Ranges",
             match_case=False,
             include=include,
@@ -268,10 +270,12 @@ class TextVariable(Variable):
             session=self.session,
         )
 
-    def after(self, value, *, include=True, label=None):
+    def after(self, value, allow_equal=False, *, include=True, label=None):
+        operator = ">=" if allow_equal else ">"
+        normalized_value = normalize_string_value(value, single_value_error_msg_text)
         return TextClause(
             self,
-            [f'>"{normalize_string_value(value, single_value_error_msg_text)}"'],
+            [f'{operator}"{normalized_value}"'],
             match_type="Ranges",
             match_case=False,
             include=include,
@@ -326,25 +330,13 @@ class TextVariable(Variable):
         return self.before(other)
 
     def __le__(self, other):
-        # return self.before(other)
-        return TextClause(
-            self,
-            [f'<="{normalize_string_value(other, single_value_error_msg_text)}"'],
-            "Ranges",
-            session=self.session,
-        )
+        return self.before(other, allow_equal=True)
 
     def __gt__(self, other):
         return self.after(other)
 
     def __ge__(self, other):
-        # return self.after(other)
-        return TextClause(
-            self,
-            [f'>="{normalize_string_value(other, single_value_error_msg_text)}"'],
-            "Ranges",
-            session=self.session,
-        )
+        return self.after(other, allow_equal=True)
 
 
 class ArrayVariable(BaseSelectorVariable):

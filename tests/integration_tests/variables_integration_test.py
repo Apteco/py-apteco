@@ -128,9 +128,15 @@ class TestTextVariable:
         before_black = people["Surname"].before("black")
         assert before_black.count() == 93597
 
+        up_to_black = people["Surname"].before("black", allow_equal=True)
+        assert up_to_black.count() == 94409
+
     def test_text_after(self, people):
-        after_yellow = people["Surname"].after("White")
-        assert after_yellow.count() == 46745
+        after_white = people["Surname"].after("White")
+        assert after_white.count() == 46745
+
+        white_onwards = people["Surname"].after("White", allow_equal=True)
+        assert white_onwards.count() == 50147
 
     def test_text_between(self, people):
         green_to_grey = people["Surname"].between("Green", "Grey")
