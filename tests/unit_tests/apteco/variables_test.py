@@ -581,18 +581,14 @@ class TestTextVariable:
             " must be given as a string or an iterable of strings."
         )
 
-    @pytest.mark.xfail(
-        reason="Feature-switched off before/after TextVariable methods",
-        raises=AttributeError,
-    )
     def test_before(self, rtl_var_customer_surname, rtl_session):
         first_half_alphabet = TextVariable.before(rtl_var_customer_surname, "n")
         assert type(first_half_alphabet) == TextClause
         assert first_half_alphabet.table_name == "Customers"
         assert first_half_alphabet.variable_name == "cuSName"
-        assert first_half_alphabet.values == ['<="n"']
+        assert first_half_alphabet.values == ['<"n"']
         assert first_half_alphabet.match_type == "Ranges"
-        assert first_half_alphabet.match_case is True
+        assert first_half_alphabet.match_case is False
         assert first_half_alphabet.include is True
         assert first_half_alphabet.session is rtl_session
 
@@ -608,18 +604,14 @@ class TestTextVariable:
             "Must specify a single string for this type of operation."
         )
 
-    @pytest.mark.xfail(
-        reason="Feature-switched off before/after TextVariable methods",
-        raises=AttributeError,
-    )
     def test_after(self, rtl_var_customer_surname, rtl_session):
         smith_or_later = TextVariable.after(rtl_var_customer_surname, "Smith")
         assert type(smith_or_later) == TextClause
         assert smith_or_later.table_name == "Customers"
         assert smith_or_later.variable_name == "cuSName"
-        assert smith_or_later.values == ['>="Smith"']
+        assert smith_or_later.values == ['>"Smith"']
         assert smith_or_later.match_type == "Ranges"
-        assert smith_or_later.match_case is True
+        assert smith_or_later.match_case is False
         assert smith_or_later.include is True
         assert smith_or_later.session is rtl_session
 

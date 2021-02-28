@@ -282,6 +282,23 @@ class TestTextVariable:
             " must be given as a string or an iterable of strings."
         )
 
+    def test_lt(self, chy_text_var_surname, chy_session):
+        before_breakfast = chy_text_var_surname < "breakfast"
+        assert type(before_breakfast) == TextClause
+        assert before_breakfast.table_name == "Supporters"
+        assert before_breakfast.variable_name == "Surname"
+        assert before_breakfast.values == ['<"breakfast"']
+        assert before_breakfast.match_type == "Ranges"
+        assert before_breakfast.match_case is False
+        assert before_breakfast.include is True
+        assert before_breakfast.session is chy_session
+
+        with pytest.raises(ValueError) as exc_info:
+            less_than_a_zero = chy_text_var_surname < 0
+        assert exc_info.value.args[0] == (
+            "Must specify a single string for this type of operation."
+        )
+
     def test_le(self, chy_text_var_surname, chy_session):
         first_half_alphabet = chy_text_var_surname <= "n"
         assert type(first_half_alphabet) == TextClause
@@ -295,6 +312,23 @@ class TestTextVariable:
 
         with pytest.raises(ValueError) as exc_info:
             earlier_than_letters = chy_text_var_surname <= list("abcedfgh")
+        assert exc_info.value.args[0] == (
+            "Must specify a single string for this type of operation."
+        )
+
+    def test_gt(self, chy_text_var_surname, chy_session):
+        after_tea = chy_text_var_surname > "Tea"
+        assert type(after_tea) == TextClause
+        assert after_tea.table_name == "Supporters"
+        assert after_tea.variable_name == "Surname"
+        assert after_tea.values == ['>"Tea"']
+        assert after_tea.match_type == "Ranges"
+        assert after_tea.match_case is False
+        assert after_tea.include is True
+        assert after_tea.session is chy_session
+
+        with pytest.raises(ValueError) as exc_info:
+            more_than_a_date = chy_text_var_surname > date(2020, 10, 5)
         assert exc_info.value.args[0] == (
             "Must specify a single string for this type of operation."
         )

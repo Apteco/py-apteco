@@ -5,6 +5,12 @@
 Version 0.8.0-alpha.2
 =====================
 
+Added
+-----
+
+* Added ``before()`` and ``after()`` methods to ``TextVariable`` for querying it
+  according to whether it occurs alphabetically before or after a given value.
+
 Fixed
 -----
 

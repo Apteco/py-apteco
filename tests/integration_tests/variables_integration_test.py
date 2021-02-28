@@ -124,6 +124,14 @@ class TestTextVariable:
         not_common_road_type = households["Address"].endswith([" Road", " Street", " Close", " Avenue", " Drive", " Lane"], match_case=False, include=False)
         assert not_common_road_type.count() == 269893
 
+    def test_text_before(self, people):
+        before_black = people["Surname"].before("black")
+        assert before_black.count() == 93597
+
+    def test_text_after(self, people):
+        after_yellow = people["Surname"].after("White")
+        assert after_yellow.count() == 46745
+
     def test_text_between(self, people):
         green_to_grey = people["Surname"].between("Green", "Grey")
         assert green_to_grey.count() == 7549
