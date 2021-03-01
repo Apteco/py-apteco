@@ -708,6 +708,23 @@ class TestTextVariable:
         assert exc_info.value.args[0] == "`start` must sort before `end`"
 
     @pytest.mark.parametrize(
+        ["start", "end"],
+        [
+            pytest.param("F", "F", id="same thing twice"),
+            pytest.param("H", "h", id="uppercase and lowercase pair"),
+        ],
+    )
+    def test_between_ordering_compare_equal(self, start, end, rtl_var_customer_surname):
+        """Check `between()` behaves correctly with inputs that compare equal.
+
+        Testing with pairs of characters which compare equal case-insensitively.
+        Should be accepted with `start` and `end` values either way round.
+
+        """
+        TextVariable.between(rtl_var_customer_surname, start, end)
+        TextVariable.between(rtl_var_customer_surname, end, start)
+
+    @pytest.mark.parametrize(
         ["start", "end", "error_message"],
         [
             pytest.param(
