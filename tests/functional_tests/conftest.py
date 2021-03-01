@@ -38,19 +38,19 @@ Variables
 
  Table          |  Name                 |  Type                 |
 -----------------------------------------------------------------
-Supporters      | Membership            | Selector              | fake_selector_variable
-Supporters      | Region                | CombinedCategories    | fake_combined_categories_variable
-Supporters      | EmailAddress          | Text                  | fake_text_variable_email
-Supporters      | Surname               | Text                  | fake_text_variable_surname
-Supporters      | ContactPreferences    | FlagArray             | fake_array_variable
+Supporters      | Membership            | Selector              | chy_selector_variable
+Supporters      | Region                | CombinedCategories    | chy_combined_categories_variable
+Supporters      | EmailAddress          | Text                  | chy_text_variable_email
+Supporters      | Surname               | Text                  | chy_text_variable_surname
+Supporters      | ContactPreferences    | FlagArray             | chy_array_variable
 ----------------|-----------------------|-----------------------|
-Campaigns       | CampaignID            | Reference             | fake_reference_variable
-Campaigns       | Tags                  | Array                 | fake_flag_array_variable
+Campaigns       | CampaignID            | Reference             | chy_reference_variable
+Campaigns       | Tags                  | Array                 | chy_flag_array_variable
 ----------------|-----------------------|-----------------------|
-Donations       | Amount                | Numeric               | fake_numeric_variable
-Donations       | DonationDate          | Date                  | fake_date_variable
+Donations       | Amount                | Numeric               | chy_numeric_variable
+Donations       | DonationDate          | Date                  | chy_date_variable
 ----------------|-----------------------|-----------------------|
-Website visits  | BrowsingSessionStart  | DateTime              | fake_datetime_variable
+Website visits  | BrowsingSessionStart  | DateTime              | chy_datetime_variable
 
 """
 
