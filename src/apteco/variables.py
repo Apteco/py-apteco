@@ -112,6 +112,9 @@ class SelectorVariable(BaseSelectorVariable):
             session=self.session,
         )
 
+    def _to_model_dimension(self):
+        return aa.Dimension(id=self.name, type="Selector", variable_name=self.name)
+
 
 class CombinedCategoriesVariable(BaseSelectorVariable):
     """Class representing a FastStats Combined Categories variable."""

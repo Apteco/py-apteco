@@ -186,10 +186,7 @@ class Cube:
         return cube_result
 
     def _create_dimensions(self):
-        return [
-            aa.Dimension(id=str(i), type="Selector", variable_name=v.name)
-            for i, v in enumerate(self.dimensions)
-        ]
+        return [d._to_model_dimension() for d in self.dimensions]
 
     def _create_measures(self):
         return [m._to_model_measure(self.table) for m in self.measures]

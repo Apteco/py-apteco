@@ -232,17 +232,23 @@ class TestCube:
         assert exc_info.value.args[0] == "Invalid measure given: must be statistic"
         patch__check_dimensions.assert_not_called()
 
-    @patch("apteco_api.Dimension")
-    def test__create_dimensions(self, patch_aa_dimension, fake_cube):
-        patch_aa_dimension.side_effect = ["First dim", "Second dim", "Third dim"]
-        dimension_calls = [
-            call(id="0", type="Selector", variable_name="puStType"),
-            call(id="1", type="Selector", variable_name="puPayMtd"),
-            call(id="2", type="Selector", variable_name="puDept"),
+    def test__create_dimensions(self):
+        fake_dimensions = [
+            Mock(_to_model_dimension=Mock(return_value="First dimension model")),
+            Mock(_to_model_dimension=Mock(return_value="Second dimension model")),
+            Mock(_to_model_dimension=Mock(return_value="Third dimension model")),
         ]
-        dimensions = fake_cube._create_dimensions()
-        assert dimensions == ["First dim", "Second dim", "Third dim"]
-        patch_aa_dimension.assert_has_calls(dimension_calls)
+        fake_cube_with_dims = Mock(dimensions=fake_dimensions)
+
+        dimensions = Cube._create_dimensions(fake_cube_with_dims)
+
+        assert dimensions == [
+            "First dimension model",
+            "Second dimension model",
+            "Third dimension model",
+        ]
+        for d in fake_dimensions:
+            d._to_model_dimension.assert_called_once_with()
 
     def test__create_measures(self, fake_cube, rtl_table_purchases):
         fake_measures = [
