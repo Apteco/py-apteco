@@ -705,7 +705,7 @@ class TestTextVariable:
 
         with pytest.raises(ValueError) as exc_info:
             TextVariable.between(rtl_var_customer_surname, end, start)
-        assert exc_info.value.args[0] == "`start` must come before `end`"
+        assert exc_info.value.args[0] == "`start` must sort before `end`"
 
     @pytest.mark.parametrize(
         ["start", "end", "error_message"],
@@ -713,23 +713,16 @@ class TestTextVariable:
             pytest.param(
                 "N",
                 "_",
-                "`start` must come before `end`,"
-                " but 'N' comes after '_' when compared case-insensitively.",
+                "`start` must sort before `end`,"
+                " but 'N' sorts after '_' when compared case-insensitively.",
                 id="ascii 91-96 symbol & uppercase letter",
             ),
             pytest.param(
                 "V",
                 "d",
-                "`start` must come before `end`,"
-                " but 'V' comes after 'd' when compared case-insensitively.",
+                "`start` must sort before `end`,"
+                " but 'V' sorts after 'd' when compared case-insensitively.",
                 id="lowercase letter & uppercase letter",
-            ),
-            pytest.param(
-                "H",
-                "f",
-                "`start` must come before `end`,"
-                " but 'H' comes after 'f' when compared case-insensitively.",
-                id="uppercase letter & lowercase letter",
             ),
         ],
     )

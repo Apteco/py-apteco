@@ -159,13 +159,13 @@ class TestTextVariable:
 
         with pytest.raises(ValueError) as exc_info:
             empty_range = people["Surname"].between("W", "S")
-        assert exc_info.value.args[0] == "`start` must come before `end`"
+        assert exc_info.value.args[0] == "`start` must sort before `end`"
 
         with pytest.raises(ValueError) as exc_info:
             wrong_way_round = people["Surname"].between("W", "s")
         assert exc_info.value.args[0] == (
-            "`start` must come before `end`, but 'W'"
-            " comes after 's' when compared case-insensitively."
+            "`start` must sort before `end`, but 'W'"
+            " sorts after 's' when compared case-insensitively."
         )
 
     def test_text_matches(self, people):

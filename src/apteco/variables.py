@@ -288,15 +288,15 @@ class TextVariable(Variable):
         normalized_end = normalize_string_value(end, single_value_error_msg_text)
 
         if normalized_start.lower() > normalized_end.lower():
-            if not normalized_start > normalized_end:
+            if normalized_start <= normalized_end:
                 # inputted values were in correct order,
                 # but the order is switched when lower-cased
                 raise ValueError(
-                    f"`start` must come before `end`,"
-                    f" but '{normalized_start}' comes after '{normalized_end}'"
+                    f"`start` must sort before `end`,"
+                    f" but '{normalized_start}' sorts after '{normalized_end}'"
                     f" when compared case-insensitively."
                 )
-            raise ValueError("`start` must come before `end`")
+            raise ValueError("`start` must sort before `end`")
 
         return TextClause(
             self,
