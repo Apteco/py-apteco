@@ -20,7 +20,7 @@ README_OUT = DOCS_SOURCE / "readme.rst"
 def generate_readme():
     """Generate PyPI-friendly README from quickstart guide."""
     lines = read_quickstart_lines()
-    edited_lines = replace_spinx_directives(lines)
+    edited_lines = replace_sphinx_directives(lines)
     edited_lines = replace_final_line(edited_lines)
     write_readme_lines(edited_lines)
 
@@ -32,7 +32,7 @@ def read_quickstart_lines():
     return lines
 
 
-def replace_spinx_directives(lines):
+def replace_sphinx_directives(lines):
     """Replace Sphinx directives with reST inline literals."""
     directive_pattern = re.compile(r":(class|func|attr|mod):`([A-z_]*)`")
     edited_lines = [directive_pattern.sub(r"``\2``", line) for line in lines]
