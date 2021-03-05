@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "apteco"
-version = "0.8.0-alpha.1"
+version = "0.8.0-alpha.2"
 description = "A Python package for interacting with Apteco Marketing Suite resources via the Apteco API."
 authors = ["Apteco Ltd <support@apteco.com>"]
 license = "Apache-2.0"
