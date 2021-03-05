@@ -345,37 +345,37 @@ Text variable
         to *exclude* from the selection (default is `True`)
     :param label: textual label for this selection clause
 
-.. .. py:method:: before(self, value, allow_equal=False, *, include=True, label=None)
-..
-..     Select records where this text variable is alphabetically before
-..     the given value. Set `allow_equal=True` to include the value itself.
-..     This method is *not* case-sensitive.
-..
-..     Can also use the ``<`` operator or ``<=`` for `allow_equal=True`.
-..
-..     :type label: str or None
-..     :param str value: value to use in the selection
-..     :param bool allow_equal: set to `True` to include the value itself
-..         (default is `False`)
-..     :param bool include: set to `False` to specify these as values
-..         to *exclude* from the selection (default is `True`)
-..     :param label: textual label for this selection clause
-..
-.. .. py:method:: after(self, value, allow_equal=False, *, include=True, label=None)
-..
-..     Select records where this text variable is alphabetically after
-..     the given value. Set `allow_equal=True` to include the value itself.
-..     This method is *not* case-sensitive.
-..
-..     Can also use the ``>`` operator or ``>=`` for `allow_equal=True`.
-..
-..     :type label: str or None
-..     :param str value: value to use in the selection
-..     :param bool allow_equal: set to `True` to include the value itself
-..         (default is `False`)
-..     :param bool include: set to `False` to specify these as values
-..         to *exclude* from the selection (default is `True`)
-..     :param label: textual label for this selection clause
+.. py:method:: TextVariable.before(self, value, allow_equal=False, *, include=True, label=None)
+
+    Select records where this text variable is alphabetically before
+    the given value. Set `allow_equal=True` to also select the value itself.
+    This method is *not* case-sensitive.
+
+    Can also use the ``<`` operator, or ``<=`` for `allow_equal=True`.
+
+    :type label: str or None
+    :param str value: value to use in the selection
+    :param bool allow_equal: set to `True` to also include the value itself
+        (default is `False`)
+    :param bool include: set to `False` to specify these as values
+        to *exclude* from the selection (default is `True`)
+    :param label: textual label for this selection clause
+
+.. py:method:: TextVariable.after(self, value, allow_equal=False, *, include=True, label=None)
+
+    Select records where this text variable is alphabetically after
+    the given value. Set `allow_equal=True` to also select the value itself.
+    This method is *not* case-sensitive.
+
+    Can also use the ``>`` operator, or ``>=`` for `allow_equal=True`.
+
+    :type label: str or None
+    :param str value: value to use in the selection
+    :param bool allow_equal: set to `True` to include the value itself
+        (default is `False`)
+    :param bool include: set to `False` to specify these as values
+        to *exclude* from the selection (default is `True`)
+    :param label: textual label for this selection clause
 
 .. py:method:: TextVariable.between(start, end, *, include=True, label=None)
 
@@ -441,6 +441,32 @@ If multiple values are given, it must not be equal to any of them.
 
     >>> not_s = people["Initial"] != "S"
     >>> consonant = people["Initial"] != list("AEIOU")
+
+Use the ``<`` operator to select records
+where this text variable is alphabetically before the given value.
+This operation is case-insensitive.
+
+    >>> first_half_of_alphabet = people["Initial"] < "N"
+
+Use the ``<=`` operator to select records
+where this text variable is alphabetically before the given value,
+or equal to the value itself.
+This operation is case-insensitive.
+
+    >>> up_to_jones = people["Surname"] <= "Jones"
+
+Use the ``>`` operator to select records
+where this text variable is alphabetically after the given value.
+This operation is case-insensitive.
+
+    >>> after_t = people["Initial"] > "T"
+
+Use the ``>=`` operator to select records
+where this text variable is alphabetically after the given value,
+or equal to the value itself.
+This operation is case-insensitive.
+
+    >>> smith_onwards = people["Surname"] >= "Smith"
 
 
 Array variable
