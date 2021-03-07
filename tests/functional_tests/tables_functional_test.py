@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -175,6 +176,22 @@ def web_visits_after_lockdown(chy_datetime_var):
 
 
 class TestTableOperators:
+    def test_getitem(self, chy_campaigns_table):
+        # Test that __getitem__ is connected to .variables
+        # Not designed to test VariablesAccessor
+        # - that is covered in variables_integration_test.py::TestVariablesAccessor
+        fake_variables_accessor = MagicMock()
+        fake_variables_accessor.__getitem__.side_effect = ["var1", "var2", "var3"]
+        chy_campaigns_table.variables = fake_variables_accessor
+
+        first = chy_campaigns_table["one"]
+        second = chy_campaigns_table["two"]
+        third = chy_campaigns_table["three"]
+
+        assert first == "var1"
+        assert second == "var2"
+        assert third == "var3"
+
     def test_mul(
         self,
         web_visits_after_lockdown,
