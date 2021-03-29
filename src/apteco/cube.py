@@ -17,9 +17,7 @@ class Cube:
         self.table = table
         self.session = session
         self._check_inputs()
-        self._data, self._sizes, self._dimension_headers, self._measure_headers = (
-            self._get_data()
-        )
+        self._data, self._sizes, self._headers, self._measure_names = self._get_data()
 
     def _check_inputs(self):
         if self.session is None:
@@ -143,7 +141,7 @@ class Cube:
             [x for row in mr.rows for x in row.split("\t")]
             for mr in cube_result.measure_results
         ]
-        dimension_headers = [
+        headers = [
             {
                 "codes": [
                     "TOTAL" if c == "iTOTAL" else c
@@ -156,15 +154,15 @@ class Cube:
             }
             for dimension in reversed(cube_result.dimension_results)
         ]
-        measure_headers = [mr.id for mr in cube_result.measure_results]
-        sizes = tuple(len(dh["codes"]) for dh in dimension_headers)
+        sizes = tuple(len(dh["codes"]) for dh in headers)
         data_as_arrays = [np.array(raw_measure_data) for raw_measure_data in raw_data]
         data = [
             measure_data_as_array.reshape(sizes)
             for measure_data_as_array in data_as_arrays
         ]
-        dimensions = [dim.id for dim in cube_result.dimension_results]
-        return data, sizes, dimension_headers, measure_headers
+        measure_names = [mr.id for mr in cube_result.measure_results]
+        dimension_names = [dim.id for dim in cube_result.dimension_results]
+        return data, sizes, headers, measure_names
 
     def _get_cube(self):
         cube = aa.Cube(
@@ -193,17 +191,17 @@ class Cube:
     def to_df(self):
         if len(self.dimensions) == 1:
             index = pd.Index(
-                self._dimension_headers[0]["descs"], name=self.dimensions[0].description
+                self._headers[0]["descs"], name=self.dimensions[0].description
             )
         else:
             index = pd.MultiIndex.from_product(
-                [dh["descs"] for dh in self._dimension_headers],
+                [dh["descs"] for dh in self._headers],
                 names=[d.description for d in self.dimensions],
             )
         return pd.DataFrame(
             {
                 measure_name: pd.to_numeric(measure_data.ravel(), errors="coerce")
-                for measure_name, measure_data in zip(self._measure_headers, self._data)
+                for measure_name, measure_data in zip(self._measure_names, self._data)
             },
             index=index,
         )
