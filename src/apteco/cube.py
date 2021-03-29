@@ -143,28 +143,20 @@ class Cube:
             [x for row in mr.rows for x in row.split("\t")]
             for mr in cube_result.measure_results
         ]
-        headers = {
-            "codes": [
-                [
+        dimension_headers = [
+            {
+                "codes": [
                     "TOTAL" if c == "iTOTAL" else c
                     for c in dimension.header_codes.split("\t")
-                ]
-                for dimension in reversed(cube_result.dimension_results)
-            ],
-            "descs": [
-                [
+                ],
+                "descs": [
                     "TOTAL" if d == "iTOTAL" else d
                     for d in dimension.header_descriptions.split("\t")
-                ]
-                for dimension in reversed(cube_result.dimension_results)
-            ],
-            "measures": [mr.id for mr in cube_result.measure_results],
-        }
-        dimension_headers = [
-            {"codes": codes, "descs": descs}
-            for (codes, descs) in zip(headers["codes"], headers["descs"])
+                ],
+            }
+            for dimension in reversed(cube_result.dimension_results)
         ]
-        measure_headers = headers["measures"]
+        measure_headers = [mr.id for mr in cube_result.measure_results]
         sizes = tuple(len(dh["codes"]) for dh in dimension_headers)
         data_as_arrays = [np.array(raw_measure_data) for raw_measure_data in raw_data]
         data = [
