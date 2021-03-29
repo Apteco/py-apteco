@@ -27,11 +27,18 @@ def fake_cube_data():
 
 
 @pytest.fixture()
-def fake_cube_headers():
-    headers = {
-        "descs": "cube_header_descriptions",
-        "measures": ["measure_name_1", "measure_name_2"],
-    }
+def fake_cube_dimension_headers():
+    headers = [
+        {"codes": "dimension1_codes", "descs": "dimension1_descs"},
+        {"codes": "dimension2_codes", "descs": "dimension2_descs"},
+        {"codes": "dimension3_codes", "descs": "dimension3_descs"},
+    ]
+    return headers
+
+
+@pytest.fixture()
+def fake_cube_measure_headers():
+    headers = ["measure_name_1", "measure_name_2"]
     return headers
 
 
@@ -49,8 +56,9 @@ def fake_cube(
     rtl_table_purchases,
     rtl_session,
     fake_cube_data,
-    fake_cube_headers,
     fake_cube_sizes,
+    fake_cube_dimension_headers,
+    fake_cube_measure_headers,
 ):
     cube = Cube.__new__(Cube)
     cube.dimensions = [
@@ -63,8 +71,9 @@ def fake_cube(
     cube.table = rtl_table_purchases
     cube.session = rtl_session
     cube._data = fake_cube_data
-    cube._headers = fake_cube_headers
     cube._sizes = fake_cube_sizes
+    cube._dimension_headers = fake_cube_dimension_headers
+    cube._measure_headers = fake_cube_measure_headers
     return cube
 
 
@@ -72,7 +81,7 @@ class TestCube:
     @patch("apteco.cube.Cube._get_data")
     @patch("apteco.cube.Cube._check_inputs")
     def test_init(self, patch__check_inputs, patch__get_data):
-        patch__get_data.return_value = ("my_data", "my_headers", "my_sizes")
+        patch__get_data.return_value = ("my_data", "my_sizes", "my_dimension_headers", "my_measure_headers")
         cube_example = Cube(
             ["variables", "for", "dimensions"],
             selection="my_selection",
@@ -85,7 +94,8 @@ class TestCube:
         assert cube_example.table == "my_table"
         assert cube_example.session == "my_session"
         assert cube_example._data == "my_data"
-        assert cube_example._headers == "my_headers"
+        assert cube_example._dimension_headers == "my_dimension_headers"
+        assert cube_example._measure_headers == "my_measure_headers"
         assert cube_example._sizes == "my_sizes"
         patch__check_inputs.assert_called_once_with()
         patch__get_data.assert_called_once_with()
@@ -100,7 +110,8 @@ class TestCube:
         patch_pd_to_numeric,
         fake_cube,
         fake_cube_data,
-        fake_cube_headers,
+        fake_cube_dimension_headers,
+        fake_cube_measure_headers,
     ):
         patch_pd_dataframe.return_value = "my_cube_df"
         patch_pd_mi_fp.return_value = "multi_index_for_cube_df"
@@ -119,7 +130,7 @@ class TestCube:
             ]
         )
         patch_pd_mi_fp.assert_called_once_with(
-            "cube_header_descriptions",
+            ["dimension1_descs", "dimension2_descs", "dimension3_descs"],
             names=["Store Type", "Payment Method", "Department"],
         )
         patch_pd_dataframe.assert_called_once_with(
@@ -325,27 +336,20 @@ class TestCube:
         patch__get_cube.return_value = fake_cube_result
         fake_reshape = Mock(return_value="my_reshaped_data")
         patch_np_array.return_value = Mock(reshape=fake_reshape)
-        # expected_raw_data = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         expected_raw_data = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        expected_headers = {
-            "codes": [
-                ["S", "F", "O"],
-                ["0", "1", "2", "3", "4"],
-                ["HO", "GA", "EL", "DI"],
-            ],
-            "descs": [
-                ["Shop", "Franchise", "Online"],
-                ["Cash", "Card", "Cheque", "Voucher", "Gift Card"],
-                ["Home", "Garden", "Electronics", "DIY"],
-            ],
-            "measures": ["Purchases"],
-        }
+        expected_dimension_headers = [
+            {"codes": ["S", "F", "O"], "descs": ["Shop", "Franchise", "Online"]},
+            {"codes": ["0", "1", "2", "3", "4"], "descs": ["Cash", "Card", "Cheque", "Voucher", "Gift Card"]},
+            {"codes": ["HO", "GA", "EL", "DI"], "descs": ["Home", "Garden", "Electronics", "DIY"]},
+        ]
+        expected_measure_headers = ["Purchases"]
         expected_sizes = (3, 5, 4)
 
-        data, headers, sizes = fake_cube._get_data()
+        data, sizes, dimension_headers, measure_headers = fake_cube._get_data()
 
         assert data == ["my_reshaped_data"]
-        assert headers == expected_headers
         assert sizes == expected_sizes
+        assert dimension_headers == expected_dimension_headers
+        assert measure_headers == expected_measure_headers
         patch_np_array.assert_called_once_with(expected_raw_data)
         fake_reshape.assert_called_once_with(expected_sizes)

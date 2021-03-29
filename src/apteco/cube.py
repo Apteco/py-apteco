@@ -17,7 +17,9 @@ class Cube:
         self.table = table
         self.session = session
         self._check_inputs()
-        self._data, self._headers, self._sizes = self._get_data()
+        self._data, self._sizes, self._dimension_headers, self._measure_headers = (
+            self._get_data()
+        )
 
     def _check_inputs(self):
         if self.session is None:
@@ -158,14 +160,19 @@ class Cube:
             ],
             "measures": [mr.id for mr in cube_result.measure_results],
         }
-        sizes = tuple(len(h) for h in headers["codes"])
+        dimension_headers = [
+            {"codes": codes, "descs": descs}
+            for (codes, descs) in zip(headers["codes"], headers["descs"])
+        ]
+        measure_headers = headers["measures"]
+        sizes = tuple(len(dh["codes"]) for dh in dimension_headers)
         data_as_arrays = [np.array(raw_measure_data) for raw_measure_data in raw_data]
         data = [
             measure_data_as_array.reshape(sizes)
             for measure_data_as_array in data_as_arrays
         ]
         dimensions = [dim.id for dim in cube_result.dimension_results]
-        return data, headers, sizes
+        return data, sizes, dimension_headers, measure_headers
 
     def _get_cube(self):
         cube = aa.Cube(
@@ -194,18 +201,17 @@ class Cube:
     def to_df(self):
         if len(self.dimensions) == 1:
             index = pd.Index(
-                self._headers["descs"][0], name=self.dimensions[0].description
+                self._dimension_headers[0]["descs"], name=self.dimensions[0].description
             )
         else:
             index = pd.MultiIndex.from_product(
-                self._headers["descs"], names=[d.description for d in self.dimensions]
+                [dh["descs"] for dh in self._dimension_headers],
+                names=[d.description for d in self.dimensions],
             )
         return pd.DataFrame(
             {
                 measure_name: pd.to_numeric(measure_data.ravel(), errors="coerce")
-                for measure_name, measure_data in zip(
-                    self._headers["measures"], self._data
-                )
+                for measure_name, measure_data in zip(self._measure_headers, self._data)
             },
             index=index,
         )
