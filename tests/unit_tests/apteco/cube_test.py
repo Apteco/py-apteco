@@ -110,8 +110,6 @@ class TestCube:
         patch_pd_to_numeric,
         fake_cube,
         fake_cube_data,
-        fake_cube_headers,
-        fake_cube_measure_names,
     ):
         patch_pd_dataframe.return_value = "my_cube_df"
         patch_pd_mi_fp.return_value = "multi_index_for_cube_df"
