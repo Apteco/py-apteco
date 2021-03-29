@@ -147,21 +147,21 @@ class Cube:
                     "TOTAL" if c == "iTOTAL" else c
                     for c in dimension.header_codes.split("\t")
                 ]
-                for dimension in cube_result.dimension_results
+                for dimension in reversed(cube_result.dimension_results)
             ],
             "descs": [
                 [
                     "TOTAL" if d == "iTOTAL" else d
                     for d in dimension.header_descriptions.split("\t")
                 ]
-                for dimension in cube_result.dimension_results
+                for dimension in reversed(cube_result.dimension_results)
             ],
             "measures": [mr.id for mr in cube_result.measure_results],
         }
         sizes = tuple(len(h) for h in headers["codes"])
         data_as_arrays = [np.array(raw_measure_data) for raw_measure_data in raw_data]
         data = [
-            measure_data_as_array.T.reshape(sizes, order="F")
+            measure_data_as_array.reshape(sizes)
             for measure_data_as_array in data_as_arrays
         ]
         dimensions = [dim.id for dim in cube_result.dimension_results]
@@ -186,7 +186,7 @@ class Cube:
         return cube_result
 
     def _create_dimensions(self):
-        return [d._to_model_dimension() for d in self.dimensions]
+        return [d._to_model_dimension() for d in reversed(self.dimensions)]
 
     def _create_measures(self):
         return [m._to_model_measure(self.table) for m in self.measures]

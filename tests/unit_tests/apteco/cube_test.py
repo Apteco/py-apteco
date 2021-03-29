@@ -243,9 +243,9 @@ class TestCube:
         dimensions = Cube._create_dimensions(fake_cube_with_dims)
 
         assert dimensions == [
-            "First dimension model",
-            "Second dimension model",
             "Third dimension model",
+            "Second dimension model",
+            "First dimension model",
         ]
         for d in fake_dimensions:
             d._to_model_dimension.assert_called_once_with()
@@ -309,22 +309,22 @@ class TestCube:
             ],
             dimension_results=[
                 Mock(
-                    header_codes="S\tF\tO",
-                    header_descriptions="Shop\tFranchise\tOnline",
+                    header_codes="HO\tGA\tEL\tDI",
+                    header_descriptions="Home\tGarden\tElectronics\tDIY",
                 ),
                 Mock(
                     header_codes="0\t1\t2\t3\t4",
                     header_descriptions="Cash\tCard\tCheque\tVoucher\tGift Card",
                 ),
                 Mock(
-                    header_codes="HO\tGA\tEL\tDI",
-                    header_descriptions="Home\tGarden\tElectronics\tDIY",
+                    header_codes="S\tF\tO",
+                    header_descriptions="Shop\tFranchise\tOnline",
                 ),
             ],
         )
         patch__get_cube.return_value = fake_cube_result
         fake_reshape = Mock(return_value="my_reshaped_data")
-        patch_np_array.return_value = Mock(T=Mock(reshape=fake_reshape))
+        patch_np_array.return_value = Mock(reshape=fake_reshape)
         # expected_raw_data = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         expected_raw_data = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
         expected_headers = {
@@ -348,4 +348,4 @@ class TestCube:
         assert headers == expected_headers
         assert sizes == expected_sizes
         patch_np_array.assert_called_once_with(expected_raw_data)
-        fake_reshape.assert_called_once_with(expected_sizes, order="F")
+        fake_reshape.assert_called_once_with(expected_sizes)
