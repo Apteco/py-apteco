@@ -2,7 +2,7 @@ from typing import Iterable, Mapping, Optional
 
 import apteco_api as aa
 
-from apteco.common import VariableType
+from apteco.common import DimensionType, VariableType
 from apteco.exceptions import get_deprecated_attr
 from apteco.query import (
     ArrayClause,
@@ -96,6 +96,7 @@ class SelectorVariable(BaseSelectorVariable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.type = VariableType.SELECTOR
+        self._dimension_type = DimensionType.SELECTOR
 
     def __eq__(self, other):
         return SelectorClause(
@@ -395,6 +396,11 @@ class BaseDateVariable(BaseSelectorVariable):
         self.min_date = selector_info.minimum_date
         self.max_date = selector_info.maximum_date
 
+        self.year = DateAccessor(self, "Years")
+        self.quarter = DateAccessor(self, "Quarters")
+        self.month = DateAccessor(self, "Months")
+        self.day = DateAccessor(self, "Day")
+
 
 class DateVariable(BaseDateVariable):
     """Class representing a FastStats Date variable."""
@@ -552,3 +558,24 @@ class VariableDescsAccessor:
             raise KeyError(
                 f"Lookup key '{item}' did not match a variable description."
             ) from None
+
+
+class DateAccessor:
+    """Banding for date variables."""
+
+    def __init__(self, variable, banding):
+        self.variable = variable
+        self.table = variable.table
+        self.banding = banding
+        self.type = VariableType.SELECTOR
+        self._dimension_type = DimensionType.BANDED_DATE
+        self.name = f"{variable.name} ({banding})"
+        self.description = self.name
+
+    def _to_model_dimension(self):
+        return aa.Dimension(
+            id=self.name,
+            type="DateBand",
+            variable_name=self.variable.name,
+            banding=aa.DimensionBanding(self.banding),
+        )

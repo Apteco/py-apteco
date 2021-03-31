@@ -4,7 +4,7 @@ import apteco_api as aa
 import numpy as np
 import pandas as pd
 
-from apteco.common import VariableType
+from apteco.common import DimensionType, VariableType
 
 
 class Cube:
@@ -188,20 +188,97 @@ class Cube:
     def _create_measures(self):
         return [m._to_model_measure(self.table) for m in self.measures]
 
-    def to_df(self):
+    def to_df(self, totals=False, unclassified=False, no_trans=False, convert_index=True):
+        # 1. validate inputs
+        if no_trans is not False:
+            raise ValueError("no_trans must be False")
+
+        # 2. create index
+        chosen_headers, unclassified_headers = zip(*[
+            self._choose_headers(headers, dimension, convert_index)
+            for headers, dimension in zip(self._headers, self.dimensions)
+        ])
         if len(self.dimensions) == 1:
-            index = pd.Index(
-                self._headers[0]["descs"], name=self.dimensions[0].description
-            )
+            index = pd.Index(chosen_headers[0], name=self.dimensions[0].description)
         else:
             index = pd.MultiIndex.from_product(
-                [dh["descs"] for dh in self._headers],
-                names=[d.description for d in self.dimensions],
+                chosen_headers, names=[d.description for d in self.dimensions],
             )
+
+        # 3. create filter/mask
+        mask = True
+        for i, __ in enumerate(self.dimensions):
+            invalid = []
+            if not totals:
+                invalid.append("TOTAL")
+            if not unclassified:
+                invalid.append(unclassified_headers[i])
+            if invalid:
+                mask &= ~index.get_level_values(i).isin(invalid)
+
+        # 4. apply filter
+        index = index[mask]
+        data = [measure_data.ravel()[mask] for measure_data in self._data]
+
+        # 5. convert data & index
+        converted_headers = [
+            self._convert_headers(index.get_level_values(i), dimension)
+            for i, dimension in enumerate(self.dimensions)
+        ]
+        index = pd.MultiIndex.from_arrays(converted_headers)
         return pd.DataFrame(
             {
-                measure_name: pd.to_numeric(measure_data.ravel(), errors="coerce")
-                for measure_name, measure_data in zip(self._measure_names, self._data)
+                measure_name: pd.to_numeric(measure_data, errors="coerce")
+                for measure_name, measure_data in zip(self._measure_names, data)
             },
             index=index,
         )
+
+    @staticmethod
+    def _choose_headers(headers, dimension, convert_index):
+        dimension_type = dimension._dimension_type
+        if dimension_type == DimensionType.SELECTOR:
+            return headers["descs"], "Unclassified"
+        elif dimension_type == DimensionType.BANDED_DATE:
+            if not convert_index:
+                return headers["descs"], "Unclassified"
+            else:
+                return (
+                    headers["codes"],
+                    {
+                        "Years": "0000",
+                        "Quarters": "000000",
+                        "Months": "000000",
+                        "Day": "00000000",
+                    }[dimension.banding],
+                )
+        else:
+            raise ValueError(f"Unrecognised dimension type: {dimension_type}")
+
+    @staticmethod
+    def _convert_headers(headers, dimension):
+        if dimension._dimension_type == DimensionType.SELECTOR:
+            return headers
+        elif dimension._dimension_type == DimensionType.BANDED_DATE:
+            period = {"Years": "Y", "Quarters": "Q", "Months": "M", "Day": "D"}[
+                dimension.banding
+            ]
+            unclassified = {
+                "Years": "0000",
+                "Quarters": "000000",
+                "Months": "000000",
+                "Day": "00000000",
+            }[dimension.banding]
+
+            converted = []
+            for c in headers:
+                if c == unclassified:
+                    converted.append(pd.NaT)
+                elif c == "TOTAL":
+                    converted.append("TOTAL")
+                else:
+                    converted.append(pd.Period(c, freq=period))
+            return converted
+        else:
+            raise ValueError(f"Unrecognised dimension type: {dimension}")
+

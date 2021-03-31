@@ -11,3 +11,8 @@ class VariableType(str, Enum):
     DATE = "Date"
     DATETIME = "DateTime"
     REFERENCE = "Reference"
+
+
+class DimensionType(str, Enum):
+    SELECTOR = "Selector"
+    BANDED_DATE = "BandedDate"
