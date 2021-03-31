@@ -188,7 +188,7 @@ class Cube:
     def _create_measures(self):
         return [m._to_model_measure(self.table) for m in self.measures]
 
-    def to_df(self, totals=False, unclassified=False, no_trans=False, convert_index=True):
+    def to_df(self, unclassified=False, totals=False, no_trans=False, convert_index=True):
         # 1. validate inputs
         if no_trans is not False:
             raise ValueError("no_trans must be False")
