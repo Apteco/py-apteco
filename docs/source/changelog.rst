@@ -2,6 +2,26 @@
   Change Log
 **************
 
+Version 0.8.0-alpha.3
+=====================
+
+Changed
+-------
+
+* The ``to_df()`` method on ``Cube`` no longer returns *Unclassified* and *Totals* rows
+  by default.
+
+Added
+-----
+
+* Added ``day``, ``month``, ``quarter`` and ``year`` attributes
+  to ``DateVariable`` and ``DateTimeVariable`` objects,
+  which bands them to the corresponding time period for use as cube dimensions.
+* Added ``unclassified``, ``totals`` and ``no_trans`` parameters
+  to the ``to_df()`` method on ``Cube`` to control whether these rows are returned.
+* Added ``convert_index`` parameter to the ``to_df()`` method on ``Cube``
+  to control whether to automatically convert dimensions to their 'natural' index type.
+
 Version 0.8.0-alpha.2
 =====================
 

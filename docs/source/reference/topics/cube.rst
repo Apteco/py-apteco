@@ -178,7 +178,7 @@ Cube creation and conversion
         * All dimensions must be from tables related to each other,
           except in the case of a 'cross cube'
           when dimensions may be from unrelated tables,
-          as long as these are all *descendants* of `table`.
+          as long as these are all descendants of `table`.
         * Each measure's table must be related to each dimension's table.
           In the case of a 'cross cube', all measures must be from `table`
           or one of its ancestors.
@@ -224,16 +224,29 @@ Cube creation and conversion
         The format currently supported is a Pandas :class:`DataFrame`,
         via the the :meth:`to_df` method.
 
-    .. method:: to_df()
+    .. method:: to_df(unclassified=False, totals=False, no_trans=False, convert_index=True)
 
         Return the cube as a Pandas :class:`DataFrame`.
+
+        :param bool unclassified: Whether to include unclassified rows in the DataFrame.
+            Default is `False`.
+        :param bool totals: Whether to include totals rows in the DataFrame.
+            Default is `False`.
+        :param bool no_trans: Whether to include rows counting records
+            with no transactions;
+            applicable when at least one dimension belongs to a child table.
+            *Included for forwards-compatibility, but not currently implemented.*
+            *Must be left as False.*
+        :param bool convert_index: Whether to convert the index to the corresponding
+            'natural' Pandas index type.
+            If *totals* or *no_trans* is *True*, this will be set to *False*.
+            Default is `True`.
 
         The :class:`DataFrame` is configured such that:
 
             * the dimensions form the *index*.
               If multiple dimensions are given, this is a :class:`MultiIndex`,
               with each level corresponding to a dimension.
-              The index labels are the dimension category descriptions.
             * there is one *column* for each measure.
 
         .. tip::
@@ -251,6 +264,47 @@ Cube creation and conversion
             see the `user guide
             <https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html>`_
             in the official Pandas documentation.
+
+Dimensions
+----------
+
+This section lists the various objects that can be applied as dimensions on a cube.
+It also details their behaviour when the cube is transformed into a pandas DataFrame
+under the :meth:`to_df()` method.
+
+Selector variables
+~~~~~~~~~~~~~~~~~~
+
+Selector variables, though not any selector sub-types (such as Array or Date variables)
+can be used directly as cube dimensions.
+
+Conversion to a pandas DataFrame:
+
+* The index is left as a standard pandas :class:`Index`.
+* The index labels are the dimension category descriptions.
+* The index name is the variable description.
+
+Banded Date variables
+~~~~~~~~~~~~~~~~~~~~~
+
+Date and DateTime variables cannot be used directly as cube dimensions,
+but they can be banded up to a particular time period.
+There bandings are access via attributes on the :class:`DateVariable`
+or :class:`DateTimeVariable` object.
+
+The following bandings are currently supported:
+
+* ``DateVariable.day``
+* ``DateVariable.month``
+* ``DateVariable.quarter``
+* ``DateVariable.year``
+
+Conversion to a pandas DataFrame:
+
+* The default index conversion is to a pandas :class:`PeriodIndex`
+  with the corresponding frequency.
+* If not converted, the index labels are the banded category descriptions.
+* The index name is of the form `'Variable description (banding)'`.
 
 Statistics
 ----------
