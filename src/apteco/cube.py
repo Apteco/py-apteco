@@ -192,8 +192,12 @@ class Cube:
         # 1. validate inputs
         if no_trans is not False:
             raise ValueError("no_trans must be False")
+        if totals is True:
+            convert_index = False
 
-        # 2. create index
+        # 2. create data & index
+        data = [measure_data.ravel() for measure_data in self._data]
+
         chosen_headers, unclassified_headers = zip(*[
             self._choose_headers(headers, dimension, convert_index)
             for headers, dimension in zip(self._headers, self.dimensions)
@@ -217,15 +221,17 @@ class Cube:
                 mask &= ~index.get_level_values(i).isin(invalid)
 
         # 4. apply filter
-        index = index[mask]
-        data = [measure_data.ravel()[mask] for measure_data in self._data]
+        if mask is not True:  # only apply mask if it's non-empty
+            data = [measure_data[mask] for measure_data in data]
+            index = index[mask]
 
         # 5. convert data & index
-        converted_headers = [
-            self._convert_headers(index.get_level_values(i), dimension)
-            for i, dimension in enumerate(self.dimensions)
-        ]
-        index = pd.MultiIndex.from_arrays(converted_headers)
+        if convert_index:
+            converted_headers = [
+                self._convert_headers(index.get_level_values(i), dimension)
+                for i, dimension in enumerate(self.dimensions)
+            ]
+            index = pd.MultiIndex.from_arrays(converted_headers)
         return pd.DataFrame(
             {
                 measure_name: pd.to_numeric(measure_data, errors="coerce")
@@ -274,8 +280,6 @@ class Cube:
             for c in headers:
                 if c == unclassified:
                     converted.append(pd.NaT)
-                elif c == "TOTAL":
-                    converted.append("TOTAL")
                 else:
                     converted.append(pd.Period(c, freq=period))
             return converted
