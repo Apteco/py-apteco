@@ -245,7 +245,7 @@ class TestTablesCube:
         self, people, cube_001_people_various_dimensions
     ):
         cube = people.cube([people[var] for var in ("Income", "Occupation", "Source")])
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(df, cube_001_people_various_dimensions)
 
@@ -259,7 +259,7 @@ class TestTablesCube:
                 & (bookings["boDate"] <= datetime(2019, 12, 31))
             ),
         )
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(
             df, cube_002_bookings_before_2020_cost_less_than_500
@@ -269,7 +269,7 @@ class TestTablesCube:
         self, people, bookings, cube_003_people_dimensions_bookings_table
     ):
         cube = bookings.cube([people[var] for var in ("Source", "Occupation")])
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(df, cube_003_people_dimensions_bookings_table)
 
@@ -287,7 +287,7 @@ class TestTablesCube:
                 | (households["HHCarmak"] == ("FER", "FIA", "FOR"))
             ),
         )
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(
             df, cube_004_bookings_dimensions_households_selection_people_table
@@ -302,7 +302,7 @@ class TestTablesCube:
         cube = households.cube(
             [people[var] for var in ("Income", "Gender")] + [households["Region"]]
         )
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(
             df, cube_005_mixed_households_people_dimensions_households_table
@@ -323,7 +323,7 @@ class TestTablesCube:
                 | (bookings["Continent"] == ("AM", "AU"))
             ),
         )
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(
             df, cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table
@@ -336,7 +336,7 @@ class TestTablesCube:
         cube_007_bookings_single_dimension_default_count_measure,
     ):
         cube = bookings.cube([bookings["Destination"]])
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(
             df, cube_007_bookings_single_dimension_default_count_measure, False

@@ -63,7 +63,7 @@ def test_cube_to_df_people_various_dimensions(
         table=people,
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(df, cube_001_people_various_dimensions)
 
@@ -79,7 +79,7 @@ def test_cube_to_df_bookings_before_2020_cost_less_than_500(
         ),
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(df, cube_002_bookings_before_2020_cost_less_than_500)
 
@@ -93,7 +93,7 @@ def test_cube_to_df_people_dimensions_bookings_table(
         table=bookings,
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(df, cube_003_people_dimensions_bookings_table)
 
@@ -115,7 +115,7 @@ def test_cube_to_df_bookings_dimensions_households_selection_people_table(
         table=people,
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(
         df, cube_004_bookings_dimensions_households_selection_people_table
@@ -134,7 +134,7 @@ def test_cube_to_df_mixed_households_people_dimensions_households_table(
         table=households,
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(
         df, cube_005_mixed_households_people_dimensions_households_table
@@ -159,7 +159,7 @@ def test_cube_to_df_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_tab
         table=journeys,
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(
         df, cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table
@@ -187,7 +187,7 @@ def test_cube_to_df_bookings_single_dimension_default_count_measure(
 ):
 
     cube = Cube([bookings["Destination"]], table=bookings, session=holidays)
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(
         df, cube_007_bookings_single_dimension_default_count_measure, False
@@ -204,7 +204,7 @@ def test_cube_to_df_bookings_single_non_count_measure(
         table=bookings,
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(
         df, cube_008_bookings_dimension_destination_measure_sum_profit, False
@@ -221,7 +221,7 @@ def test_cube_to_df_bookings_multiple_measures(
         table=bookings,
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(df, cube_009_bookings_multiple_measures)
 
@@ -256,7 +256,7 @@ def test_cube_to_df_bookings_measures_smorgasbord(
         table=bookings,
         session=holidays,
     )
-    df = cube.to_df()
+    df = cube.to_df(unclassified=True, totals=True)
 
     expected_df = cube_010_bookings_measures_smorgasbord.drop(
         columns="80 Percentile(Cost)"

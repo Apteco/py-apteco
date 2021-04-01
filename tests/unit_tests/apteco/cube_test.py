@@ -117,7 +117,7 @@ class TestCube:
             "numeric_flattened_cube_data1",
             "numeric_flattened_cube_data2",
         ]
-        df = fake_cube.to_df()
+        df = fake_cube.to_df(unclassified=True, totals=True)
         assert df == "my_cube_df"
         for d in fake_cube_data:
             d.ravel.assert_called_once_with()
@@ -128,7 +128,7 @@ class TestCube:
             ]
         )
         patch_pd_mi_fp.assert_called_once_with(
-            ["dimension1_descs", "dimension2_descs", "dimension3_descs"],
+            ("dimension1_descs", "dimension2_descs", "dimension3_descs"),
             names=["Store Type", "Payment Method", "Department"],
         )
         patch_pd_dataframe.assert_called_once_with(

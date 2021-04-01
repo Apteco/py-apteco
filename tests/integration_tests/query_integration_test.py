@@ -879,7 +879,7 @@ class TestClauseCube:
         cube = before_2020_cost_less_than_500.cube(
             [bookings[var] for var in ("Destination", "Product", "Response Code")]
         )
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(
             df, cube_002_bookings_before_2020_cost_less_than_500
@@ -899,7 +899,7 @@ class TestClauseCube:
         cube = north_west_or_f_car.cube(
             [bookings[var] for var in ("Product", "Continent")], table=people
         )
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(
             df, cube_004_bookings_dimensions_households_selection_people_table
@@ -921,7 +921,7 @@ class TestClauseCube:
         cube = surname_contains_python_type_or_distant_trip.cube(
             [households["Region"], journeys["Pool"], people["Gender"]], table=journeys
         )
-        df = cube.to_df()
+        df = cube.to_df(unclassified=True, totals=True)
 
         assert_cube_dataframes_match(
             df, cube_006_mixed_hhds_jnys_ppl_dimensions_people_selection_journeys_table
