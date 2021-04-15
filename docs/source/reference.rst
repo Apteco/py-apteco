@@ -13,10 +13,3 @@ Reference topics:
     reference/topics/selections.rst
     reference/topics/datagrid.rst
     reference/topics/cube.rst
-
-Other reference:
-
-.. toctree::
-    :maxdepth: 1
-
-    changelog_apteco_api.rst

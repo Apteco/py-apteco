@@ -15,4 +15,5 @@ Welcome to py-apteco's documentation!
    tutorial.rst
    reference.rst
    changelog.rst
+   apteco-api.rst
    apteco_website.rst
