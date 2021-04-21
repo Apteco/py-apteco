@@ -188,12 +188,24 @@ class Cube:
     def _create_measures(self):
         return [m._to_model_measure(self.table) for m in self.measures]
 
-    def to_df(self, unclassified=False, totals=False, no_trans=False, convert_index=True):
+    def to_df(
+        self, unclassified=False, totals=False, no_trans=False, convert_index=None
+    ):
         # 1. validate inputs
-        if no_trans is not False:
+        if no_trans is not False:  # no_trans not currently supported
             raise ValueError("no_trans must be False")
-        if totals is True:
-            convert_index = False
+
+        if any([unclassified, totals, no_trans]):
+            if convert_index is True:
+                raise ValueError(
+                    "Cannot convert index if any of unclassified, totals, no_trans"
+                    " is included in dataframe"
+                )
+            elif convert_index is None:
+                convert_index = False
+        else:
+            if convert_index is None:
+                convert_index = True
 
         # 2. create data & index
         data = [measure_data.ravel() for measure_data in self._data]
@@ -206,7 +218,7 @@ class Cube:
             index = pd.Index(chosen_headers[0], name=self.dimensions[0].description)
         else:
             index = pd.MultiIndex.from_product(
-                chosen_headers, names=[d.description for d in self.dimensions],
+                chosen_headers, names=[d.description for d in self.dimensions]
             )
 
         # 3. create filter/mask
