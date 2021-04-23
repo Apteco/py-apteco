@@ -570,7 +570,7 @@ class DateAccessor:
         self.type = VariableType.SELECTOR
         self._dimension_type = DimensionType.BANDED_DATE
         self.name = f"{variable.name} ({banding})"
-        self.description = self.name
+        self.description = f"{variable.description} ({banding})"
 
     def _to_model_dimension(self):
         return aa.Dimension(

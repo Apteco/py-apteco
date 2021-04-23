@@ -283,3 +283,13 @@ def test_cube_unrelated_elements(holidays, people, bookings, policies, web_visit
         "\nmeasure 'Sum(Cost)' (table: Bookings)"
         "\nmeasure 'Bookings' (table: Bookings)"
     )
+
+
+def test_cube_to_df_bookings_banded_day(
+    cube_011_bookings_banded_day, holidays, bookings
+):
+    expected_df = cube_011_bookings_banded_day
+    cube = Cube([bookings["Booking Date"].day], table=bookings, session=holidays)
+    df = cube.to_df(unclassified=True, totals=True)
+
+    assert_cube_dataframes_match(df, expected_df, False)

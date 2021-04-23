@@ -360,3 +360,14 @@ def cube_010_bookings_measures_smorgasbord(data_dir):
     """
     df = pd.read_csv(data_dir / "cube_010_bookings_measures_smorgasbord.csv")
     return df.set_index("Destination")
+
+
+@pytest.fixture(scope="session")
+def cube_011_bookings_banded_day(data_dir):
+    df = pd.read_csv(data_dir / f"cube_011_bookings_banded_date_day.csv")
+    df.iloc[1:-1].loc[:, "Booking Date (Day)"] = pd.to_datetime(
+        df.iloc[1:-1].loc[:, "Booking Date (Day)"],
+        format="%d-%m-%Y",
+        errors="ignore",
+    ).dt.strftime("%Y-%m-%d")
+    return df.set_index("Booking Date (Day)")

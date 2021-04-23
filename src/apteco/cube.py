@@ -210,10 +210,10 @@ class Cube:
         # 2. create data & index
         data = [measure_data.ravel() for measure_data in self._data]
 
-        chosen_headers, unclassified_headers = zip(*[
-            self._choose_headers(headers, dimension, convert_index)
+        chosen_headers = [
+            self._choose_headers(headers, dimension)
             for headers, dimension in zip(self._headers, self.dimensions)
-        ])
+        ]
         if len(self.dimensions) == 1:
             index = pd.Index(chosen_headers[0], name=self.dimensions[0].description)
         else:
@@ -228,7 +228,7 @@ class Cube:
             if not totals:
                 invalid.append("TOTAL")
             if not unclassified:
-                invalid.append(unclassified_headers[i])
+                invalid.append(chosen_headers[i][0])
             if invalid:
                 mask &= ~index.get_level_values(i).isin(invalid)
 
@@ -253,23 +253,36 @@ class Cube:
         )
 
     @staticmethod
-    def _choose_headers(headers, dimension, convert_index):
+    def _choose_headers(headers, dimension):
         dimension_type = dimension._dimension_type
         if dimension_type == DimensionType.SELECTOR:
-            return headers["descs"], "Unclassified"
+            return headers["descs"]
         elif dimension_type == DimensionType.BANDED_DATE:
-            if not convert_index:
-                return headers["descs"], "Unclassified"
+
+            normalizer = {
+                "Years": None,  # "%Y"
+                "Quarters": lambda x: f"{x[0:4]}-Q{x[5]}",  # "%YQ{q}"->"%Y-Q{q}"
+                "Months": lambda x: f"{x[0:4]}-{x[4:6]}",  # "%Y%m"->"%Y-%m"
+                "Day": lambda x: f"{x[0:4]}-{x[4:6]}-{x[6:8]}",  # "%Y%m%d"->"%Y-%m-%d"
+            }[dimension.banding]
+
+            if normalizer is None:
+                normalized = headers["codes"][1:-1]
             else:
-                return (
-                    headers["codes"],
-                    {
-                        "Years": "0000",
-                        "Quarters": "000000",
-                        "Months": "000000",
-                        "Day": "00000000",
-                    }[dimension.banding],
-                )
+                normalized = [normalizer(h) for h in headers["codes"][1:-1]]
+
+            unclassified = {
+                "Years": "0000",
+                "Quarters": "000000",
+                "Months": "000000",
+                "Day": "00000000",
+            }[dimension.banding]
+
+            assert headers["codes"][0] == unclassified
+            assert headers["codes"][-1] == "TOTAL"
+
+            return ["Unclassified"] + normalized + ["TOTAL"]
+
         else:
             raise ValueError(f"Unrecognised dimension type: {dimension_type}")
 
