@@ -128,7 +128,7 @@ class TestCube:
             ]
         )
         patch_pd_mi_fp.assert_called_once_with(
-            ("dimension1_descs", "dimension2_descs", "dimension3_descs"),
+            ["dimension1_descs", "dimension2_descs", "dimension3_descs"],
             names=["Store Type", "Payment Method", "Department"],
         )
         patch_pd_dataframe.assert_called_once_with(

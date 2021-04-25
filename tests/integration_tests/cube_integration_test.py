@@ -35,6 +35,7 @@ def assert_cube_dataframes_match(
         expected_df (pd.DataFrame): expected correct data
         missing_subtotals (bool):
             allow for expected data to be missing some subtotals
+        **kwargs: keyword arguments to pass through to pd.testing.assert_frame_equal()
 
     Raises:
         AssertionError: if DataFrame entries aren't equal,
@@ -285,11 +286,11 @@ def test_cube_unrelated_elements(holidays, people, bookings, policies, web_visit
     )
 
 
-def test_cube_to_df_bookings_banded_day(
-    cube_011_bookings_banded_day, holidays, bookings
+def test_cube_to_df_bookings_date_banding(
+    cube_011_bookings_banded_date, holidays, bookings
 ):
-    expected_df = cube_011_bookings_banded_day
-    cube = Cube([bookings["Booking Date"].day], table=bookings, session=holidays)
+    banding, expected_df = cube_011_bookings_banded_date
+    cube = Cube([getattr(bookings["Booking Date"], banding)], table=bookings, session=holidays)
     df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(df, expected_df, False)

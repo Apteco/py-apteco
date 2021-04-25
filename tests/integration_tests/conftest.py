@@ -362,12 +362,53 @@ def cube_010_bookings_measures_smorgasbord(data_dir):
     return df.set_index("Destination")
 
 
-@pytest.fixture(scope="session")
-def cube_011_bookings_banded_day(data_dir):
-    df = pd.read_csv(data_dir / f"cube_011_bookings_banded_date_day.csv")
-    df.iloc[1:-1].loc[:, "Booking Date (Day)"] = pd.to_datetime(
-        df.iloc[1:-1].loc[:, "Booking Date (Day)"],
-        format="%d-%m-%Y",
-        errors="ignore",
-    ).dt.strftime("%Y-%m-%d")
-    return df.set_index("Booking Date (Day)")
+def load_cube_reference_dataframe(path, date_indexes=None):
+    """Load reference DataFrame, optionally converting column types.
+
+    Args:
+        path (path-like): path to CSV with reference data
+        date_indexes (dict): mapping from index name
+            to dictionary of conversion options:
+            format, errors, output, no_trans
+
+    Returns:
+        pd.DataFrame: DataFrame with loaded reference data
+
+    """
+    date_indexes = date_indexes or {}
+
+    df = pd.read_csv(path)
+
+    for col, options in date_indexes.items():
+        fmt = options.get("format", None)
+        errors = options.get("errors", "raise")
+        output = options.get("output", None)
+        end = -2 if options.get("no_trans", False) else -1
+        converted = pd.to_datetime(
+            df.iloc[1:end].loc[:, col], format=fmt, errors=errors
+        )
+        if output is not None:
+            converted = converted.dt.strftime(output)
+        df.iloc[1:end].loc[:, col] = converted
+
+    return df
+
+
+@pytest.fixture(
+    params=[
+        ("day", dict(format="%d-%m-%Y", output="%Y-%m-%d")),
+        ("month", dict(format="%Y%m", output="%Y-%m")),
+        ("quarter", dict()),
+        ("year", dict(format="%Y", output="%Y")),
+    ],
+    ids=["day", "month", "quarter", "year"],
+    scope="session",
+)
+def cube_011_bookings_banded_date(request, data_dir):
+    banding, options = request.param
+    index_col_name = f"Booking Date ({banding.title()})"
+    df = load_cube_reference_dataframe(
+        data_dir / f"cube_011_bookings_banded_date_{banding}.csv",
+        date_indexes={index_col_name: options},
+    )
+    return banding, df.set_index(index_col_name)
