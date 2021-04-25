@@ -207,35 +207,35 @@ class Cube:
             if convert_index is None:
                 convert_index = True
 
-        # 2. create data & index
-        data = [measure_data.ravel() for measure_data in self._data]
+        # 2. create data
+        data = [measure_data for measure_data in self._data]
 
-        chosen_headers = [
-            self._choose_headers(headers, dimension)
+        normalized_headers = [
+            self._normalize_headers(headers, dimension)
             for headers, dimension in zip(self._headers, self.dimensions)
         ]
+
+        # 3. create slices for filtering
+        slices = []
+        for __ in self.dimensions:
+            start = 0
+            end = None
+            if not totals:
+                end = -1
+            if not unclassified:
+                start = 1
+            slices.append(slice(start, end))
+
+        # 4. apply slices & create index
+        data = [measure_data[tuple(slices)] for measure_data in self._data]
+        sliced_headers = [headers[s] for headers, s in zip(normalized_headers, slices)]
+
         if len(self.dimensions) == 1:
-            index = pd.Index(chosen_headers[0], name=self.dimensions[0].description)
+            index = pd.Index(sliced_headers[0], name=self.dimensions[0].description)
         else:
             index = pd.MultiIndex.from_product(
-                chosen_headers, names=[d.description for d in self.dimensions]
+                sliced_headers, names=[d.description for d in self.dimensions]
             )
-
-        # 3. create filter/mask
-        mask = True
-        for i, __ in enumerate(self.dimensions):
-            invalid = []
-            if not totals:
-                invalid.append("TOTAL")
-            if not unclassified:
-                invalid.append(chosen_headers[i][0])
-            if invalid:
-                mask &= ~index.get_level_values(i).isin(invalid)
-
-        # 4. apply filter
-        if mask is not True:  # only apply mask if it's non-empty
-            data = [measure_data[mask] for measure_data in data]
-            index = index[mask]
 
         # 5. convert data & index
         if convert_index:
@@ -246,14 +246,14 @@ class Cube:
             index = pd.MultiIndex.from_arrays(converted_headers)
         return pd.DataFrame(
             {
-                measure_name: pd.to_numeric(measure_data, errors="coerce")
+                measure_name: pd.to_numeric(measure_data.ravel(), errors="coerce")
                 for measure_name, measure_data in zip(self._measure_names, data)
             },
             index=index,
         )
 
     @staticmethod
-    def _choose_headers(headers, dimension):
+    def _normalize_headers(headers, dimension):
         dimension_type = dimension._dimension_type
         if dimension_type == DimensionType.SELECTOR:
             return headers["descs"]
