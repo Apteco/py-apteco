@@ -19,10 +19,11 @@ def sel_nonempty(rtl_sel_high_value_purchases):
 
 @pytest.fixture()
 def fake_cube_data():
-    data = [
-        Mock(ravel=Mock(return_value="flattened_cube_data1")),
-        Mock(ravel=Mock(return_value="flattened_cube_data2")),
-    ]
+    measure_data1 = MagicMock()
+    measure_data1.__getitem__.side_effect = [Mock(ravel=Mock(return_value="flattened_cube_data1"))]
+    measure_data2 = MagicMock()
+    measure_data2.__getitem__.side_effect = [Mock(ravel=Mock(return_value="flattened_cube_data2"))]
+    data = [measure_data1, measure_data2]
     return data
 
 
@@ -120,7 +121,9 @@ class TestCube:
         df = fake_cube.to_df(unclassified=True, totals=True)
         assert df == "my_cube_df"
         for d in fake_cube_data:
-            d.ravel.assert_called_once_with()
+            d.__getitem__.assert_called_once_with(
+                (slice(0, None), slice(0, None), slice(0, None))
+            )
         patch_pd_to_numeric.assert_has_calls(
             [
                 call("flattened_cube_data1", errors="coerce"),

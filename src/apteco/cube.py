@@ -191,7 +191,7 @@ class Cube:
     def to_df(
         self, unclassified=False, totals=False, no_trans=False, convert_index=None
     ):
-        # 1. validate inputs
+        # 0. validate inputs
         if no_trans is not False:  # no_trans not currently supported
             raise ValueError("no_trans must be False")
 
@@ -207,43 +207,39 @@ class Cube:
             if convert_index is None:
                 convert_index = True
 
-        # 2. create data
-        data = [measure_data for measure_data in self._data]
-
+        # 1. normalize headers
         normalized_headers = [
             self._normalize_headers(headers, dimension)
             for headers, dimension in zip(self._headers, self.dimensions)
         ]
 
-        # 3. create slices for filtering
-        slices = []
-        for __ in self.dimensions:
-            start = 0
-            end = None
-            if not totals:
-                end = -1
-            if not unclassified:
-                start = 1
-            slices.append(slice(start, end))
+        # 2. create slices for filtering
+        start = 1 if not unclassified else 0
+        end = -1 if not totals else None
+        slices = [slice(start, end) for __ in self.dimensions]
 
-        # 4. apply slices & create index
+        # 3. apply slices
         data = [measure_data[tuple(slices)] for measure_data in self._data]
         sliced_headers = [headers[s] for headers, s in zip(normalized_headers, slices)]
 
-        if len(self.dimensions) == 1:
-            index = pd.Index(sliced_headers[0], name=self.dimensions[0].description)
-        else:
-            index = pd.MultiIndex.from_product(
-                sliced_headers, names=[d.description for d in self.dimensions]
-            )
-
-        # 5. convert data & index
+        # 4. convert headers
         if convert_index:
             converted_headers = [
-                self._convert_headers(index.get_level_values(i), dimension)
-                for i, dimension in enumerate(self.dimensions)
+                self._convert_headers(headers, dimension)
+                for headers, dimension in zip(sliced_headers, self.dimensions)
             ]
-            index = pd.MultiIndex.from_arrays(converted_headers)
+        else:
+            converted_headers = sliced_headers
+
+        # 5. create index
+        if len(self.dimensions) == 1:
+            index = pd.Index(converted_headers[0], name=self.dimensions[0].description)
+        else:
+            index = pd.MultiIndex.from_product(
+                converted_headers, names=[d.description for d in self.dimensions]
+            )
+
+        # 6. convert data & create DataFrame
         return pd.DataFrame(
             {
                 measure_name: pd.to_numeric(measure_data.ravel(), errors="coerce")
@@ -294,20 +290,7 @@ class Cube:
             period = {"Years": "Y", "Quarters": "Q", "Months": "M", "Day": "D"}[
                 dimension.banding
             ]
-            unclassified = {
-                "Years": "0000",
-                "Quarters": "000000",
-                "Months": "000000",
-                "Day": "00000000",
-            }[dimension.banding]
-
-            converted = []
-            for c in headers:
-                if c == unclassified:
-                    converted.append(pd.NaT)
-                else:
-                    converted.append(pd.Period(c, freq=period))
-            return converted
+            return pd.PeriodIndex(headers, freq=period)
         else:
             raise ValueError(f"Unrecognised dimension type: {dimension}")
 
