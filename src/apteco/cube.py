@@ -47,6 +47,7 @@ class Cube:
                 raise ValueError(
                     f"The variable '{dimension.name}' has type '{dimension.type}'."
                     f"\nOnly Selector variables (excluding sub-types)"
+                    f" and banded Date variables"
                     f" are currently supported as cube dimensions."
                 )
             if not dimension.table.is_related(self.table, allow_same=True):

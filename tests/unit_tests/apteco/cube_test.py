@@ -198,7 +198,7 @@ class TestCube:
             fake_cube._check_dimensions()
         assert exc_info.value.args[0] == (
             "The variable 'puDate' has type 'DateTime'."
-            "\nOnly Selector variables (excluding sub-types)"
+            "\nOnly Selector variables (excluding sub-types) and banded Date variables"
             " are currently supported as cube dimensions."
         )
 

@@ -25,7 +25,8 @@ The cube is specified by:
       to only include in the analysis ones that match the given criteria
 
 .. note::
-    Currently, the cube dimensions must be FastStats **Selector** variables.
+    Currently, the cube dimensions must be FastStats **Selector** variables
+    or **banded Date** variables.
     Other variable types and more complex types like expressions or selections
     are not yet supported.
 
@@ -275,8 +276,11 @@ under the :meth:`to_df()` method.
 Selector variables
 ~~~~~~~~~~~~~~~~~~
 
-Selector variables, though not any selector sub-types (such as Array or Date variables)
-can be used directly as cube dimensions.
+Selector variables can be used directly as cube dimensions,
+though this doesn't include any selector sub-types,
+such as Array or Flag Array variables.
+(The exception to this is Date and DateTime variables,
+which can be used as dimensions when a banding is applied – see the section below.)
 
 Conversion to a pandas DataFrame:
 
@@ -289,7 +293,7 @@ Banded Date variables
 
 Date and DateTime variables cannot be used directly as cube dimensions,
 but they can be banded up to a particular time period.
-There bandings are access via attributes on the :class:`DateVariable`
+These bandings are access via attributes on the :class:`DateVariable`
 or :class:`DateTimeVariable` object.
 
 The following bandings are currently supported:
