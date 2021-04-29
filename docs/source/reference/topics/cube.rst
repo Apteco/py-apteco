@@ -148,7 +148,7 @@ Cube creation and conversion
     :param Clause selection: Base selection to apply to the cube.
         The table of this selection must be a 'related' table
         – either an ancestor or descendant.
-    :param Table table: resolve table of the cube.
+    :param Table table: Resolve table of the cube.
         This table's records are used in the analysis for the cube,
         e.g. the default count measure is counts records from this table.
     :param Session session: Current Apteco API session.
@@ -203,7 +203,7 @@ Cube creation and conversion
         but this is not considered public, and so to work with the data
         you should convert it to your desired output format.
         The format currently supported is a Pandas :class:`DataFrame`,
-        via the the :meth:`to_df` method.
+        via the :meth:`to_df` method.
 
     .. method:: to_df(unclassified=False, totals=False, no_trans=False, convert_index=True)
 
@@ -327,6 +327,9 @@ The statistics all have the same signature:
         Used as the column label for this statistic
         on the DataFrame returned by :meth:`to_df`.
 
+Selector or Numeric variable
+""""""""""""""""""""""""""""
+
 These statistics accept either a **selector** or **numeric** variable as the operand:
 
 
@@ -339,6 +342,8 @@ These statistics accept either a **selector** or **numeric** variable as the ope
 
     The number of distinct values of the variable.
 
+Numeric variable
+""""""""""""""""
 
 These statistics accept a **numeric** variable as the operand:
 

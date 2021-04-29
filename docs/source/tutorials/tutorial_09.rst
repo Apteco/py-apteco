@@ -19,8 +19,7 @@ We pass it a list of the FastStats variables we want to use as cube dimensions::
     >>> gender = people["Gender"]
     >>> cube = people.cube([income, occupation, gender])
 
-Only the default `count` measure is currently supported,
-and this is included in the cube automatically.
+If we don't specify any measures, the `count` measure is used by default.
 
 To work with the data we can convert it to a Pandas :class:`DataFrame`
 using the :meth:`to_df()` method::
@@ -269,5 +268,5 @@ That's the end of the tutorial!
 Hopefully you're now equipped with the knowledge you need
 to get started on building your own selections, data grids and cubes.
 Check out the rest of the documentation for more guidance,
-and if you have any questions
-don't hesitate to `get in touch <mailto:support@apteco.com>`_.
+and if you have any questions don't hesitate to get in touch
+with Apteco Support (support@apteco.com) who will be happy to help.
