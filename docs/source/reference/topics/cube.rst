@@ -48,52 +48,36 @@ Converting to a Pandas :class:`DataFrame`::
 
     >>> df = cube.to_df()
     >>> df.head(10)
-                                                  Bookings
-    Destination  Product            Grade
-    Unclassified Unclassified       Unclassified         0
-                                    Gold                 0
-                                    Silver               0
-                                    Bronze               0
-                                    TOTAL                0
-                 Accommodation Only Unclassified     67012
-                                    Gold                 0
-                                    Silver               0
-                                    Bronze               0
-                                    TOTAL            67012
+                                           Bookings
+    Destination Product            Grade
+    Australia   Accommodation Only Gold           0
+                                   Silver         0
+                                   Bronze     10721
+                Package Holiday    Gold           0
+                                   Silver         0
+                                   Bronze    134115
+                Flight Only        Gold           0
+                                   Silver         0
+                                   Bronze    137883
+    New Zealand Accommodation Only Gold           0
 
 Pivoting the ``Destination`` dimension to make it easier to read::
 
     >>> df.unstack(level=0)
-                                     Bookings          ...
-    Destination                     Australia Denmark  ... Unclassified United States
-    Product            Grade                           ...
-    Accommodation Only Bronze           10721       0  ...            0         20464
-                       Gold                 0       0  ...            0             0
-                       Silver               0      45  ...            0             0
-                       TOTAL            10721      45  ...        67012         20464
-                       Unclassified         0       0  ...        67012             0
-    Flight Only        Bronze          137883       0  ...            0         97440
-                       Gold                 0       0  ...            0             0
-                       Silver               0     123  ...            0             0
-                       TOTAL           137883     123  ...            0         97440
-                       Unclassified         0       0  ...            0             0
-    Package Holiday    Bronze          134115       0  ...            0        443938
-                       Gold                 0       0  ...            0             0
-                       Silver               0    1342  ...            0             0
-                       TOTAL           134115    1342  ...            0        443938
-                       Unclassified         0       0  ...            0             0
-    TOTAL              Bronze          282719       0  ...            0        561842
-                       Gold                 0       0  ...            0             0
-                       Silver               0    1510  ...            0             0
-                       TOTAL           282719    1510  ...        67012        561842
-                       Unclassified         0       0  ...        67012             0
-    Unclassified       Bronze               0       0  ...            0             0
-                       Gold                 0       0  ...            0             0
-                       Silver               0       0  ...            0             0
-                       TOTAL                0       0  ...            0             0
-                       Unclassified         0       0  ...            0             0
+                               Bookings          ...
+    Destination               Australia Denmark  ... Sweden United States
+    Product            Grade                     ...
+    Accommodation Only Bronze     10721       0  ...      0         20464
+                       Gold           0       0  ...      0             0
+                       Silver         0      45  ...    277             0
+    Flight Only        Bronze    137883       0  ...      0         97440
+                       Gold           0       0  ...      0             0
+                       Silver         0     123  ...   2264             0
+    Package Holiday    Bronze    134115       0  ...      0        443938
+                       Gold           0       0  ...      0             0
+                       Silver         0    1342  ...  22666             0
 
-    [25 rows x 21 columns]
+    [9 rows x 19 columns]
 
 Using a base selection to filter the records::
 
@@ -101,26 +85,24 @@ Using a base selection to filter the records::
     >>> sweden_cube = sweden.cube([dest, product, grade])
     >>> sweden_df = sweden_cube.to_df()
     >>> sweden_df.head()
-                                            Bookings
-    Destination  Product      Grade
-    Unclassified Unclassified Unclassified         0
-                              Gold                 0
-                              Silver               0
-                              Bronze               0
-                              TOTAL                0
+                                           Bookings
+    Destination Product            Grade
+    Australia   Accommodation Only Gold           0
+                                   Silver         0
+                                   Bronze         0
+                Package Holiday    Gold           0
+                                   Silver         0
 
 Selecting only cells where ``Destination`` is *Sweden*,
 and pivoting ``Product`` dimension::
 
     >>> sweden_df.loc["Sweden"].unstack(level=0)
-                               Bookings
-    Product      Accommodation Only Flight Only Package Holiday  TOTAL Unclassified
+                      Bookings
+    Product Accommodation Only Flight Only Package Holiday
     Grade
-    Bronze                        0           0               0      0            0
-    Gold                          0           0               0      0            0
-    Silver                      277        2264           22666  25207            0
-    TOTAL                       277        2264           22666  25207            0
-    Unclassified                  0           0               0      0            0
+    Bronze                   0           0               0
+    Gold                     0           0               0
+    Silver                 277        2264           22666
 
 Using a base selection from a different table::
 
@@ -130,13 +112,11 @@ Using a base selection from a different table::
     >>> manc_df = manc_cube.to_df()
     >>> manc_df.loc["Germany"].unstack(level=1)
                        Bookings
-    Grade                Bronze Gold Silver  TOTAL Unclassified
+    Grade                Bronze Gold Silver
     Product
-    Accommodation Only      249    0      0    249            0
-    Flight Only            4439    0      0   4439            0
-    Package Holiday        9882    0      0   9882            0
-    TOTAL                 14570    0      0  14570            0
-    Unclassified              0    0      0      0            0
+    Accommodation Only      249    0      0
+    Flight Only            4439    0      0
+    Package Holiday        9882    0      0
 
 .. Cube-related tasks
 .. ==================

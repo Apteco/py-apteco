@@ -27,50 +27,49 @@ using the :meth:`to_df()` method::
 
     >>> df = cube.to_df()
     >>> df
-                                             People
-    Income       Occupation   Gender
-    Unclassified Unclassified Unclassified        0
-                              Female              0
-                              Male                0
-                              Unknown             0
-                              TOTAL               0
-                                             ...
-    TOTAL        TOTAL        Unclassified        0
-                              Female         764796
-                              Male           378567
-                              Unknown         13190
+                                  People
+    Income Occupation    Gender
+    <£10k  Manual Worker Female    15624
+                         Male       5321
+                         Unknown       5
+           Director      Female     1279
+                         Male        832
+                                  ...
+    £100k+ Unemployed    Male          0
+                         Unknown       0
+           Retired       Female        0
+                         Male          1
+                         Unknown       0
 
-                              TOTAL         1156553
-
-    [780 rows x 1 columns]
+    [330 rows x 1 columns]
 
 The DataFrame uses a `MultiIndex
 <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.MultiIndex.html>`_,
 with each dimension as a different level in the index::
 
     >>> df.index
-    MultiIndex([('Unclassified',  'Unclassified', 'Unclassified'),
-                ('Unclassified',  'Unclassified',       'Female'),
-                ('Unclassified',  'Unclassified',         'Male'),
-                ('Unclassified',  'Unclassified',      'Unknown'),
-                ('Unclassified',  'Unclassified',        'TOTAL'),
-                ('Unclassified', 'Manual Worker', 'Unclassified'),
-                ('Unclassified', 'Manual Worker',       'Female'),
-                ('Unclassified', 'Manual Worker',         'Male'),
-                ('Unclassified', 'Manual Worker',      'Unknown'),
-                ('Unclassified', 'Manual Worker',        'TOTAL'),
-                ...
-                (       'TOTAL',       'Retired', 'Unclassified'),
-                (       'TOTAL',       'Retired',       'Female'),
-                (       'TOTAL',       'Retired',         'Male'),
-                (       'TOTAL',       'Retired',      'Unknown'),
-                (       'TOTAL',       'Retired',        'TOTAL'),
-                (       'TOTAL',         'TOTAL', 'Unclassified'),
-                (       'TOTAL',         'TOTAL',       'Female'),
-                (       'TOTAL',         'TOTAL',         'Male'),
-                (       'TOTAL',         'TOTAL',      'Unknown'),
-                (       'TOTAL',         'TOTAL',        'TOTAL')],
-               names=['Income', 'Occupation', 'Gender'], length=780)
+    MultiIndex([( '<£10k', 'Manual Worker',  'Female'),
+            ( '<£10k', 'Manual Worker',    'Male'),
+            ( '<£10k', 'Manual Worker', 'Unknown'),
+            ( '<£10k',      'Director',  'Female'),
+            ( '<£10k',      'Director',    'Male'),
+            ( '<£10k',      'Director', 'Unknown'),
+            ( '<£10k',       'Manager',  'Female'),
+            ( '<£10k',       'Manager',    'Male'),
+            ( '<£10k',       'Manager', 'Unknown'),
+            ( '<£10k',  'Professional',  'Female'),
+            ...
+            ('£100k+', 'Retail Worker', 'Unknown'),
+            ('£100k+', 'Public Sector',  'Female'),
+            ('£100k+', 'Public Sector',    'Male'),
+            ('£100k+', 'Public Sector', 'Unknown'),
+            ('£100k+',    'Unemployed',  'Female'),
+            ('£100k+',    'Unemployed',    'Male'),
+            ('£100k+',    'Unemployed', 'Unknown'),
+            ('£100k+',       'Retired',  'Female'),
+            ('£100k+',       'Retired',    'Male'),
+            ('£100k+',       'Retired', 'Unknown')],
+           names=['Income', 'Occupation', 'Gender'], length=330)
 
 The DataFrame has one column which is the single default count measure,
 named after the resolve table of the cube,
@@ -79,13 +78,13 @@ Since the data values represent a count, they are all integers::
 
     >>> df.info()
     <class 'pandas.core.frame.DataFrame'>
-    MultiIndex: 780 entries, ('Unclassified', 'Unclassified', 'Unclassified') to ('TOTAL', 'TOTAL', 'TOTAL')
+    MultiIndex: 330 entries, ('<£10k', 'Manual Worker', 'Female') to ('£100k+', 'Retired', 'Unknown')
     Data columns (total 1 columns):
      #   Column  Non-Null Count  Dtype
     ---  ------  --------------  -----
-     0   People  780 non-null    int32
-    dtypes: int32(1)
-    memory usage: 6.8+ KB
+     0   People  330 non-null    int64
+    dtypes: int64(1)
+    memory usage: 4.6+ KB
 
 .. tip::
     This initial structure of the DataFrame returned by the :meth:`to_df()` method
@@ -99,21 +98,21 @@ and more similar to how a cube would be presented in FastStats::
 
     >>> df.unstack(level=2)
                              People
-    Gender                   Female   Male  TOTAL Unclassified Unknown
+    Gender                   Female   Male Unknown
     Income   Occupation
-    <£10k    Director          1279    832   2115            0       4
-             Manager           4649   2926   7591            0      16
-             Manual Worker    15624   5321  20950            0       5
-             Professional      2316   1388   3711            0       7
-             Public Sector    29593  20278  50118            0     247
-                             ...    ...    ...          ...     ...
-    £90-100k Sales Executive     15     32     61            0      14
-             Student              1      4     14            0       9
-             TOTAL               75    145    415            0     195
-             Unclassified         0      0      0            0       0
-             Unemployed           1      0      1            0       0
+    <£10k    Director          1279    832       4
+             Manager           4649   2926      16
+             Manual Worker    15624   5321       5
+             Professional      2316   1388       7
+             Public Sector    29593  20278     247
+                             ...    ...     ...
+    £90-100k Retail Worker       31     51     118
+             Retired              0      2       0
+             Sales Executive     15     32      14
+             Student              1      4       9
+             Unemployed           1      0       0
 
-    [156 rows x 5 columns]
+    [110 rows x 3 columns]
 
 Only Selector variables are currently supported as cube dimensions,
 and this doesn't include Selector subtypes such as
@@ -125,21 +124,21 @@ that is, ancestor or descendant tables (including the direct parent and children
     >>> continent = bookings["Continent"]
     >>> mixed_tables_cube = people.cube([region, occupation, continent])
     >>> mixed_tables_cube.to_df()
-                                             People
-    Region       Occupation   Continent
-    Unclassified Unclassified Unclassified        0
-                              Australasia         6
-                              Europe              7
-                              Americas            4
-                              Asia                0
-                                             ...
-    TOTAL        TOTAL        Europe         895009
-                              Americas       274023
-                              Asia            23481
-                              Africa           9298
-                              TOTAL         1156553
+                                               People
+    Region          Occupation    Continent
+    North           Manual Worker Australasia     101
+                                  Europe         4158
+                                  Americas         96
+                                  Asia              2
+                                  Africa            2
+                                               ...
+    Channel Islands Retired       Australasia       7
+                                  Europe           18
+                                  Americas         10
+                                  Asia              2
+                                  Africa            2
 
-    [1344 rows x 1 columns]
+    [700 rows x 1 columns]
 
 .. note::
     This is the table structure for the tables
@@ -162,42 +161,42 @@ by applying a selection to it using the `selection` parameter::
     >>> student = people["Occupation"] == "4"
     >>> student_cube = people.cube([occupation, region, continent], selection=student)
     >>> student_cube.to_df()
-                                            People
-    Region       Occupation   Continent
-    Unclassified Unclassified Unclassified       0
-                              Australasia        0
-                              Europe             0
-                              Americas           0
-                              Asia               0
-                                            ...
-    TOTAL        TOTAL        Europe        105374
-                              Americas       25371
-                              Asia            1914
-                              Africa           685
-                              TOTAL         126845
+                                               People
+    Occupation    Region          Continent
+    Manual Worker North           Australasia       0
+                                  Europe            0
+                                  Americas          0
+                                  Asia              0
+                                  Africa            0
+                                               ...
+    Retired       Channel Islands Australasia       0
+                                  Europe            0
+                                  Americas          0
+                                  Asia              0
+                                  Africa            0
 
-    [1344 rows x 1 columns]
+    [700 rows x 1 columns]
 
 You can also build the cube directly
 from the selection using the :meth:`cube` method::
 
     >>> student_cube = student.cube([occupation, region, continent])
     >>> student_cube.to_df()
-                                            People
-    Occupation   Region       Continent
-    Unclassified Unclassified Unclassified       0
-                              Australasia        0
-                              Europe             0
-                              Americas           0
-                              Asia               0
-                                            ...
-    TOTAL        TOTAL        Europe        105374
-                              Americas       25371
-                              Asia            1914
-                              Africa           685
-                              TOTAL         126845
+                                               People
+    Occupation    Region          Continent
+    Manual Worker North           Australasia       0
+                                  Europe            0
+                                  Americas          0
+                                  Asia              0
+                                  Africa            0
+                                               ...
+    Retired       Channel Islands Australasia       0
+                                  Europe            0
+                                  Americas          0
+                                  Asia              0
+                                  Africa            0
 
-    [1344 rows x 1 columns]
+    [700 rows x 1 columns]
 
 *(this cube is identical to the previous one)*
 
@@ -213,21 +212,21 @@ different from the one used in your cube::
     >>> scotland = region == "10"
     >>> scotland_cube = people.cube([occupation, region, continent], selection=scotland)
     >>> scotland_cube.to_df()
-                                            People
-    Occupation   Region       Continent
-    Unclassified Unclassified Unclassified       0
-                              Australasia        0
-                              Europe             0
-                              Americas           0
-                              Asia               0
-                                            ...
-    TOTAL        TOTAL        Europe         69569
-                              Americas       17305
-                              Asia            1538
-                              Africa           506
-                              TOTAL          86985
+                                               People
+    Occupation    Region          Continent
+    Manual Worker North           Australasia       0
+                                  Europe            0
+                                  Americas          0
+                                  Asia              0
+                                  Africa            0
+                                               ...
+    Retired       Channel Islands Australasia       0
+                                  Europe            0
+                                  Americas          0
+                                  Asia              0
+                                  Africa            0
 
-    [1344 rows x 1 columns]
+    [700 rows x 1 columns]
 
 Here, ``scotland`` is a selection on the `Households` table,
 but we are applying it to a `People` cube.
@@ -242,21 +241,21 @@ to set the cube to the desired table::
 
     >>> scotland_cube = scotland.cube([occupation, region, continent], table=people)
     >>> scotland_cube.to_df()
-                                            People
-    Occupation   Region       Continent
-    Unclassified Unclassified Unclassified       0
-                              Australasia        0
-                              Europe             0
-                              Americas           0
-                              Asia               0
-                                            ...
-    TOTAL        TOTAL        Europe         69569
-                              Americas       17305
-                              Asia            1538
-                              Africa           506
-                              TOTAL          86985
+                                               People
+    Occupation    Region          Continent
+    Manual Worker North           Australasia       0
+                                  Europe            0
+                                  Americas          0
+                                  Asia              0
+                                  Africa            0
+                                               ...
+    Retired       Channel Islands Australasia       0
+                                  Europe            0
+                                  Americas          0
+                                  Asia              0
+                                  Africa            0
 
-    [1344 rows x 1 columns]
+    [700 rows x 1 columns]
 
 *(this data grid is identical to the previous one)*
 

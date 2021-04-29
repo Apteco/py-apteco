@@ -80,30 +80,28 @@ You can similarly create a cube::
     >>> sweden_cube = sweden.cube([grade, dest, product])
     >>> sweden_df = sweden_cube.to_df()
     >>> sweden_df.loc["Silver"].unstack(level=1)
-                            Bookings              ...
-    Product       Accommodation Only Flight Only  ...  TOTAL Unclassified
-    Destination                                   ...
-    Australia                      0           0  ...      0            0
-    Denmark                        0           0  ...      0            0
-    France                         0           0  ...      0            0
-    Germany                        0           0  ...      0            0
-    Greece                         0           0  ...      0            0
-    Italy                          0           0  ...      0            0
-    Jamaica                        0           0  ...      0            0
-    Kuwait                         0           0  ...      0            0
-    Latvia                         0           0  ...      0            0
-    Mali                           0           0  ...      0            0
-    Mongolia                       0           0  ...      0            0
-    Namibia                        0           0  ...      0            0
-    New Zealand                    0           0  ...      0            0
-    Portugal                       0           0  ...      0            0
-    Senegal                        0           0  ...      0            0
-    Sierra Leone                   0           0  ...      0            0
-    South Africa                   0           0  ...      0            0
-    Sweden                       277        2264  ...  25207            0
-    TOTAL                        277        2264  ...  25207            0
-    Unclassified                   0           0  ...      0            0
-    United States                  0           0  ...      0            0
+                            Bookings
+    Product       Accommodation Only Flight Only Package Holiday
+    Destination
+    Australia                      0           0               0
+    Denmark                        0           0               0
+    France                         0           0               0
+    Germany                        0           0               0
+    Greece                         0           0               0
+    Italy                          0           0               0
+    Jamaica                        0           0               0
+    Kuwait                         0           0               0
+    Latvia                         0           0               0
+    Mali                           0           0               0
+    Mongolia                       0           0               0
+    Namibia                        0           0               0
+    New Zealand                    0           0               0
+    Portugal                       0           0               0
+    Senegal                        0           0               0
+    Sierra Leone                   0           0               0
+    South Africa                   0           0               0
+    Sweden                       277        2264           22666
+    United States                  0           0               0
 
 API Reference
 =============
@@ -209,27 +207,20 @@ Data Grids and Cubes
             selection=(bookings["Cost"] > 200),
         )
     >>> df = cube.to_df()
-    >>> (
-            df
-            .drop("Unclassified", level=1)
-            .unstack()
-            .rename(columns=lambda x: x.split(" ")[0])
-        )
-                         Bookings
-    Product         Accommodation  Package  Flight    TOTAL
+    >>> df.unstack().rename(columns=lambda x: x.split(" ")[0])
+                        Bookings
+    Product         Accommodation  Flight Package
     Occupation
-    Director                 1714    24585    8477    34776
-    Manager                  4422   109725   28566   142713
-    Manual Worker            4039    77547   27104   108690
-    Professional             1806    40072    9728    51606
-    Public Sector           18308   249637   82437   350382
-    Retail Worker            9864   126350   30853   167067
-    Retired                 12750    86594   47333   146677
-    Sales Executive         35214   407288  152911   595413
-    Student                  6553   145156   27665   179374
-    TOTAL                  103778  1326005  446288  1876071
-    Unclassified              109     1840     566     2515
-    Unemployed               8999    57211   30648    96858
+    Director                 1714    8477   24585
+    Manager                  4422   28566  109725
+    Manual Worker            4039   27104   77547
+    Professional             1806    9728   40072
+    Public Sector           18308   82437  249637
+    Retail Worker            9864   30853  126350
+    Retired                 12750   47333   86594
+    Sales Executive         35214  152911  407288
+    Student                  6553   27665  145156
+    Unemployed               8999   30648   57211
 
     .. seealso::
         This method is a wrapper around the :class:`Cube` class.

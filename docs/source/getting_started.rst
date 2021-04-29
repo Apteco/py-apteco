@@ -356,54 +356,38 @@ Convert it to a Pandas DataFrame:
 
     >>> df = cube.to_df()
     >>> df.head(10)
-                                                  Bookings
-    Destination  Product            Grade
-    Unclassified Unclassified       Unclassified         0
-                                    Gold                 0
-                                    Silver               0
-                                    Bronze               0
-                                    TOTAL                0
-                 Accommodation Only Unclassified     67012
-                                    Gold                 0
-                                    Silver               0
-                                    Bronze               0
-                                    TOTAL            67012
+                                           Bookings
+    Destination Product            Grade
+    Australia   Accommodation Only Gold           0
+                                   Silver         0
+                                   Bronze     10721
+                Package Holiday    Gold           0
+                                   Silver         0
+                                   Bronze    134115
+                Flight Only        Gold           0
+                                   Silver         0
+                                   Bronze    137883
+    New Zealand Accommodation Only Gold           0
 
 You can pivot the dimensions to make it easier to read:
 
 .. code-block:: python
 
     >>> df.unstack(level=0)
-                                     Bookings          ...
-    Destination                     Australia Denmark  ... Unclassified United States
-    Product            Grade                           ...
-    Accommodation Only Bronze           10721       0  ...            0         20464
-                       Gold                 0       0  ...            0             0
-                       Silver               0      45  ...            0             0
-                       TOTAL            10721      45  ...        67012         20464
-                       Unclassified         0       0  ...        67012             0
-    Flight Only        Bronze          137883       0  ...            0         97440
-                       Gold                 0       0  ...            0             0
-                       Silver               0     123  ...            0             0
-                       TOTAL           137883     123  ...            0         97440
-                       Unclassified         0       0  ...            0             0
-    Package Holiday    Bronze          134115       0  ...            0        443938
-                       Gold                 0       0  ...            0             0
-                       Silver               0    1342  ...            0             0
-                       TOTAL           134115    1342  ...            0        443938
-                       Unclassified         0       0  ...            0             0
-    TOTAL              Bronze          282719       0  ...            0        561842
-                       Gold                 0       0  ...            0             0
-                       Silver               0    1510  ...            0             0
-                       TOTAL           282719    1510  ...        67012        561842
-                       Unclassified         0       0  ...        67012             0
-    Unclassified       Bronze               0       0  ...            0             0
-                       Gold                 0       0  ...            0             0
-                       Silver               0       0  ...            0             0
-                       TOTAL                0       0  ...            0             0
-                       Unclassified         0       0  ...            0             0
+                               Bookings          ...
+    Destination               Australia Denmark  ... Sweden United States
+    Product            Grade                     ...
+    Accommodation Only Bronze     10721       0  ...      0         20464
+                       Gold           0       0  ...      0             0
+                       Silver         0      45  ...    277             0
+    Flight Only        Bronze    137883       0  ...      0         97440
+                       Gold           0       0  ...      0             0
+                       Silver         0     123  ...   2264             0
+    Package Holiday    Bronze    134115       0  ...      0        443938
+                       Gold           0       0  ...      0             0
+                       Silver         0    1342  ...  22666             0
 
-    [25 rows x 21 columns]
+    [9 rows x 19 columns]
 
 You can use a base selection to filter the records
 
@@ -416,12 +400,12 @@ You can use a base selection to filter the records
     >>> sweden_df = sweden_cube.to_df()
     >>> sweden_df.head()
                                                                      Bookings
-    Destination  Occupation   Region
-    Unclassified Unclassified Unclassified                                  0
-                              North                                         0
+    Destination Occupation    Region
+    Australia   Manual Worker North                                         0
                               North West (Excluding Gtr Manchester)         0
                               South East (Outside M25 )                     0
                               South West                                    0
+                              East Midlands                                 0
 
 Selecting only cells where ``Destination`` is *Sweden*,
 and pivoting ``Occupation`` dimension:
@@ -430,26 +414,24 @@ and pivoting ``Occupation`` dimension:
 
     >>> sweden_df.loc["Sweden"].unstack(level=0)
                                           Bookings          ...
-    Occupation                            Director Manager  ... Unclassified Unemployed
+    Occupation                            Director Manager  ... Student Unemployed
     Region                                                  ...
-    Channel Islands                              0       6  ...            0          0
-    East Anglia                                 35     133  ...            6         16
-    East Midlands                              126     332  ...            3         22
-    Greater Manchester                          77     226  ...            1         18
-    North                                       26     129  ...            0         10
-    North West (Excluding Gtr Manchester)       71     269  ...            4         25
-    Northern Ireland                            35      40  ...            1          8
-    Scotland                                    79     165  ...            2         19
-    South East (Inside M25 )                   125     448  ...           13         60
-    South East (Outside M25 )                   88     747  ...            2         59
-    South West                                  46     245  ...            2         28
-    TOTAL                                      905    3902  ...           43        324
-    Unclassified                                 4      45  ...            0          1
-    Wales                                       28     146  ...            2          9
-    West Midlands                               67     589  ...            3         29
-    Yorkshire and Humber                        98     382  ...            4         20
+    Channel Islands                              0       6  ...      10          0
+    East Anglia                                 35     133  ...     109         16
+    East Midlands                              126     332  ...     174         22
+    Greater Manchester                          77     226  ...     147         18
+    North                                       26     129  ...     115         10
+    North West (Excluding Gtr Manchester)       71     269  ...     177         25
+    Northern Ireland                            35      40  ...      42          8
+    Scotland                                    79     165  ...     224         19
+    South East (Inside M25 )                   125     448  ...     391         60
+    South East (Outside M25 )                   88     747  ...     609         59
+    South West                                  46     245  ...     182         28
+    Wales                                       28     146  ...     122          9
+    West Midlands                               67     589  ...     288         29
+    Yorkshire and Humber                        98     382  ...     249         20
 
-    [16 rows x 12 columns]
+    [14 rows x 10 columns]
 
 You can use a selection from a different table to filter the records in the cube:
 
@@ -458,20 +440,20 @@ You can use a selection from a different table to filter the records in the cube
     >>> manchester = region == "13"
     >>> manc_cube = manchester.cube([dest, occupation, region], table=bookings)
     >>> manc_cube.to_df()
-                                                                         Bookings
-    Destination  Occupation   Region
-    Unclassified Unclassified Unclassified                                  0
-                              North                                         0
-                              North West (Excluding Gtr Manchester)         0
-                              South East (Outside M25 )                     0
-                              South West                                    0
-                                                                       ...
-    TOTAL        TOTAL        Wales                                         0
-                              Northern Ireland                              0
-                              Greater Manchester                        81812
-                              Channel Islands                               0
-                              TOTAL                                     81812
+                                                                      Bookings
+    Destination  Occupation    Region
+    Australia    Manual Worker North                                         0
+                               North West (Excluding Gtr Manchester)         0
+                               South East (Outside M25 )                     0
+                               South West                                    0
+                               East Midlands                                 0
+                                                                        ...
+    South Africa Retired       Scotland                                      0
+                               Wales                                         0
+                               Northern Ireland                              0
+                               Greater Manchester                            0
+                               Channel Islands                               0
 
-    [4032 rows x 1 columns]
+    [2660 rows x 1 columns]
 
 For a more thorough introduction, check out the :ref:`tutorial`.

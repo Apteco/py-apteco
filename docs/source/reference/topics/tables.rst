@@ -84,17 +84,18 @@ You can similarly create a cube::
             [people["Occupation"], bookings["Product"]],
             selection=(bookings["Cost"] > 200),
         )
-    >>> df = cube.to_df().head(8)
+    >>> df = cube.to_df()
+    >>> df.head(8)
                                       Bookings
     Occupation    Product
-    Unclassified  Unclassified               0
-                  Accommodation Only       109
-                  Package Holiday         1840
-                  Flight Only              566
-                  TOTAL                   2515
-    Manual Worker Unclassified               0
-                  Accommodation Only      4039
+    Manual Worker Accommodation Only      4039
                   Package Holiday        77547
+                  Flight Only            27104
+    Director      Accommodation Only      1714
+                  Package Holiday        24585
+                  Flight Only             8477
+    Manager       Accommodation Only      4422
+                  Package Holiday       109725
 
 API Reference
 =============
@@ -335,27 +336,20 @@ Data Grids and Cubes
             selection=(bookings["Cost"] > 200),
         )
     >>> df = cube.to_df()
-    >>> (
-            df
-            .drop("Unclassified", level=1)
-            .unstack()
-            .rename(columns=lambda x: x.split(" ")[0])
-        )
+    >>> df.unstack().rename(columns=lambda x: x.split(" ")[0])
                          Bookings
-    Product         Accommodation  Package  Flight    TOTAL
+    Product         Accommodation  Flight Package
     Occupation
-    Director                 1714    24585    8477    34776
-    Manager                  4422   109725   28566   142713
-    Manual Worker            4039    77547   27104   108690
-    Professional             1806    40072    9728    51606
-    Public Sector           18308   249637   82437   350382
-    Retail Worker            9864   126350   30853   167067
-    Retired                 12750    86594   47333   146677
-    Sales Executive         35214   407288  152911   595413
-    Student                  6553   145156   27665   179374
-    TOTAL                  103778  1326005  446288  1876071
-    Unclassified              109     1840     566     2515
-    Unemployed               8999    57211   30648    96858
+    Director                 1714    8477   24585
+    Manager                  4422   28566  109725
+    Manual Worker            4039   27104   77547
+    Professional             1806    9728   40072
+    Public Sector           18308   82437  249637
+    Retail Worker            9864   30853  126350
+    Retired                 12750   47333   86594
+    Sales Executive         35214  152911  407288
+    Student                  6553   27665  145156
+    Unemployed               8999   30648   57211
 
     .. seealso::
         This method is a wrapper around the :class:`Cube` class.
