@@ -15,17 +15,17 @@ and is a multi-dimensional numeric analysis of FastStats data.
 
 The cube is specified by:
 
-    * a resolve **table** – statistics in the cube are measures of
+    * a resolve **table** – statistics on the cube are measures of
       records in this table
     * a set of **dimensions** – these are the fields over which the data
       is being analysed
-    * a set of **measures** – these define the statistics displayed in the cube
+    * a set of **measures** – these define the statistics displayed on the cube
       to analyse the data
     * a base **selection** *(optional)* – this filters records in the table
       to only include in the analysis ones that match the given criteria
 
 .. note::
-    Currently, the cube dimensions must be FastStats **Selector** variables
+    Currently, the cube dimensions must be **Selector** variables
     or **banded Date** variables.
     Other variable types and more complex types like expressions or selections
     are not yet supported.
@@ -145,12 +145,12 @@ Cube creation and conversion
         – either an ancestor or descendant.
         If `measures` is None, the count measure of the cube's resolve table
         will be used by default.
-    :param Clause selection: Base selection to apply to the cube.
+    :param Clause selection: Optional base selection to apply to the cube.
         The table of this selection must be a 'related' table
         – either an ancestor or descendant.
     :param Table table: Resolve table of the cube.
         This table's records are used in the analysis for the cube,
-        e.g. the default count measure is counts records from this table.
+        e.g. the default count measure is a count of records from this table.
     :param Session session: Current Apteco API session.
 
     As well as being related to `table`,
@@ -193,7 +193,7 @@ Cube creation and conversion
             ...     session=my_session,
             ... )
 
-        They both return a cube summarising *bookings* made by people
+        They both return a cube counting *bookings* made by people
         from households in the Greater Manchester region.
 
     .. note::
@@ -208,6 +208,12 @@ Cube creation and conversion
     .. method:: to_df(unclassified=False, totals=False, no_trans=False, convert_index=True)
 
         Return the cube as a Pandas :class:`DataFrame`.
+        This is configured such that:
+
+            * the dimensions form the **index**.
+              If multiple dimensions are given, this is a :class:`MultiIndex`
+              with each level corresponding to a dimension.
+            * there is one **column** for each measure.
 
         :param bool unclassified: Whether to include unclassified rows in the DataFrame.
             Default is `False`.
@@ -219,25 +225,14 @@ Cube creation and conversion
             *Included for forwards-compatibility, but not currently implemented.*
             *Must be left as False.*
         :param bool convert_index: Whether to convert the index to the corresponding
-            'natural' Pandas index type.
-            If *totals* or *no_trans* is *True*, this will be set to *False*.
-            Default is `True`.
-
-        The :class:`DataFrame` is configured such that:
-
-            * the dimensions form the *index*.
-              If multiple dimensions are given, this is a :class:`MultiIndex`,
-              with each level corresponding to a dimension.
-            * there is one *column* for each measure.
+            'natural' Pandas index type,
+            or leave as a plain :class:`Index` with strings as labels.
+            Conversion isn't possible if `unclassified` or `totals` is `True`.
+            Default behaviour is to convert if possible.
 
         .. tip::
             The structure of the DataFrame returned by the :meth:`to_df()` method
             is very similar to a *Tree* in the FastStats application.
-
-        .. note::
-            The Cube returns pre-calculated totals,
-            which can be found under the *TOTAL* label on each dimension.
-            You may need to filter these out if you are doing further analysis.
 
         .. seealso::
             For more details on working with a Pandas DataFrame
@@ -271,9 +266,9 @@ Conversion to a pandas DataFrame:
 Banded Date variables
 ~~~~~~~~~~~~~~~~~~~~~
 
-Date and DateTime variables cannot be used directly as cube dimensions,
-but they can be banded up to a particular time period.
-These bandings are access via attributes on the :class:`DateVariable`
+Date and DateTime variables can be used as cube dimensions
+when banded up to a particular time period.
+These bandings are accessed via attributes on the :class:`DateVariable`
 or :class:`DateTimeVariable` object.
 
 The following bandings are currently supported:
@@ -286,9 +281,34 @@ The following bandings are currently supported:
 Conversion to a pandas DataFrame:
 
 * The default index conversion is to a pandas :class:`PeriodIndex`
-  with the corresponding frequency.
-* If not converted, the index labels are the banded category descriptions.
-* The index name is of the form `'Variable description (banding)'`.
+  with the corresponding frequency (see table below).
+* If not converted, the index labels are datetime strings (see table table below).
+* The index name is of the form `'<Variable description> (<banding>)'`.
+
+.. list-table::
+   :header-rows: 1
+   :widths: auto
+
+   * - Banding
+     - `Date Offset <https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects>`_
+     - Frequency string
+     - Examples (unconverted string labels)
+   * - ``day``
+     - Day
+     - ``'D'``
+     - ``'2019-01-01'`` ``'2019-01-02'`` ``'2019-01-03'``
+   * - ``month``
+     - Month
+     - ``'M'``
+     - ``'2019-01'`` ``'2019-02'`` ``'2019-03'``
+   * - ``quarter``
+     - Quarter
+     - ``'Q'``
+     - ``'2019-Q1'`` ``'2019-Q2'`` ``'2019-Q3'``
+   * - ``year``
+     - Year
+     - ``'A'``
+     - ``'2019'`` ``'2020'`` ``'2021'``
 
 Statistics
 ----------
@@ -304,7 +324,7 @@ Table counts
 These can be specified by passing a Table object in the `measures` list,
 and will return a count of the records from that Table.
 If `measures` is None, the count of records from the resolve table
-will be added by default.
+will be used by default.
 
 Variable statistics
 ~~~~~~~~~~~~~~~~~~~

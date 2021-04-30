@@ -70,9 +70,8 @@ with each dimension as a different level in the index::
             ('£100k+',       'Retired', 'Unknown')],
            names=['Income', 'Occupation', 'Gender'], length=330)
 
-The DataFrame has one column which is the single default count measure,
-named after the resolve table of the cube,
-which corresponds to the entity it is counting.
+The DataFrame has one column which is the default count measure,
+named after the entity it is counting.
 Since the data values represent a count, they are all integers::
 
     >>> df.info()
@@ -85,10 +84,12 @@ Since the data values represent a count, they are all integers::
     dtypes: int64(1)
     memory usage: 4.6+ KB
 
+More generally, the DataFrame will have one column
+for each measure included on the cube.
+
 .. tip::
     This initial structure of the DataFrame returned by the :meth:`to_df()` method
     is very similar to a *Tree* in the FastStats application.
-    However, the cube also includes subtotals which a tree doesn't.
 
 Pivoting the ``Gender`` dimension returns a :class:`DataFrame`
 with ``Gender`` as a new level of column labels.
@@ -113,9 +114,9 @@ and more similar to how a cube would be presented in FastStats::
 
     [110 rows x 3 columns]
 
-Only Selector variables are currently supported as cube dimensions,
-and this doesn't include Selector subtypes such as
-Array, Flag Array, Date or Datetime.
+The variable types currently supported as cube dimensions are Selector variables
+(not including Selector subtypes such as Array or Flag Array),
+and banded Date or Datetime variables.
 As in FastStats, you can also use variables from 'related' tables,
 that is, ancestor or descendant tables (including the direct parent and children)::
 
@@ -256,7 +257,7 @@ to set the cube to the desired table::
 
     [700 rows x 1 columns]
 
-*(this data grid is identical to the previous one)*
+*(this cube is identical to the previous one)*
 
 .. seealso::
     For more information on working with DataFrames with a MultiIndex,

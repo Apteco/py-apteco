@@ -389,7 +389,7 @@ You can pivot the dimensions to make it easier to read:
 
     [9 rows x 19 columns]
 
-You can use a base selection to filter the records
+You can use a base selection to filter the records:
 
 .. code-block:: python
 
