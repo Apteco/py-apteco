@@ -345,10 +345,10 @@ You can create a cube from a table:
 
 .. code-block:: python
 
-    >>> dest = bookings["Destination"]
-    >>> product = bookings["Product"]
-    >>> grade = bookings["Grade"]
-    >>> cube = bookings.cube([dest, product, grade])
+    >>> occupation = people["Occupation"]
+    >>> income = people["Income"]
+    >>> gender = people["Gender"]
+    >>> cube = people.cube([occupation, income, gender])
 
 Convert it to a Pandas DataFrame:
 
@@ -356,38 +356,62 @@ Convert it to a Pandas DataFrame:
 
     >>> df = cube.to_df()
     >>> df.head(10)
-                                           Bookings
-    Destination Product            Grade
-    Australia   Accommodation Only Gold           0
-                                   Silver         0
-                                   Bronze     10721
-                Package Holiday    Gold           0
-                                   Silver         0
-                                   Bronze    134115
-                Flight Only        Gold           0
-                                   Silver         0
-                                   Bronze    137883
-    New Zealand Accommodation Only Gold           0
+                                   People
+    Occupation    Income  Gender
+    Manual Worker <£10k   Female    15624
+                          Male       5321
+                          Unknown       5
+                  £10-20k Female    43051
+                          Male       5992
+                          Unknown      25
+                  £20-30k Female     1498
+                          Male        649
+                          Unknown      14
+                  £30-40k Female      675
 
 You can pivot the dimensions to make it easier to read:
 
 .. code-block:: python
 
     >>> df.unstack(level=0)
-                               Bookings          ...
-    Destination               Australia Denmark  ... Sweden United States
-    Product            Grade                     ...
-    Accommodation Only Bronze     10721       0  ...      0         20464
-                       Gold           0       0  ...      0             0
-                       Silver         0      45  ...    277             0
-    Flight Only        Bronze    137883       0  ...      0         97440
-                       Gold           0       0  ...      0             0
-                       Silver         0     123  ...   2264             0
-    Package Holiday    Bronze    134115       0  ...      0        443938
-                       Gold           0       0  ...      0             0
-                       Silver         0    1342  ...  22666             0
+                       People          ...
+    Occupation       Director Manager  ... Student Unemployed
+    Income   Gender                    ...
+    <£10k    Female      1279    4649  ...   28002      21385
+             Male         832    2926  ...   14296       8386
+             Unknown        4      16  ...      10        155
+    £10-20k  Female      4116   16665  ...   39462      17230
+             Male        2139    9123  ...   17917       4532
+             Unknown        9      47  ...      25        368
+    £100k+   Female         2       1  ...       2          0
+             Male           1       0  ...       3          0
+             Unknown        1       0  ...       1          0
+    £20-30k  Female      1267    6238  ...    6669       5747
+             Male        1050    5315  ...    5274       1345
+             Unknown        5      45  ...      22        236
+    £30-40k  Female      1591    6621  ...    5690       3117
+             Male        1940    9713  ...    6345       1049
+             Unknown       46     140  ...      63        519
+    £40-50k  Female       265     965  ...     587        262
+             Male         518    1800  ...     943        115
+             Unknown       22      58  ...      29        110
+    £50-60k  Female       336     806  ...     425        277
+             Male         607    1677  ...     692         69
+             Unknown       47      88  ...      64         89
+    £60-70k  Female        40     112  ...      54         58
+             Male          96     220  ...      95          8
+             Unknown       11      16  ...      17         17
+    £70-80k  Female        44      96  ...      42         27
+             Male         102     179  ...      63          5
+             Unknown       12      22  ...      15          5
+    £80-90k  Female        11      11  ...       3          0
+             Male          14      13  ...      16          0
+             Unknown        4       3  ...       5          0
+    £90-100k Female         1       0  ...       1          1
+             Male          11       7  ...       4          0
+             Unknown        3       6  ...       9          0
 
-    [9 rows x 19 columns]
+    [33 rows x 10 columns]
 
 You can use a base selection to filter the records:
 
@@ -395,60 +419,60 @@ You can use a base selection to filter the records:
 
     >>> occupation = people["Occupation"]
     >>> region = households["Region"]
-    >>> sweden = dest == "29"
-    >>> sweden_cube = sweden.cube([dest, occupation, region])
-    >>> sweden_df = sweden_cube.to_df()
-    >>> sweden_df.head()
-                                                                     Bookings
-    Destination Occupation    Region
-    Australia   Manual Worker North                                         0
-                              North West (Excluding Gtr Manchester)         0
-                              South East (Outside M25 )                     0
-                              South West                                    0
-                              East Midlands                                 0
+    >>> student = occupation == "4"
+    >>> student_cube = student.cube([occupation, dest, region])
+    >>> student_df = student_cube.to_df()
+    >>> student_df.head()
+                                                                     People
+    Occupation    Destination Region
+    Manual Worker Australia   North                                       0
+                              North West (Excluding Gtr Manchester)       0
+                              South East (Outside M25 )                   0
+                              South West                                  0
+                              East Midlands                               0
 
-Selecting only cells where ``Destination`` is *Sweden*,
-and pivoting ``Occupation`` dimension:
+Selecting only cells where ``Occupation`` is *Student*,
+and pivoting ``Destination`` dimension:
 
 .. code-block:: python
 
-    >>> sweden_df.loc["Sweden"].unstack(level=0)
-                                          Bookings          ...
-    Occupation                            Director Manager  ... Student Unemployed
-    Region                                                  ...
-    Channel Islands                              0       6  ...      10          0
-    East Anglia                                 35     133  ...     109         16
-    East Midlands                              126     332  ...     174         22
-    Greater Manchester                          77     226  ...     147         18
-    North                                       26     129  ...     115         10
-    North West (Excluding Gtr Manchester)       71     269  ...     177         25
-    Northern Ireland                            35      40  ...      42          8
-    Scotland                                    79     165  ...     224         19
-    South East (Inside M25 )                   125     448  ...     391         60
-    South East (Outside M25 )                   88     747  ...     609         59
-    South West                                  46     245  ...     182         28
-    Wales                                       28     146  ...     122          9
-    West Midlands                               67     589  ...     288         29
-    Yorkshire and Humber                        98     382  ...     249         20
+    >>> student_df.loc["Student"].unstack(level=0)
+                                             People          ...
+    Destination                           Australia Denmark  ... Sweden United States
+    Region                                                   ...
+    Channel Islands                              46       1  ...     10            81
+    East Anglia                                 989       0  ...    109           905
+    East Midlands                              1956       0  ...    174          1762
+    Greater Manchester                         1197       1  ...    147          1089
+    North                                       959       2  ...    115           869
+    North West (Excluding Gtr Manchester)      1594       2  ...    177          1429
+    Northern Ireland                            467       0  ...     42           492
+    Scotland                                   2061       1  ...    224          1964
+    South East (Inside M25 )                   3935       0  ...    390          3580
+    South East (Outside M25 )                  6255       1  ...    608          5587
+    South West                                 2310       0  ...    182          2037
+    Wales                                       974       0  ...    122           860
+    West Midlands                              2643       0  ...    288          2362
+    Yorkshire and Humber                       2295       0  ...    249          2089
 
-    [14 rows x 10 columns]
+    [14 rows x 19 columns]
 
 You can use a selection from a different table to filter the records in the cube:
 
 .. code-block:: python
 
     >>> manchester = region == "13"
-    >>> manc_cube = manchester.cube([dest, occupation, region], table=bookings)
+    >>> manc_cube = manchester.cube([occupation, dest, region], table=bookings)
     >>> manc_cube.to_df()
                                                                       Bookings
-    Destination  Occupation    Region
-    Australia    Manual Worker North                                         0
+    Occupation    Destination  Region
+    Manual Worker Australia    North                                         0
                                North West (Excluding Gtr Manchester)         0
                                South East (Outside M25 )                     0
                                South West                                    0
                                East Midlands                                 0
                                                                         ...
-    South Africa Retired       Scotland                                      0
+    Retired       South Africa Scotland                                      0
                                Wales                                         0
                                Northern Ireland                              0
                                Greater Manchester                            0

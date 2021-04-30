@@ -35,88 +35,122 @@ Basic use
 
 Setting up variables::
 
-    >>> bookings = my_session.tables["Bookings"]
-    >>> dest = bookings["Destination"]
-    >>> product = bookings["Product"]
-    >>> grade = bookings["Grade"]
+    >>> people = my_session.tables["People"]
+    >>> occupation = people["Occupation"]
+    >>> income = people["Income"]
+    >>> gender = people["Gender"]
 
 Creating a cube::
 
-    >>> cube = bookings.cube([dest, product, grade])
+    >>> cube = people.cube([occupation, income, gender])
 
 Converting to a Pandas :class:`DataFrame`::
 
     >>> df = cube.to_df()
     >>> df.head(10)
-                                           Bookings
-    Destination Product            Grade
-    Australia   Accommodation Only Gold           0
-                                   Silver         0
-                                   Bronze     10721
-                Package Holiday    Gold           0
-                                   Silver         0
-                                   Bronze    134115
-                Flight Only        Gold           0
-                                   Silver         0
-                                   Bronze    137883
-    New Zealand Accommodation Only Gold           0
+                                   People
+    Occupation    Income  Gender
+    Manual Worker <£10k   Female    15624
+                          Male       5321
+                          Unknown       5
+                  £10-20k Female    43051
+                          Male       5992
+                          Unknown      25
+                  £20-30k Female     1498
+                          Male        649
+                          Unknown      14
+                  £30-40k Female      675
 
-Pivoting the ``Destination`` dimension to make it easier to read::
+Pivoting the ``Occupation`` dimension to make it easier to read::
 
     >>> df.unstack(level=0)
-                               Bookings          ...
-    Destination               Australia Denmark  ... Sweden United States
-    Product            Grade                     ...
-    Accommodation Only Bronze     10721       0  ...      0         20464
-                       Gold           0       0  ...      0             0
-                       Silver         0      45  ...    277             0
-    Flight Only        Bronze    137883       0  ...      0         97440
-                       Gold           0       0  ...      0             0
-                       Silver         0     123  ...   2264             0
-    Package Holiday    Bronze    134115       0  ...      0        443938
-                       Gold           0       0  ...      0             0
-                       Silver         0    1342  ...  22666             0
+                       People          ...
+    Occupation       Director Manager  ... Student Unemployed
+    Income   Gender                    ...
+    <£10k    Female      1279    4649  ...   28002      21385
+             Male         832    2926  ...   14296       8386
+             Unknown        4      16  ...      10        155
+    £10-20k  Female      4116   16665  ...   39462      17230
+             Male        2139    9123  ...   17917       4532
+             Unknown        9      47  ...      25        368
+    £100k+   Female         2       1  ...       2          0
+             Male           1       0  ...       3          0
+             Unknown        1       0  ...       1          0
+    £20-30k  Female      1267    6238  ...    6669       5747
+             Male        1050    5315  ...    5274       1345
+             Unknown        5      45  ...      22        236
+    £30-40k  Female      1591    6621  ...    5690       3117
+             Male        1940    9713  ...    6345       1049
+             Unknown       46     140  ...      63        519
+    £40-50k  Female       265     965  ...     587        262
+             Male         518    1800  ...     943        115
+             Unknown       22      58  ...      29        110
+    £50-60k  Female       336     806  ...     425        277
+             Male         607    1677  ...     692         69
+             Unknown       47      88  ...      64         89
+    £60-70k  Female        40     112  ...      54         58
+             Male          96     220  ...      95          8
+             Unknown       11      16  ...      17         17
+    £70-80k  Female        44      96  ...      42         27
+             Male         102     179  ...      63          5
+             Unknown       12      22  ...      15          5
+    £80-90k  Female        11      11  ...       3          0
+             Male          14      13  ...      16          0
+             Unknown        4       3  ...       5          0
+    £90-100k Female         1       0  ...       1          1
+             Male          11       7  ...       4          0
+             Unknown        3       6  ...       9          0
 
-    [9 rows x 19 columns]
+    [33 rows x 10 columns]
 
 Using a base selection to filter the records::
 
-    >>> sweden = dest == "29"
-    >>> sweden_cube = sweden.cube([dest, product, grade])
-    >>> sweden_df = sweden_cube.to_df()
-    >>> sweden_df.head()
-                                           Bookings
-    Destination Product            Grade
-    Australia   Accommodation Only Gold           0
-                                   Silver         0
-                                   Bronze         0
-                Package Holiday    Gold           0
-                                   Silver         0
+    >>> student = occupation == "4"
+    >>> student_cube = student.cube([occupation, income, gender])
+    >>> student_df = student_cube.to_df()
+    >>> student_df.head()
+                                   People
+    Occupation    Income  Gender
+    Manual Worker <£10k   Female        0
+                          Male          0
+                          Unknown       0
+                  £10-20k Female        0
+                          Male          0
 
-Selecting only cells where ``Destination`` is *Sweden*,
-and pivoting ``Product`` dimension::
+Selecting only cells where ``Occupation`` is *Student*,
+and pivoting ``Income`` dimension::
 
-    >>> sweden_df.loc["Sweden"].unstack(level=0)
-                      Bookings
-    Product Accommodation Only Flight Only Package Holiday
-    Grade
-    Bronze                   0           0               0
-    Gold                     0           0               0
-    Silver                 277        2264           22666
+    >>> student_df.loc["Student"].unstack(level=0)
+            People                         ...
+    Income   <£10k £10-20k £100k+ £20-30k  ... £60-70k £70-80k £80-90k £90-100k
+    Gender                                 ...
+    Female   28002   39462      2    6669  ...      54      42       3        1
+    Male     14296   17917      3    5274  ...      95      63      16        4
+    Unknown     10      25      1      22  ...      17      15       5        9
+
+    [3 rows x 11 columns]
 
 Using a base selection from a different table::
 
     >>> households = my_session.tables["Households"]
     >>> manchester = households["hoRegion"] == "13"
-    >>> manc_cube = manchester.cube([dest, product, grade], table=bookings)
+    >>> manc_cube = manchester.cube([occupation, income, gender], table=people)
     >>> manc_df = manc_cube.to_df()
-    >>> manc_df.loc["Germany"].unstack(level=1)
-                       Bookings
-    Grade                Bronze Gold Silver
-    Product
-    Accommodation Only      249    0      0
-    Flight Only            4439    0      0
-    Package Holiday        9882    0      0
+    >>> manc_df.loc["Manager"].unstack(level=1)
+             People
+    Gender   Female Male Unknown
+    Income
+    <£10k       159   90       1
+    £10-20k     670  420       4
+    £100k+        0    0       0
+    £20-30k     256  305       1
+    £30-40k     374  520       5
+    £40-50k      50  101       3
+    £50-60k      39   84      10
+    £60-70k       2   12       0
+    £70-80k       4    7       2
+    £80-90k       0    0       0
+    £90-100k      0    0       0
 
 .. Cube-related tasks
 .. ==================
@@ -184,16 +218,16 @@ Cube creation and conversion
             >>> cube1 = Cube(
             ...     dimensions,
             ...     selection=manchester,
-            ...     table=bookings,
+            ...     table=people,
             ...     session=my_session,
             ... )
             >>> cube2 = Cube(
             ...     dimensions,
-            ...     selection=(bookings * manchester),
+            ...     selection=(people * manchester),
             ...     session=my_session,
             ... )
 
-        They both return a cube counting *bookings* made by people
+        They both return a cube counting *people*
         from households in the Greater Manchester region.
 
     .. note::

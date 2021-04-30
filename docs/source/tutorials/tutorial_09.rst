@@ -14,10 +14,10 @@ We can use the :meth:`cube` method on a table
 to create a cube analysing records from that table.
 We pass it a list of the FastStats variables we want to use as cube dimensions::
 
-    >>> income = people["Income"]
     >>> occupation = people["Occupation"]
+    >>> income = people["Income"]
     >>> gender = people["Gender"]
-    >>> cube = people.cube([income, occupation, gender])
+    >>> cube = people.cube([occupation, income, gender])
 
 If we don't specify any measures, the `count` measure is used by default.
 
@@ -26,19 +26,19 @@ using the :meth:`to_df()` method::
 
     >>> df = cube.to_df()
     >>> df
-                                  People
-    Income Occupation    Gender
-    <£10k  Manual Worker Female    15624
-                         Male       5321
-                         Unknown       5
-           Director      Female     1279
-                         Male        832
-                                  ...
-    £100k+ Unemployed    Male          0
-                         Unknown       0
-           Retired       Female        0
-                         Male          1
-                         Unknown       0
+                                    People
+    Occupation    Income   Gender
+    Manual Worker <£10k    Female    15624
+                           Male       5321
+                           Unknown       5
+                  £10-20k  Female    43051
+                           Male       5992
+                                    ...
+    Retired       £90-100k Male          2
+                           Unknown       0
+                  £100k+   Female        0
+                           Male          1
+                           Unknown       0
 
     [330 rows x 1 columns]
 
@@ -47,28 +47,28 @@ The DataFrame uses a `MultiIndex
 with each dimension as a different level in the index::
 
     >>> df.index
-    MultiIndex([( '<£10k', 'Manual Worker',  'Female'),
-            ( '<£10k', 'Manual Worker',    'Male'),
-            ( '<£10k', 'Manual Worker', 'Unknown'),
-            ( '<£10k',      'Director',  'Female'),
-            ( '<£10k',      'Director',    'Male'),
-            ( '<£10k',      'Director', 'Unknown'),
-            ( '<£10k',       'Manager',  'Female'),
-            ( '<£10k',       'Manager',    'Male'),
-            ( '<£10k',       'Manager', 'Unknown'),
-            ( '<£10k',  'Professional',  'Female'),
+    MultiIndex([('Manual Worker',    '<£10k',  'Female'),
+            ('Manual Worker',    '<£10k',    'Male'),
+            ('Manual Worker',    '<£10k', 'Unknown'),
+            ('Manual Worker',  '£10-20k',  'Female'),
+            ('Manual Worker',  '£10-20k',    'Male'),
+            ('Manual Worker',  '£10-20k', 'Unknown'),
+            ('Manual Worker',  '£20-30k',  'Female'),
+            ('Manual Worker',  '£20-30k',    'Male'),
+            ('Manual Worker',  '£20-30k', 'Unknown'),
+            ('Manual Worker',  '£30-40k',  'Female'),
             ...
-            ('£100k+', 'Retail Worker', 'Unknown'),
-            ('£100k+', 'Public Sector',  'Female'),
-            ('£100k+', 'Public Sector',    'Male'),
-            ('£100k+', 'Public Sector', 'Unknown'),
-            ('£100k+',    'Unemployed',  'Female'),
-            ('£100k+',    'Unemployed',    'Male'),
-            ('£100k+',    'Unemployed', 'Unknown'),
-            ('£100k+',       'Retired',  'Female'),
-            ('£100k+',       'Retired',    'Male'),
-            ('£100k+',       'Retired', 'Unknown')],
-           names=['Income', 'Occupation', 'Gender'], length=330)
+            (      'Retired',  '£70-80k', 'Unknown'),
+            (      'Retired',  '£80-90k',  'Female'),
+            (      'Retired',  '£80-90k',    'Male'),
+            (      'Retired',  '£80-90k', 'Unknown'),
+            (      'Retired', '£90-100k',  'Female'),
+            (      'Retired', '£90-100k',    'Male'),
+            (      'Retired', '£90-100k', 'Unknown'),
+            (      'Retired',   '£100k+',  'Female'),
+            (      'Retired',   '£100k+',    'Male'),
+            (      'Retired',   '£100k+', 'Unknown')],
+           names=['Occupation', 'Income', 'Gender'], length=330)
 
 The DataFrame has one column which is the default count measure,
 named after the entity it is counting.
@@ -76,7 +76,7 @@ Since the data values represent a count, they are all integers::
 
     >>> df.info()
     <class 'pandas.core.frame.DataFrame'>
-    MultiIndex: 330 entries, ('<£10k', 'Manual Worker', 'Female') to ('£100k+', 'Retired', 'Unknown')
+    MultiIndex: 330 entries, ('Manual Worker', '<£10k', 'Female') to ('Retired', '£100k+', 'Unknown')
     Data columns (total 1 columns):
      #   Column  Non-Null Count  Dtype
     ---  ------  --------------  -----
@@ -97,20 +97,20 @@ You may find this arrangement easier to read
 and more similar to how a cube would be presented in FastStats::
 
     >>> df.unstack(level=2)
-                             People
-    Gender                   Female   Male Unknown
-    Income   Occupation
-    <£10k    Director          1279    832       4
-             Manager           4649   2926      16
-             Manual Worker    15624   5321       5
-             Professional      2316   1388       7
-             Public Sector    29593  20278     247
-                             ...    ...     ...
-    £90-100k Retail Worker       31     51     118
-             Retired              0      2       0
-             Sales Executive     15     32      14
-             Student              1      4       9
-             Unemployed           1      0       0
+                        People
+    Gender              Female  Male Unknown
+    Occupation Income
+    Director   <£10k      1279   832       4
+               £10-20k    4116  2139       9
+               £100k+        2     1       1
+               £20-30k    1267  1050       5
+               £30-40k    1591  1940      46
+                        ...   ...     ...
+    Unemployed £50-60k     277    69      89
+               £60-70k      58     8      17
+               £70-80k      27     5       5
+               £80-90k       0     0       0
+               £90-100k      1     0       0
 
     [110 rows x 3 columns]
 
