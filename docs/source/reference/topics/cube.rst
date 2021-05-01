@@ -103,6 +103,31 @@ Pivoting the ``Occupation`` dimension to make it easier to read::
 
     [33 rows x 10 columns]
 
+Using banded Date variables as dimensions::
+
+    >>> bookings = my_session.tables["Bookings"]
+    >>> booking_date = bookings["Booking Date"]
+    >>> travel_date = bookings["Travel Date"]
+    >>> booking_travel_cube = bookings.cube([booking_date.month, travel_date.year])
+    >>> booking_travel_df = booking_travel_cube.to_df()
+    >>> booking_travel_df.unstack(level=1)
+                         Bookings
+    Travel Date (Year)       2016 2017 2018 2019 2020   2021   2022
+    Booking Date (Month)
+    2016-01                  2668    0    0    0    0      0      0
+    2016-02                 24482    0    0    0    0      0      0
+    2016-03                 28435    0    0    0    0      0      0
+    2016-04                 24360    0    0    0    0      0      0
+    2016-05                 22757    0    0    0    0      0      0
+                           ...  ...  ...  ...  ...    ...    ...
+    2021-08                     0    0    0    0    0  39880      0
+    2021-09                     0    0    0    0    0  34380    407
+    2021-10                     0    0    0    0    0  21537   6824
+    2021-11                     0    0    0    0    0  12078  14308
+    2021-12                     0    0    0    0    0   2938  16737
+
+    [72 rows x 7 columns]
+
 Using a base selection to filter the records::
 
     >>> student = occupation == "4"

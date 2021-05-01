@@ -114,9 +114,78 @@ and more similar to how a cube would be presented in FastStats::
 
     [110 rows x 3 columns]
 
-The variable types currently supported as cube dimensions are Selector variables
-(not including Selector subtypes such as Array or Flag Array),
-and banded Date or Datetime variables.
+As well as Selector variables,
+you can also use banded Date or Datetime variables as cube dimensions.
+These bandings are accessible as attributes on the variable::
+
+    >>> dest = bookings["Destination"]
+    >>> booking_date = bookings["Booking Date"]
+    >>> booking_year_by_dest = bookings.cube([booking_date.year, dest])
+    >>> year_dest_df = booking_year_by_dest.to_df()
+    >>> year_dest_df.unstack(level=0)
+                        Bookings
+    Booking Date (Year)     2016   2017    2018   2019    2020    2021
+    Destination
+    Australia              28747  32766   68271  46576   54519   51840
+    Denmark                  158    169     355    244     299     285
+    France                 51950  60253  125838  85903  102543   97987
+    Germany                47031  53691  109053  75120   89974   86391
+    Greece                 11220  12999   27145  18558   21797   20373
+    Italy                   3557   4272    8704   6065    7200    7083
+    Jamaica                   19     14      42     32      38      34
+    Kuwait                  2373   2765    5546   3907    4550    4407
+    Latvia                    69     78     168    107     102     121
+    Mali                     104    122     215    136     209     188
+    Mongolia                  24     17      38     15      32      28
+    Namibia                  250    254     553    385     476     431
+    New Zealand               93    109     227    113     178     159
+    Portugal                2222   2514    5124   3560    4184    4028
+    Senegal                  111    109     238    183     159     181
+    Sierra Leone             466    613    1081    787     938     902
+    South Africa              88    119     208    164     199     178
+    Sweden                  2460   2915    6120   4112    4929    4671
+    United States          58691  64546  134846  92003  108080  103676
+
+The supported bandings are: ``year``, ``quarter``, ``month``, ``day``
+
+Banded Date variables use a `PeriodIndex <https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#periodindex-and-period-range>`_
+in the outputted Dataframe::
+
+    >>> travel_date = bookings["Travel Date"]
+    >>> travel_month_df = bookings.cube([travel_date.month]).to_df()
+    >>> travel_month_df
+                         Bookings
+    Travel Date (Month)
+    2016-01                   410
+    2016-02                  4059
+    2016-03                 12233
+    2016-04                 20175
+    2016-05                 25601
+                           ...
+    2022-08                     0
+    2022-09                     0
+    2022-10                     0
+    2022-11                     0
+    2022-12                     0
+
+    [84 rows x 1 columns]
+    >>> travel_month_df.index
+    PeriodIndex(['2016-01', '2016-02', '2016-03', '2016-04', '2016-05', '2016-06',
+                 '2016-07', '2016-08', '2016-09', '2016-10', '2016-11', '2016-12',
+                 '2017-01', '2017-02', '2017-03', '2017-04', '2017-05', '2017-06',
+                 '2017-07', '2017-08', '2017-09', '2017-10', '2017-11', '2017-12',
+                 '2018-01', '2018-02', '2018-03', '2018-04', '2018-05', '2018-06',
+                 '2018-07', '2018-08', '2018-09', '2018-10', '2018-11', '2018-12',
+                 '2019-01', '2019-02', '2019-03', '2019-04', '2019-05', '2019-06',
+                 '2019-07', '2019-08', '2019-09', '2019-10', '2019-11', '2019-12',
+                 '2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06',
+                 '2020-07', '2020-08', '2020-09', '2020-10', '2020-11', '2020-12',
+                 '2021-01', '2021-02', '2021-03', '2021-04', '2021-05', '2021-06',
+                 '2021-07', '2021-08', '2021-09', '2021-10', '2021-11', '2021-12',
+                 '2022-01', '2022-02', '2022-03', '2022-04', '2022-05', '2022-06',
+                 '2022-07', '2022-08', '2022-09', '2022-10', '2022-11', '2022-12'],
+                dtype='period[M]', name='Travel Date (Month)', freq='M')
+
 As in FastStats, you can also use variables from 'related' tables,
 that is, ancestor or descendant tables (including the direct parent and children)::
 
