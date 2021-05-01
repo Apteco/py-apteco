@@ -118,39 +118,49 @@ Using a base selection to filter the records::
                           Male          0
 
 Selecting only cells where ``Occupation`` is *Student*,
-and pivoting ``Income`` dimension::
+and pivoting ``Gender`` dimension::
 
-    >>> student_df.loc["Student"].unstack(level=0)
-            People                         ...
-    Income   <£10k £10-20k £100k+ £20-30k  ... £60-70k £70-80k £80-90k £90-100k
-    Gender                                 ...
-    Female   28002   39462      2    6669  ...      54      42       3        1
-    Male     14296   17917      3    5274  ...      95      63      16        4
-    Unknown     10      25      1      22  ...      17      15       5        9
-
-    [3 rows x 11 columns]
+    >>> student_df.loc["Student"].unstack(level=1)
+             People
+    Gender   Female   Male Unknown
+    Income
+    <£10k     28002  14296      10
+    £10-20k   39462  17917      25
+    £100k+        2      3       1
+    £20-30k    6669   5274      22
+    £30-40k    5690   6345      63
+    £40-50k     587    943      29
+    £50-60k     425    692      64
+    £60-70k      54     95      17
+    £70-80k      42     63      15
+    £80-90k       3     16       5
+    £90-100k      1      4       9
 
 Using a base selection from a different table::
 
     >>> households = my_session.tables["Households"]
-    >>> manchester = households["hoRegion"] == "13"
-    >>> manc_cube = manchester.cube([occupation, income, gender], table=people)
+    >>> region = households["hoRegion"]
+    >>> manchester = region == "13"
+    >>> manc_cube = manchester.cube([occupation, region, gender], table=people)
     >>> manc_df = manc_cube.to_df()
     >>> manc_df.loc["Manager"].unstack(level=1)
-             People
-    Gender   Female Male Unknown
-    Income
-    <£10k       159   90       1
-    £10-20k     670  420       4
-    £100k+        0    0       0
-    £20-30k     256  305       1
-    £30-40k     374  520       5
-    £40-50k      50  101       3
-    £50-60k      39   84      10
-    £60-70k       2   12       0
-    £70-80k       4    7       2
-    £80-90k       0    0       0
-    £90-100k      0    0       0
+                                          People
+    Gender                                Female  Male Unknown
+    Region
+    Channel Islands                            0     0       0
+    East Anglia                                0     0       0
+    East Midlands                              0     0       0
+    Greater Manchester                      1554  1539      26
+    North                                      0     0       0
+    North West (Excluding Gtr Manchester)      0     0       0
+    Northern Ireland                           0     0       0
+    Scotland                                   0     0       0
+    South East (Inside M25 )                   0     0       0
+    South East (Outside M25 )                  0     0       0
+    South West                                 0     0       0
+    Wales                                      0     0       0
+    West Midlands                              0     0       0
+    Yorkshire and Humber                       0     0       0
 
 .. Cube-related tasks
 .. ==================
