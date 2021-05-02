@@ -328,6 +328,77 @@ to set the cube to the desired table::
 
 *(this cube is identical to the previous one)*
 
+Adding different measures
+=========================
+
+The :meth:`cube` method has a `measures` argument,
+which you can use to specify which measures appear on the cube.
+If this is not set, the default `count` measure is used automatically.
+
+To display a count for another table pass its :class:`Table` object
+in the `measures` list::
+
+    >>> dest_cube = bookings.cube([dest], measures=[bookings, people, households])
+    >>> dest_cube.to_df()
+                   Bookings  People  Households
+    Destination
+    Australia        282719  274857      194412
+    New Zealand         879     870         862
+    Denmark            1510    1497        1483
+    France           524474  522932      359194
+    Germany          461260  214163      212004
+    Greece           112092  109564       93208
+    Italy             36881   25958       25612
+    Latvia              645     551         542
+    Portugal          21632   21230       20723
+    Sweden            25207   25175       24055
+    Jamaica             179     178         175
+    United States    561842  273879      195757
+    Kuwait            23548   23388       22349
+    Mongolia            154     154         151
+    Mali                974     968         961
+    Namibia            2349    2276        2232
+    Senegal             981     777         766
+    Sierra Leone       4787    4778        4677
+    South Africa        956     954         945
+
+*(if you want the original count as well,
+you will now need to include that explicitly in the measures list)*
+
+Each measure is returned as a separate column on the DataFrame.
+
+You can also add variable statistics
+which can be imported from the :mod:`apteco.statistics` module::
+
+    >>> from apteco.statistics import Sum, Mean
+    >>> cost = bookings["Cost"]
+    >>> profit = bookings["Profit"]
+    >>> finance_cube = bookings.cube([dest, gender], measures=[Mean(cost), Sum(profit)])
+    >>> finance_df = finance_cube.to_df()
+    >>> finance_df.unstack(1)
+                  Mean(Cost)                  Sum(Profit)
+    Gender            Female    Male Unknown       Female         Male     Unknown
+    Destination
+    Australia         641.33  642.80  641.63   4969609.27   9289372.33   338911.11
+    Denmark           636.56  552.11  673.20     77696.43      7172.64    11138.75
+    France            644.34  645.12     NaN  28028207.53  12743135.05        0.00
+    Germany           643.13  688.66  739.48  41693688.99     49751.52     2396.78
+    Greece            644.01  643.99  652.30   3969380.08   7381942.89   259677.61
+    Italy             638.27  634.36  658.72   3362435.25    502193.53   402007.87
+    Jamaica           597.36  468.56  807.87      1770.04       290.77       15.51
+    Kuwait            650.15  645.65  659.84    298712.85    554525.03    67014.61
+    Latvia            693.92  618.84  712.12     11177.66     19882.72     2592.66
+    Mali              596.55  661.02  771.80     18392.77     40416.47     4736.45
+    Mongolia          579.34  636.74  677.02      4193.65      7141.89     2213.89
+    Namibia           704.16  638.48  542.54     31981.71     57459.89     3439.89
+    New Zealand       633.99  641.36  625.06     17982.15     33741.93     4577.55
+    Portugal          636.00  650.95  647.02    890531.92    554791.39   229951.78
+    Senegal           656.55  658.48  518.11     60939.12     28611.82      946.95
+    Sierra Leone      614.09  652.47  597.09    165479.74    353473.04    33155.92
+    South Africa      682.05  694.72  748.89     41997.60     84264.98     6911.85
+    Sweden            641.35  644.49  652.47   1232007.22   2296749.68    57618.93
+    United States     638.56  640.62  632.76  25279636.01  46492373.17  7632493.15
+
 .. seealso::
     For more information on working with DataFrames with a MultiIndex,
     see the `user guide
