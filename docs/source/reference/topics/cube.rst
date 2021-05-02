@@ -305,7 +305,7 @@ Cube creation and conversion
         The format currently supported is a Pandas :class:`DataFrame`,
         via the :meth:`to_df` method.
 
-    .. method:: to_df(unclassified=False, totals=False, no_trans=False, convert_index=True)
+    .. method:: to_df(unclassified=False, totals=False, no_trans=False, convert_index=None)
 
         Return the cube as a Pandas :class:`DataFrame`.
         This is configured such that:

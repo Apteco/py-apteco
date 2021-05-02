@@ -221,6 +221,47 @@ that is, ancestor or descendant tables (including the direct parent and children
     the `Region` variable from the parent `Households` table,
     as well as the `Continent` variable from the child `Bookings` table.
 
+Controlling DataFrame output
+============================
+
+By default, the DataFrame returned by :meth:`to_df()` doesn't include
+unclassified values or totals.
+But these can be included by setting the ``unclassified`` and ``totals`` arguments
+(respectively) for :meth:`to_df()` to :const:`True`::
+
+    >>> gender_cube = people.cube([gender])
+    >>> gender_cube.to_df()
+             People
+    Gender
+    Female   764796
+    Male     378567
+    Unknown   13190
+    >>> gender_cube.to_df(unclassified=True, totals=True)
+                   People
+    Gender
+    Unclassified        0
+    Female         764796
+    Male           378567
+    Unknown         13190
+    TOTAL         1156553
+
+If any of these extra values are included for a cube with a Banded Date dimension,
+the corresponding DataFrame index cannot be converted to a :class:`PeriodIndex`
+so will be left as a plain :class:`Index`::
+
+    >>> booking_year_cube = bookings.cube([booking_date.year])
+    >>> booking_year_cube.to_df().index
+    PeriodIndex(['2016', '2017', '2018', '2019', '2020', '2021'], dtype='period[A-DEC]', name='Booking Date (Year)', freq='A-DEC')
+    >>> booking_year_cube.to_df(unclassified=True).index
+    Index(['Unclassified', '2016', '2017', '2018', '2019', '2020', '2021'], dtype='object', name='Booking Date (Year)')
+
+To stop the index being automatically converted to a :class:`PeriodIndex`
+even when these extra values *aren't* included,
+set the ``convert_index`` argument to :const:`False`::
+
+    >>> booking_year_cube.to_df(convert_index=False).index
+    Index(['2016', '2017', '2018', '2019', '2020', '2021'], dtype='object', name='Booking Date (Year)')
+
 Applying a selection
 ====================
 
