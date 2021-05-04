@@ -2,14 +2,22 @@
   Change Log
 **************
 
-Version 0.8.0-alpha.3
-=====================
+Version 0.8.0
+=============
+
+*Date TBC*
+
+Changed (backwards-incompatible)
+--------------------------------
+
+* The ``to_df()`` method on ``Cube`` no longer returns *Unclassified* and *Totals* rows
+  by default (can be included by using new ``unclassified`` and ``totals`` parameters).
 
 Changed
 -------
 
-* The ``to_df()`` method on ``Cube`` no longer returns *Unclassified* and *Totals* rows
-  by default.
+* The ``type`` attribute on ``Variable`` objects is now a Python ``Enum``,
+  though this is implemented in a way that is backwards-compatible with strings.
 
 Added
 -----
@@ -21,13 +29,6 @@ Added
   to the ``to_df()`` method on ``Cube`` to control whether these rows are returned.
 * Added ``convert_index`` parameter to the ``to_df()`` method on ``Cube``
   to control whether to automatically convert dimensions to their 'natural' index type.
-
-Version 0.8.0-alpha.2
-=====================
-
-Added
------
-
 * Added ``before()`` and ``after()`` methods to ``TextVariable`` for querying it
   according to whether it occurs alphabetically before or after a given value.
   They have parameter ``allow_equal`` (default False) to also include records equal
@@ -40,15 +41,6 @@ Fixed
 
 * ``TextVariable.between()`` method now ignores case,
   and checks that ``start`` comes before ``end``.
-
-Version 0.8.0-alpha.1
-=====================
-
-Changed
--------
-
-* The ``type`` attribute on ``Variable`` objects is now a Python ``Enum``,
-  though this is implemented in a way that is backwards-compatible with strings.
 
 Version 0.7.1
 =============
