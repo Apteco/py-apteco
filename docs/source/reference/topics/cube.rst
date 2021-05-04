@@ -404,7 +404,7 @@ Conversion to a pandas DataFrame:
    * - ``quarter``
      - Quarter
      - ``'Q'``
-     - ``'2019-Q1'`` ``'2019-Q2'`` ``'2019-Q3'``
+     - ``'2019Q1'`` ``'2019Q2'`` ``'2019Q3'``
    * - ``year``
      - Year
      - ``'A'``
