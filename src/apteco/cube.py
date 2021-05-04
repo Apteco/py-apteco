@@ -258,7 +258,7 @@ class Cube:
 
             normalizer = {
                 "Years": None,  # "%Y"
-                "Quarters": lambda x: f"{x[0:4]}-Q{x[5]}",  # "%YQ{q}"->"%Y-Q{q}"
+                "Quarters": None,  # "%YQ{q}"
                 "Months": lambda x: f"{x[0:4]}-{x[4:6]}",  # "%Y%m"->"%Y-%m"
                 "Day": lambda x: f"{x[0:4]}-{x[4:6]}-{x[6:8]}",  # "%Y%m%d"->"%Y-%m-%d"
             }[dimension.banding]
