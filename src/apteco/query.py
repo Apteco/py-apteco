@@ -1052,7 +1052,7 @@ class LimitClause(BaseLimitClause):
                 if self.fraction is not None
                 else None,
             ),
-            table_name=self.clause.table_name,
+            table_name=self.table_name,
             name=self.label,
         )
 
@@ -1235,7 +1235,7 @@ class TopNClause(BaseLimitClause):
                 min_value=min_value,
                 max_value=max_value,
             ),
-            table_name=self.clause.table_name,
+            table_name=self.table_name,
             name=self.label,
         )
 
@@ -1283,7 +1283,7 @@ class NPerVariableClause(BaseLimitClause):
                 grouping_ascending=grouping_ascending,
                 group_max=self.n,
             ),
-            table_name=self.clause.table_name,
+            table_name=self.table_name,
             name=self.label,
         )
 
@@ -1328,8 +1328,8 @@ class NPerTableClause(BaseLimitClause):
                     variable_name=variable_name, direction=direction, value=self.n
                 ),
                 grouping_table_name=self.per.name,
-                transactional_table_name=self.clause.table_name,
+                transactional_table_name=self.table_name,
             ),
-            table_name=self.clause.table_name,
+            table_name=self.table_name,
             name=self.label,
         )

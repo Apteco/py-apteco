@@ -412,6 +412,7 @@ class TestLimitClause:
             skip_first=24,
             clause=electronics,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="Regular sample of 72.96% of electronics purchases excl. first 24",
             session=rtl_session,
         )
@@ -449,6 +450,7 @@ class TestLimitClause:
             skip_first=0,
             clause=electronics,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="Random 4/111ths of all electronics purchases",
             session=rtl_session,
         )
@@ -1381,6 +1383,7 @@ class TestTopNClause:
             ascending=False,
             clause=clothing,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="Top 8787 clothing purchases by profit",
             session=rtl_session,
         )
@@ -1414,6 +1417,7 @@ class TestTopNClause:
             ascending=False,
             clause=clothing,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="Top 3.45% of clothing purchases by profit",
             session=rtl_session,
         )
@@ -1447,6 +1451,7 @@ class TestTopNClause:
             ascending=False,
             clause=clothing,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="Between top 5-10k clothing purchases by profit",
             session=rtl_session,
         )
@@ -1480,6 +1485,7 @@ class TestTopNClause:
             ascending=True,
             clause=clothing,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="Between bottom 12.5-17.5% clothing purchases by profit",
             session=rtl_session,
         )
@@ -1786,6 +1792,7 @@ class TestNPerVariableClause:
             ascending=False,
             clause=domestic,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="654 domestic purchases per store",
             session=rtl_session,
         )
@@ -1820,6 +1827,7 @@ class TestNPerVariableClause:
             ascending=False,
             clause=domestic,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="789 most recent domestic purchases per store",
             session=rtl_session,
         )
@@ -2049,6 +2057,7 @@ class TestNPerTableClause:
             ascending=None,
             clause=leisure,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="25 purchases per customer",
             session=rtl_session,
         )
@@ -2083,6 +2092,7 @@ class TestNPerTableClause:
             ascending=False,
             clause=leisure,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="10 most recent purchases per customer",
             session=rtl_session,
         )
@@ -2119,6 +2129,7 @@ class TestNPerTableClause:
             ascending=True,
             clause=leisure,
             table=rtl_table_purchases,
+            table_name=rtl_table_purchases.name,
             label="First 15 purchases per customer",
             session=rtl_session,
         )
