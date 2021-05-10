@@ -294,4 +294,3 @@ class Cube:
             return pd.PeriodIndex(headers, freq=period)
         else:
             raise ValueError(f"Unrecognised dimension type: {dimension}")
-
