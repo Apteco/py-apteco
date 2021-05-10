@@ -85,7 +85,7 @@ You can retrieve a variable using its name or description:
 
 .. code-block:: python
 
-    >>> surname = my_session.variables["peSName"]  # name
+    >>> occupation = my_session.variables["peOccu"]  # name
     >>> cost = my_session.variables["Cost"]  # description
 
 Each table also has a :attr:`variables` attribute
@@ -93,22 +93,24 @@ for accessing the variables on that table:
 
 .. code-block:: python
 
-    >>> destination = bookings.variables["Destination"]
+    >>> occupation = people.variables["peOccu"]
+    >>> cost = bookings.variables["Cost"]
 
 For convenience you can access variables by indexing into the :class:`Table` itself:
 
 .. code-block:: python
 
-    >>> destination = bookings["Destination"]
+    >>> occupation = people["peOccu"]
+    >>> cost = bookings["Cost"]
 
 :class:`Variable` objects have attributes with various metadata:
 
 .. code-block:: python
 
+    >>> occupation.type
+    <VariableType.SELECTOR: 'Selector'>
     >>> cost.description
     'Cost'
-    >>> destination.type
-    'Selector'
 
 Creating selections
 ===================

@@ -54,15 +54,19 @@ on a :class:`Session` object.
 You can look up variables by their name or description::
 
     >>> surname = my_session.variables["peSName"]
-    >>> income = my_session.variables["Income"]
+    >>> cost = my_session.variables["Cost"]
 
 Similarly, there is a :attr:`variables` attribute on each :class:`Table` object
-for accessing the variables from that table.
+for accessing the variables from that table::
+
+    >>> surname = people.variables["peSName"]
+    >>> cost = bookings.variables["Cost"]
+
 However, for convenience it's possible to just index directly into
 the :class:`Table` itself::
 
-    >>> car_make_code = households["HHCarmak"]
-    >>> profit = bookings["Profit"]
+    >>> surname = people["peSName"]
+    >>> cost = bookings["Cost"]
 
 Building a selection
 --------------------

@@ -68,7 +68,7 @@ You can retrieve a variable using its name or description:
 
 .. code-block:: python
 
-    >>> surname = my_session.variables["peSName"]
+    >>> occupation = my_session.variables["peOccu"]
     >>> cost = my_session.variables["Cost"]
 
 Each :class:`Table` also has a :attr:`variables` attribute which works in the same way,
@@ -76,15 +76,15 @@ providing access to the variables on that table:
 
 .. code-block:: python
 
-    >>> booking_date = bookings.variables["boDate"]
-    >>> destination = bookings.variables["Destination"]
+    >>> occupation = people.variables["peOccu"]
+    >>> cost = bookings.variables["Cost"]
 
 For convenience you can also just index into the :class:`Table` object itself:
 
 .. code-block:: python
 
-    >>> booking_date = bookings["boDate"]
-    >>> destination = bookings["Destination"]
+    >>> occupation = people["peOccu"]
+    >>> cost = bookings["Cost"]
 
 As with :attr:`tables` above,
 :attr:`variables` also supports counting using :func:`len`, and looping:
@@ -102,22 +102,22 @@ As with :attr:`tables` above,
     Cost
     Profit
 
-The :class:`Variable` objects have attributes with metadata for the variable.
+The :class:`Variable` objects have attributes with metadata for the variable:
 
 .. code-block:: python
 
     >>> cost.type
-    'Numeric'
+    <VariableType.NUMERIC: 'Numeric'>
     >>> cost.currency_symbol
     '£'
-    >>> destination.type
-    'Selector'
-    >>> destination.num_codes
-    20
+    >>> occupation.type
+    <VariableType.SELECTOR: 'Selector'>
+    >>> occupation.num_codes
+    11
 
 Here, ``cost`` is a **Numeric** variable
 representing an amount of British Pounds Sterling (£),
-and ``destination`` is a **Selector** variable with 20 different selector codes.
+and ``occupation`` is a **Selector** variable with 11 different selector codes.
 
 .. note::
     Some attributes are common to all variables,
