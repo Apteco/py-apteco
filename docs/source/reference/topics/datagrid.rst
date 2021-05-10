@@ -112,7 +112,7 @@ API reference
     :param list[Variable] columns: variables to use as columns in the data grid.
         These must be from `table` or from one of its ancestor tables.
     :param Clause selection: base selection to apply to the data grid.
-        The table of this selection must be a 'related' table
+        The table of this selection must be `table` or a 'related' table
         – either an ancestor or descendant.
     :param Table table: resolve table of the data grid.
         Each row of the data grid will correspond to a record

@@ -209,8 +209,8 @@ Here, ``student`` is a selection on the `People` table,
 but we are applying it to a `Policies` data grid.
 
 .. note::
-    The selection's table must be a 'related' table
-    – either an ancestor or descendant.
+    The selection's table must be the same as the data grid,
+    or a 'related' table – either an ancestor or descendant.
 
 Again, you can build the data grid from the selection itself,
 but this time you will need to use the `table` parameter

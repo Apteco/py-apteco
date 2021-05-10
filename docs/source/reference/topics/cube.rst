@@ -246,7 +246,7 @@ Cube creation and conversion
         If `measures` is None, the count measure of the cube's resolve table
         will be used by default.
     :param Clause selection: Optional base selection to apply to the cube.
-        The table of this selection must be a 'related' table
+        The table of this selection must be `table` or a 'related' table
         – either an ancestor or descendant.
     :param Table table: Resolve table of the cube.
         This table's records are used in the analysis for the cube,
