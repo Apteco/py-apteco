@@ -33,7 +33,8 @@ variable_type_params = [
 class TestNumericStatistics:
     @pytest.mark.parametrize(
         ["statistic", "var", "display_name", "table"],
-        # fmt: off  # sorry Black!
+        # sorry Black!
+        # fmt: off
         [
             pytest.param(Sum, "boCost", "Sum(Cost)", "Bookings", id="Sum"),  # noqa
             pytest.param(Mean, "boProfit", "Mean(Profit)", "Bookings", id="Mean"),  # noqa
@@ -62,7 +63,8 @@ class TestNumericStatistics:
         return var
 
     @pytest.fixture(
-        # fmt: off  # sorry Black!
+        # sorry Black!
+        # fmt: off
         params=[
             pytest.param((Sum, "Sum"), id="Sum"),
             pytest.param((Mean, "Mean"), id="Mean"),
@@ -99,12 +101,15 @@ class TestNumericStatistics:
 class TestNumericOrSelectorStatistics:
     @pytest.mark.parametrize(
         ["statistic", "var", "display_name", "table"],
+        # sorry Black!
+        # fmt: off
         [
-            pytest.param(CountDistinct, "boKeyCd", "Count Distinct(Response Code)", "Bookings", id="CountDistinct-Selector"),
-            pytest.param(CountMode, "hoTown", "Count Mode(Town)", "Households", id="CountMode-Selector"),
-            pytest.param(CountDistinct, "fWaitDay", "Count Distinct(Days Waiting)", "Journey History", id="CountDistinct-Numeric"),
-            pytest.param(CountMode, "wvDuratn", "Count Mode(Duration)", "WebVisits", id="CountMode-Numeric"),
+            pytest.param(CountDistinct, "boKeyCd", "Count Distinct(Response Code)", "Bookings", id="CountDistinct-Selector"), # noqa
+            pytest.param(CountMode, "hoTown", "Count Mode(Town)", "Households", id="CountMode-Selector"), # noqa
+            pytest.param(CountDistinct, "fWaitDay", "Count Distinct(Days Waiting)", "Journey History", id="CountDistinct-Numeric"), # noqa
+            pytest.param(CountMode, "wvDuratn", "Count Mode(Duration)", "WebVisits", id="CountMode-Numeric"), # noqa
         ]
+        # fmt: on
     )
     def test_num_or_sel_statistic(self, statistic, var, display_name, table, holidays):
         num_or_sel_statistic = statistic(holidays.variables[var])
@@ -126,7 +131,9 @@ class TestNumericOrSelectorStatistics:
     def num_or_sel_statistic(self, request):
         return request.param
 
-    def test_invalid_num_or_sel_statistic(self, num_or_sel_statistic, non_num_or_sel_var):
+    def test_invalid_num_or_sel_statistic(
+        self, num_or_sel_statistic, non_num_or_sel_var
+    ):
         statistic, display_name = num_or_sel_statistic
         with pytest.raises(ValueError) as exc_info:
             invalid_num_or_sel_statistic = statistic(non_num_or_sel_var)
