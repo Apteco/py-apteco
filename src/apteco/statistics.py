@@ -27,7 +27,7 @@ def _ensure_correct_type(operand, accepted_types):
     except AttributeError:
         pass
     raise ValueError(
-        f"The operand must be a" f" {' or '.join(t for t in accepted_types)} variable"
+        f"The operand must be a {' or '.join(t for t in accepted_types)} variable"
     ) from None
 
 
