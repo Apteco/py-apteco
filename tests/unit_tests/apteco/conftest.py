@@ -4,6 +4,7 @@ from unittest.mock import Mock
 import apteco_api as aa
 import pytest
 
+from apteco.common import VariableType
 from apteco.session import Session
 from apteco.tables import Table
 from apteco.variables import (
@@ -85,7 +86,7 @@ def rtl_var_customer_id(rtl_table_customers, rtl_session):
     var.configure_mock(
         name="cuID",
         description="Customer ID",
-        type="Reference",
+        type=VariableType.REFERENCE,
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,
         session=rtl_session,
@@ -99,7 +100,7 @@ def rtl_var_customer_first_name(rtl_table_customers, rtl_session):
     var.configure_mock(
         name="cuFName",
         description="Customer First Name",
-        type="Text",
+        type=VariableType.TEXT,
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,
         session=rtl_session,
@@ -113,7 +114,7 @@ def rtl_var_customer_surname(rtl_table_customers, rtl_session):
     var.configure_mock(
         name="cuSName",
         description="Customer Surname",
-        type="Text",
+        type=VariableType.TEXT,
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,
         session=rtl_session,
@@ -127,7 +128,7 @@ def rtl_var_customer_email(rtl_table_customers, rtl_session):
     var.configure_mock(
         name="cuEmail",
         description="Customer Email",
-        type="Text",
+        type=VariableType.TEXT,
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,
         session=rtl_session,
@@ -141,7 +142,7 @@ def rtl_var_customer_gender(rtl_table_customers, rtl_session):
     var.configure_mock(
         name="cuGender",
         description="Gender",
-        type="Selector",
+        type=VariableType.SELECTOR,
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,
         session=rtl_session,
@@ -155,7 +156,7 @@ def rtl_var_customer_contact_pref(rtl_table_customers, rtl_session):
     var.configure_mock(
         name="cuContac",
         description="Customer Contact Preferences",
-        type="FlagArray",
+        type=VariableType.FLAG_ARRAY,
         is_selectable=True,
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,
@@ -170,7 +171,7 @@ def rtl_var_purchase_id(rtl_table_purchases, rtl_session):
     var.configure_mock(
         name="puID",
         description="Purchase ID",
-        type="Reference",
+        type=VariableType.REFERENCE,
         table=rtl_table_purchases,
         table_name=rtl_table_purchases.name,
         session=rtl_session,
@@ -184,7 +185,7 @@ def rtl_var_purchase_store(rtl_table_purchases, rtl_session):
     var.configure_mock(
         name="puStore",
         description="Store",
-        type="Selector",
+        type=VariableType.SELECTOR,
         is_selectable=True,
         table=rtl_table_purchases,
         table_name=rtl_table_purchases.name,
@@ -199,7 +200,7 @@ def rtl_var_purchase_department(rtl_table_purchases, rtl_session):
     var.configure_mock(
         name="puDept",
         description="Department",
-        type="Selector",
+        type=VariableType.SELECTOR,
         _dimension_type="Selector",
         table=rtl_table_purchases,
         table_name=rtl_table_purchases.name,
@@ -214,7 +215,7 @@ def rtl_var_purchase_date(rtl_table_purchases, rtl_session):
     var.configure_mock(
         name="puDate",
         description="Purchase Date",
-        type="DateTime",
+        type=VariableType.DATETIME,
         is_selectable=True,
         table=rtl_table_purchases,
         table_name=rtl_table_purchases.name,
@@ -229,7 +230,7 @@ def rtl_var_purchase_store_type(rtl_table_purchases, rtl_session):
     var.configure_mock(
         name="puStType",
         description="Store Type",
-        type="Selector",
+        type=VariableType.SELECTOR,
         _dimension_type="Selector",
         table=rtl_table_purchases,
         table_name=rtl_table_purchases.name,
@@ -244,7 +245,7 @@ def rtl_var_purchase_payment_method(rtl_table_purchases, rtl_session):
     var.configure_mock(
         name="puPayMtd",
         description="Payment Method",
-        type="Selector",
+        type=VariableType.SELECTOR,
         _dimension_type="Selector",
         table=rtl_table_purchases,
         table_name=rtl_table_purchases.name,
@@ -259,7 +260,7 @@ def rtl_var_purchase_profit(rtl_table_purchases, rtl_session):
     var.configure_mock(
         name="puProfit",
         description="Profit",
-        type="Numeric",
+        type=VariableType.NUMERIC,
         is_selectable=True,
         table=rtl_table_purchases,
         table_name=rtl_table_purchases.name,
