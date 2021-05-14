@@ -4,7 +4,7 @@ import apteco_api as aa
 import numpy as np
 import pandas as pd
 
-from apteco.common import DimensionType, VariableType
+from apteco.common import VariableType
 
 
 class Cube:
@@ -43,7 +43,7 @@ class Cube:
 
     def _check_dimensions(self):
         for dimension in self.dimensions:
-            if dimension.type != VariableType.SELECTOR:
+            if dimension.type not in (VariableType.SELECTOR, VariableType.BANDED_DATE):
                 raise ValueError(
                     f"The variable '{dimension.name}' has type '{dimension.type}'."
                     f"\nOnly Selector variables (excluding sub-types)"
@@ -251,10 +251,10 @@ class Cube:
 
     @staticmethod
     def _normalize_headers(headers, dimension):
-        dimension_type = dimension._dimension_type
-        if dimension_type == DimensionType.SELECTOR:
+        variable_type = dimension.type
+        if variable_type == VariableType.SELECTOR:
             return headers["descs"]
-        elif dimension_type == DimensionType.BANDED_DATE:
+        elif variable_type == VariableType.BANDED_DATE:
 
             normalizer = {
                 "Years": None,  # "%Y"
@@ -281,13 +281,14 @@ class Cube:
             return ["Unclassified"] + normalized + ["TOTAL"]
 
         else:
-            raise ValueError(f"Unrecognised dimension type: {dimension_type}")
+            raise ValueError(f"Unrecognised dimension type: {variable_type}")
 
     @staticmethod
     def _convert_headers(headers, dimension):
-        if dimension._dimension_type == DimensionType.SELECTOR:
+        variable_type = dimension.type
+        if variable_type == VariableType.SELECTOR:
             return headers
-        elif dimension._dimension_type == DimensionType.BANDED_DATE:
+        elif variable_type == VariableType.BANDED_DATE:
             period = {"Years": "Y", "Quarters": "Q", "Months": "M", "Day": "D"}[
                 dimension.banding
             ]

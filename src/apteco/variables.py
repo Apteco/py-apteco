@@ -2,7 +2,7 @@ from typing import Iterable, Mapping, Optional
 
 import apteco_api as aa
 
-from apteco.common import DimensionType, VariableType
+from apteco.common import VariableType
 from apteco.exceptions import get_deprecated_attr
 from apteco.query import (
     ArrayClause,
@@ -96,7 +96,6 @@ class SelectorVariable(BaseSelectorVariable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.type = VariableType.SELECTOR
-        self._dimension_type = DimensionType.SELECTOR
 
     def __eq__(self, other):
         return SelectorClause(
@@ -567,8 +566,7 @@ class DateAccessor:
         self.variable = variable
         self.table = variable.table
         self.banding = banding
-        self.type = VariableType.SELECTOR
-        self._dimension_type = DimensionType.BANDED_DATE
+        self.type = VariableType.BANDED_DATE
         self.name = f"{variable.name}_{banding.rstrip('s')}"
         self.description = f"{variable.description} ({banding.rstrip('s')})"
 
