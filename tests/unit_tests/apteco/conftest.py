@@ -8,7 +8,9 @@ from apteco.common import VariableType
 from apteco.session import Session
 from apteco.tables import Table
 from apteco.variables import (
+    ArrayVariable,
     DateTimeVariable,
+    DateVariable,
     FlagArrayVariable,
     NumericVariable,
     ReferenceVariable,
@@ -44,7 +46,9 @@ Customers   | Customer First Name           | cuFName   | Text      | rtl_var_cu
 Customers   | Customer Surname              | cuSName   | Text      | rtl_var_customer_surname
 Customers   | Customer Email                | cuEmail   | Text      | rtl_var_customer_email
 Customers   | Gender                        | cuGender  | Selector  | rtl_var_customer_gender
+Customers   | Sign-up Date                  | cuSignUp  | Date      | rtl_var_customer_sign_up
 Customers   | Customer Contact Preferences  | cuContac  | FlagArray | rtl_var_customer_contact_pref
+Customers   | Customer Interests            | cuIntrst  | Array     | rtl_var_customer_interests
 ------------|-------------------------------|-----------|-----------|
 Purchases   | Purchase ID                   | puID      | Reference | rtl_var_purchase_id
 Purchases   | Store                         | puStore   | Selector  | rtl_var_purchase_store
@@ -151,12 +155,42 @@ def rtl_var_customer_gender(rtl_table_customers, rtl_session):
 
 
 @pytest.fixture()
+def rtl_var_customer_sign_up(rtl_table_customers, rtl_session):
+    var = Mock(spec=DateVariable)
+    var.configure_mock(
+        name="cuSignUp",
+        description="Sign-up Date",
+        type=VariableType.DATE,
+        is_selectable=True,
+        table=rtl_table_customers,
+        table_name=rtl_table_customers.name,
+        session=rtl_session,
+    )
+    return var
+
+
+@pytest.fixture()
 def rtl_var_customer_contact_pref(rtl_table_customers, rtl_session):
     var = Mock(spec=FlagArrayVariable)
     var.configure_mock(
         name="cuContac",
         description="Customer Contact Preferences",
         type=VariableType.FLAG_ARRAY,
+        is_selectable=True,
+        table=rtl_table_customers,
+        table_name=rtl_table_customers.name,
+        session=rtl_session,
+    )
+    return var
+
+
+@pytest.fixture()
+def rtl_var_customer_interests(rtl_table_customers, rtl_session):
+    var = Mock(spec=ArrayVariable)
+    var.configure_mock(
+        name="cuIntrst",
+        description="Customer Interests",
+        type=VariableType.ARRAY,
         is_selectable=True,
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,
