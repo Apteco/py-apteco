@@ -9,6 +9,7 @@ from apteco.session import Session
 from apteco.tables import Table
 from apteco.variables import (
     ArrayVariable,
+    DateAccessor,
     DateTimeVariable,
     DateVariable,
     FlagArrayVariable,
@@ -156,11 +157,21 @@ def rtl_var_customer_gender(rtl_table_customers, rtl_session):
 
 @pytest.fixture()
 def rtl_var_customer_sign_up(rtl_table_customers, rtl_session):
+    banded_month = Mock(spec=DateAccessor)
+    banded_month.configure_mock(
+       table=rtl_table_customers,
+       banding="Months",
+       type=VariableType.BANDED_DATE,
+       name="cuSignUp_Month",
+       description="Sign-up Date (Month)",
+    )
+
     var = Mock(spec=DateVariable)
     var.configure_mock(
         name="cuSignUp",
         description="Sign-up Date",
         type=VariableType.DATE,
+        month=banded_month,
         is_selectable=True,
         table=rtl_table_customers,
         table_name=rtl_table_customers.name,

@@ -17,17 +17,33 @@ from apteco.statistics import (
     CountMode,
 )
 
-
-variable_type_params = [
-    pytest.param("Cost", id="Numeric"),  # included for completeness
-    pytest.param("Response Type", id="Selector"),
-    pytest.param("URL", id="Text"),
-    pytest.param("Car Make Code", id="Array"),
-    pytest.param("Newspapers", id="FlagArray"),
-    pytest.param("Travel Date", id="Date"),
-    pytest.param("Communication Time", id="DateTime"),
-    pytest.param("Policy Number", id="Reference"),
+VARIABLE_TYPES = [
+    "Numeric",  # included for completeness
+    "Selector",
+    "Text",
+    "Array",
+    "FlagArray",
+    "Date",
+    "DateTime",
+    "BandedDate",
+    "Reference",
 ]
+
+
+@pytest.fixture(scope="session")
+def holidays_var_lookup(holidays):
+    var_lookup = {
+        "Selector": holidays.variables["Response Type"],
+        "Numeric": holidays.variables["Cost"],  # included for completeness
+        "Text": holidays.variables["URL"],
+        "Array": holidays.variables["Car Make Code"],
+        "FlagArray": holidays.variables["Newspapers"],
+        "Date": holidays.variables["Travel Date"],
+        "DateTime": holidays.variables["Communication Time"],
+        "BandedDate": holidays.variables["Date of Communication"].month,
+        "Reference": holidays.variables["Policy Number"],
+    }
+    return var_lookup
 
 
 class TestNumericStatistics:
@@ -57,9 +73,9 @@ class TestNumericStatistics:
         assert numeric_statistic.table is holidays.tables[table]
         assert numeric_statistic._name == display_name
 
-    @pytest.fixture(params=variable_type_params[1:], scope="session")
-    def non_numeric_var(self, request, holidays):
-        var = holidays.variables[request.param]
+    @pytest.fixture(params=VARIABLE_TYPES[1:], scope="session")
+    def non_numeric_var(self, request, holidays_var_lookup):
+        var = holidays_var_lookup[request.param]
         return var
 
     @pytest.fixture(
@@ -117,9 +133,9 @@ class TestNumericOrSelectorStatistics:
         assert num_or_sel_statistic.table is holidays.tables[table]
         assert num_or_sel_statistic._name == display_name
 
-    @pytest.fixture(params=variable_type_params[2:], scope="session")
-    def non_num_or_sel_var(self, request, holidays):
-        var = holidays.variables[request.param]
+    @pytest.fixture(params=VARIABLE_TYPES[2:], scope="session")
+    def non_num_or_sel_var(self, request, holidays_var_lookup):
+        var = holidays_var_lookup[request.param]
         return var
 
     @pytest.fixture(

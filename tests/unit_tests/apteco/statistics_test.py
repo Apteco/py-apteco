@@ -26,12 +26,13 @@ VARIABLE_TYPES = [
     "FlagArray",
     "Date",
     "DateTime",
+    "BandedDate",
     "Reference",
 ]
 
 
 @pytest.fixture()
-def variable_types_lookup(
+def retail_var_lookup(
     rtl_var_customer_gender,
     rtl_var_purchase_profit,
     rtl_var_customer_surname,
@@ -49,6 +50,7 @@ def variable_types_lookup(
         "FlagArray": rtl_var_customer_contact_pref,
         "Date": rtl_var_customer_sign_up,
         "DateTime": rtl_var_purchase_date,
+        "BandedDate": rtl_var_customer_sign_up.month,
         "Reference": rtl_var_purchase_id,
     }
     return var_lookup
@@ -85,8 +87,8 @@ class TestNumericStatistics:
         assert numeric_statistic._name == display_name
 
     @pytest.fixture(params=VARIABLE_TYPES[1:])
-    def non_numeric_var(self, request, variable_types_lookup):
-        var = variable_types_lookup[request.param]
+    def non_numeric_var(self, request, retail_var_lookup):
+        var = retail_var_lookup[request.param]
         return var
 
     @pytest.fixture(
@@ -152,8 +154,8 @@ class TestNumericOrSelectorStatistics:
         assert num_or_sel_statistic._name == display_name
 
     @pytest.fixture(params=VARIABLE_TYPES[2:])
-    def non_num_or_sel_var(self, request, variable_types_lookup):
-        var = variable_types_lookup[request.param]
+    def non_num_or_sel_var(self, request, retail_var_lookup):
+        var = retail_var_lookup[request.param]
         return var
 
     @pytest.fixture(
