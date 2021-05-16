@@ -38,19 +38,19 @@ Variables
 
  Table          |  Name                 |  Type                 |
 -----------------------------------------------------------------
-Supporters      | Membership            | Selector              | chy_selector_variable
-Supporters      | Region                | CombinedCategories    | chy_combined_categories_variable
-Supporters      | EmailAddress          | Text                  | chy_text_variable_email
-Supporters      | Surname               | Text                  | chy_text_variable_surname
-Supporters      | ContactPreferences    | FlagArray             | chy_flag_array_variable
+Supporters      | Membership            | Selector              | chy_selector_var
+Supporters      | Region                | CombinedCategories    | chy_combined_categories_var
+Supporters      | EmailAddress          | Text                  | chy_text_var_email
+Supporters      | Surname               | Text                  | chy_text_var_surname
+Supporters      | ContactPreferences    | FlagArray             | chy_flag_array_var
 ----------------|-----------------------|-----------------------|
-Campaigns       | CampaignID            | Reference             | chy_reference_variable
-Campaigns       | Tags                  | Array                 | chy_array_variable
+Campaigns       | CampaignID            | Reference             | chy_reference_var
+Campaigns       | Tags                  | Array                 | chy_array_var
 ----------------|-----------------------|-----------------------|
-Donations       | Amount                | Numeric               | chy_numeric_variable
-Donations       | DonationDate          | Date                  | chy_date_variable
+Donations       | Amount                | Numeric               | chy_numeric_var
+Donations       | DonationDate          | Date                  | chy_date_var
 ----------------|-----------------------|-----------------------|
-Website visits  | BrowsingSessionStart  | DateTime              | chy_datetime_variable
+Website visits  | BrowsingSessionStart  | DateTime              | chy_datetime_var
 
 """
 
