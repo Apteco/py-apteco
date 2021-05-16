@@ -1,6 +1,10 @@
+from unittest.mock import Mock
+
+import apteco_api as aa
 import pytest
 
 from apteco.statistics import (
+    Statistic,
     Sum,
     Mean,
     Populated,
@@ -182,3 +186,53 @@ class TestNumericOrSelectorStatistics:
         assert exc_info.value.args[0] == (
             "The operand must be a Numeric or Selector variable"
         )
+
+
+class TestStatistic:
+    def test_statistic_to_model_measure(self, rtl_table_purchases, rtl_var_purchase_department):
+        statistic = Mock(
+            table=rtl_table_purchases,
+            operand=rtl_var_purchase_department,
+            label=None,
+            _name="Chi Squared Probability(Department)",
+            _model_function="ChiSqProb",
+        )
+        expected_statistic_measure_model = aa.Measure(
+            id="Chi Squared Probability(Department)",
+            resolve_table_name="Purchases",
+            function="ChiSqProb",
+            variable_name="puDept",
+        )
+        assert Statistic._to_model_measure(statistic, rtl_table_purchases) == expected_statistic_measure_model
+
+    def test_statistic_to_model_measure_custom_name(self, rtl_table_customers, rtl_var_customer_email):
+        statistic = Mock(
+            table=rtl_table_customers,
+            operand=rtl_var_customer_email,
+            label="Magic email insight",
+            _name="Cramér's V(Customer Email)",
+            _model_function="CramersV",
+        )
+        expected_statistic_measure_model = aa.Measure(
+            id="Magic email insight",
+            resolve_table_name="Customers",
+            function="CramersV",
+            variable_name="cuEmail",
+        )
+        assert Statistic._to_model_measure(statistic, rtl_table_customers) == expected_statistic_measure_model
+
+    def test_statistic_to_model_measure_different_table(self, rtl_table_purchases, rtl_var_purchase_profit, rtl_table_customers):
+        statistic = Mock(
+            table=rtl_table_purchases,
+            operand=rtl_var_purchase_profit,
+            label=None,
+            _name="Max(Profit)",
+            _model_function="Maximum",
+        )
+        expected_statistic_measure_model = aa.Measure(
+            id="Max(Profit)",
+            resolve_table_name="Customers",
+            function="Maximum",
+            variable_name="puProfit",
+        )
+        assert Statistic._to_model_measure(statistic, rtl_table_customers) == expected_statistic_measure_model
