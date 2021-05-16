@@ -23,7 +23,7 @@ class TestSelectorVariable:
         high_value_supporters = chy_selector_var == ("Gold", "Platinum")
         assert type(high_value_supporters) == SelectorClause
         assert high_value_supporters.table_name == "Supporters"
-        assert high_value_supporters.variable_name == "Membership"
+        assert high_value_supporters.variable_name == "suMember"
         assert high_value_supporters.values == ["Gold", "Platinum"]
         assert high_value_supporters.include is True
         assert high_value_supporters.session is chy_session
@@ -31,7 +31,7 @@ class TestSelectorVariable:
         bronze_supporters = chy_selector_var == "Bronze"
         assert type(bronze_supporters) == SelectorClause
         assert bronze_supporters.table_name == "Supporters"
-        assert bronze_supporters.variable_name == "Membership"
+        assert bronze_supporters.variable_name == "suMember"
         assert bronze_supporters.values == ["Bronze"]
         assert bronze_supporters.include is True
         assert bronze_supporters.session is chy_session
@@ -47,7 +47,7 @@ class TestSelectorVariable:
         higher_value_supporters = chy_selector_var != ("Bronze", "Silver")
         assert type(higher_value_supporters) == SelectorClause
         assert higher_value_supporters.table_name == "Supporters"
-        assert higher_value_supporters.variable_name == "Membership"
+        assert higher_value_supporters.variable_name == "suMember"
         assert higher_value_supporters.values == ["Bronze", "Silver"]
         assert higher_value_supporters.include is False
         assert higher_value_supporters.session is chy_session
@@ -55,7 +55,7 @@ class TestSelectorVariable:
         not_platinum = chy_selector_var != "Platinum"
         assert type(not_platinum) == SelectorClause
         assert not_platinum.table_name == "Supporters"
-        assert not_platinum.variable_name == "Membership"
+        assert not_platinum.variable_name == "suMember"
         assert not_platinum.values == ["Platinum"]
         assert not_platinum.include is False
         assert not_platinum.session is chy_session
@@ -75,7 +75,7 @@ class TestCombinedCategoriesVariable:
         northern_supporters = chy_combined_categories_var == ["NE", "NW", "YRK"]
         assert type(northern_supporters) == CombinedCategoriesClause
         assert northern_supporters.table_name == "Supporters"
-        assert northern_supporters.variable_name == "Region"
+        assert northern_supporters.variable_name == "suRegion"
         assert northern_supporters.values == ["NE", "NW", "YRK"]
         assert northern_supporters.include is True
         assert northern_supporters.session is chy_session
@@ -85,7 +85,7 @@ class TestCombinedCategoriesVariable:
         supporters_outside_london = chy_combined_categories_var != "LDN"
         assert type(supporters_outside_london) == CombinedCategoriesClause
         assert supporters_outside_london.table_name == "Supporters"
-        assert supporters_outside_london.variable_name == "Region"
+        assert supporters_outside_london.variable_name == "suRegion"
         assert supporters_outside_london.values == ["LDN"]
         assert supporters_outside_london.include is False
         assert supporters_outside_london.session is chy_session
@@ -96,7 +96,7 @@ class TestNumericVariable:
         donations_100 = chy_numeric_var_amount == 100
         assert type(donations_100) == NumericClause
         assert donations_100.table_name == "Donations"
-        assert donations_100.variable_name == "Amount"
+        assert donations_100.variable_name == "doAmount"
         assert donations_100.values == ["100"]
         assert donations_100.include is True
         assert donations_100.session is chy_session
@@ -104,7 +104,7 @@ class TestNumericVariable:
         hundreds_donations = chy_numeric_var_amount == (i * 100 for i in range(1, 10))
         assert type(hundreds_donations) == NumericClause
         assert hundreds_donations.table_name == "Donations"
-        assert hundreds_donations.variable_name == "Amount"
+        assert hundreds_donations.variable_name == "doAmount"
         assert hundreds_donations.values == [
             "100",
             "200",
@@ -130,7 +130,7 @@ class TestNumericVariable:
         not_this = chy_numeric_var_amount != 72.1896
         assert type(not_this) == NumericClause
         assert not_this.table_name == "Donations"
-        assert not_this.variable_name == "Amount"
+        assert not_this.variable_name == "doAmount"
         assert not_this.values == ["72.1896"]
         assert not_this.include is False
         assert not_this.session is chy_session
@@ -138,7 +138,7 @@ class TestNumericVariable:
         not_one_of_these = chy_numeric_var_amount != (17.5, 8192)
         assert type(not_one_of_these) == NumericClause
         assert not_one_of_these.table_name == "Donations"
-        assert not_one_of_these.variable_name == "Amount"
+        assert not_one_of_these.variable_name == "doAmount"
         assert not_one_of_these.values == ["17.5", "8192"]
         assert not_one_of_these.include is False
         assert not_one_of_these.session is chy_session
@@ -154,7 +154,7 @@ class TestNumericVariable:
         small_donations = chy_numeric_var_amount < Decimal("10.00")
         assert type(small_donations) == NumericClause
         assert small_donations.table_name == "Donations"
-        assert small_donations.variable_name == "Amount"
+        assert small_donations.variable_name == "doAmount"
         assert small_donations.values == ["<10.0000"]
         assert small_donations.include is True
         assert small_donations.session is chy_session
@@ -169,7 +169,7 @@ class TestNumericVariable:
         up_to_including_10k = chy_numeric_var_amount <= 10000
         assert type(up_to_including_10k) == NumericClause
         assert up_to_including_10k.table_name == "Donations"
-        assert up_to_including_10k.variable_name == "Amount"
+        assert up_to_including_10k.variable_name == "doAmount"
         assert up_to_including_10k.values == ["<=10000"]
         assert up_to_including_10k.include is True
         assert up_to_including_10k.session is chy_session
@@ -184,7 +184,7 @@ class TestNumericVariable:
         big_donations = chy_numeric_var_amount > 0.01 * 26000
         assert type(big_donations) == NumericClause
         assert big_donations.table_name == "Donations"
-        assert big_donations.variable_name == "Amount"
+        assert big_donations.variable_name == "doAmount"
         assert big_donations.values == [">260.0"]
         assert big_donations.include is True
         assert big_donations.session is chy_session
@@ -199,7 +199,7 @@ class TestNumericVariable:
         at_least_this_ratio = chy_numeric_var_amount >= Fraction(65432, 987)
         assert type(at_least_this_ratio) == NumericClause
         assert at_least_this_ratio.table_name == "Donations"
-        assert at_least_this_ratio.variable_name == "Amount"
+        assert at_least_this_ratio.variable_name == "doAmount"
         assert at_least_this_ratio.values == [">=66.2938"]
         assert at_least_this_ratio.include is True
         assert at_least_this_ratio.session is chy_session
@@ -217,7 +217,7 @@ class TestTextVariable:
         specific_donor = chy_text_var_email == "donor@domain.com"
         assert type(specific_donor) == TextClause
         assert specific_donor.table_name == "Supporters"
-        assert specific_donor.variable_name == "EmailAddress"
+        assert specific_donor.variable_name == "suEmail"
         assert specific_donor.values == ["donor@domain.com"]
         assert specific_donor.match_type == "Is"
         assert specific_donor.match_case is True
@@ -229,7 +229,7 @@ class TestTextVariable:
         ]
         assert type(donors_by_email) == TextClause
         assert donors_by_email.table_name == "Supporters"
-        assert donors_by_email.variable_name == "EmailAddress"
+        assert donors_by_email.variable_name == "suEmail"
         assert donors_by_email.values == [
             "donor_0@domain.com",
             "donor_1@domain.com",
@@ -252,7 +252,7 @@ class TestTextVariable:
         dont_want_this_person = chy_text_var_email != "bad_donor@domain.com"
         assert type(dont_want_this_person) == TextClause
         assert dont_want_this_person.table_name == "Supporters"
-        assert dont_want_this_person.variable_name == "EmailAddress"
+        assert dont_want_this_person.variable_name == "suEmail"
         assert dont_want_this_person.values == ["bad_donor@domain.com"]
         assert dont_want_this_person.match_type == "Is"
         assert dont_want_this_person.match_case is True
@@ -265,7 +265,7 @@ class TestTextVariable:
         }
         assert type(not_these_people) == TextClause
         assert not_these_people.table_name == "Supporters"
-        assert not_these_people.variable_name == "EmailAddress"
+        assert not_these_people.variable_name == "suEmail"
         assert sorted(not_these_people.values) == [
             "dont_email_me@domain.com",
             "unsubscribed@domain.org",
@@ -286,7 +286,7 @@ class TestTextVariable:
         before_breakfast = chy_text_var_surname < "breakfast"
         assert type(before_breakfast) == TextClause
         assert before_breakfast.table_name == "Supporters"
-        assert before_breakfast.variable_name == "Surname"
+        assert before_breakfast.variable_name == "suSrName"
         assert before_breakfast.values == ['<"breakfast"']
         assert before_breakfast.match_type == "Ranges"
         assert before_breakfast.match_case is False
@@ -303,7 +303,7 @@ class TestTextVariable:
         first_half_alphabet = chy_text_var_surname <= "n"
         assert type(first_half_alphabet) == TextClause
         assert first_half_alphabet.table_name == "Supporters"
-        assert first_half_alphabet.variable_name == "Surname"
+        assert first_half_alphabet.variable_name == "suSrName"
         assert first_half_alphabet.values == ['<="n"']
         assert first_half_alphabet.match_type == "Ranges"
         assert first_half_alphabet.match_case is False
@@ -320,7 +320,7 @@ class TestTextVariable:
         after_tea = chy_text_var_surname > "Tea"
         assert type(after_tea) == TextClause
         assert after_tea.table_name == "Supporters"
-        assert after_tea.variable_name == "Surname"
+        assert after_tea.variable_name == "suSrName"
         assert after_tea.values == ['>"Tea"']
         assert after_tea.match_type == "Ranges"
         assert after_tea.match_case is False
@@ -337,7 +337,7 @@ class TestTextVariable:
         smith_or_later = chy_text_var_surname >= "Smith"
         assert type(smith_or_later) == TextClause
         assert smith_or_later.table_name == "Supporters"
-        assert smith_or_later.variable_name == "Surname"
+        assert smith_or_later.variable_name == "suSrName"
         assert smith_or_later.values == ['>="Smith"']
         assert smith_or_later.match_type == "Ranges"
         assert smith_or_later.match_case is False
@@ -356,7 +356,7 @@ class TestArrayVariable:
         national_campaigns = chy_array_var == "National"
         assert type(national_campaigns) == ArrayClause
         assert national_campaigns.table_name == "Campaigns"
-        assert national_campaigns.variable_name == "Tags"
+        assert national_campaigns.variable_name == "caTags"
         assert national_campaigns.values == ["National"]
         assert national_campaigns.logic == "OR"
         assert national_campaigns.include is True
@@ -373,7 +373,7 @@ class TestArrayVariable:
         }
         assert type(autumn_campaigns) == ArrayClause
         assert autumn_campaigns.table_name == "Campaigns"
-        assert autumn_campaigns.variable_name == "Tags"
+        assert autumn_campaigns.variable_name == "caTags"
         assert sorted(autumn_campaigns.values) == [
             "Autumn",
             "Back-to-School",
@@ -398,7 +398,7 @@ class TestArrayVariable:
         not_christmas = chy_array_var != "Christmas"
         assert type(not_christmas) == ArrayClause
         assert not_christmas.table_name == "Campaigns"
-        assert not_christmas.variable_name == "Tags"
+        assert not_christmas.variable_name == "caTags"
         assert not_christmas.values == ["Christmas"]
         assert not_christmas.logic == "OR"
         assert not_christmas.include is False
@@ -415,7 +415,7 @@ class TestArrayVariable:
         ]
         assert type(one_off_campaigns) == ArrayClause
         assert one_off_campaigns.table_name == "Campaigns"
-        assert one_off_campaigns.variable_name == "Tags"
+        assert one_off_campaigns.variable_name == "caTags"
         assert one_off_campaigns.values == [
             "Recurrent",
             "Annual",
@@ -443,7 +443,7 @@ class TestFlagArrayVariable:
         can_post = chy_flag_array_var == "DirectMail"
         assert type(can_post) == FlagArrayClause
         assert can_post.table_name == "Supporters"
-        assert can_post.variable_name == "ContactPreferences"
+        assert can_post.variable_name == "suCtcPrf"
         assert can_post.values == ["DirectMail"]
         assert can_post.logic == "OR"
         assert can_post.include is True
@@ -452,7 +452,7 @@ class TestFlagArrayVariable:
         phone_or_text = chy_flag_array_var == ("SMS", "Telephone")
         assert type(phone_or_text) == FlagArrayClause
         assert phone_or_text.table_name == "Supporters"
-        assert phone_or_text.variable_name == "ContactPreferences"
+        assert phone_or_text.variable_name == "suCtcPrf"
         assert phone_or_text.values == ["SMS", "Telephone"]
         assert phone_or_text.logic == "OR"
         assert phone_or_text.include is True
@@ -470,7 +470,7 @@ class TestFlagArrayVariable:
         cant_email = chy_flag_array_var != "Email"
         assert type(cant_email) == FlagArrayClause
         assert cant_email.table_name == "Supporters"
-        assert cant_email.variable_name == "ContactPreferences"
+        assert cant_email.variable_name == "suCtcPrf"
         assert cant_email.values == ["Email"]
         assert cant_email.logic == "OR"
         assert cant_email.include is False
@@ -483,7 +483,7 @@ class TestFlagArrayVariable:
         }
         assert type(not_business) == FlagArrayClause
         assert not_business.table_name == "Supporters"
-        assert not_business.variable_name == "ContactPreferences"
+        assert not_business.variable_name == "suCtcPrf"
         assert sorted(not_business.values) == [
             "BusinessDirectMail",
             "BusinessEmail",
@@ -506,7 +506,7 @@ class TestDateVariable:
         august_bank_holiday_2018 = chy_date_var == date(2018, 8, 27)
         assert type(august_bank_holiday_2018) == DateListClause
         assert august_bank_holiday_2018.table_name == "Donations"
-        assert august_bank_holiday_2018.variable_name == "DonationDate"
+        assert august_bank_holiday_2018.variable_name == "doDate"
         assert august_bank_holiday_2018.values == ["20180827"]
         assert august_bank_holiday_2018.include is True
         assert august_bank_holiday_2018.session is chy_session
@@ -522,7 +522,7 @@ class TestDateVariable:
         ]
         assert type(festive_days_from_random_years) == DateListClause
         assert festive_days_from_random_years.table_name == "Donations"
-        assert festive_days_from_random_years.variable_name == "DonationDate"
+        assert festive_days_from_random_years.variable_name == "doDate"
         assert festive_days_from_random_years.values == [
             "19121225",
             "19340214",
@@ -546,7 +546,7 @@ class TestDateVariable:
         not_easter_2050 = chy_date_var != date(2050, 4, 10)
         assert type(not_easter_2050) == DateListClause
         assert not_easter_2050.table_name == "Donations"
-        assert not_easter_2050.variable_name == "DonationDate"
+        assert not_easter_2050.variable_name == "doDate"
         assert not_easter_2050.values == ["20500410"]
         assert not_easter_2050.include is False
         assert not_easter_2050.session is chy_session
@@ -559,7 +559,7 @@ class TestDateVariable:
         ]
         assert type(exclude_solstices_and_equinoxes_2030) == DateListClause
         assert exclude_solstices_and_equinoxes_2030.table_name == "Donations"
-        assert exclude_solstices_and_equinoxes_2030.variable_name == "DonationDate"
+        assert exclude_solstices_and_equinoxes_2030.variable_name == "doDate"
         assert exclude_solstices_and_equinoxes_2030.values == [
             "20300320",
             "20300621",
@@ -584,7 +584,7 @@ class TestDateVariable:
         before_tax_year_end_2018_19 = chy_date_var <= date(2019, 4, 5)
         assert type(before_tax_year_end_2018_19) == DateRangeClause
         assert before_tax_year_end_2018_19.table_name == "Donations"
-        assert before_tax_year_end_2018_19.variable_name == "DonationDate"
+        assert before_tax_year_end_2018_19.variable_name == "doDate"
         assert before_tax_year_end_2018_19.start == "Earliest"
         assert before_tax_year_end_2018_19.end == "2019-04-05"
         assert before_tax_year_end_2018_19.include is True
@@ -601,7 +601,7 @@ class TestDateVariable:
         after_christmas_2015 = chy_date_var >= date(2015, 12, 25)
         assert type(after_christmas_2015) == DateRangeClause
         assert after_christmas_2015.table_name == "Donations"
-        assert after_christmas_2015.variable_name == "DonationDate"
+        assert after_christmas_2015.variable_name == "doDate"
         assert after_christmas_2015.start == "2015-12-25"
         assert after_christmas_2015.end == "Latest"
         assert after_christmas_2015.include is True
@@ -620,7 +620,7 @@ class TestDateTimeVariable:
         before_christmas_campaign = chy_datetime_var <= xmas_campaign_launch
         assert type(before_christmas_campaign) == DateTimeRangeClause
         assert before_christmas_campaign.table_name == "WebVisits"
-        assert before_christmas_campaign.variable_name == "BrowsingSessionStart"
+        assert before_christmas_campaign.variable_name == "weSessSt"
         assert before_christmas_campaign.start == "Earliest"
         assert before_christmas_campaign.end == "2019-11-25T11:22:33"
         assert before_christmas_campaign.include is True
@@ -637,7 +637,7 @@ class TestDateTimeVariable:
         after_boxing_day_sale_start = chy_datetime_var >= sale_start
         assert type(after_boxing_day_sale_start) == DateTimeRangeClause
         assert after_boxing_day_sale_start.table_name == "WebVisits"
-        assert after_boxing_day_sale_start.variable_name == "BrowsingSessionStart"
+        assert after_boxing_day_sale_start.variable_name == "weSessSt"
         assert after_boxing_day_sale_start.start == "2019-12-26T04:32:10"
         assert after_boxing_day_sale_start.end == "Latest"
         assert after_boxing_day_sale_start.include is True
@@ -656,7 +656,7 @@ class TestReferenceVariable:
         abc_campaign = chy_reference_var == "abc"
         assert type(abc_campaign) == ReferenceClause
         assert abc_campaign.table_name == "Campaigns"
-        assert abc_campaign.variable_name == "CampaignID"
+        assert abc_campaign.variable_name == "caID"
         assert abc_campaign.values == ["abc"]
         assert abc_campaign.include is True
         assert abc_campaign.session is chy_session
@@ -665,7 +665,7 @@ class TestReferenceVariable:
         not_x_campaigns = chy_reference_var != ["x", "xy", "xs", "xyz", "x1"]
         assert type(not_x_campaigns) == ReferenceClause
         assert not_x_campaigns.table_name == "Campaigns"
-        assert not_x_campaigns.variable_name == "CampaignID"
+        assert not_x_campaigns.variable_name == "caID"
         assert not_x_campaigns.values == ["x", "xy", "xs", "xyz", "x1"]
         assert not_x_campaigns.include is False
         assert not_x_campaigns.session is chy_session
