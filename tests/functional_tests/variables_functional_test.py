@@ -92,8 +92,8 @@ class TestCombinedCategoriesVariable:
 
 
 class TestNumericVariable:
-    def test_eq(self, chy_numeric_var, chy_session):
-        donations_100 = chy_numeric_var == 100
+    def test_eq(self, chy_numeric_var_amount, chy_session):
+        donations_100 = chy_numeric_var_amount == 100
         assert type(donations_100) == NumericClause
         assert donations_100.table_name == "Donations"
         assert donations_100.variable_name == "Amount"
@@ -101,7 +101,7 @@ class TestNumericVariable:
         assert donations_100.include is True
         assert donations_100.session is chy_session
 
-        hundreds_donations = chy_numeric_var == (i * 100 for i in range(1, 10))
+        hundreds_donations = chy_numeric_var_amount == (i * 100 for i in range(1, 10))
         assert type(hundreds_donations) == NumericClause
         assert hundreds_donations.table_name == "Donations"
         assert hundreds_donations.variable_name == "Amount"
@@ -120,14 +120,14 @@ class TestNumericVariable:
         assert hundreds_donations.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_a_string = chy_numeric_var == "256"
+            trying_with_a_string = chy_numeric_var_amount == "256"
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a numeric variable"
             " must be given as a number or an iterable of numbers."
         )
 
-    def test_ne(self, chy_numeric_var, chy_session):
-        not_this = chy_numeric_var != 72.1896
+    def test_ne(self, chy_numeric_var_amount, chy_session):
+        not_this = chy_numeric_var_amount != 72.1896
         assert type(not_this) == NumericClause
         assert not_this.table_name == "Donations"
         assert not_this.variable_name == "Amount"
@@ -135,7 +135,7 @@ class TestNumericVariable:
         assert not_this.include is False
         assert not_this.session is chy_session
 
-        not_one_of_these = chy_numeric_var != (17.5, 8192)
+        not_one_of_these = chy_numeric_var_amount != (17.5, 8192)
         assert type(not_one_of_these) == NumericClause
         assert not_one_of_these.table_name == "Donations"
         assert not_one_of_these.variable_name == "Amount"
@@ -144,14 +144,14 @@ class TestNumericVariable:
         assert not_one_of_these.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            trying_with_a_boolean = chy_numeric_var != False
+            trying_with_a_boolean = chy_numeric_var_amount != False
         assert exc_info.value.args[0] == (
             "Chosen value(s) for a numeric variable"
             " must be given as a number or an iterable of numbers."
         )
 
-    def test_lt(self, chy_numeric_var, chy_session):
-        small_donations = chy_numeric_var < Decimal("10.00")
+    def test_lt(self, chy_numeric_var_amount, chy_session):
+        small_donations = chy_numeric_var_amount < Decimal("10.00")
         assert type(small_donations) == NumericClause
         assert small_donations.table_name == "Donations"
         assert small_donations.variable_name == "Amount"
@@ -160,13 +160,13 @@ class TestNumericVariable:
         assert small_donations.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            less_than_a_list = chy_numeric_var < [512.64, 646.464_646]
+            less_than_a_list = chy_numeric_var_amount < [512.64, 646.464_646]
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )
 
-    def test_le(self, chy_numeric_var, chy_session):
-        up_to_including_10k = chy_numeric_var <= 10000
+    def test_le(self, chy_numeric_var_amount, chy_session):
+        up_to_including_10k = chy_numeric_var_amount <= 10000
         assert type(up_to_including_10k) == NumericClause
         assert up_to_including_10k.table_name == "Donations"
         assert up_to_including_10k.variable_name == "Amount"
@@ -175,13 +175,13 @@ class TestNumericVariable:
         assert up_to_including_10k.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            less_than_equal_tuple = chy_numeric_var <= (52, 27, 9.75)
+            less_than_equal_tuple = chy_numeric_var_amount <= (52, 27, 9.75)
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )
 
-    def test_gt(self, chy_numeric_var, chy_session):
-        big_donations = chy_numeric_var > 0.01 * 26000
+    def test_gt(self, chy_numeric_var_amount, chy_session):
+        big_donations = chy_numeric_var_amount > 0.01 * 26000
         assert type(big_donations) == NumericClause
         assert big_donations.table_name == "Donations"
         assert big_donations.variable_name == "Amount"
@@ -190,13 +190,13 @@ class TestNumericVariable:
         assert big_donations.session is chy_session
 
         with pytest.raises(ValueError) as exc_info:
-            more_than_a_set = chy_numeric_var > {15, 30, 40, 40}
+            more_than_a_set = chy_numeric_var_amount > {15, 30, 40, 40}
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )
 
-    def test_ge(self, chy_numeric_var, chy_session):
-        at_least_this_ratio = chy_numeric_var >= Fraction(65432, 987)
+    def test_ge(self, chy_numeric_var_amount, chy_session):
+        at_least_this_ratio = chy_numeric_var_amount >= Fraction(65432, 987)
         assert type(at_least_this_ratio) == NumericClause
         assert at_least_this_ratio.table_name == "Donations"
         assert at_least_this_ratio.variable_name == "Amount"
@@ -206,7 +206,7 @@ class TestNumericVariable:
 
         with pytest.raises(ValueError) as exc_info:
             number_gen = (n for n in "12.3 4.56 789".split())
-            at_least_a_generator = chy_numeric_var >= number_gen
+            at_least_a_generator = chy_numeric_var_amount >= number_gen
         assert exc_info.value.args[0] == (
             "Must specify a single number for this type of operation."
         )

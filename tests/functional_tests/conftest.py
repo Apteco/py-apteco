@@ -42,15 +42,18 @@ Supporters      | Membership            | Selector              | chy_selector_v
 Supporters      | Region                | CombinedCategories    | chy_combined_categories_var
 Supporters      | EmailAddress          | Text                  | chy_text_var_email
 Supporters      | Surname               | Text                  | chy_text_var_surname
+Supporters      | Age                   | Numeric               | chy_numeric_var_age
 Supporters      | ContactPreferences    | FlagArray             | chy_flag_array_var
 ----------------|-----------------------|-----------------------|
 Campaigns       | CampaignID            | Reference             | chy_reference_var
+Campaigns       | Cost                  | Numeric               | chy_numeric_var_cost
 Campaigns       | Tags                  | Array                 | chy_array_var
 ----------------|-----------------------|-----------------------|
-Donations       | Amount                | Numeric               | chy_numeric_var
+Donations       | Amount                | Numeric               | chy_numeric_var_amount
 Donations       | DonationDate          | Date                  | chy_date_var
 ----------------|-----------------------|-----------------------|
 Website visits  | BrowsingSessionStart  | DateTime              | chy_datetime_var
+Website visits  | Duration              | Numeric               | chy_numeric_var_duration
 
 """
 
@@ -166,11 +169,41 @@ def chy_combined_categories_var(chy_session, chy_supporters_table):
 
 
 @pytest.fixture()
-def chy_numeric_var(chy_session, chy_donations_table):
+def chy_numeric_var_age(chy_session, chy_supporters_table):
+    nv_example = NumericVariable.__new__(NumericVariable)
+    nv_example.type = "Numeric"
+    nv_example.table = chy_supporters_table
+    nv_example.name = "Age"
+    nv_example.session = chy_session
+    return nv_example
+
+
+@pytest.fixture()
+def chy_numeric_var_cost(chy_session, chy_campaigns_table):
+    nv_example = NumericVariable.__new__(NumericVariable)
+    nv_example.type = "Numeric"
+    nv_example.table = chy_campaigns_table
+    nv_example.name = "Cost"
+    nv_example.session = chy_session
+    return nv_example
+
+
+@pytest.fixture()
+def chy_numeric_var_amount(chy_session, chy_donations_table):
     nv_example = NumericVariable.__new__(NumericVariable)
     nv_example.type = "Numeric"
     nv_example.table = chy_donations_table
     nv_example.name = "Amount"
+    nv_example.session = chy_session
+    return nv_example
+
+
+@pytest.fixture()
+def chy_numeric_var_duration(chy_session, chy_website_visits_table):
+    nv_example = NumericVariable.__new__(NumericVariable)
+    nv_example.type = "Numeric"
+    nv_example.table = chy_website_visits_table
+    nv_example.name = "Duration"
     nv_example.session = chy_session
     return nv_example
 
