@@ -17,6 +17,7 @@ from apteco.statistics import (
     CountMode,
 )
 
+
 VARIABLE_TYPES = [
     "Numeric",  # included for completeness
     "Selector",
