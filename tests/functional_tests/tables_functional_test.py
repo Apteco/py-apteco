@@ -221,7 +221,7 @@ class TestTableOperators:
 
         # this table isn't related but is included for completeness
         web_visits_recurring_campaigns = chy_website_visits_table * recurring_campaigns
-        assert web_visits_recurring_campaigns.table_name == "WebVisits"
+        assert web_visits_recurring_campaigns.table_name == "WebsiteVisits"
 
     def test_mul_unrelated_tables(
         self,
@@ -231,7 +231,7 @@ class TestTableOperators:
         chy_donations_table,
         chy_website_visits_table,
     ):
-        assert web_visits_after_lockdown.table_name == "WebVisits"
+        assert web_visits_after_lockdown.table_name == "WebsiteVisits"
 
         # this table *is* related (master table) but is included for completeness
         supporters_web_visits = chy_supporters_table * web_visits_after_lockdown
@@ -245,5 +245,5 @@ class TestTableOperators:
 
         # check 'changing' to itself
         website_visits_web_visits = chy_website_visits_table * web_visits_after_lockdown
-        assert website_visits_web_visits.table_name == "WebVisits"
+        assert website_visits_web_visits.table_name == "WebsiteVisits"
         assert website_visits_web_visits is web_visits_after_lockdown

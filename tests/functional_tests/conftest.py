@@ -32,7 +32,7 @@ Tables
 Supporters          | chy_supporters_table
 ├── Campaigns       | chy_campaigns_table
 │   └── Donations   | chy_donations_table
-└── Website visits  | chy_website_visits_table
+└── WebsiteVisits   | chy_website_visits_table
 
 Variables
 ---------
@@ -53,8 +53,8 @@ Campaigns       | caTags    | Tags                  | Array                 | ch
 Donations       | doAmount  | Amount                | Numeric               | chy_numeric_var_amount
 Donations       | doDate    | Donation Date         | Date                  | chy_date_var
 ----------------|-----------|-----------------------|-----------------------|
-Website visits  | weSessSt  | Session Start         | DateTime              | chy_datetime_var
-Website visits  | weDurtn   | Duration              | Numeric               | chy_numeric_var_duration
+WebsiteVisits   | weSessSt  | Session Start         | DateTime              | chy_datetime_var
+WebsiteVisits   | weDurtn   | Duration              | Numeric               | chy_numeric_var_duration
 
 """
 
@@ -77,7 +77,7 @@ def chy_tables():
     donations_table.ancestors = [campaigns_table, supporters_table]
 
     website_visits_table = Table.__new__(Table)
-    website_visits_table.name = "WebVisits"
+    website_visits_table.name = "WebsiteVisits"
     website_visits_table.parent = supporters_table
     website_visits_table.ancestors = [supporters_table]
 
@@ -101,7 +101,7 @@ def chy_tables():
         "Supporters": supporters_table,
         "Campaigns": campaigns_table,
         "Donations": donations_table,
-        "WebVisits": website_visits_table,
+        "WebsiteVisits": website_visits_table,
     }
 
 
@@ -122,7 +122,7 @@ def chy_donations_table(chy_tables):
 
 @pytest.fixture()
 def chy_website_visits_table(chy_tables):
-    return chy_tables["WebVisits"]
+    return chy_tables["WebsiteVisits"]
 
 
 @pytest.fixture()

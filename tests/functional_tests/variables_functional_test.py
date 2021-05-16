@@ -619,7 +619,7 @@ class TestDateTimeVariable:
         xmas_campaign_launch = datetime(2019, 11, 25, 11, 22, 33)
         before_christmas_campaign = chy_datetime_var <= xmas_campaign_launch
         assert type(before_christmas_campaign) == DateTimeRangeClause
-        assert before_christmas_campaign.table_name == "WebVisits"
+        assert before_christmas_campaign.table_name == "WebsiteVisits"
         assert before_christmas_campaign.variable_name == "weSessSt"
         assert before_christmas_campaign.start == "Earliest"
         assert before_christmas_campaign.end == "2019-11-25T11:22:33"
@@ -636,7 +636,7 @@ class TestDateTimeVariable:
         sale_start = datetime(2019, 12, 26, 4, 32, 10)
         after_boxing_day_sale_start = chy_datetime_var >= sale_start
         assert type(after_boxing_day_sale_start) == DateTimeRangeClause
-        assert after_boxing_day_sale_start.table_name == "WebVisits"
+        assert after_boxing_day_sale_start.table_name == "WebsiteVisits"
         assert after_boxing_day_sale_start.variable_name == "weSessSt"
         assert after_boxing_day_sale_start.start == "2019-12-26T04:32:10"
         assert after_boxing_day_sale_start.end == "Latest"
