@@ -290,7 +290,9 @@ def test_cube_to_df_bookings_date_banding(
     cube_011_bookings_banded_date, holidays, bookings
 ):
     banding, expected_df = cube_011_bookings_banded_date
-    cube = Cube([getattr(bookings["Booking Date"], banding)], table=bookings, session=holidays)
+    cube = Cube(
+        [getattr(bookings["Booking Date"], banding)], table=bookings, session=holidays
+    )
     df = cube.to_df(unclassified=True, totals=True)
 
     assert_cube_dataframes_match(df, expected_df, False)

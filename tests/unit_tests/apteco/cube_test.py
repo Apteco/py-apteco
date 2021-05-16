@@ -20,9 +20,13 @@ def sel_nonempty(rtl_sel_high_value_purchases):
 @pytest.fixture()
 def fake_cube_data():
     measure_data1 = MagicMock()
-    measure_data1.__getitem__.side_effect = [Mock(ravel=Mock(return_value="flattened_cube_data1"))]
+    measure_data1.__getitem__.side_effect = [
+        Mock(ravel=Mock(return_value="flattened_cube_data1"))
+    ]
     measure_data2 = MagicMock()
-    measure_data2.__getitem__.side_effect = [Mock(ravel=Mock(return_value="flattened_cube_data2"))]
+    measure_data2.__getitem__.side_effect = [
+        Mock(ravel=Mock(return_value="flattened_cube_data2"))
+    ]
     data = [measure_data1, measure_data2]
     return data
 
@@ -82,7 +86,12 @@ class TestCube:
     @patch("apteco.cube.Cube._get_data")
     @patch("apteco.cube.Cube._check_inputs")
     def test_init(self, patch__check_inputs, patch__get_data):
-        patch__get_data.return_value = ("my_data", "my_sizes", "my_headers", "my_measure_names")
+        patch__get_data.return_value = (
+            "my_data",
+            "my_sizes",
+            "my_headers",
+            "my_measure_names",
+        )
         cube_example = Cube(
             ["variables", "for", "dimensions"],
             selection="my_selection",
@@ -340,8 +349,14 @@ class TestCube:
         expected_raw_data = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
         expected_headers = [
             {"codes": ["S", "F", "O"], "descs": ["Shop", "Franchise", "Online"]},
-            {"codes": ["0", "1", "2", "3", "4"], "descs": ["Cash", "Card", "Cheque", "Voucher", "Gift Card"]},
-            {"codes": ["HO", "GA", "EL", "DI"], "descs": ["Home", "Garden", "Electronics", "DIY"]},
+            {
+                "codes": ["0", "1", "2", "3", "4"],
+                "descs": ["Cash", "Card", "Cheque", "Voucher", "Gift Card"],
+            },
+            {
+                "codes": ["HO", "GA", "EL", "DI"],
+                "descs": ["Home", "Garden", "Electronics", "DIY"],
+            },
         ]
         expected_measure_names = ["Purchases"]
         expected_sizes = (3, 5, 4)

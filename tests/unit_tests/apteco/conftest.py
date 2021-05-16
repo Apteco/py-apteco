@@ -159,11 +159,11 @@ def rtl_var_customer_gender(rtl_table_customers, rtl_session):
 def rtl_var_customer_sign_up(rtl_table_customers, rtl_session):
     banded_month = Mock(spec=DateAccessor)
     banded_month.configure_mock(
-       table=rtl_table_customers,
-       banding="Months",
-       type=VariableType.BANDED_DATE,
-       name="cuSignUp_Month",
-       description="Sign-up Date (Month)",
+        table=rtl_table_customers,
+        banding="Months",
+        type=VariableType.BANDED_DATE,
+        name="cuSignUp_Month",
+        description="Sign-up Date (Month)",
     )
 
     var = Mock(spec=DateVariable)

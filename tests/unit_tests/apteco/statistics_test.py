@@ -189,7 +189,9 @@ class TestNumericOrSelectorStatistics:
 
 
 class TestStatistic:
-    def test_statistic_to_model_measure(self, rtl_table_purchases, rtl_var_purchase_department):
+    def test_statistic_to_model_measure(
+        self, rtl_table_purchases, rtl_var_purchase_department
+    ):
         statistic = Mock(
             table=rtl_table_purchases,
             operand=rtl_var_purchase_department,
@@ -203,9 +205,14 @@ class TestStatistic:
             function="ChiSqProb",
             variable_name="puDept",
         )
-        assert Statistic._to_model_measure(statistic, rtl_table_purchases) == expected_statistic_measure_model
+        assert (
+            Statistic._to_model_measure(statistic, rtl_table_purchases)
+            == expected_statistic_measure_model
+        )
 
-    def test_statistic_to_model_measure_custom_name(self, rtl_table_customers, rtl_var_customer_email):
+    def test_statistic_to_model_measure_custom_name(
+        self, rtl_table_customers, rtl_var_customer_email
+    ):
         statistic = Mock(
             table=rtl_table_customers,
             operand=rtl_var_customer_email,
@@ -219,9 +226,14 @@ class TestStatistic:
             function="CramersV",
             variable_name="cuEmail",
         )
-        assert Statistic._to_model_measure(statistic, rtl_table_customers) == expected_statistic_measure_model
+        assert (
+            Statistic._to_model_measure(statistic, rtl_table_customers)
+            == expected_statistic_measure_model
+        )
 
-    def test_statistic_to_model_measure_different_table(self, rtl_table_purchases, rtl_var_purchase_profit, rtl_table_customers):
+    def test_statistic_to_model_measure_different_table(
+        self, rtl_table_purchases, rtl_var_purchase_profit, rtl_table_customers
+    ):
         statistic = Mock(
             table=rtl_table_purchases,
             operand=rtl_var_purchase_profit,
@@ -235,4 +247,7 @@ class TestStatistic:
             function="Maximum",
             variable_name="puProfit",
         )
-        assert Statistic._to_model_measure(statistic, rtl_table_customers) == expected_statistic_measure_model
+        assert (
+            Statistic._to_model_measure(statistic, rtl_table_customers)
+            == expected_statistic_measure_model
+        )
