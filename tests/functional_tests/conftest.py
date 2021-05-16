@@ -1,6 +1,7 @@
 import pytest
 
 from apteco import Session
+from apteco.common import VariableType
 from apteco.tables import Table, TablesAccessor
 from apteco.variables import (
     ArrayVariable,
@@ -151,7 +152,7 @@ def chy_session(
 @pytest.fixture()
 def chy_selector_var(chy_session, chy_supporters_table):
     sv_example = SelectorVariable.__new__(SelectorVariable)
-    sv_example.type = "Selector"
+    sv_example.type = VariableType.SELECTOR
     sv_example.table = chy_supporters_table
     sv_example.name = "suMember"
     sv_example.description = "Membership"
@@ -162,7 +163,7 @@ def chy_selector_var(chy_session, chy_supporters_table):
 @pytest.fixture()
 def chy_combined_categories_var(chy_session, chy_supporters_table):
     ccv_example = CombinedCategoriesVariable.__new__(CombinedCategoriesVariable)
-    ccv_example.type = "CombinedCategories"
+    ccv_example.type = VariableType.COMBINED_CATEGORIES
     ccv_example.table = chy_supporters_table
     ccv_example.name = "suRegion"
     ccv_example.description = "Region"
@@ -173,7 +174,7 @@ def chy_combined_categories_var(chy_session, chy_supporters_table):
 @pytest.fixture()
 def chy_numeric_var_age(chy_session, chy_supporters_table):
     nv_example = NumericVariable.__new__(NumericVariable)
-    nv_example.type = "Numeric"
+    nv_example.type = VariableType.NUMERIC
     nv_example.table = chy_supporters_table
     nv_example.name = "suAge"
     nv_example.description = "Age"
@@ -184,7 +185,7 @@ def chy_numeric_var_age(chy_session, chy_supporters_table):
 @pytest.fixture()
 def chy_numeric_var_cost(chy_session, chy_campaigns_table):
     nv_example = NumericVariable.__new__(NumericVariable)
-    nv_example.type = "Numeric"
+    nv_example.type = VariableType.NUMERIC
     nv_example.table = chy_campaigns_table
     nv_example.name = "caCost"
     nv_example.description = "Cost"
@@ -195,7 +196,7 @@ def chy_numeric_var_cost(chy_session, chy_campaigns_table):
 @pytest.fixture()
 def chy_numeric_var_amount(chy_session, chy_donations_table):
     nv_example = NumericVariable.__new__(NumericVariable)
-    nv_example.type = "Numeric"
+    nv_example.type = VariableType.NUMERIC
     nv_example.table = chy_donations_table
     nv_example.name = "doAmount"
     nv_example.description = "Amount"
@@ -206,7 +207,7 @@ def chy_numeric_var_amount(chy_session, chy_donations_table):
 @pytest.fixture()
 def chy_numeric_var_duration(chy_session, chy_website_visits_table):
     nv_example = NumericVariable.__new__(NumericVariable)
-    nv_example.type = "Numeric"
+    nv_example.type = VariableType.NUMERIC
     nv_example.table = chy_website_visits_table
     nv_example.name = "weDurtn"
     nv_example.description = "Duration"
@@ -217,7 +218,7 @@ def chy_numeric_var_duration(chy_session, chy_website_visits_table):
 @pytest.fixture()
 def chy_text_var_email(chy_session, chy_supporters_table):
     tv_example = TextVariable.__new__(TextVariable)
-    tv_example.type = "Text"
+    tv_example.type = VariableType.TEXT
     tv_example.table = chy_supporters_table
     tv_example.name = "suEmail"
     tv_example.description = "Email Address"
@@ -228,7 +229,7 @@ def chy_text_var_email(chy_session, chy_supporters_table):
 @pytest.fixture()
 def chy_text_var_surname(chy_session, chy_supporters_table):
     tv_example = TextVariable.__new__(TextVariable)
-    tv_example.type = "Text"
+    tv_example.type = VariableType.TEXT
     tv_example.table = chy_supporters_table
     tv_example.name = "suSrName"
     tv_example.description = "Surname"
@@ -239,7 +240,7 @@ def chy_text_var_surname(chy_session, chy_supporters_table):
 @pytest.fixture()
 def chy_array_var(chy_session, chy_campaigns_table):
     av_example = ArrayVariable.__new__(ArrayVariable)
-    av_example.type = "Array"
+    av_example.type = VariableType.ARRAY
     av_example.table = chy_campaigns_table
     av_example.name = "caTags"
     av_example.description = "Tags"
@@ -250,7 +251,7 @@ def chy_array_var(chy_session, chy_campaigns_table):
 @pytest.fixture()
 def chy_flag_array_var(chy_session, chy_supporters_table):
     fav_example = FlagArrayVariable.__new__(FlagArrayVariable)
-    fav_example.type = "FlagArray"
+    fav_example.type = VariableType.FLAG_ARRAY
     fav_example.table = chy_supporters_table
     fav_example.name = "suCtcPrf"
     fav_example.description = "Contact Preferences"
@@ -261,7 +262,7 @@ def chy_flag_array_var(chy_session, chy_supporters_table):
 @pytest.fixture()
 def chy_date_var(chy_session, chy_donations_table):
     dv_example = DateVariable.__new__(DateVariable)
-    dv_example.type = "Date"
+    dv_example.type = VariableType.DATE
     dv_example.table = chy_donations_table
     dv_example.name = "doDate"
     dv_example.description = "Donation Date"
@@ -272,7 +273,7 @@ def chy_date_var(chy_session, chy_donations_table):
 @pytest.fixture()
 def chy_datetime_var(chy_session, chy_website_visits_table):
     dtv_example = DateTimeVariable.__new__(DateTimeVariable)
-    dtv_example.type = "DateTime"
+    dtv_example.type = VariableType.DATETIME
     dtv_example.table = chy_website_visits_table
     dtv_example.name = "weSessSt"
     dtv_example.description = "Session Start"
@@ -283,7 +284,7 @@ def chy_datetime_var(chy_session, chy_website_visits_table):
 @pytest.fixture()
 def chy_reference_var(chy_session, chy_campaigns_table):
     rv_example = ReferenceVariable.__new__(ReferenceVariable)
-    rv_example.type = "Reference"
+    rv_example.type = VariableType.REFERENCE
     rv_example.table = chy_campaigns_table
     rv_example.name = "caID"
     rv_example.description = "Campaign ID"
