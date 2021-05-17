@@ -22,13 +22,11 @@ from apteco.common import VariableType
 
 def _ensure_correct_type(operand, accepted_types):
     try:
-        if operand.type in accepted_types:
-            return
-    except AttributeError:
-        pass
-    raise ValueError(
-        f"The operand must be a {' or '.join(t for t in accepted_types)} variable"
-    ) from None
+        assert operand.type in accepted_types
+    except (AssertionError, AttributeError):
+        raise ValueError(
+            f"The operand must be a {' or '.join(t for t in accepted_types)} variable"
+        ) from None
 
 
 class Statistic:
