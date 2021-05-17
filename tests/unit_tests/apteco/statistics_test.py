@@ -3,23 +3,62 @@ from unittest.mock import Mock
 import apteco_api as aa
 import pytest
 
+from apteco.common import VariableType
 from apteco.statistics import (
-    Statistic,
-    Sum,
-    Mean,
-    Populated,
-    Min,
-    Max,
-    Median,
-    Mode,
-    Variance,
-    StdDev,
-    LowerQuartile,
-    UpperQuartile,
-    InterQuartileRange,
     CountDistinct,
     CountMode,
+    InterQuartileRange,
+    LowerQuartile,
+    Max,
+    Mean,
+    Median,
+    Min,
+    Mode,
+    Populated,
+    Statistic,
+    StdDev,
+    Sum,
+    UpperQuartile,
+    Variance,
+    _ensure_correct_type,
 )
+
+
+class TestEnsureCorrectType:
+    def test_ensure_correct_type_single_accepted_type(self):
+        op = Mock(type=VariableType.SELECTOR)
+        accepted = (VariableType.SELECTOR,)
+        result = _ensure_correct_type(op, accepted)
+        assert result is None
+
+    def test_ensure_correct_type_multiple_accepted_types(self):
+        op = Mock(type=VariableType.NUMERIC)
+        accepted = (VariableType.NUMERIC, VariableType.REFERENCE)
+        result = _ensure_correct_type(op, accepted)
+        assert result is None
+
+    def test_ensure_correct_type_bad_type_single_accepted(self):
+        op = Mock(type=VariableType.DATE)
+        accepted = (VariableType.BANDED_DATE,)
+        with pytest.raises(ValueError) as exc_info:
+            _ensure_correct_type(op, accepted)
+        assert exc_info.value.args[0] == "The operand must be a BandedDate variable"
+
+    def test_ensure_correct_type_bad_type_multiple_accepted(self):
+        op = Mock(type=VariableType.REFERENCE)
+        accepted = (VariableType.DATE, VariableType.DATETIME)
+        with pytest.raises(ValueError) as exc_info:
+            _ensure_correct_type(op, accepted)
+        assert exc_info.value.args[0] == (
+            "The operand must be a Date or DateTime variable"
+        )
+
+    def test_ensure_correct_type_operand_has_no_type(self):
+        op = dict()
+        accepted = (VariableType.REFERENCE,)
+        with pytest.raises(ValueError) as exc_info:
+            _ensure_correct_type(op, accepted)
+        assert exc_info.value.args[0] == "The operand must be a Reference variable"
 
 
 VARIABLE_TYPES = [
@@ -88,6 +127,8 @@ class TestNumericStatistics:
         """Test each numeric statistic with Purchases Profit variable."""
         numeric_statistic = statistic(rtl_var_purchase_profit)
         assert numeric_statistic.table is rtl_table_purchases
+        assert numeric_statistic.operand is rtl_var_purchase_profit
+        assert numeric_statistic.label is None
         assert numeric_statistic._name == display_name
 
     @pytest.fixture(params=VARIABLE_TYPES[1:])
@@ -155,6 +196,8 @@ class TestNumericOrSelectorStatistics:
         var = {"Sel": rtl_var_purchase_store, "Num": rtl_var_purchase_profit}[var_type]
         num_or_sel_statistic = statistic(var)
         assert num_or_sel_statistic.table is rtl_table_purchases
+        assert num_or_sel_statistic.operand is var
+        assert num_or_sel_statistic.label is None
         assert num_or_sel_statistic._name == display_name
 
     @pytest.fixture(params=VARIABLE_TYPES[2:])
