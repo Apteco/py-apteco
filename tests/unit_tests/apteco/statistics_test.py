@@ -131,6 +131,41 @@ class TestNumericStatistics:
         assert numeric_statistic.label is None
         assert numeric_statistic._name == display_name
 
+    @pytest.mark.parametrize(
+        ["statistic", "custom_name", "display_name"],
+        # sorry Black!
+        # fmt: off
+        [
+            pytest.param(Sum, "Total profit", "Sum(Profit)", id="Sum"),
+            pytest.param(Mean, "Average profit", "Mean(Profit)", id="Mean"),
+            pytest.param(Populated, "Count of profit known", "Populated(Profit)", id="Populated"),  # noqa
+            pytest.param(Min, "Smallest profit", "Min(Profit)", id="Min"),
+            pytest.param(Max, "Largest profit", "Max(Profit)", id="Max"),
+            pytest.param(Median, "Average (median) profit", "Median(Profit)", id="Median"),  # noqa
+            pytest.param(Mode, "Most common profit", "Mode(Profit)", id="Mode"),
+            pytest.param(Variance, "Profit variance", "Variance(Profit)", id="Variance"),  # noqa
+            pytest.param(StdDev, "Profit standard deviation", "Std Dev(Profit)", id="StdDev"),  # noqa
+            pytest.param(LowerQuartile, "Lowest 25% profit", "Lower Quartile(Profit)", id="LowerQuartile"),  # noqa
+            pytest.param(UpperQuartile, "Highest 25% profit", "Upper Quartile(Profit)", id="UpperQuartile"),  # noqa
+            pytest.param(InterQuartileRange, "Middle 50% profit span", "Inter Quartile Range(Profit)", id="InterQuartileRange"),  # noqa
+        ],
+        # fmt: on
+    )
+    def test_numeric_statistic_custom_name(
+        self,
+        statistic,
+        custom_name,
+        display_name,
+        rtl_var_purchase_profit,
+        rtl_table_purchases,
+    ):
+        """Test each numeric stat with Purchases Profit variable and custom label."""
+        numeric_statistic = statistic(rtl_var_purchase_profit, label=custom_name)
+        assert numeric_statistic.table is rtl_table_purchases
+        assert numeric_statistic.operand is rtl_var_purchase_profit
+        assert numeric_statistic.label == custom_name
+        assert numeric_statistic._name == display_name
+
     @pytest.fixture(params=VARIABLE_TYPES[1:])
     def non_numeric_var(self, request, retail_var_lookup):
         var = retail_var_lookup[request.param]
@@ -198,6 +233,36 @@ class TestNumericOrSelectorStatistics:
         assert num_or_sel_statistic.table is rtl_table_purchases
         assert num_or_sel_statistic.operand is var
         assert num_or_sel_statistic.label is None
+        assert num_or_sel_statistic._name == display_name
+
+    @pytest.mark.parametrize(
+        ["statistic", "custom_name", "var_type", "display_name"],
+        # sorry Black!
+        # fmt: off
+        [
+            pytest.param(CountDistinct, "No. different stores", "Sel", "Count Distinct(Store)", id="CountDistinct-Selector"), # noqa
+            pytest.param(CountMode, "Most popular store", "Sel", "Count Mode(Store)", id="CountMode-Selector"), # noqa
+            pytest.param(CountDistinct, "Different profits quantities", "Num", "Count Distinct(Profit)", id="CountDistinct-Numeric"), # noqa
+            pytest.param(CountMode, "Most common profit amount", "Num", "Count Mode(Profit)", id="CountMode-Numeric"), # noqa
+        ]
+        # fmt: on
+    )
+    def test_num_or_sel_statistic_custom_name(
+        self,
+        statistic,
+        custom_name,
+        var_type,
+        display_name,
+        rtl_var_purchase_store,
+        rtl_var_purchase_profit,
+        rtl_table_purchases,
+    ):
+        """Test each numeric/selector stat; per-type variable input and custom name."""
+        var = {"Sel": rtl_var_purchase_store, "Num": rtl_var_purchase_profit}[var_type]
+        num_or_sel_statistic = statistic(var, label=custom_name)
+        assert num_or_sel_statistic.table is rtl_table_purchases
+        assert num_or_sel_statistic.operand is var
+        assert num_or_sel_statistic.label == custom_name
         assert num_or_sel_statistic._name == display_name
 
     @pytest.fixture(params=VARIABLE_TYPES[2:])
