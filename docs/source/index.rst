@@ -6,6 +6,8 @@
 Welcome to py-apteco's documentation!
 =====================================
 
+This is the documentation for the latest version of the ``apteco`` package, v0.8.0.
+
 .. toctree::
    :maxdepth: 1
    :caption: Contents:

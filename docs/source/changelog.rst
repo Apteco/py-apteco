@@ -5,7 +5,7 @@
 Version 0.8.0
 =============
 
-*Date TBC*
+*2021-05-26*
 
 Changed (backwards-incompatible)
 --------------------------------
