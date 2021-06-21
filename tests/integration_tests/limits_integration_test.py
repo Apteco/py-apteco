@@ -44,6 +44,16 @@ class UnrealFrac:
 
 
 class TestSample:
+    """Tests for the Clause.sample() method.
+
+    Covers every valid value [type] for each parameter,
+    but not each possibility in combination with every other.
+    Covers every error case for input validation.
+
+    Tests are grouped by the type of limit clause they ultimately delegate to
+    for the given set of inputs; in this case this is always a LimitClause.
+
+    """
     def test_limit(self, men):
         men_10 = men.sample(10)
         men_skip_5_first_10pct = men.sample(frac=0.1, skip_first=5)
@@ -92,6 +102,15 @@ class TestSample:
 
 
 class TestLimit:
+    """Tests for the Clause.limit() method.
+
+    Covers every valid value [type] for each parameter,
+    but not each possibility in combination with every other.
+
+    Tests are grouped by the type of limit clause they ultimately delegate to
+    for the given set of inputs (TopNClause, NPerVariableClause, NPerTableClause).
+
+    """
     def test_top_n(self, men, people):
         men_top_100_by_income = men.limit(n=100, by=people["Income"])
         men_between_bottom_5pct_10pct_by_income = men.limit(
@@ -128,6 +147,14 @@ class TestLimit:
 
 
 class TestLimitClause:
+    """Tests for LimitClause.
+
+    Tests cover every combination of:
+        * sample_type (first, regular, random)
+        * numeric input type (total, percent, fraction)
+        * skip_first given or not
+
+    """
     def test_first_n(self, holidays, france):
         france_first_100 = LimitClause(france, 100, session=holidays)
         assert france_first_100.count() == 100
@@ -312,6 +339,14 @@ def verify_topn_values(
 
 
 class TestTopNClause:
+    """Tests for TopNClause.
+
+    Tests cover every combination of:
+        * numeric input type (total, percent)
+        * input kind (single value or range of values)
+        * ascending (True or False, i.e. bottom or top)
+
+    """
     def test_top_total(self, holidays, bookings, usa, topn_dg_cols):
         top_637_by_cost = TopNClause(usa, 637, by=bookings["Cost"], session=holidays)
         assert top_637_by_cost.count() == 637
@@ -437,13 +472,23 @@ class TestTopNClause:
 
 
 class TestNPerVariableClause:
+    """Tests for NPerVariableClause.
+
+    Tests cover every combination of different table options
+    for clause, per, by:
+        * per: same table as clause or not
+        * by: None, same table as clause, same table as per, different table from both
+
+    """
     def test_per_same_table_any(self, holidays, bookings, flights):
+        """clause: Bookings, per: Bookings, by: None"""
         flight_only_any_250_per_dest = NPerVariableClause(
             flights, 250, bookings["Destination"], session=holidays
         )
         assert flight_only_any_250_per_dest.count() == 3217
 
     def test_per_by_same_table(self, holidays, bookings, flights):
+        """clause: Bookings, per: Bookings, by: Bookings"""
         flights_only_12_per_dest_by_profit = NPerVariableClause(
             flights,
             12,
@@ -454,6 +499,7 @@ class TestNPerVariableClause:
         assert flights_only_12_per_dest_by_profit.count() == 228
 
     def test_per_different_table_any(self, holidays, people, flights):
+        """clause: Bookings, per: People, by: None"""
         flights_only_any_500_per_occupation = NPerVariableClause(
             flights, 500, people["Occupation"], session=holidays
         )
@@ -462,12 +508,14 @@ class TestNPerVariableClause:
     def test_per_different_table_by_same_as_clause(
         self, holidays, bookings, people, flights
     ):
+        """clause: Bookings, per: People, by: Bookings"""
         flights_only_1000_highest_cost_per_income = NPerVariableClause(
             flights, 1000, people["Income"], by=bookings["Cost"], session=holidays
         )
         assert flights_only_1000_highest_cost_per_income.count() == 9409
 
     def test_per_different_table_by_same_as_per(self, holidays, people, flights):
+        """clause: Bookings, per: People, by: People"""
         flights_only_2_per_surname_by_top_income = NPerVariableClause(
             flights, 2, people["Surname"], by=people["Income"], session=holidays
         )
@@ -476,6 +524,7 @@ class TestNPerVariableClause:
     def test_per_different_table_by_different_table(
         self, holidays, households, people, flights
     ):
+        """clause: Bookings, per: People, by: households"""
         flights_only_75_per_region_by_oldest_person = NPerVariableClause(
             flights,
             75,
@@ -488,6 +537,17 @@ class TestNPerVariableClause:
 
 
 class TestNPerTableClause:
+    """Tests for NPerTableClause.
+
+    Tests cover every different valid option for per, by, ascending:
+        * per: direct parent table, other ancestor table
+        * by: None, child table
+        * ascending: None (any), True (first), False (last)
+
+    The tests cover all these options between them,
+    but not in every possible combination.
+
+    """
     def test_per_parent_any(self, holidays, people, tablet):
         tablet_any_4_per_person = NPerTableClause(tablet, 4, people, session=holidays)
         assert tablet_any_4_per_person.count() == 32533

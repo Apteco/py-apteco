@@ -65,6 +65,23 @@ def leisure(rtl_var_purchase_department):
 
 
 class TestLimitClause:
+    """Tests for LimitClause.
+
+    Covers every different valid option for each parameter
+    and every different type of error case.
+
+    Tests:
+        * For each numeric input (total, percent, fraction, skip_first):
+            - correct type
+            - valid type but needs converting
+            - invalid type
+            - valid type but out of range
+        * None or multiple given out of (total, percent, fraction)
+        * Invalid sample_type (valid covered in other tests)
+        * __init__()
+        * _to_model_selection()
+
+    """
     def test_limit_clause_total_correct_type(
         self, electronics, rtl_table_purchases, rtl_session
     ):
@@ -950,6 +967,29 @@ class TestEnsureSingleOrRangeRealRange:
 
 
 class TestTopNClause:
+    """Tests for TopNClause.
+
+    Covers every different valid option for each parameter
+    and every different type of error case.
+
+    Tests:
+        * For each numeric input (total, percent) with every kind (single, range):
+            - correct type
+            - valid type but needs converting
+            - invalid type
+            - valid type but out of range
+        * range kinds also have:
+            - start greater than end
+            - list not tuple
+        * Neither or both of (total, percent) given
+        * by is none or not a variable (valid cases covered in other tests)
+        * ascending is boolean or not boolean
+        * _to_model_selection():
+            - each combination of (single, range) with (total, percent)
+            - each of (single, range) with invalid number kind
+            - invalid single/range kind
+
+    """
     def test_topn_clause_total_single_correct_type(
         self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
@@ -1567,6 +1607,25 @@ class TestTopNClause:
 
 
 class TestNPerVariableClause:
+    """Tests for NPerVariableClause.
+
+    Covers every different valid option for each parameter
+    and every different type of error case.
+
+    Tests:
+        * For n:
+            - correct type
+            - valid type but needs converting
+            - invalid type
+            - valid type but out of range
+        * per is none, not a variable, is an array variable
+          (valid cases covered in other tests)
+        * by is valid, not a variable, is a variable but unordered
+        * ascending is boolean or not boolean
+        * _to_model_selection():
+            - by given/not
+
+    """
     def test_nper_variable_clause_n_correct_type(
         self, domestic, rtl_var_purchase_store, rtl_table_purchases, rtl_session
     ):
@@ -1850,6 +1909,25 @@ class TestNPerVariableClause:
 
 
 class TestNPerTableClause:
+    """Tests for NPerTableClause.
+
+    Covers every different valid option for each parameter
+    and every different type of error case.
+
+    Tests:
+        * For n:
+            - correct type
+            - valid type but needs converting
+            - invalid type
+            - valid type but out of range
+        * per is none, not a table (valid cases covered in other tests)
+        * by is valid, not a variable, is a variable but unordered
+        * ascending is boolean or not boolean
+        * _to_model_selection():
+            - by not given
+            - by given, with each of first, last
+
+    """
     def test_nper_table_clause_n_correct_type(
         self, leisure, rtl_table_purchases, rtl_table_customers, rtl_session
     ):
