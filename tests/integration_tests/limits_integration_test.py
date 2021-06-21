@@ -113,11 +113,15 @@ class TestLimit:
     """
     def test_top_n(self, men, people):
         men_top_100_by_income = men.limit(n=100, by=people["Income"])
+        men_bottom_5_23rds = men.limit(
+            frac=Fraction(5, 23), by=people["Income"], ascending=True
+        )
         men_between_bottom_5pct_10pct_by_income = men.limit(
             frac=(0.05, 0.1), by=people["Income"], ascending=True
         )
         men_between_top_20_50_by_income = men.limit(n=(20, 50), by=people["Income"])
         assert men_top_100_by_income.count() == 100
+        assert men_bottom_5_23rds.count() == 82297
         assert men_between_bottom_5pct_10pct_by_income.count() == 18928
         assert men_between_top_20_50_by_income.count() == 31
 
