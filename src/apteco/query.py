@@ -238,6 +238,28 @@ def normalize_datetime_input(input_value, error_msg):
         raise ValueError(error_msg)
 
 
+def validate_n_frac_input(n, frac):
+    if sum((i is not None) for i in (n, frac)) != 1:
+        raise ValueError("Must specify either n or frac")
+    total = None
+    percent = None
+    fraction = None
+    if n is not None:
+        if not isinstance(n, Integral) or n < 1:
+            raise ValueError("n must be an integer greater than 0")
+        total = int(n)
+    else:
+        if not isinstance(frac, Real):
+            raise ValueError("frac must be either a float or a fraction")
+        if not 0 < float(frac) < 1:
+            raise ValueError("frac must be between 0 and 1")
+        if isinstance(frac, Rational):
+            fraction = Fraction(frac.numerator, frac.denominator)
+        else:
+            percent = float(frac) * 100
+    return total, percent, fraction
+
+
 class Clause:
     @property
     def table_name(self):
@@ -353,24 +375,7 @@ class Clause:
     def sample(
         self, n=None, frac=None, sample_type="Random", skip_first=0, *, label=None
     ):
-        if sum((i is not None) for i in (n, frac)) != 1:
-            raise ValueError("Must specify either n or frac")
-        total = None
-        percent = None
-        fraction = None
-        if n is not None:
-            if not isinstance(n, Integral) or n < 1:
-                raise ValueError("n must be an integer greater than 0")
-            total = int(n)
-        else:
-            if not isinstance(frac, Real):
-                raise ValueError("frac must be either a float or a fraction")
-            if not 0 < float(frac) < 1:
-                raise ValueError("frac must be between 0 and 1")
-            if isinstance(frac, Rational):
-                fraction = Fraction(frac.numerator, frac.denominator)
-            else:
-                percent = float(frac) * 100
+        total, percent, fraction = validate_n_frac_input(n, frac)
 
         if sample_type.title() not in ("First", "Stratified", "Random"):
             raise ValueError(f"'{sample_type}' is not a valid sample type")
@@ -403,45 +408,41 @@ class Clause:
             ascending = False
         # if by is not None and not isinstance(by, Variable):
         #     raise ValueError("by must be a variable")
+
+        total, percent, fraction = validate_n_frac_input(n, frac)
+
         if per is not None:
             # nper
+            if total is None:
+                raise ValueError("Must specify n with per")
             try:
                 return per._as_nper_clause(
-                    clause=self, n=n, by=by, ascending=ascending, label=label
+                    clause=self, n=total, by=by, ascending=ascending, label=label
                 )
             except AttributeError:
                 raise ValueError("`per` must be a table or a variable") from None
-        if by is None:
-            # call.sample()
-            return self.sample(n=n, frac=frac, label=label)
-        # topn
-        if n is not None:
+        if by is not None:
+            # topn
             return TopNClause(
                 clause=self,
-                total=n,
-                percent=None,
+                total=total,
+                percent=fraction * 100 if fraction else percent,
                 by=by,
                 ascending=ascending,
                 label=label,
                 session=self.session,
             )
-        if frac is not None:
-            if isinstance(frac, tuple):
-                percent = tuple(i * 100 for i in frac)
-            elif isinstance(frac, Real):
-                percent = frac * 100
-            else:
-                raise ValueError()
-            return TopNClause(
-                clause=self,
-                total=None,
-                percent=percent,
-                by=by,
-                ascending=ascending,
-                label=label,
-                session=self.session,
-            )
-        raise ValueError()
+        # limit
+        return LimitClause(
+            clause=self,
+            total=total,
+            percent=percent,
+            fraction=fraction,
+            sample_type="Random",
+            skip_first=0,
+            label=label,
+            session=self.session,
+        )
 
 
 class SelectorClauseMixin:

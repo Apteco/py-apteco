@@ -119,6 +119,7 @@ class TestLimit:
 
     Covers every valid value [type] for each parameter,
     but not each possibility in combination with every other.
+    Covers every error case for input validation.
 
     Tests are grouped by the type of limit clause they ultimately delegate to
     for the given set of inputs (TopNClause, NPerVariableClause, NPerTableClause).
@@ -161,6 +162,59 @@ class TestLimit:
         assert france_bookings_1_per_person.count() == 522932
         assert france_bookings_highest_2_costs_per_person.count() == 524349
         assert france_bookings_lowest_3_profits_per_household.count() == 519165
+
+    def test_limit_input_errors(self, men, people):
+        with pytest.raises(ValueError) as exc_info:
+            men_no_value = men.limit()
+        assert exc_info.value.args[0] == "Must specify either n or frac"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_n_and_frac = men.limit(10, 0.1)
+        assert exc_info.value.args[0] == "Must specify either n or frac"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_n_float = men.limit(2.5, by=people["Income"])
+        assert exc_info.value.args[0] == "n must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_n_small = men.limit(0, by=people["Income"])
+        assert exc_info.value.args[0] == "n must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_big_frac = men.limit(frac=Fraction(3, 2), by=people["Income"])
+        assert exc_info.value.args[0] == "frac must be between 0 and 1"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_negative_frac = men.limit(frac=-0.2, by=people["Income"])
+        assert exc_info.value.args[0] == "frac must be between 0 and 1"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_1_frac = men.limit(frac=1, by=people["Income"])
+        assert exc_info.value.args[0] == "frac must be between 0 and 1"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_0_frac = men.limit(frac=Fraction(0, 4), by=people["Income"])
+        assert exc_info.value.args[0] == "frac must be between 0 and 1"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_non_real_frac = men.limit(frac=UnrealFrac(), by=people["Income"])
+        assert exc_info.value.args[0] == "frac must be either a float or a fraction"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_ascending_not_bool = men.limit(10, ascending="Top")
+        assert exc_info.value.args[0] == "ascending must be True or False"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_ascending_no_by = men.limit(10, ascending=True)
+        assert exc_info.value.args[0] == "Must specify by with ascending"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_frac_with_per = men.limit(frac=0.1, per=people["Income"])
+        assert exc_info.value.args[0] == "Must specify n with per"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_per_bad_type = men.limit(10, per="Booking")
+        assert exc_info.value.args[0] == "`per` must be a table or a variable"
 
 
 class TestLimitClause:
