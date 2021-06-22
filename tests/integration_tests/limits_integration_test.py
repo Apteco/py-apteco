@@ -209,6 +209,10 @@ class TestLimit:
         assert exc_info.value.args[0] == "Must specify by with ascending"
 
         with pytest.raises(ValueError) as exc_info:
+            men_by_not_variable = men.limit(10, by="Cost")
+        assert exc_info.value.args[0] == "by must be an ordered variable"
+
+        with pytest.raises(ValueError) as exc_info:
             men_frac_with_per = men.limit(frac=0.1, per=people["Income"])
         assert exc_info.value.args[0] == "Must specify n with per"
 

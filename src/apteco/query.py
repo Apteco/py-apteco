@@ -406,8 +406,8 @@ class Clause:
                 raise ValueError("Must specify by with ascending")
         else:
             ascending = False
-        # if by is not None and not isinstance(by, Variable):
-        #     raise ValueError("by must be a variable")
+        if by is not None and not hasattr(by, "is_selectable"):  # only vars have attr
+            raise ValueError("by must be an ordered variable")
 
         total, percent, fraction = validate_n_frac_input(n, frac)
 
