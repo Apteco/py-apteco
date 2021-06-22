@@ -64,41 +64,54 @@ class TestSample:
         assert men_regular_100.count() == 100
         assert men_random_two_thirds.count() == 252377
 
+    def test_sample_input_errors(self, men):
         with pytest.raises(ValueError) as exc_info:
             men_no_value = men.sample()
-        assert exc_info.value.args[0] == ("Must specify either n or frac")
+        assert exc_info.value.args[0] == "Must specify either n or frac"
 
         with pytest.raises(ValueError) as exc_info:
             men_n_and_frac = men.sample(10, 0.1)
-        assert exc_info.value.args[0] == ("Must specify either n or frac")
+        assert exc_info.value.args[0] == "Must specify either n or frac"
 
         with pytest.raises(ValueError) as exc_info:
             men_n_float = men.sample(2.5)
-        assert exc_info.value.args[0] == ("n must be an integer greater than 0")
+        assert exc_info.value.args[0] == "n must be an integer greater than 0"
 
         with pytest.raises(ValueError) as exc_info:
             men_n_small = men.sample(0)
-        assert exc_info.value.args[0] == ("n must be an integer greater than 0")
+        assert exc_info.value.args[0] == "n must be an integer greater than 0"
 
         with pytest.raises(ValueError) as exc_info:
             men_big_frac = men.sample(frac=Fraction(3, 2))
-        assert exc_info.value.args[0] == ("frac must be between 0 and 1")
+        assert exc_info.value.args[0] == "frac must be between 0 and 1"
 
         with pytest.raises(ValueError) as exc_info:
             men_negative_frac = men.sample(frac=-0.2)
-        assert exc_info.value.args[0] == ("frac must be between 0 and 1")
+        assert exc_info.value.args[0] == "frac must be between 0 and 1"
 
         with pytest.raises(ValueError) as exc_info:
             men_1_frac = men.sample(frac=1)
-        assert exc_info.value.args[0] == ("frac must be between 0 and 1")
+        assert exc_info.value.args[0] == "frac must be between 0 and 1"
 
         with pytest.raises(ValueError) as exc_info:
             men_0_frac = men.sample(frac=Fraction(0, 4))
-        assert exc_info.value.args[0] == ("frac must be between 0 and 1")
+        assert exc_info.value.args[0] == "frac must be between 0 and 1"
 
         with pytest.raises(ValueError) as exc_info:
-            men_people_frac = men.sample(frac=UnrealFrac())
-        assert exc_info.value.args[0] == ("frac must be either a float or a fraction")
+            men_non_real_frac = men.sample(frac=UnrealFrac())
+        assert exc_info.value.args[0] == "frac must be either a float or a fraction"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_bad_sample_type = men.sample(100, sample_type="Radon")
+        assert exc_info.value.args[0] == "'Radon' is not a valid sample type"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_skip_first_non_integer = men.sample(100, skip_first=500.0)
+        assert exc_info.value.args[0] == "`skip_first` must be a non-negative integer"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_skip_first_negative = men.sample(100, skip_first=-1000)
+        assert exc_info.value.args[0] == "`skip_first` must be a non-negative integer"
 
 
 class TestLimit:
