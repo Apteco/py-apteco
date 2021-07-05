@@ -1066,6 +1066,7 @@ def ensure_single_or_range(
     param_text,
     lower_bound=None,
     upper_bound=None,
+    bounds=None,
 ):
 
     if isinstance(input_value, Iterable) and not isinstance(input_value, str):
@@ -1076,6 +1077,8 @@ def ensure_single_or_range(
             )
         try:
             start, end = input_value
+            if bounds is not None:
+                lower_bound, upper_bound = bounds
             start = ensure_single(
                 start,
                 type_,
@@ -1114,12 +1117,20 @@ def ensure_single_or_range(
             f"{param_text}",
             lower_bound,
             upper_bound,
+            bounds,
         ),
     )
 
 
 def ensure_single(
-    value, type_, convert, number_text, param_text, lower_bound=None, upper_bound=None
+    value,
+    type_,
+    convert,
+    number_text,
+    param_text,
+    lower_bound=None,
+    upper_bound=None,
+    bounds=None,
 ):
     if not isinstance(value, type_):
         raise ValueError(f"{param_text} must be {number_text}")
@@ -1128,6 +1139,8 @@ def ensure_single(
         raise ValueError(f"{param_text} must be greater than {lower_bound}")
     if upper_bound is not None and not value < upper_bound:
         raise ValueError(f"{param_text} must be less than {upper_bound}")
+    if bounds is not None and not bounds[0] < value < bounds[1]:
+        raise ValueError(f"{param_text} must be between {bounds[0]} and {bounds[1]}")
     return value
 
 
