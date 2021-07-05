@@ -1,3 +1,4 @@
+from collections import Sequence
 from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
@@ -244,35 +245,70 @@ def validate_n_frac_input(n, frac, allow_range=False):
     total = None
     percent = None
     fraction = None
+
     if n is not None:
-        if allow_range:
-            kind, total = ensure_single_or_range(n, Integral, int, "an integer greater than 0", "n", 0)
-        else:
-            total = ensure_single(n, Integral, int, "an integer greater than 0", "n", 0)
+        kind, total = validate_numerical_input(n, Integral, int, "n", "an integer greater than 0", 0, None, allow_range, "an integer or a tuple of two integers (to indicate a range)")
     else:
-        if allow_range:
-            kind, percent = ensure_single_or_range(frac, Real, float, "a number between 0 and 1", "frac", bounds=(0, 1))
-        else:
-            percent = ensure_single(frac, Real, float, "a number between 0 and 1", "frac", bounds=(0, 1))
-            kind = "single"
+        kind, percent = validate_numerical_input(frac, Real, float, "frac", "a number between 0 and 1", 0, 1, allow_range, "a number or a tuple of two numbers (to indicate a range)")
         if kind == "range":
             percent = (percent[0] * 100, percent[1] * 100)
         else:
             percent *= 100
         try:  # frac is definitely real, see if we can go further and keep it rational
-            if allow_range:
-                kind, fraction = ensure_single_or_range(frac, Rational, rational_to_fraction, "a rational number between 0 and 1", "frac", 0, 1)
-            else:
-                fraction = ensure_single(frac, Rational, rational_to_fraction, "a rational number between 0 and 1", "frac", 0, 1)
+            kind, fraction = validate_numerical_input(frac, Rational, rational_to_fraction, "frac", "a rational number between 0 and 1", 0, 1, allow_range, "a ration number or a tuple of two rational numbers (to indicate a range)")
         except ValueError:  # if we fail, fraction will remain unset
             pass
         else:  # if we succeed, faction has been set, so unset percent
             percent = None
+
     return total, percent, fraction
 
 
 def rational_to_fraction(frac):
     return Fraction(frac.numerator, frac.denominator)
+
+
+def validate_numerical_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound=None, upper_bound=None, allow_range=False, valid_range_text=None):
+    try:
+        if allow_range and isinstance(value, Sequence) and not isinstance(value, str):
+            final_valid_text = valid_range_text
+            return "range", validate_range_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound, upper_bound)
+        else:
+            final_valid_text = valid_text
+            return "single", validate_single_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound, upper_bound)
+    except TypeError:
+        raise ValueError(f"{metavar} must be {final_valid_text}") from None
+
+
+def validate_range_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound=None, upper_bound=None):
+    if not (isinstance(value, tuple) and len(value) == 2):
+        raise TypeError(f"{metavar} must be {valid_text}")
+    start, end = value
+
+    try:
+        start = validate_single_input(start, abstract_class, concrete_class, "start of range", valid_text, lower_bound, upper_bound)
+        end = validate_single_input(end, abstract_class, concrete_class, "end of range", valid_text, lower_bound, upper_bound)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Invalid range given for {metavar} - {exc.args[0]}")
+    if not start < end:
+        raise ValueError(f"Invalid range given for {metavar} - start of range must be less than end")
+
+    return start, end
+
+
+def validate_single_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound=None, upper_bound=None):
+    if not isinstance(value, abstract_class):
+        raise TypeError(f"{metavar} must be {valid_text}")
+    value = concrete_class(value)
+
+    if upper_bound is None and lower_bound is not None and not lower_bound < value:
+        raise ValueError(f"{metavar} must be greater than {lower_bound}")
+    if lower_bound is None and upper_bound is not None and not value < upper_bound:
+        raise ValueError(f"{metavar} must be less than {upper_bound}")
+    if lower_bound is not None and upper_bound is not None and not lower_bound < value < upper_bound:
+        raise ValueError(f"{metavar} must be between {lower_bound} and {upper_bound}")
+
+    return value
 
 
 class Clause:
@@ -429,7 +465,8 @@ class Clause:
             if n is None:
                 raise ValueError("Must specify `n` with `per`")
             else:
-                total = ensure_single(n, Integral, int, "an integer greater than 0", "n", 0)
+                # total = ensure_single(n, Integral, int, "an integer greater than 0", "n", 0)
+                total = validate_single_input(n, Integral, int, "n", "an integer greater than 0", 0)
             try:
                 return per._as_nper_clause(
                     clause=self, n=total, by=by, ascending=ascending, label=label
@@ -1087,7 +1124,7 @@ def ensure_single_or_range(
     bounds=None,
 ):
 
-    if isinstance(input_value, Iterable) and not isinstance(input_value, str):
+    if isinstance(input_value, Sequence) and not isinstance(input_value, str):
         if not (isinstance(input_value, tuple) and len(input_value) == 2):
             raise ValueError(
                 f"Invalid range given for {param_text}"
