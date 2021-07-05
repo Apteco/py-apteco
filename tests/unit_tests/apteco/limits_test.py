@@ -76,6 +76,7 @@ class TestLimitClause:
             - valid type but needs converting
             - invalid type
             - valid type but out of range
+            - range (i.e. tuple of values; valid for .limit() but not LimitClause)
         * None or multiple given out of (total, percent, fraction)
         * Invalid sample_type (valid covered in other tests)
         * __init__()
@@ -137,6 +138,19 @@ class TestLimitClause:
             limit_total_too_small_and_not_int = LimitClause(
                 electronics, 0.125, session=rtl_session
             )
+        assert exc_info.value.args[0] == "`total` must be an integer greater than 0"
+
+    def test_limit_clause_total_is_range(self, electronics, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            limit_total_as_range = LimitClause(
+                electronics, (10, 50), session=rtl_session
+            )
+        assert exc_info.value.args[0] == "`total` must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            limit_total_range_triple = LimitClause(
+                electronics, (10, 20, 30), session=rtl_session
+            )  # don't want error message about bad range, as it can't be a range at all
         assert exc_info.value.args[0] == "`total` must be an integer greater than 0"
 
     def test_limit_clause_percent_correct_type(
@@ -217,6 +231,23 @@ class TestLimitClause:
             limit_percent_too_big = LimitClause(
                 electronics, percent=144.1, session=rtl_session
             )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number between 0–100 (exclusive)"
+        )
+
+    def test_limit_clause_percent_is_range(self, electronics, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            limit_percent_as_range = LimitClause(
+                electronics, percent=(0.05, 0.1), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`percent` must be a number between 0–100 (exclusive)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            limit_percent_as_range_triple = LimitClause(
+                electronics, percent=(0.5, 0.1, 0.2), session=rtl_session
+            )  # don't want error message about bad range, as it can't be a range at all
         assert exc_info.value.args[0] == (
             "`percent` must be a number between 0–100 (exclusive)"
         )
@@ -307,6 +338,27 @@ class TestLimitClause:
             "`fraction` must be a rational number between 0 and 1 (exclusive)"
         )
 
+    def test_limit_clause_fraction_is_range(self, electronics, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            limit_fraction_as_range = LimitClause(
+                electronics,
+                fraction=(Fraction(1, 4), Fraction(1, 3)),
+                session=rtl_session,
+            )
+        assert exc_info.value.args[0] == (
+            "`fraction` must be a rational number between 0 and 1 (exclusive)"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            LimitClause(
+                electronics,
+                fraction=(Fraction(1, 4), Fraction(1, 3), Fraction(1, 2)),
+                session=rtl_session,
+            )  # don't want error message about bad range, as it can't be a range at all
+        assert exc_info.value.args[0] == (
+            "`fraction` must be a rational number between 0 and 1 (exclusive)"
+        )
+
     def test_limit_clause_skip_first_correct_type(
         self, electronics, rtl_table_purchases, rtl_session
     ):
@@ -345,7 +397,7 @@ class TestLimitClause:
         with pytest.raises(ValueError) as exc_info:
             limit_skip_first_as_float = LimitClause(
                 electronics,
-                fraction=Fraction(5 / 18),
+                fraction=Fraction(5, 18),
                 skip_first=0.11,
                 session=rtl_session,
             )
@@ -357,6 +409,23 @@ class TestLimitClause:
                 electronics, 42, skip_first=-21, session=rtl_session
             )
         assert exc_info.value.args[0] == "`skip_first` must be a non-negative integer"
+
+    def test_limit_clause_skip_first_is_range(self, electronics, rtl_session):
+        with pytest.raises(ValueError) as exc_info:
+            limit_skip_first_as_range = LimitClause(
+                electronics, 100, skip_first=(10, 50), session=rtl_session
+            )
+        assert exc_info.value.args[0] == (
+            "`skip_first` must be a non-negative integer"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            limit_skip_first_range_triple = LimitClause(
+                electronics, percent=12.5, skip_first=(10, 20, 30), session=rtl_session
+            )  # don't want error message about bad range, as it can't be a range at all
+        assert exc_info.value.args[0] == (
+            "`skip_first` must be a non-negative integer"
+        )
 
     def test_limit_clause_no_value_given(self, electronics, rtl_session):
         with pytest.raises(ValueError) as exc_info:

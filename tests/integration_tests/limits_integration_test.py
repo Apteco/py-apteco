@@ -1,4 +1,5 @@
 from fractions import Fraction
+import math
 
 import pytest
 
@@ -79,7 +80,7 @@ class TestSample:
 
         with pytest.raises(ValueError) as exc_info:
             men_n_small = men.sample(0)
-        assert exc_info.value.args[0] == "n must be an integer greater than 0"
+        assert exc_info.value.args[0] == "n must be greater than 0"
 
         with pytest.raises(ValueError) as exc_info:
             men_big_frac = men.sample(frac=Fraction(3, 2))
@@ -178,7 +179,29 @@ class TestLimit:
 
         with pytest.raises(ValueError) as exc_info:
             men_n_small = men.limit(0, by=people["Income"])
-        assert exc_info.value.args[0] == "n must be an integer greater than 0"
+        assert exc_info.value.args[0] == "n must be greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_n_bad_range_start_too_small = men.limit((-10, 10), by=people["Income"])
+        assert exc_info.value.args[0] == (
+            "Invalid range given for n - start of range must be greater than 0"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            men_n_bad_range_end_not_integer = men.limit(
+                (1000, math.inf), by=people["Income"]
+            )
+        assert exc_info.value.args[0] == (
+            "Invalid range given for n - end of range must be an integer greater than 0"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            men_n_bad_range_start_greater_than_end = men.limit(
+                (2002, 1001), by=people["Income"]
+            )
+        assert exc_info.value.args[0] == (
+            "Invalid range given for n - start of range must be less than the end."
+        )
 
         with pytest.raises(ValueError) as exc_info:
             men_big_frac = men.limit(frac=Fraction(3, 2), by=people["Income"])
@@ -199,6 +222,30 @@ class TestLimit:
         with pytest.raises(ValueError) as exc_info:
             men_non_real_frac = men.limit(frac=UnrealFrac(), by=people["Income"])
         assert exc_info.value.args[0] == "frac must be either a float or a fraction"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_frac_bad_range_start_too_big = men.limit(
+                frac=(25.0, 50.5), by=people["Income"]
+            )
+        assert exc_info.value.args[0] == (
+            "Invalid range given for frac - start of range must be less than 1"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            men_frac_bad_range_start_too_big = men.limit(
+                frac=(0.25, 50.5), by=people["Income"]
+            )
+        assert exc_info.value.args[0] == (
+            "Invalid range given for frac - end of range must be less than 1"
+        )
+
+        with pytest.raises(ValueError) as exc_info:
+            men_frac_bad_range_start_too_big = men.limit(
+                frac=(Fraction(1, 2), Fraction(1, 3)), by=people["Income"]
+            )
+        assert exc_info.value.args[0] == (
+            "Invalid range given for frac - start of range must be less than the end."
+        )
 
         with pytest.raises(ValueError) as exc_info:
             men_ascending_not_bool = men.limit(10, ascending="Top")

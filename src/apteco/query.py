@@ -245,19 +245,24 @@ def validate_n_frac_input(n, frac):
     percent = None
     fraction = None
     if n is not None:
-        if not isinstance(n, Integral) or n < 1:
-            raise ValueError("n must be an integer greater than 0")
-        total = int(n)
+        kind, total = ensure_single_or_range(n, Integral, int, "an integer greater than 0", "n", 0)
     else:
-        if not isinstance(frac, Real):
-            raise ValueError("frac must be either a float or a fraction")
-        if not 0 < float(frac) < 1:
-            raise ValueError("frac must be between 0 and 1")
-        if isinstance(frac, Rational):
-            fraction = Fraction(frac.numerator, frac.denominator)
+        kind, percent = ensure_single_or_range(frac, Real, float, "either a float or a fraction", "frac", bounds=(0, 1))
+        if kind == "range":
+            percent = (percent[0] * 100, percent[1] * 100)
         else:
-            percent = float(frac) * 100
+            percent *= 100
+        try:  # frac is definitely real, see if we can go further and keep it rational
+            kind, fraction = ensure_single_or_range(frac, Rational, rational_to_fraction, "a rational number between 0 and 1", "frac", 0, 1)
+        except ValueError:  # if we fail, fraction will remain unset
+            pass
+        else:  # if we succeed, faction has been set, so unset percent
+            percent = None
     return total, percent, fraction
+
+
+def rational_to_fraction(frac):
+    return Fraction(frac.numerator, frac.denominator)
 
 
 class Clause:
@@ -409,18 +414,21 @@ class Clause:
         if by is not None and not hasattr(by, "is_selectable"):  # only vars have attr
             raise ValueError("by must be an ordered variable")
 
-        total, percent, fraction = validate_n_frac_input(n, frac)
-
         if per is not None:
             # nper
-            if total is None:
+            if n is None:
                 raise ValueError("Must specify n with per")
+            else:
+                total = ensure_single(n, Integral, int, "an integer greater than 0", "n", 0)
             try:
                 return per._as_nper_clause(
                     clause=self, n=total, by=by, ascending=ascending, label=label
                 )
             except AttributeError:
                 raise ValueError("`per` must be a table or a variable") from None
+
+        total, percent, fraction = validate_n_frac_input(n, frac)
+
         if by is not None:
             # topn
             return TopNClause(
