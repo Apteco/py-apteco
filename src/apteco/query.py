@@ -1071,7 +1071,7 @@ def ensure_single_or_range(
     if isinstance(input_value, Iterable) and not isinstance(input_value, str):
         if not (isinstance(input_value, tuple) and len(input_value) == 2):
             raise ValueError(
-                f"Invalid range given for `{param_text}`"
+                f"Invalid range given for {param_text}"
                 f" - must be a tuple of two values."
             )
         try:
@@ -1095,11 +1095,11 @@ def ensure_single_or_range(
                 upper_bound,
             )
         except ValueError as exc:
-            exc_msg = f"Invalid range given for `{param_text}` - {exc.args[0]}"
+            exc_msg = f"Invalid range given for {param_text} - {exc.args[0]}"
             raise ValueError(exc_msg)
         if not start < end:
             raise ValueError(
-                f"Invalid range given for `{param_text}`"
+                f"Invalid range given for {param_text}"
                 f" - start of range must be less than the end."
             )
         return "range", (start, end)
@@ -1111,7 +1111,7 @@ def ensure_single_or_range(
             type_,
             convert,
             number_text,
-            f"`{param_text}`",
+            f"{param_text}",
             lower_bound,
             upper_bound,
         ),
@@ -1170,7 +1170,7 @@ class TopNClause(BaseLimitClause):
                 )
             try:
                 single_or_range, total = ensure_single_or_range(
-                    total, Integral, int, "an integer", "total", lower_bound=0
+                    total, Integral, int, "an integer", "`total`", lower_bound=0
                 )
                 kind = (single_or_range, "total")
                 return kind, total, None
@@ -1185,7 +1185,7 @@ class TopNClause(BaseLimitClause):
                     Real,
                     float,
                     "a percentage",
-                    "percent",
+                    "`percent`",
                     lower_bound=0,
                     upper_bound=100,
                 )
