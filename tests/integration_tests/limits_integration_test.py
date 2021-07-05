@@ -79,8 +79,20 @@ class TestSample:
         assert exc_info.value.args[0] == "n must be an integer greater than 0"
 
         with pytest.raises(ValueError) as exc_info:
+            men_n_range = men.sample((10, 20))
+        assert exc_info.value.args[0] == "n must be an integer greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
             men_n_small = men.sample(0)
         assert exc_info.value.args[0] == "n must be greater than 0"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_non_real_frac = men.sample(frac=UnrealFrac())
+        assert exc_info.value.args[0] == "frac must be either a float or a fraction"
+
+        with pytest.raises(ValueError) as exc_info:
+            men_frac_range = men.sample(frac=(0.1, 0.3))
+        assert exc_info.value.args[0] == "frac must be either a float or a fraction"
 
         with pytest.raises(ValueError) as exc_info:
             men_big_frac = men.sample(frac=Fraction(3, 2))
@@ -97,10 +109,6 @@ class TestSample:
         with pytest.raises(ValueError) as exc_info:
             men_0_frac = men.sample(frac=Fraction(0, 4))
         assert exc_info.value.args[0] == "frac must be between 0 and 1"
-
-        with pytest.raises(ValueError) as exc_info:
-            men_non_real_frac = men.sample(frac=UnrealFrac())
-        assert exc_info.value.args[0] == "frac must be either a float or a fraction"
 
         with pytest.raises(ValueError) as exc_info:
             men_bad_sample_type = men.sample(100, sample_type="Radon")

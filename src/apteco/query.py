@@ -238,22 +238,32 @@ def normalize_datetime_input(input_value, error_msg):
         raise ValueError(error_msg)
 
 
-def validate_n_frac_input(n, frac):
+def validate_n_frac_input(n, frac, allow_range=False):
     if sum((i is not None) for i in (n, frac)) != 1:
         raise ValueError("Must specify either n or frac")
     total = None
     percent = None
     fraction = None
     if n is not None:
-        kind, total = ensure_single_or_range(n, Integral, int, "an integer greater than 0", "n", 0)
+        if allow_range:
+            kind, total = ensure_single_or_range(n, Integral, int, "an integer greater than 0", "n", 0)
+        else:
+            total = ensure_single(n, Integral, int, "an integer greater than 0", "n", 0)
     else:
-        kind, percent = ensure_single_or_range(frac, Real, float, "either a float or a fraction", "frac", bounds=(0, 1))
+        if allow_range:
+            kind, percent = ensure_single_or_range(frac, Real, float, "either a float or a fraction", "frac", bounds=(0, 1))
+        else:
+            percent = ensure_single(frac, Real, float, "either a float or a fraction", "frac", bounds=(0, 1))
+            kind = "single"
         if kind == "range":
             percent = (percent[0] * 100, percent[1] * 100)
         else:
             percent *= 100
         try:  # frac is definitely real, see if we can go further and keep it rational
-            kind, fraction = ensure_single_or_range(frac, Rational, rational_to_fraction, "a rational number between 0 and 1", "frac", 0, 1)
+            if allow_range:
+                kind, fraction = ensure_single_or_range(frac, Rational, rational_to_fraction, "a rational number between 0 and 1", "frac", 0, 1)
+            else:
+                fraction = ensure_single(frac, Rational, rational_to_fraction, "a rational number between 0 and 1", "frac", 0, 1)
         except ValueError:  # if we fail, fraction will remain unset
             pass
         else:  # if we succeed, faction has been set, so unset percent
@@ -427,7 +437,7 @@ class Clause:
             except AttributeError:
                 raise ValueError("`per` must be a table or a variable") from None
 
-        total, percent, fraction = validate_n_frac_input(n, frac)
+        total, percent, fraction = validate_n_frac_input(n, frac, allow_range=True)
 
         if by is not None:
             # topn
