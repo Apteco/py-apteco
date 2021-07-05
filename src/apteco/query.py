@@ -269,13 +269,16 @@ def rational_to_fraction(frac):
 
 
 def validate_numerical_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound=None, upper_bound=None, allow_range=False, valid_range_text=None):
+    if allow_range and isinstance(value, Sequence) and not isinstance(value, str):
+        final_valid_text = valid_range_text
+        kind = "range"
+        validate_input = validate_range_input
+    else:
+        final_valid_text = valid_text
+        kind = "single"
+        validate_input = validate_single_input
     try:
-        if allow_range and isinstance(value, Sequence) and not isinstance(value, str):
-            final_valid_text = valid_range_text
-            return "range", validate_range_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound, upper_bound)
-        else:
-            final_valid_text = valid_text
-            return "single", validate_single_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound, upper_bound)
+        return kind, validate_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound, upper_bound)
     except TypeError:
         raise ValueError(f"{metavar} must be {final_valid_text}") from None
 
