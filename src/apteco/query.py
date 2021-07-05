@@ -251,9 +251,9 @@ def validate_n_frac_input(n, frac, allow_range=False):
             total = ensure_single(n, Integral, int, "an integer greater than 0", "n", 0)
     else:
         if allow_range:
-            kind, percent = ensure_single_or_range(frac, Real, float, "either a float or a fraction", "frac", bounds=(0, 1))
+            kind, percent = ensure_single_or_range(frac, Real, float, "a number between 0 and 1", "frac", bounds=(0, 1))
         else:
-            percent = ensure_single(frac, Real, float, "either a float or a fraction", "frac", bounds=(0, 1))
+            percent = ensure_single(frac, Real, float, "a number between 0 and 1", "frac", bounds=(0, 1))
             kind = "single"
         if kind == "range":
             percent = (percent[0] * 100, percent[1] * 100)
@@ -397,7 +397,7 @@ class Clause:
         sample_type = sample_type.title()
 
         if not isinstance(skip_first, Integral) or int(skip_first) < 0:
-            raise ValueError("`skip_first` must be a non-negative integer")
+            raise ValueError("skip_first must be a non-negative integer")
         skip_first = int(skip_first)
 
         return LimitClause(
@@ -418,16 +418,16 @@ class Clause:
             if not isinstance(ascending, bool):
                 raise ValueError("ascending must be True or False")
             if by is None:
-                raise ValueError("Must specify by with ascending")
+                raise ValueError("Must specify `by` with ascending")
         else:
             ascending = False
         if by is not None and not hasattr(by, "is_selectable"):  # only vars have attr
-            raise ValueError("by must be an ordered variable")
+            raise ValueError("`by` must be an ordered variable")
 
         if per is not None:
             # nper
             if n is None:
-                raise ValueError("Must specify n with per")
+                raise ValueError("Must specify `n` with `per`")
             else:
                 total = ensure_single(n, Integral, int, "an integer greater than 0", "n", 0)
             try:
@@ -1091,12 +1091,10 @@ def ensure_single_or_range(
         if not (isinstance(input_value, tuple) and len(input_value) == 2):
             raise ValueError(
                 f"Invalid range given for {param_text}"
-                f" - must be a tuple of two values."
+                f" - must be a tuple of two values"
             )
         try:
             start, end = input_value
-            if bounds is not None:
-                lower_bound, upper_bound = bounds
             start = ensure_single(
                 start,
                 type_,
@@ -1105,6 +1103,7 @@ def ensure_single_or_range(
                 f"start of range",
                 lower_bound,
                 upper_bound,
+                bounds,
             )
             end = ensure_single(
                 end,
@@ -1114,6 +1113,7 @@ def ensure_single_or_range(
                 f"end of range",
                 lower_bound,
                 upper_bound,
+                bounds,
             )
         except ValueError as exc:
             exc_msg = f"Invalid range given for {param_text} - {exc.args[0]}"
@@ -1121,7 +1121,7 @@ def ensure_single_or_range(
         if not start < end:
             raise ValueError(
                 f"Invalid range given for {param_text}"
-                f" - start of range must be less than the end."
+                f" - start of range must be less than end"
             )
         return "range", (start, end)
 

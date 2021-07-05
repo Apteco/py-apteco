@@ -89,11 +89,11 @@ class TestSample:
 
         with pytest.raises(ValueError) as exc_info:
             men_non_real_frac = men.sample(frac=UnrealFrac())
-        assert exc_info.value.args[0] == "frac must be either a float or a fraction"
+        assert exc_info.value.args[0] == "frac must be a number between 0 and 1"
 
         with pytest.raises(ValueError) as exc_info:
             men_frac_range = men.sample(frac=(0.1, 0.3))
-        assert exc_info.value.args[0] == "frac must be either a float or a fraction"
+        assert exc_info.value.args[0] == "frac must be a number between 0 and 1"
 
         with pytest.raises(ValueError) as exc_info:
             men_big_frac = men.sample(frac=Fraction(3, 2))
@@ -117,11 +117,11 @@ class TestSample:
 
         with pytest.raises(ValueError) as exc_info:
             men_skip_first_non_integer = men.sample(100, skip_first=500.0)
-        assert exc_info.value.args[0] == "`skip_first` must be a non-negative integer"
+        assert exc_info.value.args[0] == "skip_first must be a non-negative integer"
 
         with pytest.raises(ValueError) as exc_info:
             men_skip_first_negative = men.sample(100, skip_first=-1000)
-        assert exc_info.value.args[0] == "`skip_first` must be a non-negative integer"
+        assert exc_info.value.args[0] == "skip_first must be a non-negative integer"
 
 
 class TestLimit:
@@ -210,7 +210,7 @@ class TestLimit:
                 (2002, 1001), by=people["Income"]
             )
         assert exc_info.value.args[0] == (
-            "Invalid range given for n - start of range must be less than the end."
+            "Invalid range given for n - start of range must be less than end"
         )
 
         with pytest.raises(ValueError) as exc_info:
@@ -231,14 +231,14 @@ class TestLimit:
 
         with pytest.raises(ValueError) as exc_info:
             men_non_real_frac = men.limit(frac=UnrealFrac(), by=people["Income"])
-        assert exc_info.value.args[0] == "frac must be either a float or a fraction"
+        assert exc_info.value.args[0] == "frac must be a number between 0 and 1"
 
         with pytest.raises(ValueError) as exc_info:
             men_frac_bad_range_start_too_big = men.limit(
                 frac=(25.0, 50.5), by=people["Income"]
             )
         assert exc_info.value.args[0] == (
-            "Invalid range given for frac - start of range must be less than 1"
+            "Invalid range given for frac - start of range must be between 0 and 1"
         )
 
         with pytest.raises(ValueError) as exc_info:
@@ -246,7 +246,7 @@ class TestLimit:
                 frac=(0.25, 50.5), by=people["Income"]
             )
         assert exc_info.value.args[0] == (
-            "Invalid range given for frac - end of range must be less than 1"
+            "Invalid range given for frac - end of range must be between 0 and 1"
         )
 
         with pytest.raises(ValueError) as exc_info:
@@ -254,7 +254,7 @@ class TestLimit:
                 frac=(Fraction(1, 2), Fraction(1, 3)), by=people["Income"]
             )
         assert exc_info.value.args[0] == (
-            "Invalid range given for frac - start of range must be less than the end."
+            "Invalid range given for frac - start of range must be less than end"
         )
 
         with pytest.raises(ValueError) as exc_info:
@@ -263,15 +263,15 @@ class TestLimit:
 
         with pytest.raises(ValueError) as exc_info:
             men_ascending_no_by = men.limit(10, ascending=True)
-        assert exc_info.value.args[0] == "Must specify by with ascending"
+        assert exc_info.value.args[0] == "Must specify `by` with ascending"
 
         with pytest.raises(ValueError) as exc_info:
             men_by_not_variable = men.limit(10, by="Cost")
-        assert exc_info.value.args[0] == "by must be an ordered variable"
+        assert exc_info.value.args[0] == "`by` must be an ordered variable"
 
         with pytest.raises(ValueError) as exc_info:
             men_frac_with_per = men.limit(frac=0.1, per=people["Income"])
-        assert exc_info.value.args[0] == "Must specify n with per"
+        assert exc_info.value.args[0] == "Must specify `n` with `per`"
 
         with pytest.raises(ValueError) as exc_info:
             men_per_bad_type = men.limit(10, per="Booking")

@@ -878,7 +878,7 @@ class TestEnsureSingleOrRangeIntegerRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_integral_param`"
-            " - start of range must be less than the end."
+            " - start of range must be less than end"
         )
 
     def test_bad_type_list_not_tuple(self):
@@ -888,7 +888,7 @@ class TestEnsureSingleOrRangeIntegerRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_integral_param`"
-            " - must be a tuple of two values."
+            " - must be a tuple of two values"
         )
 
     def test_bad_type_tuple_of_3(self):
@@ -898,7 +898,7 @@ class TestEnsureSingleOrRangeIntegerRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_integral_param`"
-            " - must be a tuple of two values."
+            " - must be a tuple of two values"
         )
 
 
@@ -1011,7 +1011,7 @@ class TestEnsureSingleOrRangeRealRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_number_param`"
-            " - start of range must be less than the end."
+            " - start of range must be less than end"
         )
 
     def test_bad_type_list_not_tuple(self):
@@ -1021,7 +1021,7 @@ class TestEnsureSingleOrRangeRealRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_number_param`"
-            " - must be a tuple of two values."
+            " - must be a tuple of two values"
         )
 
     def test_bad_type_tuple_of_3(self):
@@ -1031,7 +1031,7 @@ class TestEnsureSingleOrRangeRealRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_number_param`"
-            " - must be a tuple of two values."
+            " - must be a tuple of two values"
         )
 
 
