@@ -726,6 +726,7 @@ class TestNPerTableClause:
     but not in every possible combination.
 
     """
+
     def test_per_parent_any(self, holidays, people, tablet):
         tablet_any_4_per_person = NPerTableClause(tablet, 4, people, session=holidays)
         assert tablet_any_4_per_person.count() == 32533
@@ -738,6 +739,11 @@ class TestNPerTableClause:
 
     def test_per_ancestor_last(self, holidays, households, web_visits, tablet):
         tablet_last_3_per_household_by_duration = NPerTableClause(
-            tablet, 3, households, by=web_visits["Duration"], session=holidays
+            tablet,
+            3,
+            households,
+            by=web_visits["Duration"],
+            ascending=False,
+            session=holidays,
         )
         assert tablet_last_3_per_household_by_duration.count() == 32084

@@ -172,6 +172,7 @@ Sampling and limits
         for each value of this variable.
         If `per` is a selector variable, this means `n` records
         for each selector category.
+    :param str label: Optional textual name for this selection clause.
 
 Data Grids and Cubes
 --------------------
