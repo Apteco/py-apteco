@@ -468,7 +468,6 @@ class Clause:
             if n is None:
                 raise ValueError("Must specify `n` with `per`")
             else:
-                # total = ensure_single(n, Integral, int, "an integer greater than 0", "n", 0)
                 total = validate_single_input(n, Integral, int, "n", "an integer greater than 0", 0)
             try:
                 return per._as_nper_clause(
