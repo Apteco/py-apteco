@@ -516,6 +516,7 @@ class TestTopNClause:
         * ascending (True or False, i.e. bottom or top)
 
     """
+
     def test_top_total(self, holidays, bookings, usa, topn_dg_cols):
         top_637_by_cost = TopNClause(usa, 637, by=bookings["Cost"], session=holidays)
         assert top_637_by_cost.count() == 637
@@ -649,6 +650,7 @@ class TestNPerVariableClause:
         * by: None, same table as clause, same table as per, different table from both
 
     """
+
     def test_per_same_table_any(self, holidays, bookings, flights):
         """clause: Bookings, per: Bookings, by: None"""
         flight_only_any_250_per_dest = NPerVariableClause(
@@ -664,6 +666,13 @@ class TestNPerVariableClause:
             bookings["Destination"],
             by=bookings["Profit"],
             session=holidays,
+        )
+        assert flights_only_12_per_dest_by_profit.count() == 228
+
+    def test_per_same_table_by_different(self, holidays, bookings, people, flights):
+        """clause: Bookings, per: Bookings, by: People"""
+        flights_only_12_per_dest_by_profit = NPerVariableClause(
+            flights, 12, bookings["Destination"], by=people["DOB"], session=holidays
         )
         assert flights_only_12_per_dest_by_profit.count() == 228
 
