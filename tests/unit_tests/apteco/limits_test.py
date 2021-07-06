@@ -13,7 +13,7 @@ from apteco.query import (
     NPerVariableClause,
     SelectorClause,
     TopNClause,
-    ensure_single_or_range,
+    validate_numerical_input,
 )
 
 
@@ -559,23 +559,71 @@ class TestLimitClause:
         )
 
 
+def validate_numerical_input_modified(
+    value,
+    abstract_class,
+    concrete_class,
+    valid_text,
+    metavar,
+    lower_bound=None,
+    upper_bound=None,
+    allow_range=False,
+    valid_range_text=None,
+):
+    return validate_numerical_input(
+        value,
+        abstract_class,
+        concrete_class,
+        metavar,
+        valid_text,
+        lower_bound,
+        upper_bound,
+        allow_range,
+        valid_range_text,
+    )
+
+
+def validate_numerical_input_modified_allow_range(
+    value,
+    abstract_class,
+    concrete_class,
+    valid_text,
+    metavar,
+    lower_bound=None,
+    upper_bound=None,
+    allow_range=True,
+    valid_range_text=None,
+):
+    return validate_numerical_input(
+        value,
+        abstract_class,
+        concrete_class,
+        metavar,
+        valid_text,
+        lower_bound,
+        upper_bound,
+        allow_range,
+        valid_range_text,
+    )
+
+
 class TestEnsureSingleOrRangeSingleValueInteger:
     def test_single_value_integer_conversion_superfluous(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             3, Integral, int, "an integer", "`the_whole_number`"
         )
         assert kind == "single"
         assert output_value == 3
 
     def test_single_value_integer_needs_converting(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             True, Integral, int, "an integer", "`the_whole_number`"
         )
         assert kind == "single"
         assert output_value == 1
 
     def test_single_value_integer_negative_no_range_given(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             -3, Integral, int, "an integer", "`the_whole_number`"
         )
         assert kind == "single"
@@ -583,34 +631,34 @@ class TestEnsureSingleOrRangeSingleValueInteger:
 
     def test_single_value_integer_bad_type_float_not_int(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 3.0, Integral, int, "an integer", "`the_whole_number`"
             )
         assert exc_info.value.args[0] == "`the_whole_number` must be an integer"
 
     def test_single_value_integer_bad_type_str_not_int(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 "3", Integral, int, "an integer", "`the_whole_number`"
             )
         assert exc_info.value.args[0] == "`the_whole_number` must be an integer"
 
     def test_single_value_integer_in_range_with_lower_bound(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             4000, Integral, int, "an integer", "`the_whole_number`", lower_bound=0
         )
         assert kind == "single"
         assert output_value == 4000
 
     def test_single_value_integer_in_range_with_upper_bound(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             -6789, Integral, int, "an integer", "`the_whole_number`", upper_bound=54321
         )
         assert kind == "single"
         assert output_value == -6789
 
     def test_single_value_integer_in_range_with_both_bounds(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             38,
             Integral,
             int,
@@ -624,21 +672,21 @@ class TestEnsureSingleOrRangeSingleValueInteger:
 
     def test_single_value_integer_not_in_range_with_lower_bound(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 2, Integral, int, "an integer", "`the_whole_number`", lower_bound=5
             )
         assert exc_info.value.args[0] == "`the_whole_number` must be greater than 5"
 
     def test_single_value_integer_not_in_range_with_upper_bound(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 43, Integral, int, "an integer", "`the_whole_number`", upper_bound=25
             )
         assert exc_info.value.args[0] == "`the_whole_number` must be less than 25"
 
     def test_single_value_integer_not_in_range_with_both_bounds_too_big(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 256,
                 Integral,
                 int,
@@ -647,11 +695,11 @@ class TestEnsureSingleOrRangeSingleValueInteger:
                 lower_bound=75,
                 upper_bound=100,
             )
-        assert exc_info.value.args[0] == "`the_whole_number` must be less than 100"
+        assert exc_info.value.args[0] == "`the_whole_number` must be between 75 and 100"
 
     def test_single_value_integer_not_in_range_with_both_bounds_too_small(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 -1,
                 Integral,
                 int,
@@ -660,26 +708,26 @@ class TestEnsureSingleOrRangeSingleValueInteger:
                 lower_bound=1,
                 upper_bound=20,
             )
-        assert exc_info.value.args[0] == "`the_whole_number` must be greater than 1"
+        assert exc_info.value.args[0] == "`the_whole_number` must be between 1 and 20"
 
 
 class TestEnsureSingleOrRangeSingleValueReal:
     def test_conversion_superfluous(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             4.5, Real, float, "a number", "`the_decimal_param`"
         )
         assert kind == "single"
         assert output_value == 4.5
 
     def test_needs_converting(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             Fraction(1357, 25), Real, float, "a number", "`the_decimal_param`"
         )
         assert kind == "single"
         assert output_value == 54.28
 
     def test_negative_no_range_given(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             -6.283, Real, float, "a number", "`the_decimal_param`"
         )
         assert kind == "single"
@@ -687,34 +735,34 @@ class TestEnsureSingleOrRangeSingleValueReal:
 
     def test_bad_type_complex_not_float(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 31.415 + 9.26j, Real, float, "a number", "`the_decimal_param`"
             )
         assert exc_info.value.args[0] == "`the_decimal_param` must be a number"
 
     def test_bad_type_str_not_float(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 "2718.28", Real, float, "a number", "`the_decimal_param`"
             )
         assert exc_info.value.args[0] == "`the_decimal_param` must be a number"
 
     def test_in_range_with_lower_bound(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             678.678, Real, float, "a number", "`the_decimal_param`", lower_bound=0
         )
         assert kind == "single"
         assert output_value == 678.678
 
     def test_in_range_with_upper_bound(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             -67.89, Real, float, "a number", "`the_decimal_param`", upper_bound=76.76
         )
         assert kind == "single"
         assert output_value == -67.89
 
     def test_in_range_with_both_bounds(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified(
             200.592,
             Real,
             float,
@@ -728,21 +776,21 @@ class TestEnsureSingleOrRangeSingleValueReal:
 
     def test_not_in_range_with_lower_bound(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 2.1, Real, float, "a number", "`the_decimal_param`", lower_bound=5.4
             )
         assert exc_info.value.args[0] == "`the_decimal_param` must be greater than 5.4"
 
     def test_not_in_range_with_upper_bound(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 43.21, Real, float, "a number", "`the_decimal_param`", upper_bound=12.34
             )
         assert exc_info.value.args[0] == "`the_decimal_param` must be less than 12.34"
 
     def test_not_in_range_with_both_bounds_too_big(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 128.256,
                 Real,
                 float,
@@ -751,11 +799,11 @@ class TestEnsureSingleOrRangeSingleValueReal:
                 lower_bound=0,
                 upper_bound=100,
             )
-        assert exc_info.value.args[0] == "`the_decimal_param` must be less than 100"
+        assert exc_info.value.args[0] == "`the_decimal_param` must be between 0 and 100"
 
     def test_not_in_range_with_both_bounds_too_small(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified(
                 112.223,
                 Real,
                 float,
@@ -765,20 +813,20 @@ class TestEnsureSingleOrRangeSingleValueReal:
                 upper_bound=6677.7788,
             )
         assert exc_info.value.args[0] == (
-            "`the_decimal_param` must be greater than 554.443"
+            "`the_decimal_param` must be between 554.443 and 6677.7788"
         )
 
 
 class TestEnsureSingleOrRangeIntegerRange:
     def test_conversion_superfluous(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (5, 8), Integral, int, "an integer", "`the_integral_param`"
         )
         assert kind == "range"
         assert output_value == (5, 8)
 
     def test_one_needs_converting(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (False, 25), Integral, int, "an integer", "`the_integral_param`"
         )
         assert kind == "range"
@@ -786,7 +834,7 @@ class TestEnsureSingleOrRangeIntegerRange:
 
     def test_both_need_converting(self):
         s = pd.Series([99]).astype("int64")
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (True, s[0]), Integral, int, "an integer", "`the_integral_param`"
         )
         assert kind == "range"
@@ -794,7 +842,7 @@ class TestEnsureSingleOrRangeIntegerRange:
 
     def test_bad_type_float_not_int(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (0, 100.0), Integral, int, "an integer", "`the_integral_param`"
             )
         assert exc_info.value.args[0] == (
@@ -804,7 +852,7 @@ class TestEnsureSingleOrRangeIntegerRange:
 
     def test_bad_type_str_not_int(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 ("17.5", 20), Integral, int, "an integer", "`the_integral_param`"
             )
         assert exc_info.value.args[0] == (
@@ -813,21 +861,21 @@ class TestEnsureSingleOrRangeIntegerRange:
         )
 
     def test_in_range_with_lower_bound(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (5, 8), Integral, int, "an integer", "`the_integral_param`", lower_bound=0
         )
         assert kind == "range"
         assert output_value == (5, 8)
 
     def test_in_range_with_upper_bound(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (-50, 50), Integral, int, "an integer", "`the_integral_param`", upper_bound=80
         )
         assert kind == "range"
         assert output_value == (-50, 50)
 
     def test_in_range_with_both_bounds(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (True, 16),
             Integral,
             int,
@@ -841,7 +889,7 @@ class TestEnsureSingleOrRangeIntegerRange:
 
     def test_not_in_range_with_both_bounds_start_too_small(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (5, 10),
                 Integral,
                 int,
@@ -852,12 +900,12 @@ class TestEnsureSingleOrRangeIntegerRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_integral_param`"
-            " - start of range must be greater than 10"
+            " - start of range must be between 10 and 20"
         )
 
     def test_not_in_range_with_both_bounds_end_too_big(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (-64, 1024),
                 Integral,
                 int,
@@ -868,12 +916,12 @@ class TestEnsureSingleOrRangeIntegerRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_integral_param`"
-            " - end of range must be less than 512"
+            " - end of range must be between -128 and 512"
         )
 
     def test_bad_range_start_greater_than_end(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (50, 45), Integral, int, "an integer", "`the_integral_param`"
             )
         assert exc_info.value.args[0] == (
@@ -883,35 +931,37 @@ class TestEnsureSingleOrRangeIntegerRange:
 
     def test_bad_type_list_not_tuple(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 [0, 100], Integral, int, "an integer", "`the_integral_param`"
+                , valid_range_text="an integer or a tuple of two integers (to indicate a range)",
             )
         assert exc_info.value.args[0] == (
-            "Invalid range given for `the_integral_param`"
-            " - must be a tuple of two values"
+            "`the_integral_param` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
         )
 
     def test_bad_type_tuple_of_3(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (9, 25, 49), Integral, int, "an integer", "`the_integral_param`"
+                , valid_range_text="an integer or a tuple of two integers (to indicate a range)",
             )
         assert exc_info.value.args[0] == (
-            "Invalid range given for `the_integral_param`"
-            " - must be a tuple of two values"
+            "`the_integral_param` must be an integer"
+            " or a tuple of two integers (to indicate a range)"
         )
 
 
 class TestEnsureSingleOrRangeRealRange:
     def test_conversion_superfluous(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (5.6, 8.9), Real, float, "a number", "`the_number_param`"
         )
         assert kind == "range"
         assert output_value == (5.6, 8.9)
 
     def test_one_needs_converting(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (Fraction(617, 50), 23.45), Real, float, "a number", "`the_number_param`"
         )
         assert kind == "range"
@@ -919,7 +969,7 @@ class TestEnsureSingleOrRangeRealRange:
 
     def test_both_need_converting(self):
         s = pd.Series([99.87]).astype("float64")
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (10, s[0]), Real, float, "a number", "`the_number_param`"
         )
         assert kind == "range"
@@ -927,7 +977,7 @@ class TestEnsureSingleOrRangeRealRange:
 
     def test_bad_type_complex_not_float(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (123 + 456j, 789), Real, float, "a number", "`the_number_param`"
             )
         assert exc_info.value.args[0] == (
@@ -937,7 +987,7 @@ class TestEnsureSingleOrRangeRealRange:
 
     def test_bad_type_str_not_float(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (17.5, "20"), Real, float, "a number", "`the_number_param`"
             )
         assert exc_info.value.args[0] == (
@@ -946,21 +996,21 @@ class TestEnsureSingleOrRangeRealRange:
         )
 
     def test_in_range_with_lower_bound(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (5, 8.5), Real, float, "a number", "`the_number_param`", lower_bound=0
         )
         assert kind == "range"
         assert output_value == (5, 8.5)
 
     def test_in_range_with_upper_bound(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (-62.5, 12.48), Real, float, "a number", "`the_number_param`", upper_bound=80
         )
         assert kind == "range"
         assert output_value == (-62.5, 12.48)
 
     def test_in_range_with_both_bounds(self):
-        kind, output_value = ensure_single_or_range(
+        kind, output_value = validate_numerical_input_modified_allow_range(
             (Fraction(169, 40), 16.32),
             Real,
             float,
@@ -974,7 +1024,7 @@ class TestEnsureSingleOrRangeRealRange:
 
     def test_not_in_range_with_both_bounds_start_too_small(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (-33.33, 66.67),
                 Real,
                 float,
@@ -985,12 +1035,12 @@ class TestEnsureSingleOrRangeRealRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_number_param`"
-            " - start of range must be greater than 50"
+            " - start of range must be between 50 and 99.99"
         )
 
     def test_not_in_range_with_both_bounds_end_too_big(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (64.256, 128.512),
                 Real,
                 float,
@@ -1001,12 +1051,12 @@ class TestEnsureSingleOrRangeRealRange:
             )
         assert exc_info.value.args[0] == (
             "Invalid range given for `the_number_param`"
-            " - end of range must be less than 96.48"
+            " - end of range must be between 32.128 and 96.48"
         )
 
     def test_bad_range_start_greater_than_end(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (78.34, 56.12), Real, float, "a number", "`the_number_param`"
             )
         assert exc_info.value.args[0] == (
@@ -1016,22 +1066,24 @@ class TestEnsureSingleOrRangeRealRange:
 
     def test_bad_type_list_not_tuple(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 [5.5, 95.95], Real, float, "a number", "`the_number_param`"
+                , valid_range_text="a number or a tuple of two numbers (to indicate a range)",
             )
         assert exc_info.value.args[0] == (
-            "Invalid range given for `the_number_param`"
-            " - must be a tuple of two values"
+            "`the_number_param` must be a number"
+            " or a tuple of two numbers (to indicate a range)"
         )
 
     def test_bad_type_tuple_of_3(self):
         with pytest.raises(ValueError) as exc_info:
-            kind, output_value = ensure_single_or_range(
+            kind, output_value = validate_numerical_input_modified_allow_range(
                 (10.89, 30.25, 59.29), Real, float, "a number", "`the_number_param`"
+                , valid_range_text="a number or a tuple of two numbers (to indicate a range)",
             )
         assert exc_info.value.args[0] == (
-            "Invalid range given for `the_number_param`"
-            " - must be a tuple of two values"
+            "`the_number_param` must be a number"
+            " or a tuple of two numbers (to indicate a range)"
         )
 
 
