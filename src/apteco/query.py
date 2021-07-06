@@ -264,6 +264,20 @@ def validate_n_frac_input(n, frac, allow_range=False):
     return total, percent, fraction
 
 
+def validate_total_percent_input(total, percent):
+    if total is not None:
+        if percent is not None:
+            raise ValueError("Must specify either total or percent, but not both")
+        single_or_range, total = validate_numerical_input(total, Integral, int, "total", "an integer", 0, None, True, "an integer or a tuple of two integers (to indicate a range)")
+        kind = (single_or_range, "total")
+    elif percent is not None:
+        single_or_range, percent = validate_numerical_input(percent, Real, float, "percent", "a percentage", 0, 100, True, "a number or a tuple of two numbers (to indicate a range)")
+        kind = (single_or_range, "percent")
+    else:
+        raise ValueError("Must specify one of total or percent")
+    return kind, total, percent
+
+
 def rational_to_fraction(frac):
     return Fraction(frac.numerator, frac.denominator)
 
@@ -273,10 +287,12 @@ def validate_numerical_input(value, abstract_class, concrete_class, metavar, val
         final_valid_text = valid_range_text
         kind = "range"
         validate_input = validate_range_input
-    else:
+    elif isinstance(value, Number):
         final_valid_text = valid_text
         kind = "single"
         validate_input = validate_single_input
+    else:
+        raise ValueError(f"{metavar} must be {valid_range_text if allow_range else valid_text}")
     try:
         return kind, validate_input(value, abstract_class, concrete_class, metavar, valid_text, lower_bound, upper_bound)
     except TypeError:
@@ -1115,92 +1131,6 @@ class LimitClause(BaseLimitClause):
         )
 
 
-def ensure_single_or_range(
-    input_value,
-    type_,
-    convert,
-    number_text,
-    param_text,
-    lower_bound=None,
-    upper_bound=None,
-    bounds=None,
-):
-
-    if isinstance(input_value, Sequence) and not isinstance(input_value, str):
-        if not (isinstance(input_value, tuple) and len(input_value) == 2):
-            raise ValueError(
-                f"Invalid range given for {param_text}"
-                f" - must be a tuple of two values"
-            )
-        try:
-            start, end = input_value
-            start = ensure_single(
-                start,
-                type_,
-                convert,
-                number_text,
-                f"start of range",
-                lower_bound,
-                upper_bound,
-                bounds,
-            )
-            end = ensure_single(
-                end,
-                type_,
-                convert,
-                number_text,
-                f"end of range",
-                lower_bound,
-                upper_bound,
-                bounds,
-            )
-        except ValueError as exc:
-            exc_msg = f"Invalid range given for {param_text} - {exc.args[0]}"
-            raise ValueError(exc_msg)
-        if not start < end:
-            raise ValueError(
-                f"Invalid range given for {param_text}"
-                f" - start of range must be less than end"
-            )
-        return "range", (start, end)
-
-    return (
-        "single",
-        ensure_single(
-            input_value,
-            type_,
-            convert,
-            number_text,
-            f"{param_text}",
-            lower_bound,
-            upper_bound,
-            bounds,
-        ),
-    )
-
-
-def ensure_single(
-    value,
-    type_,
-    convert,
-    number_text,
-    param_text,
-    lower_bound=None,
-    upper_bound=None,
-    bounds=None,
-):
-    if not isinstance(value, type_):
-        raise ValueError(f"{param_text} must be {number_text}")
-    value = convert(value)
-    if lower_bound is not None and not lower_bound < value:
-        raise ValueError(f"{param_text} must be greater than {lower_bound}")
-    if upper_bound is not None and not value < upper_bound:
-        raise ValueError(f"{param_text} must be less than {upper_bound}")
-    if bounds is not None and not bounds[0] < value < bounds[1]:
-        raise ValueError(f"{param_text} must be between {bounds[0]} and {bounds[1]}")
-    return value
-
-
 class TopNClause(BaseLimitClause):
     def __init__(
         self,
@@ -1213,8 +1143,8 @@ class TopNClause(BaseLimitClause):
         label=None,
         session=None,
     ):
-        self.kind, self.total, self.percent = self._check_numerical_inputs(
-            percent, total
+        self.kind, self.total, self.percent = validate_total_percent_input(
+            total, percent
         )
 
         if by is None or not hasattr(by, "name"):
@@ -1230,43 +1160,6 @@ class TopNClause(BaseLimitClause):
 
         self.label = label
         self.session = session
-
-    @staticmethod
-    def _check_numerical_inputs(percent, total):
-        if total is not None:
-            if percent is not None:
-                raise ValueError(
-                    "Must specify either `total` or `percent`, but not both"
-                )
-            try:
-                single_or_range, total = ensure_single_or_range(
-                    total, Integral, int, "an integer", "`total`", lower_bound=0
-                )
-                kind = (single_or_range, "total")
-                return kind, total, None
-            except ValueError:
-                raise ValueError(
-                    "`total` must be an integer or a tuple of two integers (to indicate a range)"
-                ) from None
-        elif percent is not None:
-            try:
-                single_or_range, percent = ensure_single_or_range(
-                    percent,
-                    Real,
-                    float,
-                    "a percentage",
-                    "`percent`",
-                    lower_bound=0,
-                    upper_bound=100,
-                )
-                kind = (single_or_range, "percent")
-                return kind, None, percent
-            except ValueError:
-                raise ValueError(
-                    "`percent` must be a number or a tuple of two numbers (to indicate a range)"
-                )
-        else:
-            raise ValueError("Must specify one of `total` or `percent`")
 
     def _to_model_selection(self):
         if self.kind[0] == "single":

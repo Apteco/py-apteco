@@ -83,6 +83,7 @@ class TestLimitClause:
         * _to_model_selection()
 
     """
+
     def test_limit_clause_total_correct_type(
         self, electronics, rtl_table_purchases, rtl_session
     ):
@@ -415,17 +416,13 @@ class TestLimitClause:
             limit_skip_first_as_range = LimitClause(
                 electronics, 100, skip_first=(10, 50), session=rtl_session
             )
-        assert exc_info.value.args[0] == (
-            "`skip_first` must be a non-negative integer"
-        )
+        assert exc_info.value.args[0] == "`skip_first` must be a non-negative integer"
 
         with pytest.raises(ValueError) as exc_info:
             limit_skip_first_range_triple = LimitClause(
                 electronics, percent=12.5, skip_first=(10, 20, 30), session=rtl_session
             )  # don't want error message about bad range, as it can't be a range at all
-        assert exc_info.value.args[0] == (
-            "`skip_first` must be a non-negative integer"
-        )
+        assert exc_info.value.args[0] == "`skip_first` must be a non-negative integer"
 
     def test_limit_clause_no_value_given(self, electronics, rtl_session):
         with pytest.raises(ValueError) as exc_info:
@@ -1163,6 +1160,7 @@ class TestTopNClause:
             - invalid single/range kind
 
     """
+
     def test_topn_clause_total_single_correct_type(
         self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
     ):
@@ -1199,32 +1197,20 @@ class TestTopNClause:
     def test_topn_clause_total_single_not_integral(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
             top_total_as_float = TopNClause(clothing, 428.06, session=rtl_session)
-        assert exc_info.value.args[0] == (
-            "`total` must be an integer"
-            " or a tuple of two integers (to indicate a range)"
-        )
+        assert exc_info.value.args[0] == "total must be an integer"
 
     def test_topn_clause_total_single_less_than_1(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
             top_total_betw_0_1 = TopNClause(clothing, 0.23, session=rtl_session)
-        assert exc_info.value.args[0] == (
-            "`total` must be an integer"
-            " or a tuple of two integers (to indicate a range)"
-        )
+        assert exc_info.value.args[0] == "total must be an integer"
 
         with pytest.raises(ValueError) as exc_info:
             top_total_is_0 = TopNClause(clothing, 0, session=rtl_session)
-        assert exc_info.value.args[0] == (
-            "`total` must be an integer"
-            " or a tuple of two integers (to indicate a range)"
-        )
+        assert exc_info.value.args[0] == "total must be greater than 0"
 
         with pytest.raises(ValueError) as exc_info:
             top_total_is_negative = TopNClause(clothing, -8100, session=rtl_session)
-        assert exc_info.value.args[0] == (
-            "`total` must be an integer"
-            " or a tuple of two integers (to indicate a range)"
-        )
+        assert exc_info.value.args[0] == "total must be greater than 0"
 
     def test_topn_clause_percent_single_correct_type(
         self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
@@ -1280,7 +1266,7 @@ class TestTopNClause:
                 clothing, percent="22.33", session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+            "percent must be a number or a tuple of two numbers (to indicate a range)"
         )
 
     def test_topn_clause_percent_single_out_of_range(self, clothing, rtl_session):
@@ -1288,29 +1274,21 @@ class TestTopNClause:
             top_percent_is_too_big = TopNClause(
                 clothing, percent=110, session=rtl_session
             )
-        assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
-        )
+        assert exc_info.value.args[0] == "percent must be between 0 and 100"
 
         with pytest.raises(ValueError) as exc_info:
             top_percent_is_negative = TopNClause(
                 clothing, percent=-54.32, session=rtl_session
             )
-        assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
-        )
+        assert exc_info.value.args[0] == "percent must be between 0 and 100"
 
         with pytest.raises(ValueError) as exc_info:
             top_percent_is_0 = TopNClause(clothing, percent=0, session=rtl_session)
-        assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
-        )
+        assert exc_info.value.args[0] == "percent must be between 0 and 100"
 
         with pytest.raises(ValueError) as exc_info:
             top_percent_is_100 = TopNClause(clothing, percent=100, session=rtl_session)
-        assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
-        )
+        assert exc_info.value.args[0] == "percent must be between 0 and 100"
 
     def test_topn_clause_total_range_correct_type(
         self, clothing, rtl_var_purchase_profit, rtl_table_purchases, rtl_session
@@ -1360,12 +1338,11 @@ class TestTopNClause:
 
     def test_topn_clause_total_range_not_integral(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
-            top_total_range_end_as_float = TopNClause(
+            top_total_range_not_integral = TopNClause(
                 clothing, (4, 54.0), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`total` must be an integer"
-            " or a tuple of two integers (to indicate a range)"
+            "Invalid range given for total - end of range must be an integer"
         )
 
     def test_topn_clause_total_range_start_less_than_1(self, clothing, rtl_session):
@@ -1374,39 +1351,37 @@ class TestTopNClause:
                 clothing, (-3, 6), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`total` must be an integer"
-            " or a tuple of two integers (to indicate a range)"
+            "Invalid range given for total - start of range must be greater than 0"
         )
 
     def test_topn_clause_total_range_start_greater_than_end(
         self, clothing, rtl_session
     ):
         with pytest.raises(ValueError) as exc_info:
-            top_total_range_end_as_float = TopNClause(
+            top_total_range_start_greater_than_end = TopNClause(
                 clothing, (70, 34), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`total` must be an integer"
-            " or a tuple of two integers (to indicate a range)"
+            "Invalid range given for total - start of range must be less than end"
         )
 
     def test_topn_clause_total_range_list_not_tuple(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
-            top_total_range_end_as_float = TopNClause(
+            top_total_range_list_not_tuple = TopNClause(
                 clothing, [500, 2000], session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`total` must be an integer"
+            "total must be an integer"
             " or a tuple of two integers (to indicate a range)"
         )
 
     def test_topn_clause_total_range_tuple_of_3(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
-            top_total_range_end_as_float = TopNClause(
+            top_total_range_tuple_of_3 = TopNClause(
                 clothing, (111, 222, 333), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`total` must be an integer"
+            "total must be an integer"
             " or a tuple of two integers (to indicate a range)"
         )
 
@@ -1471,7 +1446,7 @@ class TestTopNClause:
                 clothing, percent=(1 + 2j, 3.4), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+            "Invalid range given for percent - start of range must be a percentage"
         )
 
     def test_topn_clause_percent_range_out_of_bounds(self, clothing, rtl_session):
@@ -1480,7 +1455,7 @@ class TestTopNClause:
                 clothing, percent=(-25, 46.8), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+            "Invalid range given for percent - start of range must be between 0 and 100"
         )
 
         with pytest.raises(ValueError) as exc_info:
@@ -1488,7 +1463,7 @@ class TestTopNClause:
                 clothing, percent=(15.5, 240.25), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+            "Invalid range given for percent - end of range must be between 0 and 100"
         )
 
         with pytest.raises(ValueError) as exc_info:
@@ -1496,7 +1471,7 @@ class TestTopNClause:
                 clothing, percent=(-123.45, 123.45), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+            "Invalid range given for percent - start of range must be between 0 and 100"
         )
 
     def test_topn_clause_percent_range_start_greater_than_end(
@@ -1507,7 +1482,7 @@ class TestTopNClause:
                 clothing, percent=(3.1, 2.0), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+            "Invalid range given for percent - start of range must be less than end"
         )
 
     def test_topn_clause_percent_range_list_not_tuple(self, clothing, rtl_session):
@@ -1516,7 +1491,7 @@ class TestTopNClause:
                 clothing, percent=[4.6, 5.7], session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+            "percent must be a number or a tuple of two numbers (to indicate a range)"
         )
 
     def test_topn_clause_percent_range_tuple_of_4(self, clothing, rtl_session):
@@ -1525,19 +1500,19 @@ class TestTopNClause:
                 clothing, percent=(1.1, 2.2, 3.3, 4.4), session=rtl_session
             )
         assert exc_info.value.args[0] == (
-            "`percent` must be a number or a tuple of two numbers (to indicate a range)"
+            "percent must be a number or a tuple of two numbers (to indicate a range)"
         )
 
     def test_topn_clause_no_value_given(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
             topn_no_value_given = TopNClause(clothing, session=rtl_session)
-        assert exc_info.value.args[0] == "Must specify one of `total` or `percent`"
+        assert exc_info.value.args[0] == "Must specify one of total or percent"
 
     def test_topn_clause_both_values_given(self, clothing, rtl_session):
         with pytest.raises(ValueError) as exc_info:
             topn_both_values_given = TopNClause(clothing, 10, 20.3, session=rtl_session)
         assert exc_info.value.args[0] == (
-            "Must specify either `total` or `percent`, but not both"
+            "Must specify either total or percent, but not both"
         )
 
     def test_topn_clause_by_is_none(self, clothing, rtl_session):
@@ -1799,6 +1774,7 @@ class TestNPerVariableClause:
             - by given/not
 
     """
+
     def test_nper_variable_clause_n_correct_type(
         self, domestic, rtl_var_purchase_store, rtl_table_purchases, rtl_session
     ):
@@ -2101,6 +2077,7 @@ class TestNPerTableClause:
             - by given, with each of first, last
 
     """
+
     def test_nper_table_clause_n_correct_type(
         self, leisure, rtl_table_purchases, rtl_table_customers, rtl_session
     ):

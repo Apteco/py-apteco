@@ -231,7 +231,9 @@ class TestLimit:
 
         with pytest.raises(ValueError) as exc_info:
             men_non_real_frac = men.limit(frac=UnrealFrac(), by=people["Income"])
-        assert exc_info.value.args[0] == "frac must be a number between 0 and 1"
+        assert exc_info.value.args[0] == (
+            "frac must be a number or a tuple of two numbers (to indicate a range)"
+        )
 
         with pytest.raises(ValueError) as exc_info:
             men_frac_bad_range_start_too_big = men.limit(
