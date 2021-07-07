@@ -1,4 +1,4 @@
-from collections import Sequence
+from collections.abc import Sequence
 from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
