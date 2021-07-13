@@ -66,6 +66,38 @@ class TestSample:
         assert men_regular_100.count() == 100
         assert men_random_two_thirds.count() == 252377
 
+    def test_sample_and(self, men, holidays, people):
+        men_first_100 = men.sample(100, sample_type="First")
+        assert men_first_100.count() == 100
+        students_men_first_100 = men_first_100 & (people["Occupation"] == "4")
+        assert students_men_first_100.count() == 9
+
+    def test_sample_or(self, holidays, bookings):
+        sweden = bookings["Destination"] == "29"
+        sweden_1_20th_regular = sweden.sample(
+            frac=Fraction(1, 20), sample_type="Stratified"
+        )
+        assert sweden_1_20th_regular.count() == 1261
+        cost_gt_100 = bookings["Cost"] > 100
+        cost_gt_100_first_0_38_pct = cost_gt_100.sample(
+            frac=0.0038, sample_type="First"
+        )
+        assert cost_gt_100_first_0_38_pct.count() == 8002
+        limit_or_clause = sweden_1_20th_regular | cost_gt_100_first_0_38_pct
+        assert limit_or_clause.count() == 9258
+
+    def test_sample_of_sample(self, holidays, households, people):
+        south_west = households["Region"] == "04"
+        assert south_west.count() == 77139
+        south_west_1_456th = south_west.sample(
+            frac=Fraction(1, 456), sample_type="First"
+        )
+        assert south_west_1_456th.count() == 170
+        south_west_1_456th_78_9pct = south_west_1_456th.sample(
+            frac=0.789, sample_type="First"
+        )
+        assert south_west_1_456th_78_9pct.count() == 135
+
     def test_sample_input_errors(self, men):
         with pytest.raises(ValueError) as exc_info:
             men_no_value = men.sample()
@@ -413,38 +445,6 @@ class TestLimitClause:
             session=holidays,
         )
         assert france_random_12_51sts_skip_678.count() == 123406
-
-    def test_limit_clause_and(self, men, holidays, people):
-        men_first_100 = LimitClause(men, 100, session=holidays)
-        assert men_first_100.count() == 100
-        students_men_first_100 = men_first_100 & (people["Occupation"] == "4")
-        assert students_men_first_100.count() == 9
-
-    def test_limit_clause_or(self, holidays, bookings):
-        sweden = bookings["Destination"] == "29"
-        sweden_1_20th_regular = LimitClause(
-            sweden, fraction=Fraction(1, 20), sample_type="Stratified", session=holidays
-        )
-        assert sweden_1_20th_regular.count() == 1261
-        cost_gt_100 = bookings["Cost"] > 100
-        cost_gt_100_first_0_38_pct = LimitClause(
-            cost_gt_100, percent=0.38, session=holidays
-        )
-        assert cost_gt_100_first_0_38_pct.count() == 8002
-        limit_or_clause = sweden_1_20th_regular | cost_gt_100_first_0_38_pct
-        assert limit_or_clause.count() == 9258
-
-    def test_limit_clause_of_limit_clause(self, holidays, households, people):
-        south_west = households["Region"] == "04"
-        assert south_west.count() == 77139
-        south_west_1_456th = LimitClause(
-            south_west, fraction=Fraction(1, 456), session=holidays
-        )
-        assert south_west_1_456th.count() == 170
-        south_west_1_456th_78_9pct = LimitClause(
-            south_west_1_456th, percent=78.9, session=holidays
-        )
-        assert south_west_1_456th_78_9pct.count() == 135
 
 
 def verify_topn_values(
