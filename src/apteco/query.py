@@ -249,18 +249,14 @@ def validate_n_frac_input(n, frac, allow_range=False):
     if n is not None:
         kind, total = validate_numerical_input(n, Integral, int, "n", "an integer greater than 0", 0, None, allow_range, "an integer or a tuple of two integers (to indicate a range)")
     else:
-        kind, percent = validate_numerical_input(frac, Real, float, "frac", "a number between 0 and 1", 0, 1, allow_range, "a number or a tuple of two numbers (to indicate a range)")
-        if kind == "range":
-            percent = (percent[0] * 100, percent[1] * 100)
-        else:
-            percent *= 100
-        try:  # frac is definitely real, see if we can go further and keep it rational
+        try:
             kind, fraction = validate_numerical_input(frac, Rational, rational_to_fraction, "frac", "a rational number between 0 and 1", 0, 1, allow_range, "a ration number or a tuple of two rational numbers (to indicate a range)")
-        except ValueError:  # if we fail, fraction will remain unset
-            pass
-        else:  # if we succeed, faction has been set, so unset percent
-            percent = None
-
+        except ValueError:  # if we fail, maybe it's still Real
+            kind, percent = validate_numerical_input(frac, Real, float, "frac", "a number between 0 and 1", 0, 1, allow_range, "a number or a tuple of two numbers (to indicate a range)")
+            if kind == "range":
+                percent = (percent[0] * 100, percent[1] * 100)
+            else:
+                percent *= 100
     return total, percent, fraction
 
 
