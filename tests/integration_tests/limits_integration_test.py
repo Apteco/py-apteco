@@ -311,6 +311,9 @@ class TestLimit:
             men_per_bad_type = men.limit(10, per="Booking")
         assert exc_info.value.args[0] == "`per` must be a table or a variable"
 
+        with pytest.raises(ValueError) as exc_info:
+            men_per_n_bad_type = men.limit("10", per=people["Income"])
+        assert exc_info.value.args[0] == "n must be an integer greater than 0"
 
 class TestLimitClause:
     """Tests for LimitClause.
