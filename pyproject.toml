@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6.1"  # pandas 1.0 requires >=3.6.1, see: https://github.com/pandas-dev/pandas/pull/29212#issuecomment-551370118
-apteco-api = "^0.2.1"
+apteco-api = "^0.3.0"
 pysimplegui = "^4.0"
 pandas = "^1.0"
 numpy = "^1.18"
@@ -36,6 +36,11 @@ pytest-cov = "^2.8"
 pytest-cases = "^2.0.4"
 twine = "^3.2.0"
 bump2version = "^1.0.1"
+
+[[tool.poetry.source]]
+name = "test-pypi"
+url = "https://test.pypi.org/simple/"
+priority = "explicit"
 
 [build-system]
 requires = ["poetry>=0.12"]
