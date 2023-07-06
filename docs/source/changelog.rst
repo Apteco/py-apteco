@@ -2,6 +2,19 @@
   Change Log
 **************
 
+Version 0.8.1
+=============
+
+*2023-07-07*
+
+Fixed
+-----
+
+* The ``limit()`` method on ``Selection`` now accepts a range of integers
+  or percentages.
+* The ``sample`` and ``limit()`` methods on ``Selection`` now correctly validate
+  their inputs.
+
 Version 0.8.0
 =============
 
