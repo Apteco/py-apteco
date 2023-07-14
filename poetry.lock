@@ -24,13 +24,13 @@ files = [
 
 [[package]]
 name = "apteco-api"
-version = "0.3.0"
+version = "0.3.1"
 description = "Apteco API"
 optional = false
 python-versions = "*"
 files = [
-    {file = "apteco-api-0.3.0.tar.gz", hash = "sha256:91cbd91f2d3ee7dc2f7bea97056fa43bdf61f23c9c590bebdec73a1fa0b15c2d"},
-    {file = "apteco_api-0.3.0-py3-none-any.whl", hash = "sha256:fd66531acd88a6081f82b28466f4fd3e62aea95bc671f99d26133f80c69c02ab"},
+    {file = "apteco-api-0.3.1.tar.gz", hash = "sha256:68dd5a2bc69b05bd3a91957ef5f2136c89300fd1c08eeae8d93ada5c2c5a4690"},
+    {file = "apteco_api-0.3.1-py3-none-any.whl", hash = "sha256:7eb1b4490d370d7b85a34332314c304216fbc1ae08f90c0cdc622b9d06dcbec6"},
 ]
 
 [package.dependencies]
@@ -1205,4 +1205,4 @@ testing = ["func-timeout", "jaraco.itertools", "jaraco.test (>=3.2.0)", "pytest 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.6.1"
-content-hash = "6e43fddc4842a18bf2227e3fff1962cd6bb31a9e874584122134bcb4c32c6f9b"
+content-hash = "6006d6faf74e7512fbe15edb85104b29770bfd26c274a34373c875e162ac8847"
