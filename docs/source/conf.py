@@ -26,7 +26,7 @@ author = 'Apteco Ltd'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.8.1-alpha.2'
+release = '0.8.1-beta.1'
 
 
 # -- General configuration ---------------------------------------------------
