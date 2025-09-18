@@ -573,14 +573,6 @@ class TestLogin:
         )
 
 
-        # patch_getpass_getpass_raise_warning.assert_called_once_with(
-        #     "A different prompt from default"
-        # )
-        # patch_getpass_getpass_raise_warning.assert_called_once_with(
-        #     "Enter your password - this may be displayed on the console in plain text: "
-        # )
-
-
 @pytest.fixture()
 def fake_create_unauthorized_client(mocker):
     return mocker.Mock()
