@@ -19,21 +19,20 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6.1"  # pandas 1.0 requires >=3.6.1, see: https://github.com/pandas-dev/pandas/pull/29212#issuecomment-551370118
+python = ">=3.10,<3.13"
 apteco-api = "^0.3.1"
-pysimplegui = "^4.0"
-pandas = "^1.0"
-numpy = "^1.18"
+pandas = "^1.5"
+numpy = "^1.26"
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.0"
+[tool.poetry.group.dev.dependencies]
+pytest = "^6"
 isort = "^4.3"
 black = {version = "^18.3-alpha.0", allow-prereleases = true}
 pytest-mock = "^1.10"
 sphinx = "^2.1"
 sphinx_rtd_theme = "^0.4.3"
 pytest-cov = "^2.8"
-pytest-cases = "^2.0.4"
+pytest-cases = "^3.9"
 twine = "^3.2.0"
 bump2version = "^1.0.1"
 

@@ -2,6 +2,8 @@ import getpass
 import json
 import logging
 from json import JSONDecodeError
+import unittest.mock
+from unittest.mock import call
 
 import apteco_api as aa
 import pytest
@@ -506,19 +508,7 @@ def patch_getpass_getpass(mocker):
 
 @pytest.fixture()
 def patch_getpass_getpass_raise_warning(mocker):
-    return mocker.patch("getpass.getpass", side_effect=getpass.GetPassWarning)
-
-
-@pytest.fixture()
-def patch_apteco_logo(mocker):
-    return mocker.patch("apteco.session.APTECO_LOGO", new="here's the logo")
-
-
-@pytest.fixture()
-def patch_pysimplegui_popupgettext(mocker):
-    return mocker.patch(
-        "PySimpleGUI.PopupGetText", return_value="password typed into popup box"
-    )
+    return mocker.patch("getpass.getpass", side_effect=[getpass.GetPassWarning, unittest.mock.DEFAULT], return_value="password typed into popup box")
 
 
 class TestLogin:
@@ -572,21 +562,23 @@ class TestLogin:
     def test_get_password_from_popup(
         self,
         patch_getpass_getpass_raise_warning,
-        patch_pysimplegui_popupgettext,
-        patch_apteco_logo,
     ):
         result = _get_password("A different prompt from default")
         assert result == "password typed into popup box"
-        patch_getpass_getpass_raise_warning.assert_called_once_with(
-            "A different prompt from default"
+        patch_getpass_getpass_raise_warning.assert_has_calls(
+            [
+                call("A different prompt from default"),
+                call("Enter your password - this may be displayed on the console in plain text: "),
+            ]
         )
-        patch_pysimplegui_popupgettext.assert_called_once_with(
-            "A different prompt from default",
-            password_char="*",
-            title="Apteco API",
-            button_color=("#ffffff", "#004964"),
-            icon="here's the logo",
-        )
+
+
+        # patch_getpass_getpass_raise_warning.assert_called_once_with(
+        #     "A different prompt from default"
+        # )
+        # patch_getpass_getpass_raise_warning.assert_called_once_with(
+        #     "Enter your password - this may be displayed on the console in plain text: "
+        # )
 
 
 @pytest.fixture()

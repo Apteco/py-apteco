@@ -7,9 +7,7 @@ from json import JSONDecodeError
 from typing import Any, Dict, List, Tuple
 
 import apteco_api as aa
-import PySimpleGUI
 
-from apteco.data.apteco_logo import APTECO_LOGO
 from apteco.exceptions import (
     ApiResultsError,
     DeserializeError,
@@ -203,13 +201,7 @@ def _get_password(prompt: str = "Enter your password: ") -> str:
             warnings.filterwarnings("error")
             return getpass.getpass(prompt)
     except getpass.GetPassWarning:
-        return PySimpleGUI.PopupGetText(
-            prompt,
-            password_char="*",
-            title="Apteco API",
-            button_color=("#ffffff", "#004964"),
-            icon=APTECO_LOGO,
-        )
+        return getpass.getpass("Enter your password - this may be displayed on the console in plain text: ")
 
 
 # https://gieseanw.wordpress.com/2019/05/10/algorithms-as-objects/
