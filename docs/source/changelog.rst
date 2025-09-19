@@ -2,6 +2,19 @@
   Change Log
 **************
 
+Version 0.8.2
+=============
+
+*2025-09-18*
+
+Fixed
+-----
+
+* Removed pySimpleGui dependency, which was only used in a deprecated
+  code path for getting passwords from the user.
+* Updated various other dependencies.
+* Updated python required version to be ``>=3.10,<3.13``
+
 Version 0.8.1
 =============
 

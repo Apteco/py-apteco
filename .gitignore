@@ -213,3 +213,4 @@ tests/local/
 
 # credentials for integration tests
 credentials.toml
+.vscode/
