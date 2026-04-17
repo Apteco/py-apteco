@@ -48,8 +48,9 @@ def replace_final_line(edited_lines):
     new_final_line = (
         "You can find the complete documentation"
         "\nincluding a more thorough"
-        " `tutorial <https://help.apteco.com/python/tutorial.html>`_"
-        "\non the `Apteco website <https://help.apteco.com/python/index.html>`_."
+        " `tutorial <https://apteco.github.io/py-apteco/tutorial.html>`_"
+        "\non the `Apteco documentation site <https://apteco.github.io/py-apteco/>`_"
+        "\nand further information on the `Apteco help site <https://help.apteco.com/>`_."
     )
 
     final_line = edited_lines[-1]

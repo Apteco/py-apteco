@@ -483,5 +483,6 @@ You can use a selection from a different table to filter the records in the cube
     [2660 rows x 1 columns]
 
 You can find the complete documentation
-including a more thorough `tutorial <https://help.apteco.com/python/tutorial.html>`_
-on the `Apteco website <https://help.apteco.com/python/index.html>`_.
+including a more thorough `tutorial <https://apteco.github.io/py-apteco/tutorial.html>`_
+on the `Apteco documentation site <https://apteco.github.io/py-apteco/>`_
+and further information on the `Apteco help site <https://help.apteco.com/>`_.
