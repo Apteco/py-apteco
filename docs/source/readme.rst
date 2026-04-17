@@ -5,7 +5,7 @@
 Requirements
 ============
 
-* Python 3.6+
+* Python 3.10+
 * Access to an installation of the Apteco API
 
 The Apteco API (which also goes under the name **Orbit API**)
