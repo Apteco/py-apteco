@@ -41,6 +41,9 @@ name = "test-pypi"
 url = "https://test.pypi.org/legacy/"
 priority = "explicit"
 
+[tool.poetry.scripts]
+generate-readme = "docs.readme_generator:generate_readme"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
